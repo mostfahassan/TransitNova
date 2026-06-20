@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/scr/">
+    <Project Path="TransitNova.Api/TransitNova.Api.csproj" />
+    <Project Path="TransitNova.BusinessLayer/TransitNova.BusinessLayer.csproj" Id="b249fc41-8e9f-4140-97e9-70e33d9a19c4" />
+    <Project Path="TransitNova.Domain/TransitNova.Domain.csproj" />
+    <Project Path="TransitNova.InfraStructure/TransitNova.InfraStructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="BuisnessLayerTesting/BuisnessLayerTesting.csproj" Id="478331c3-27b3-4884-8806-a16c583bab18" />
+    <Project Path="DomainLayerTesting/DomainLayerTesting.csproj" Id="7e39289c-06d9-4bdb-a5f8-d9277ec6fdef" />
+    <Project Path="TransitNova.MappingTests/TransitNova.MappingTests.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/TransitNova.Ui/">
+    <Project Path="TransitNova.UI/TransitNova.UI.csproj" Id="e00b64c0-c3d0-4a96-8ba1-634064eb64e7" />
+    <Project Path="TransitNovaUI.BusinessLayer/TransitNovaUI.BusinessLayer.csproj" Id="603895a0-bb1f-41da-92d2-aa104b8c2777" />
+  </Folder>
+</Solution>

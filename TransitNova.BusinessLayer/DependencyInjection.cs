@@ -1,0 +1,50 @@
+using FluentValidation;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using TransitNova.BusinessLayer.Common.Behaviors;
+using TransitNova.BusinessLayer.Interfaces.Services.AdminDashboard;
+using TransitNova.BusinessLayer.Interfaces.Services.CompleteShipmentService;
+using TransitNova.BusinessLayer.Interfaces.Services.ShipmentAssignmentServices;
+using TransitNova.BusinessLayer.Interfaces.Services.ShipmentServices;
+using TransitNova.BusinessLayer.Interfaces.Services.TokenServices;
+using TransitNova.BusinessLayer.Interfaces.Services.TripService;
+using TransitNova.BusinessLayer.Services.AdminDashboardService;
+using TransitNova.BusinessLayer.Services.CompleteShipmentService;
+using TransitNova.BusinessLayer.Services.ShipmentAssignmentServices;
+using TransitNova.BusinessLayer.Services.ShipmentServices;
+using TransitNova.BusinessLayer.Services.TokenServices;
+using TransitNova.BusinessLayer.Services.TripServices;
+namespace TransitNova.BusinessLayer
+{
+    public static class DependencyInjection
+    {
+        public static IServiceCollection AddInBusinessService(
+          this IServiceCollection services)
+
+        {
+            var assembly = typeof(DependencyInjection).Assembly;
+
+            services.
+                AddMediatR(options => options.RegisterServicesFromAssembly(assembly))
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>))
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehaviour<,>))
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionPipelineBehavior<,>))
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(IdempotentCommandPipelineBehaviour<,>))
+                .AddAutoMapper(config =>
+                  {
+                      config.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
+                  })
+                .AddValidatorsFromAssembly(assembly)
+                .AddScoped<IShipmentPricingServices, ShipmentPricingServices>()
+                .AddScoped<ICompleteShipmentService, CompleteShipmentService>()
+                .AddScoped<ITokenService, TokenService>()
+                .AddScoped<IShipmentAssignmentService, ShipmentAssignmentService>()
+                .AddScoped<IShipmentService, ShipmentService>()
+                .AddScoped<ITripServices, TripManagementService>()
+                .AddScoped<IAdminDashboard, AdminDashboard>();
+
+
+            return services;
+        }
+    }
+}

@@ -1,0 +1,36 @@
+﻿
+namespace TransitNova.Domain.Enums.Result
+{
+    public enum ErrorCode
+    {
+        NONE,
+        REQUIRED_FIELD,
+        VALIDATION_ERROR,
+        UNAUTHORIZED,
+        FORBIDDEN,
+        BUNDLE_NOT_FOUND,
+        NOT_FOUND,
+        CONFLICT,
+        INTERNAL_ERROR,
+        SHIPMENT_NOT_FOUND,
+        FAILED_TO_ASSIGN,
+        FAILED,
+        USER_NOT_FOUND,
+        CARRIER_NOT_FOUND,
+        TRIP_NOT_FOUND,
+        INVALID_SHIPMENT_STATE,
+        INVALID_CARRIER_STATE,
+        TRACKING_NUMBER_ALREADY_EXISTS,
+        EMAIL_ALREADY_EXISTS,
+        INVALID_CREDENTIALS,
+        CARRIER_NOT_AVAILABLE,
+        ZONE_NOT_FOUND,
+        INVALID_STATE,
+        CARRIER_NOT_ACTIVE,
+        SHIPMENT_NOT_ASSIGNED,
+        INVALID_CARRIER_STATUS,
+        NO_CARRIER_WAREHOUSE_FOUND,
+        REFRESH_TOKEN_NOT_FOUND,
+        REFRESH_TOKEN_NOT_VALID
+    }
+}

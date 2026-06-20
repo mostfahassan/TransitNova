@@ -1,0 +1,40 @@
+using AutoMapper;
+using TransitNova.BusinessLayer.Common.CommonData;
+using TransitNova.BusinessLayer.DTOs.Carrier;
+using TransitNova.Domain.Entities.Common;
+using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums.Trip;
+
+public class CarrierMappingProfile : Profile
+{
+    public CarrierMappingProfile()
+    {
+        CreateMap<Vehicle, CarrierVehicleDto>();
+
+        CreateMap<Carrier, CarrierProfileDto>()
+            .IncludeBase<BaseInfo, CommonRetrieveData>()
+            .ForMember(dest => dest.Experience,
+                opt => opt.MapFrom(src => src.YearsOfExperience))
+            .ForMember(dest => dest.Rating,
+                opt => opt.MapFrom(src => src.AverageRating))
+            .ForMember(dest => dest.Company,
+                opt => opt.MapFrom(src => src.Company != null
+                    ? src.Company.Name
+                    : null));
+
+        CreateMap<Carrier, CarrierSummaryDetailsDto>()
+           .ForMember(dest => dest.ActiveTripsCount,
+               opt => opt.MapFrom(src =>
+                   src.Trips.Count(t =>
+                       t.Status == TripStatus.Active ||
+                       t.Status == TripStatus.Planned)))
+           .ForMember(dest => dest.Rating,
+               opt => opt.MapFrom(src => src.AverageRating))
+
+           .ForMember(dest => dest.ServedCities,
+               opt => opt.MapFrom(src =>
+                   src.ServedZones
+                       .Select(sz => sz.City.Name)
+                       .Distinct()));
+    }
+}

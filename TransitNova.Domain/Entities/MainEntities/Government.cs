@@ -1,0 +1,30 @@
+﻿
+using TransitNova.Domain.Entities.Common;
+namespace TransitNova.Domain.Entities.MainEntities
+{
+    public class Government:BaseEntity<int>
+    {
+        public int CountryId { get; private set; }
+        public Country Country { get; set; } = null!;
+        public string Name { get; private set; } = string.Empty;
+        public List<City> Cities { get; set; } = new List<City>();
+
+        public static Government Create(string name, int countryId)
+        {
+            return new Government
+            {
+                Name = name,
+                CountryId = countryId,
+                CurrentState = true,
+                CreatedAt = DateTime.UtcNow
+            };
+        }
+
+        public void Update(string name, int countryId)
+        {
+            Name = name;
+            CountryId = countryId;
+            UpdatedAt = DateTime.UtcNow;
+        }
+    }
+}
