@@ -19,7 +19,7 @@ namespace TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyCommands
         ISystemLogCommands systemLogCommands,
         IUnitOfWork unitOfWork,
         ILogger<CreateWarehouseHandler> logger)
-        : ICommandHandler<CreateWarehouseCommand, Result<WarehouseDto>>, ITransactional
+        : ICommandHandler<CreateWarehouseCommand, Result<WarehouseDto>>
     {
         public async Task<Result<WarehouseDto>> Handle(CreateWarehouseCommand request, CancellationToken ct)
         {

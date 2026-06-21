@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Carrier;
@@ -8,6 +7,7 @@ using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.Domain.Contracts.Caching;
 namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands
 {
     public sealed class UpdateCarrierProfileHandler(

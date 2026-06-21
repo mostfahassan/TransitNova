@@ -43,7 +43,9 @@ namespace TransitNova.InfraStructure.EntityConfig
                 .IsRequired()
                 .HasDefaultValue(true);
 
-            vehicle.HasQueryFilter(v => !v.Carrier!.IsDeleted);
+            vehicle.HasQueryFilter(v =>
+            !v.Carrier.IsDeleted &&
+             v.IsActive);
 
             vehicle.HasIndex(v => v.PlateNumber).IsUnique();
             vehicle.HasIndex(v => v.CarrierId);
@@ -51,8 +53,6 @@ namespace TransitNova.InfraStructure.EntityConfig
             vehicle.HasIndex(v => v.VehicleType);
             vehicle.HasIndex(v => new { v.CarrierId, v.IsActive });
             vehicle.HasIndex(v => v.IsRefrigerated);
-            vehicle.HasQueryFilter(v => v.IsActive);
-
         }
     }
 

@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
@@ -7,7 +6,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
- 
+using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.MainEntities;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -15,7 +14,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler
 {
     public sealed class UnSubscribeBundleHandler(
-        IGenericRepository<Bundle, int> bundleRepository,
+        IGenericRepository<Bundle, Guid> bundleRepository,
         IUserQueryRepository userRepository,
         IUnitOfWork unitOfWork,
         ICacheService cacheService,

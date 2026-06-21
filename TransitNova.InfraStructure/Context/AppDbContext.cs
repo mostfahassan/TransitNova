@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.InfraStructure.OutBox;
 namespace TransitNova.InfraStructure.Context
 {
     public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
@@ -13,6 +14,7 @@ namespace TransitNova.InfraStructure.Context
         public DbSet<AdminProfile> Admins { get; set; }
         public DbSet<SystemActivityLog> SystemActivityLogs { get; set; }
         public DbSet<Zone> Zones { get; set; }
+        public DbSet<OutboxMessage> OutboxMessages { get; set; }
         public DbSet<IdempotentTable> IdempotentTableKey { get; set; }
         public DbSet<Government> Governments { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
@@ -25,7 +27,7 @@ namespace TransitNova.InfraStructure.Context
         public DbSet<Carrier> Carriers { get; set; }
         public DbSet<CarrierRating> CarrierRatings { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
-        public DbSet<CarrierCompany> CarrierCompanies { get; set; }
+   
         public DbSet<City> Cities { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<ShipmentStatus> ShipmentStatuses { get; set; }
@@ -45,7 +47,6 @@ namespace TransitNova.InfraStructure.Context
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
-
 
             foreach (var property in modelBuilder.Model.GetEntityTypes()
            .SelectMany(t => t.GetProperties())

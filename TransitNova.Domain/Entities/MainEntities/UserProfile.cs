@@ -1,8 +1,9 @@
-﻿using TransitNova.Domain.Entities.Common;
+﻿using TransitNova.Domain.Contracts.DomainEvents;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Users;
 namespace TransitNova.Domain.Entities.MainEntities
 {
-    public class UserProfile : BaseInfo
+    public class UserProfile : BaseInfo<Guid>
     {
         public virtual ICollection<Shipment> SentShipments { get; set; } = new List<Shipment>();
         public ICollection<BundleSubscription> Subscriptions { get; set; } = new List<BundleSubscription>();

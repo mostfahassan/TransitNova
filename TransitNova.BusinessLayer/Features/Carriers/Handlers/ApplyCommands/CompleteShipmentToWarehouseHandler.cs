@@ -1,6 +1,5 @@
 
 using Microsoft.Extensions.Logging;
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.Carriers.Commands;
@@ -8,6 +7,7 @@ using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.CompleteShipmentService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.Domain.Contracts.Caching;
 
 
 namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands
@@ -17,7 +17,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands
         IUnitOfWork unitOfWork,
         ICacheService cacheService,
         ILogger<CompleteShipmentToWarehouseHandler> logger)
-        : ICommandHandler<CompleteShipmentToWarehouseCommand, BaseResult>,ITransactional
+        : ICommandHandler<CompleteShipmentToWarehouseCommand, BaseResult>
     {
         public async Task<BaseResult> Handle(CompleteShipmentToWarehouseCommand request, CancellationToken ct)
         {

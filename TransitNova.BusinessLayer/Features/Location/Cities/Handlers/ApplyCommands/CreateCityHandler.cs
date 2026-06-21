@@ -1,4 +1,3 @@
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.City;
@@ -6,6 +5,7 @@ using TransitNova.BusinessLayer.Features.Location.Cities.Commands;
 using TransitNova.BusinessLayer.Interfaces.Repositories.LocationRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.Entities.MainEntities;
 namespace TransitNova.BusinessLayer.Features.Location.Cities.Handlers.ApplyCommands
 {

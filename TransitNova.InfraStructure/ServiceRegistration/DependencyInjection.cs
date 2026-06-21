@@ -18,7 +18,7 @@ using TransitNova.InfraStructure.ServiceRegistration.StrategyRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.TokenRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.TripRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.UserRepositoryRegistration;
-using TransitNova.InfraStructure.ServiceRegistration.VehicleRegistration;
+using TransitNova.InfraStructure.ServiceRegistration.VehicleRepositoryRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.WarehouseRegistration;
 namespace TransitNova.InfraStructure.ServiceRegistration
 {
@@ -37,11 +37,12 @@ namespace TransitNova.InfraStructure.ServiceRegistration
                 .AddAuthorization()
                 .AddCacheServices()
                 .AddPermissionPolicies(
-                 UserPermissions.All
-                .Concat(CarrierPermissions.All)
-                .Concat(OperationManagerPermissions.All)
-                .Concat(AdminPermissions.All)
-                .ToArray());
+                [
+                    ..UserPermissions.All,
+                    ..CarrierPermissions.All,
+                    ..OperationManagerPermissions.All,
+                    ..AdminPermissions.All
+                ]);
 
             services
                 .AddGenericRepositories()

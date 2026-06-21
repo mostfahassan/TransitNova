@@ -10,7 +10,6 @@ public sealed class UiFilterCarrierDto
     public decimal? MaxRating { get; set; }
     public int? MinYearsOfExperience { get; set; }
     public int? MaxYearsOfExperience { get; set; }
-    public Guid? CompanyId { get; set; }
     public string? City { get; set; }
     public int? CityId { get; set; }
     public string? SearchTerm { get; set; }
@@ -31,7 +30,7 @@ public sealed class UiFilterCarrierDto
             MaxRating = source.MaxRating,
             MinYearsOfExperience = source.MinYearsOfExperience,
             MaxYearsOfExperience = source.MaxYearsOfExperience,
-            CompanyId = source.CompanyId,
+       
             City = source.City,
             CityId = source.CityId,
             SearchTerm = source.SearchTerm,

@@ -1,8 +1,10 @@
-﻿using TransitNova.Domain.DomainExceptions;
+﻿using TransitNova.Domain.Contracts.DomainEvents;
+using TransitNova.Domain.Contracts.DomainEvents.Events.BundleEvents;
+using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.Common;
 namespace TransitNova.Domain.Entities.MainEntities
 {
-    public class Bundle : BaseEntity<int>
+    public class Bundle : AggregateRoot<Guid>
     {
         private readonly List<Shipment> _shipment = new ();
         public string BundleName { get; private set; } = string.Empty;
@@ -43,6 +45,8 @@ namespace TransitNova.Domain.Entities.MainEntities
             TotalShipments = totalShipments;
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = userId;
+
+            RaiseDomainEvent(new BundleUpdatedDomainEvent(Id, BundlePrice));
         }
         public void Subscribe(Guid userId)
         {
@@ -57,6 +61,8 @@ namespace TransitNova.Domain.Entities.MainEntities
                 IsActive = true
             };
             Subscriptions.Add(subscription);
+
+            RaiseDomainEvent(new UserSubscribedToBundleDomainEvent(userId,Id));
         }
 
         public void Unsubscribe(Guid userId)
@@ -65,6 +71,7 @@ namespace TransitNova.Domain.Entities.MainEntities
                 ?? throw new EntityNotFoundException("Subscription not found.", "BUNDLE_SUBSCRIPTION_NOT_FOUND", "Bundle");
             subscription.IsActive = false;
             subscription.CancelledAt = DateTime.UtcNow;
+            RaiseDomainEvent(new UserUnSubscribedToBundleDomainEvent(userId, Id));
         }
     }
 }

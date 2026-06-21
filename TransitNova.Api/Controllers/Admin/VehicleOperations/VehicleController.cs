@@ -8,7 +8,7 @@ using TransitNova.BusinessLayer.Features.Vehicles.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
 
-namespace TransitNova.Api.Controllers.Vehicle.Admin
+namespace TransitNova.Api.Controllers.Admin.VehicleOperations
 {
     [Authorize(Roles = Role.Admin)]
     [ApiController]

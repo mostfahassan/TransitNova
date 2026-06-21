@@ -19,7 +19,7 @@ namespace TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyCommands
         ISystemLogCommands systemLogCommands,
         IUnitOfWork unitOfWork,
         ILogger<DeleteWarehouseHandler> logger)
-        : ICommandHandler<DeleteWarehouseCommand, BaseResult>, ITransactional
+        : ICommandHandler<DeleteWarehouseCommand, BaseResult>
     {
         public async Task<BaseResult> Handle(DeleteWarehouseCommand request, CancellationToken ct)
         {

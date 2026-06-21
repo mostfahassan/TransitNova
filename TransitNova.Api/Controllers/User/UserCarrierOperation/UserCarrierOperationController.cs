@@ -6,7 +6,7 @@ using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
-namespace TransitNova.Api.Controllers.Shipment.UserCommands
+namespace TransitNova.Api.Controllers.User.UserCarrierOperation
 {
     [Authorize(Roles = Role.User)]
     [Authorize(Policy = UserPermissions.ShipmentOwner)]

@@ -2,13 +2,8 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNovaUI.BusinessLayer.Common.CommonData;
-using TransitNovaUI.BusinessLayer.Common.ResultPattern;
 using TransitNovaUI.BusinessLayer.DTOs.Payment;
-using TransitNovaUI.BusinessLayer.DTOs.ShipmentStatusDto;
-using TransitNovaUI.BusinessLayer.DTOs.UserProfile;
-
 namespace TransitNovaUI.BusinessLayer.DTOs.Shipment;
-
 public sealed class UiPackageSpecificationDto
 {
     public decimal Weight { get; set; }
@@ -52,7 +47,7 @@ public sealed record UiCreateShipmentDto(
     enShipmentType ShipmentDeliveryType,
     string DeliveryAddress,
     string PickupAddress,
-    int? PackageBundleId)
+    Guid? PackageBundleId)
 {
     public static CreateShipmentDto ToDto(UiCreateShipmentDto source) =>
         new(
@@ -125,7 +120,7 @@ public sealed class UiRetrieveShipmentDto
     public UiPaymentSummaryDto? Payment { get; set; }
     public List<UiRetrieveShipmentStatusDto> ShipmentStates { get; set; } = [];
     public enShipmentType ShipmentType { get; set; }
-    public int? PackageBundleId { get; set; }
+    public Guid? PackageBundleId { get; set; }
     public DateTime CreatedAt { get; set; }
 
     public static UiRetrieveShipmentDto ToUiDto(RetrieveShipmentDto source) =>
@@ -147,7 +142,7 @@ public sealed class UiRetrieveShipmentDto
             EstimatedDeliveryDate = source.EstimatedDeliveryDate,
             TrackingNumber = source.TrackingNumber,
             Payment = source.Payment is null ? null : UiPaymentSummaryDto.ToUiDto(source.Payment),
-            ShipmentStates = source.ShipmentStates.Select(UiRetrieveShipmentStatusDto.ToUiDto).ToList(),
+            ShipmentStates =[ ..source.ShipmentStates.Select(UiRetrieveShipmentStatusDto.ToUiDto)],
             ShipmentType = source.ShipmentType,
             PackageBundleId = source.PackageBundleId,
             CreatedAt = source.CreatedAt

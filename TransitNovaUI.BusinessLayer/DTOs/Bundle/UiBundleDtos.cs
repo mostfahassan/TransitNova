@@ -47,7 +47,7 @@ public sealed class UiRetrieveBundleDto
 
 public sealed class UiUpdateBundleDto
 {
-    public int BundleId { get; set; }
+    public Guid BundleId { get; set; }
     public string BundleName { get; set; } = string.Empty;
     public decimal TotalWeight { get; set; }
     public decimal BundlePrice { get; set; }

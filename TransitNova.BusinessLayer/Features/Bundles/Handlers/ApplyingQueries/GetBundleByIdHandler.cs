@@ -9,7 +9,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingQueries
 {
     public sealed class GetBundleByIdHandler(
-    IGenericRepository<Bundle, int> repository,
+    IGenericRepository<Bundle, Guid> repository,
     ILogger<GetBundleByIdHandler> logger)
     : IQueryHandler<GetBundleByIdQuery, Result<RetrieveBundleDto?>>
     {

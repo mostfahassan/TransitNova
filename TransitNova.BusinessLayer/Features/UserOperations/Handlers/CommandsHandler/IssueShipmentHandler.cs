@@ -1,13 +1,12 @@
 
 using Microsoft.Extensions.Logging;
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
- 
+using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.DomainExceptions;
 namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler
 {

@@ -1,4 +1,4 @@
-﻿namespace TransitNova.BusinessLayer.Interfaces
+﻿namespace TransitNova.Domain
 {
     public interface ISoftDeletable
     {

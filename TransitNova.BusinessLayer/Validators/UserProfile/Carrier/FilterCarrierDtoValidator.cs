@@ -67,11 +67,7 @@ namespace TransitNova.BusinessLayer.Validators.UserProfile.Carrier
                 .WithMessage("Invalid carrier status value.")
                 .When(x => x.Status.HasValue);
 
-            
-            RuleFor(x => x.CompanyId)
-                .NotEqual(Guid.Empty)
-                .WithMessage("Company ID must not be an empty GUID.")
-                .When(x => x.CompanyId.HasValue);
+   
 
             
             RuleFor(x => x.City)

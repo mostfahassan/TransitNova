@@ -17,10 +17,8 @@ namespace TransitNova.Domain.Entities.MainEntities
             CreatedAt = DateTime.UtcNow;
         }
         public static Country Create(string name)
-        {
-          
-            return new Country(name);
-        }
+            => new (name);
+      
 
         public void Update(string name)
         {

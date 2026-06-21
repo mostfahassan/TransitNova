@@ -22,7 +22,6 @@ namespace TransitNova.BusinessLayer.Features.Carriers
                 ContractEndDate = carrier.ContractEndDate,
                 Rating = carrier.AverageRating,
                 LicenseNumber = carrier.LicenseNumber,
-                Company = carrier.Company?.Name,
                 Experience = carrier.YearsOfExperience,
                 DefaultCostPerKg = carrier.DefaultCostPerKg,
                 Status = carrier.Status,

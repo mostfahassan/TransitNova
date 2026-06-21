@@ -1,16 +1,16 @@
 using TransitNova.BusinessLayer.Common.CQRS;
 using Microsoft.Extensions.Logging;
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Features.Bundles.Commands;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.Domain.Contracts.Caching;
 namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingCommands
 {
     public sealed class DeleteBundleHandler(
-    IGenericRepository<Bundle, int> repository,
+    IGenericRepository<Bundle, Guid> repository,
     IUnitOfWork unitOfWork,
     ICacheService cacheService,
     ILogger<DeleteBundleHandler> logger)

@@ -29,13 +29,9 @@ namespace TransitNova.Domain.Entities.MainEntities
             CurrentState = true;
         }
 
-        public static Zone Create(
-            string name,
-            string code,
-            int cityId)
-        {
-            return new Zone(name, code, cityId);
-        }
+        public static Zone Create(string name, string code, int cityId)
+            => new (name, code, cityId);
+        
     }
 }
 

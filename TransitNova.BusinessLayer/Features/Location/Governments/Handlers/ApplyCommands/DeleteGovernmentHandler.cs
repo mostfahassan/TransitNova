@@ -4,9 +4,7 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.Location.Governments.Commands;
 using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
-
 using TransitNova.Domain.Entities.MainEntities;
-
 namespace TransitNova.BusinessLayer.Features.Location.Governments.Handlers.ApplyCommands
 {
     public sealed class DeleteGovernmentHandler(
@@ -17,6 +15,11 @@ namespace TransitNova.BusinessLayer.Features.Location.Governments.Handlers.Apply
     {
         public async Task<BaseResult> Handle(DeleteGovernmentCommand request, CancellationToken ct)
         {
+
+            var government = await repository.GetByIdAsync<Government>(request.Id, ct);
+            if (government == null)
+                return BaseResult.NotFound(Errors.NotFound("City Not Found"));
+
             var deleted = await repository.DeleteAsync(request.Id, ct);
             if (!deleted)
             {

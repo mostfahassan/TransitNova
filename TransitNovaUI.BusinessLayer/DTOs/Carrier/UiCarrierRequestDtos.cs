@@ -8,7 +8,6 @@ public sealed class UiAdditionalInfoDto
     public Guid Id { get; set; }
     public string LicenseNumber { get; set; } = string.Empty;
     public int MaxDailyShipments { get; set; }
-    public Guid CompanyId { get; set; }
     public decimal DefaultCostPerKg { get; set; }
     public int YearsOfExperience { get; set; }
     public DateTime ContractStartDate { get; set; }
@@ -21,7 +20,6 @@ public sealed class UiAdditionalInfoDto
             Id = source.Id,
             LicenseNumber = source.LicenseNumber,
             MaxDailyShipments = source.MaxDailyShipments,
-            CompanyId = source.CompanyId,
             DefaultCostPerKg = source.DefaultCostPerKg,
             YearsOfExperience = source.YearsOfExperience,
             ContractStartDate = source.ContractStartDate,
@@ -60,7 +58,7 @@ public sealed class UiUpdateCarrierDto
     public string? Email { get; set; } = string.Empty;
     public int? CityId { get; set; }
     public string? Address { get; set; } = string.Empty;
-    public Guid? CompanyId { get; set; }
+ 
 
     public static UpdateCarrierDto ToDto(UiUpdateCarrierDto source) =>
         new()
@@ -72,7 +70,7 @@ public sealed class UiUpdateCarrierDto
             Email = source.Email,
             CityId = source.CityId,
             Address = source.Address,
-            CompanyId = source.CompanyId
+           
         };
 
 }

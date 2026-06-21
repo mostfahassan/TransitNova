@@ -1,6 +1,5 @@
 
 using Microsoft.Extensions.Logging;
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.Carriers.Commands;
@@ -8,6 +7,7 @@ using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.Domain.Contracts.Caching;
 namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands
 {
     public sealed class AddCarrierAdditionalInfoCommandHandler(
@@ -15,7 +15,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands
         IUnitOfWork unitOfWork,
         ICacheService cacheService,
         ILogger<AddCarrierAdditionalInfoCommandHandler> logger)
-        : ICommandHandler<AddingCarrierAdditionalInfoCommand, BaseResult>, ITransactional
+        : ICommandHandler<AddingCarrierAdditionalInfoCommand, BaseResult>
     {
         public async Task<BaseResult> Handle(AddingCarrierAdditionalInfoCommand request, CancellationToken ct)
         {
@@ -32,7 +32,6 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands
                 request.UserId,
                 request.Dto.LicenseNumber,
                 request.Dto.MaxDailyShipments,
-                request.Dto.CompanyId,
                 request.Dto.DefaultCostPerKg,
                 request.Dto.YearsOfExperience,
                 request.Dto.ContractStartDate,

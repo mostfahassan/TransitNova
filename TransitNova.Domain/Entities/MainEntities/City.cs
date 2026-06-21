@@ -23,9 +23,8 @@ namespace TransitNova.Domain.Entities.MainEntities
             CreatedAt = DateTime.UtcNow;
         }
         public static City Create(string name, int governmentId)
-        {
-            return new City(name, governmentId);
-        }
+           =>new (name, governmentId);
+       
         public void Update(string name, int governmentId)
         {
             Name = name;

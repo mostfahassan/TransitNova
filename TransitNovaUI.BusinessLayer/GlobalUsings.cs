@@ -4,7 +4,6 @@ global using TransitNovaUI.BusinessLayer.DTOs.Admin;
 global using TransitNovaUI.BusinessLayer.DTOs.Bundle;
 global using TransitNovaUI.BusinessLayer.DTOs.BundleSubscription;
 global using TransitNovaUI.BusinessLayer.DTOs.Carrier;
-global using TransitNovaUI.BusinessLayer.DTOs.CarrierCompany;
 global using TransitNovaUI.BusinessLayer.DTOs.City;
 global using TransitNovaUI.BusinessLayer.DTOs.Country;
 global using TransitNovaUI.BusinessLayer.DTOs.OperationManager;

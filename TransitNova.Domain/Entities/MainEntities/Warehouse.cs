@@ -40,34 +40,13 @@ namespace TransitNova.Domain.Entities.MainEntities
             CurrentState = true;
         }
 
-        private static void Validate(string name, decimal capacity, decimal currentUsage, int? operatingHours, string address)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new DomainArgumentException(nameof(name), "Warehouse name is required.", "WAREHOUSE_NAME_REQUIRED", "Warehouse");
-
-            if (string.IsNullOrWhiteSpace(address))
-                throw new DomainArgumentException(nameof(address), "Warehouse address is required.", "WAREHOUSE_ADDRESS_REQUIRED", "Warehouse");
-
-            if (capacity <= 0)
-                throw new DomainArgumentOutOfRangeException(nameof(capacity), "Warehouse capacity must be greater than zero.", "WAREHOUSE_CAPACITY_INVALID", "Warehouse");
-
-            if (currentUsage < 0)
-                throw new DomainArgumentOutOfRangeException(nameof(currentUsage), "Warehouse current usage cannot be negative.", "WAREHOUSE_USAGE_INVALID", "Warehouse");
-
-            if (currentUsage > capacity)
-                throw new DomainOperationException("Warehouse current usage cannot exceed capacity.", "WAREHOUSE_USAGE_EXCEEDS_CAPACITY", "Warehouse");
-
-            if (operatingHours.HasValue && operatingHours.Value <= 0)
-                throw new DomainArgumentOutOfRangeException(nameof(operatingHours), "Warehouse operating hours must be greater than zero.", "WAREHOUSE_OPERATING_HOURS_INVALID", "Warehouse");
-        }
-
+       
         public static Warehouse Create(string name, WarehouseType type, decimal capacity, decimal currentUsage, int operatingHours, string address, Guid createdBy)
-            => new Warehouse(name, type, capacity, currentUsage, operatingHours, address, createdBy);
+            => new (name, type, capacity, currentUsage, operatingHours, address, createdBy);
 
         public void Update(string name, WarehouseType type ,decimal capacity, decimal currentUsage, int? operatingHours, string address, Guid updatedBy)
         {
             Validate(name, capacity, currentUsage, operatingHours, address);
-
             Name = name.Trim();
             Type = type;
             Capacity = capacity;
@@ -108,6 +87,28 @@ namespace TransitNova.Domain.Entities.MainEntities
             _zonesServed.AddRange(distinctZones);
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = updatedBy.ToString();
+        }
+
+        // Validations
+        private static void Validate(string name, decimal capacity, decimal currentUsage, int? operatingHours, string address)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new DomainArgumentException(nameof(name), "Warehouse name is required.", "WAREHOUSE_NAME_REQUIRED", "Warehouse");
+
+            if (string.IsNullOrWhiteSpace(address))
+                throw new DomainArgumentException(nameof(address), "Warehouse address is required.", "WAREHOUSE_ADDRESS_REQUIRED", "Warehouse");
+
+            if (capacity <= 0)
+                throw new DomainArgumentOutOfRangeException(nameof(capacity), "Warehouse capacity must be greater than zero.", "WAREHOUSE_CAPACITY_INVALID", "Warehouse");
+
+            if (currentUsage < 0)
+                throw new DomainArgumentOutOfRangeException(nameof(currentUsage), "Warehouse current usage cannot be negative.", "WAREHOUSE_USAGE_INVALID", "Warehouse");
+
+            if (currentUsage > capacity)
+                throw new DomainOperationException("Warehouse current usage cannot exceed capacity.", "WAREHOUSE_USAGE_EXCEEDS_CAPACITY", "Warehouse");
+
+            if (operatingHours.HasValue && operatingHours.Value <= 0)
+                throw new DomainArgumentOutOfRangeException(nameof(operatingHours), "Warehouse operating hours must be greater than zero.", "WAREHOUSE_OPERATING_HOURS_INVALID", "Warehouse");
         }
 
     }

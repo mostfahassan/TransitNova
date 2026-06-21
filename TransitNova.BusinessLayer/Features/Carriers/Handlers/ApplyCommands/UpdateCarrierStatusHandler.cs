@@ -1,11 +1,11 @@
 
 using TransitNova.BusinessLayer.Common.CQRS;
 using Microsoft.Extensions.Logging;
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Features.Carriers.Commands;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
+using TransitNova.Domain.Contracts.Caching;
 namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands
 {
     public sealed class UpdateCarrierStatusCommandHandler(

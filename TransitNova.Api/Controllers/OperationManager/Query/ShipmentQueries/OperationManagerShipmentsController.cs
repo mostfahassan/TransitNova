@@ -9,7 +9,7 @@ using TransitNova.BusinessLayer.Features.Shipments.Commands;
 using TransitNova.BusinessLayer.Features.Shipments.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
-namespace TransitNova.Api.Controllers.OperationManager.Shipments
+namespace TransitNova.Api.Controllers.OperationManager.Query.ShipmentQueries
 {
     [Authorize(Roles = Role.OperationManagerOrAdmin)]
     [ApiController]

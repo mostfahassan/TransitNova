@@ -12,7 +12,7 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Commands.CommandsValidators
         public UpdateBundleCommandValidator(
             IValidator<UpdateBundleDto> dtoValidator,
             IOperationManagerRulesRepository operationManagerRepository,
-            IGenericRepository<Bundle, int> repository)
+            IGenericRepository<Bundle, Guid> repository)
         {
             RuleFor(x => x.Dto)
                 .NotNull()

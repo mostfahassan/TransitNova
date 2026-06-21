@@ -32,7 +32,7 @@ namespace TransitNova.InfraStructure.Repository.BundleSubscriptions
                 .FirstOrDefaultAsync(ct);
         }
 
-        public async Task<UserProfileDto?> GetSubscribedUser(Guid userId, int bundleId, CancellationToken ct)
+        public async Task<UserProfileDto?> GetSubscribedUser(Guid userId, Guid bundleId, CancellationToken ct)
         {
             return await context.UserBundleSubscriptions
                 .AsNoTracking()
@@ -42,7 +42,7 @@ namespace TransitNova.InfraStructure.Repository.BundleSubscriptions
                 .Select(UserProfileProjection)
                 .FirstOrDefaultAsync(ct);
         }
-        public async Task<IEnumerable<UserProfileDto>> GetSubscribedUsers(int bundleId, CancellationToken ct)
+        public async Task<IEnumerable<UserProfileDto>> GetSubscribedUsers(Guid bundleId, CancellationToken ct)
         {
             return await context.UserBundleSubscriptions
                 .AsNoTracking()

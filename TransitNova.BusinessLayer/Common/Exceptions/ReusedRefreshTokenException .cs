@@ -11,5 +11,10 @@ namespace TransitNova.BusinessLayer.Common.Exceptions
             public RevokingRefreshTokenException()
                 : base("Refresh token revoking failed") { }  
         }
+        public sealed class IdempotentConflicExceptionException : Exception
+        {
+            public IdempotentConflicExceptionException()
+                : base("Request already processed") { }  
+        }
     }
 }

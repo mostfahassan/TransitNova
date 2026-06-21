@@ -2,24 +2,12 @@ using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Users;
 namespace TransitNova.Domain.Entities.MainEntities
 {
-    public class ReceiverProfile : BaseInfo
+    public class ReceiverProfile : BaseInfo<Guid>
     {
         public virtual ICollection<Shipment> ReceivedShipments { get; set; } = new List<Shipment>();
         public UserProfile Sender { get; set; } = null!;
         public Guid SenderId { get; private set; }
-        public void Create_Receiver(string firstName, string lastName, string email, string phone, string address, int cityId, Guid senderId)
-        {
-            FirstName = firstName;
-            LastName = lastName;
-            Email = email;
-            PhoneNumber = phone;
-            Address = address;
-            UserType = UserType.Receiver;
-            CreatedAt = DateTime.UtcNow;
-            CityId = cityId;
-            SenderId = senderId;
-            CurrentState = true;
-        }
+        
         private ReceiverProfile()
         {
 

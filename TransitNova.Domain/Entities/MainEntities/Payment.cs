@@ -1,9 +1,10 @@
 ﻿
+using TransitNova.Domain.Contracts.DomainEvents;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Payment;
 namespace TransitNova.Domain.Entities.MainEntities
 {
-    public class Payment : BaseEntity<Guid>
+    public class Payment :AggregateRoot<Guid>
     {
         public decimal Amount { get; private set; }
         public decimal Commission { get; private set; }

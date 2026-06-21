@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using TransitNova.BusinessLayer.Interfaces;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.Domain;
 using TransitNova.InfraStructure.Context;
 
 namespace TransitNova.InfraStructure.Repository

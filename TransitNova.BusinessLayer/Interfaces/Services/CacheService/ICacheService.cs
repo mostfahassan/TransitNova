@@ -3,9 +3,9 @@ namespace TransitNova.BusinessLayer.Interfaces.Services.CacheService
 {
     public interface ICacheService
     {
-        Task<T?> GetAsync<T>(string key);
+        Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken);
 
-        Task SetAsync<T>(string key, T value, TimeSpan expiration);
+        Task SetAsync<T>(string key, T value, TimeSpan expiration,CancellationToken cancellationToken);
 
         Task RemoveAsync(string key);
     }

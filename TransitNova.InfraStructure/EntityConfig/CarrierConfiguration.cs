@@ -42,7 +42,6 @@ namespace TransitNova.InfraStructure.EntityConfig
             carrier.HasIndex(c => c.Code).IsUnique();
             carrier.HasIndex(c => c.AppUserId).IsUnique();
             carrier.HasIndex(c => c.Status);
-            carrier.HasIndex(c => c.CompanyId);
             carrier.HasIndex(c => new { c.Status, c.AverageRating });
             carrier.HasIndex(c => c.Email);
             carrier.HasIndex(c => c.AverageRating);
@@ -50,7 +49,6 @@ namespace TransitNova.InfraStructure.EntityConfig
             carrier.HasIndex(c => c.CityId);
             carrier.HasIndex(c => c.UpdatedAt);
 
-            carrier.HasIndex(c => new { c.Status, c.CompanyId });
 
             carrier.HasOne(c => c.City)
                 .WithMany()

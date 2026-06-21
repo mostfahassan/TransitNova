@@ -2,7 +2,7 @@
 using TransitNova.Domain.Enums.Users;
 namespace TransitNova.Domain.Entities.Common
 {
-    public class BaseInfo : BaseEntity<Guid>
+    public class BaseInfo<TKey> : AggregateRoot<TKey>
     {
         public string FirstName { get;protected set; } = string.Empty;
         public string LastName { get; protected set; } = string.Empty;
@@ -15,4 +15,8 @@ namespace TransitNova.Domain.Entities.Common
         public City City { get; set; } = null!;
 
     }
+
+ 
+
+
 }

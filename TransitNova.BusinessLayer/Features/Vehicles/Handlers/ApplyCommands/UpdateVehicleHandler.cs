@@ -16,6 +16,8 @@ namespace TransitNova.BusinessLayer.Features.Vehicles.Handlers.ApplyCommands
         public async Task<BaseResult> Handle(UpdateVehicleCommand request, CancellationToken ct)
         {
             var vehicle = await vehicleRepository.GetByIdAsync<Vehicle?>(request.Id, ct);
+            if (vehicle == null) return BaseResult.NotFound(Errors.NotFound($"Vehicle With Id => {request.Id} Not Found"));
+
             var plateNumber = request.Dto.PlateNumber.Trim();
 
             vehicle!.UpdateVehicle(

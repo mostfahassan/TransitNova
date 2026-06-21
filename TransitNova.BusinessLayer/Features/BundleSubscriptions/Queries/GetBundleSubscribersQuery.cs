@@ -4,6 +4,6 @@ using TransitNova.BusinessLayer.DTOs.UserProfile;
 
 namespace TransitNova.BusinessLayer.Features.BundleSubscriptions.Queries
 {
-    public sealed record GetBundleSubscribersQuery(int BundleId)
+    public sealed record GetBundleSubscribersQuery(Guid BundleId)
         : IQuery<Result<List<UserProfileDto>>>;
 }

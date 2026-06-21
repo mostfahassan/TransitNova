@@ -1,4 +1,6 @@
-﻿namespace TransitNova.Domain.Entities.Common
+﻿using TransitNova.Domain.Contracts.DomainEvents;
+
+namespace TransitNova.Domain.Entities.Common
 {
     public class BaseEntity<Tkey>
     {
@@ -8,5 +10,7 @@
         public DateTime? UpdatedAt { get; set; }
         public string? UpdatedBy { get; set; }
         public bool CurrentState { get; set; }
+
+
     }
 }

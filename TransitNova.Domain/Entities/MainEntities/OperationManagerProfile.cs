@@ -1,8 +1,9 @@
-﻿using TransitNova.Domain.Entities.Common;
+﻿
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Users;
 namespace TransitNova.Domain.Entities.MainEntities
 {
-    public class OperationManagerProfile : BaseInfo
+    public class OperationManagerProfile : BaseInfo<Guid>
     {
         private readonly List<Carrier> _handledCarriers = new();
         private readonly List<Shipment> _handledShipments = new();
@@ -25,7 +26,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         }
         public static OperationManagerProfile Create(Guid id, string firstName, string lastName, string email, string phoneNumber, string address, int cityId)
         {
-            return new OperationManagerProfile(id, firstName, lastName, email, phoneNumber, address, cityId);
+            return new (id, firstName, lastName, email, phoneNumber, address, cityId);
 
         }
 

@@ -8,7 +8,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingQueries
 {
     public sealed class GetBundleListHandler(
-        IGenericRepository<Bundle, int> repository,
+        IGenericRepository<Bundle, Guid> repository,
         ILogger<GetBundleListHandler> logger)
         : IQueryHandler<GetBundleListQuery, Result<List<RetrieveBundleDto>>>
     {
@@ -16,7 +16,7 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingQueries
         {
             var list = await repository.GetListAsync<RetrieveBundleDto>(ct);
 
-            if (!list.Any())
+            if (list.Count == 0)
             {
                 logger.LogInformation("No bundles found.");
                 var emptyResult = Result<List<RetrieveBundleDto>>.Success([]);

@@ -1,24 +1,23 @@
 ﻿
 using Microsoft.Extensions.Caching.Memory;
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
+using TransitNova.Domain.Contracts.Caching;
 
 namespace TransitNova.InfraStructure.Common.CacheService
 {
     internal class MemoryCacheService(IMemoryCache cache) : ICacheService
     {
-        public Task<T?> GetAsync<T>(string key)
+        public Task<T?> GetAsync<T>(string key,CancellationToken cancellationToken)
         {
             cache.TryGetValue(key, out T? value);
             return Task.FromResult(value);
         }
 
-        public Task SetAsync<T>(string key, T value, TimeSpan expiration)
+        public Task SetAsync<T>(string key, T value, TimeSpan expiration, CancellationToken cancellationToken)
         {
             var size = key switch
             {
                 string cacheKey when cacheKey == CacheKeys.BundleList() => 5,
-                string cacheKey when cacheKey == CacheKeys.CarrierCompanyList() => 5,
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.CarriersPrefix}:trips:carrier-id:", StringComparison.Ordinal) => 5,
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.CitiesPrefix}:government-id:", StringComparison.Ordinal) => 5,
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.OperationManagersPrefix}:shipment-histories:", StringComparison.Ordinal) => 5,

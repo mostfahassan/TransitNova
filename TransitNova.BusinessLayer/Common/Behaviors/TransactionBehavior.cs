@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
@@ -15,7 +16,7 @@ namespace TransitNova.BusinessLayer.Common.Behaviors
             RequestHandlerDelegate<TResponse> next,
             CancellationToken ct)
         {
-            if (request is not ITransactional)
+            if (request is not ITransactional && (request is not ICommand || request is not ICommand<TResponse>))
                 return await next(ct);
 
             await unitOfWork.BeginTransactionAsync(ct);

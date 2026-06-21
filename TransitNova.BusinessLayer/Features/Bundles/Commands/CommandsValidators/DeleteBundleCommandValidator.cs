@@ -6,7 +6,7 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Commands.CommandsValidators
 {
     public sealed class DeleteBundleCommandValidator : AbstractValidator<DeleteBundleCommand>
     {
-        public DeleteBundleCommandValidator(IGenericRepository<Bundle, int> repository)
+        public DeleteBundleCommandValidator(IGenericRepository<Bundle, Guid> repository)
         {
             RuleFor(x => x.Id)
                 .MustAsync(repository.ExistsAsync)

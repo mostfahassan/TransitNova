@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands;
@@ -9,7 +8,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.ShipmentAssignmentServices;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
-
+using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.SystemLogs;
 
@@ -22,7 +21,7 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
         ISystemLogCommands systemLogCommands,
         ICacheService cacheService,
         IUnitOfWork unitOfWork)
-        : ICommandHandler<AssignShipmentDeliveryToCarrierCommand, BaseResult>, ITransactional
+        : ICommandHandler<AssignShipmentDeliveryToCarrierCommand, BaseResult>
     {
         public async Task<BaseResult> Handle(AssignShipmentDeliveryToCarrierCommand request, CancellationToken cancellationToken)
         {

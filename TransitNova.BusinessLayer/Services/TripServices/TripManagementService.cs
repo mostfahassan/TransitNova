@@ -24,7 +24,7 @@ namespace TransitNova.BusinessLayer.Services.TripServices
         {  
             
             // ========= 1 - Check if the carrier is available and can be assigned to a delivery trip
-            var carrier = await carrierRep.GetCarrierAsync(c => c.Id == carrierId, cancellationToken);
+            var carrier = await carrierRep.GetCarrierForTripAsync(c => c.Id == carrierId, cancellationToken);
             if (carrier == null )
             {
                 logger.LogError("carrier with {UserId} not found or not available.",carrierId);
@@ -66,12 +66,12 @@ namespace TransitNova.BusinessLayer.Services.TripServices
 
             // === Plan the trip, update the status of the shipments to OutForPickup, and assign the carrier to the trip
             var trip = Trip.Plan(carrier.Id, warehouseId, TripType.Delivery, shipmentList);
-            trip.StartDelivery(operationManagerProfileId);
+            trip.StartTrip(operationManagerProfileId,TripType.Delivery);
             foreach (var s in shipmentList)
-                s.ChangeStatus(ShipmentStatuses.OutForDelivery, carrier.Id);
+                s.AssignedAsDeliveryTrip(trip.Id, carrier.Id);
 
             //=== Update the carrier's status to AssignedToTrip and assign it to the trip with the number of shipments it will be picking up
-            carrier.AssignToTrip(operationManagerProfileId);
+            carrier.AssignToTrip(operationManagerProfileId,trip.Id);
 
             // === Save the changes to the database and commit the transaction
             await tripRepository.StartNewTrip(trip, cancellationToken);
@@ -83,7 +83,7 @@ namespace TransitNova.BusinessLayer.Services.TripServices
         { 
             
             // ========= 1 - Check if the carrier is available and can be assigned to a delivery trip
-            var carrier = await carrierRep.GetCarrierAsync(c => c.Id == carrierId, cancellationToken);
+            var carrier = await carrierRep.GetCarrierForTripAsync(c => c.Id == carrierId, cancellationToken);
             if (carrier == null)
             {
                 logger.LogError("carrier with {UserId} not found or not available.", carrierId);
@@ -121,15 +121,14 @@ namespace TransitNova.BusinessLayer.Services.TripServices
             //=== Get Operation Manager Id For Audit ========
             var operationManagerProfileId = await operationManagerRepository.GetUserIdAsync(operationManagerId, cancellationToken);
 
-
             // ===== 5- Plan the trip, update the status of the shipments to OutForPickup, and assign the carrier to the trip
             var trip = Trip.Plan(carrier.Id, warehouseId, TripType.Pickup, shipmentList);
-            trip.StartPickup(operationManagerProfileId);
+            trip.StartTrip(operationManagerProfileId, TripType.Pickup);
             foreach (var s in shipmentList)
-                s.ChangeStatus(ShipmentStatuses.OutForPickup, carrier.Id);
+                s.AssignedAsPickUpTrip(trip.Id,carrier.Id);
 
             //===== 6- Update the carrier's status to AssignedToTrip and assign it to the trip with the number of shipments it will be picking up
-            carrier.AssignToTrip(operationManagerId);
+            carrier.AssignToTrip(operationManagerProfileId, trip.Id);
 
             // ===== 7- Save the changes to the database and commit the transaction
             await tripRepository.StartNewTrip(trip, cancellationToken);

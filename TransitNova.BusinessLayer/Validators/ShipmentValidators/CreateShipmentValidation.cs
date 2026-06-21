@@ -39,8 +39,8 @@ namespace TransitNova.BusinessLayer.Validators.ShipmentValidators
                 .When(x => !string.IsNullOrWhiteSpace(x.DeliveryAddress) && !string.IsNullOrWhiteSpace(x.PickupAddress));
 
             RuleFor(x => x.PackageBundleId)
-                .Must(id => !id.HasValue || id.Value > 0)
-                .WithMessage("Package bundle ID must be a positive value when provided.");
+                .NotEmpty()
+                .WithMessage("Package bundle Cant Be Empty.");
 
             RuleFor(x => x.Receiver)
                 .NotNull()

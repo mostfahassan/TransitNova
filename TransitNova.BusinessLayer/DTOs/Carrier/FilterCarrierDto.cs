@@ -8,7 +8,6 @@ namespace TransitNova.BusinessLayer.DTOs.Carrier
         public decimal? MaxRating { get; set; }   
         public int? MinYearsOfExperience { get; set; }
         public int? MaxYearsOfExperience { get; set; }
-        public Guid? CompanyId { get; set; }
         public string? City { get; set; }
         public int? CityId { get; set; }
         public string? SearchTerm { get; set; }

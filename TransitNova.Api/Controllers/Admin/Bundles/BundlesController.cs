@@ -8,7 +8,7 @@ using TransitNova.BusinessLayer.Features.Bundles.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
 
-namespace TransitNova.Api.Controllers.Bundle.Admin
+namespace TransitNova.Api.Controllers.Admin.Bundles
 {
     [Authorize(Roles = Role.Admin)]
     [ApiController]
@@ -67,7 +67,7 @@ namespace TransitNova.Api.Controllers.Bundle.Admin
 
         [Authorize(Policy = AdminPermissions.DeleteBundle)]
         [EnableRateLimiting("CommandsLimiter")]
-        [HttpDelete("{bundleId:int}")]
+        [HttpDelete("{bundleId:guid}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -77,7 +77,7 @@ namespace TransitNova.Api.Controllers.Bundle.Admin
         [EndpointName("Delete Bundle")]
         [EndpointSummary("Delete a bundle")]
         [EndpointDescription("Deletes an existing bundle from the system.")]
-        public async Task<IActionResult> Delete([FromHeader(Name = "X-Idempotency-Key")] string requestId, int bundleId, CancellationToken ct)
+        public async Task<IActionResult> Delete([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid bundleId, CancellationToken ct)
         {
             if (!Guid.TryParse(requestId, out Guid parsedRequestId))
                 return BadRequest();
@@ -105,7 +105,7 @@ namespace TransitNova.Api.Controllers.Bundle.Admin
 
         [Authorize(Policy = AdminPermissions.ViewBundleDetails)]
         [EnableRateLimiting("DefaultRateLimiter")]
-        [HttpGet("{bundleId:int}")]
+        [HttpGet("{bundleId:guid}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -115,7 +115,7 @@ namespace TransitNova.Api.Controllers.Bundle.Admin
         [EndpointName("Get Bundle")]
         [EndpointSummary("Get bundle details")]
         [EndpointDescription("Returns the details of a specific bundle.")]
-        public async Task<IActionResult> Bundle(int bundleId, CancellationToken ct)
+        public async Task<IActionResult> Bundle(Guid bundleId, CancellationToken ct)
         {
             var response = await mediator.Send(new GetBundleByIdQuery(bundleId), ct);
             return response.ToActionResult();

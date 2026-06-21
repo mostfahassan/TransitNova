@@ -9,16 +9,22 @@ namespace TransitNova.Domain.Entities.MainEntities
         public string Name { get; private set; } = string.Empty;
         public List<City> Cities { get; set; } = new List<City>();
 
-        public static Government Create(string name, int countryId)
+        private Government()
         {
-            return new Government
-            {
-                Name = name,
-                CountryId = countryId,
-                CurrentState = true,
-                CreatedAt = DateTime.UtcNow
-            };
+            
+
         }
+
+        private Government(string name, int countryId)
+        {
+            Name = name;
+            CountryId = countryId;
+            CurrentState = true;
+            CreatedAt = DateTime.UtcNow;
+        }
+        public static Government Create(string name, int countryId)
+             => new (name, countryId);
+
 
         public void Update(string name, int countryId)
         {

@@ -34,7 +34,7 @@ namespace TransitNova.Api.Controllers.Admin.Subscriptions
 
         [Authorize(Policy = AdminPermissions.ViewBundleDetails)]
         [EnableRateLimiting("DefaultRateLimiter")]
-        [HttpGet("bundles/{bundleId:int}/subscribers")]
+        [HttpGet("bundles/{bundleId:guid}/subscribers")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -43,7 +43,7 @@ namespace TransitNova.Api.Controllers.Admin.Subscriptions
         [EndpointName("Get Bundle Subscribers")]
         [EndpointSummary("Get bundle subscribers")]
         [EndpointDescription("Returns all active users subscribed to a specific bundle.")]
-        public async Task<IActionResult> BundleSubscribers(int bundleId, CancellationToken ct)
+        public async Task<IActionResult> BundleSubscribers(Guid bundleId, CancellationToken ct)
         {
             var response = await mediator.Send(new GetBundleSubscribersQuery(bundleId), ct);
             return response.ToActionResult();

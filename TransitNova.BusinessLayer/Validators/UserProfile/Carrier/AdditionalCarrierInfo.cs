@@ -18,10 +18,7 @@ namespace TransitNova.BusinessLayer.Validators.UserProfile.Carrier
                 .GreaterThan(0)
                 .WithMessage("Maximum daily shipments must be greater than zero.");
 
-            RuleFor(x => x.CompanyId)
-                .NotEmpty()
-                .WithMessage("Company ID is required.");
-
+       
             RuleFor(x => x.DefaultCostPerKg)
                 .GreaterThanOrEqualTo(0)
                 .WithMessage("Default cost per kilogram must be zero or a positive value.");
@@ -36,6 +33,7 @@ namespace TransitNova.BusinessLayer.Validators.UserProfile.Carrier
             RuleFor(x => x.ContractStartDate)
                 .NotEmpty()
                 .GreaterThan(DateTime.UtcNow)
+                .LessThan(DateTime.UtcNow.AddMonths(1))
                 .WithMessage("Start date must be in the future.");
         }
     }

@@ -30,7 +30,7 @@ namespace TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.H
          ITokenProvider tokenGenerator,
          IUserStrategyFactory factory,
          ILogger<RegistrationHandler> logger
-        ) : ICommandHandler<RegistrationCommand, Result<AuthResponseDto>>, ITransactional
+        ) : ICommandHandler<RegistrationCommand, Result<AuthResponseDto>>
     {
 
         public async Task<Result<AuthResponseDto>> Handle(RegistrationCommand request, CancellationToken cancellationToken)

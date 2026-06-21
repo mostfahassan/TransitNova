@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using TransitNova.BusinessLayer.Common.Interfaces;
+using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Interfaces.Repositories.Idempotent;
+using static TransitNova.BusinessLayer.Common.Exceptions.ReusedRefreshTokenException;
 
 namespace TransitNova.BusinessLayer.Common.Behaviors
 {
@@ -12,10 +14,11 @@ namespace TransitNova.BusinessLayer.Common.Behaviors
         {
             var RequestKeyExists = await idempotent.RequestExistsAsync(request.RequestId, cancellationToken);
             if (RequestKeyExists)
-                return default!;
+                throw new IdempotentConflicExceptionException();
+
             await idempotent.CreateRequestAsync(request.RequestId, typeof(TRequest).Name, cancellationToken);
 
-            var response = await next();
+            var response = await next(cancellationToken);
 
             return response;
         }

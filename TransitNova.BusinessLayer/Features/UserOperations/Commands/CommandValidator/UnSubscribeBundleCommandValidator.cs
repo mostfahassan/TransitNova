@@ -7,7 +7,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Commands.CommandVali
 {
     public sealed class UnSubscribeBundleCommandValidator : AbstractValidator<UnSubscribeBundleCommand>
     {
-        public UnSubscribeBundleCommandValidator(IUserQueryRepository userRepository)
+        public UnSubscribeBundleCommandValidator()
         {
             RuleFor(x => x.UserId)
                   .NotEmpty()
@@ -15,8 +15,8 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Commands.CommandVali
 
 
             RuleFor(x => x.BundleId)
-                .GreaterThan(0)
-                .WithMessage("Bundle ID must be greater than 0.");
+             .NotEmpty()
+             .WithMessage($"{ErrorCode.REQUIRED_FIELD}");
         }
     }
 }

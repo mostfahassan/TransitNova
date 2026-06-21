@@ -1,8 +1,9 @@
-﻿using TransitNova.Domain.Entities.Common;
+﻿using TransitNova.Domain.Contracts.DomainEvents;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Users;
 namespace TransitNova.Domain.Entities.MainEntities
 {
-    public class AdminProfile : BaseInfo
+    public class AdminProfile : BaseInfo<Guid>
     {
         public Guid AppUserId { get; private set; }
         private AdminProfile()
@@ -20,7 +21,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             PhoneNumber = phone;
             Address = address;
             AppUserId = Id;
-            UserType = UserType.OperationManager;
+            UserType = UserType.Admin;
             CreatedAt = DateTime.UtcNow;
             CurrentState = true;
             CityId = cityId;

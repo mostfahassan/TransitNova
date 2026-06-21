@@ -4,6 +4,6 @@ namespace TransitNova.BusinessLayer.DTOs.Bundle
 {
     public class UpdateBundleDto : CommonBundleData
     {
-        public int BundleId { get; set; }
+        public Guid BundleId { get; set; }
     }
 }

@@ -3,7 +3,7 @@ namespace TransitNova.BusinessLayer.DTOs.BundleSubscription
     public class BundleSubscriptionDetailsDto
     {
         public Guid Id { get; set; }
-        public int BundleId { get; set; }
+        public Guid BundleId { get; set; }
         public string BundleName { get; set; } = string.Empty;
         public Guid UserId { get; set; }
         public string FullName { get; set; } = string.Empty;

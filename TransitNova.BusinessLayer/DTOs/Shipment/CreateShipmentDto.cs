@@ -13,6 +13,6 @@ namespace TransitNova.BusinessLayer.DTOs.Shipment
         enShipmentType ShipmentDeliveryType,
         string DeliveryAddress,
         string PickupAddress,
-        int? PackageBundleId
+        Guid? PackageBundleId
     );
 }

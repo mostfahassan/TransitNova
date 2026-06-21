@@ -11,7 +11,7 @@ namespace TransitNova.BusinessLayer.Common.Mappings.UserProfileMapping
     {
         public UserProfileMappingProfile()
         {
-            CreateMap<BaseInfo, CommonRetrieveData>()
+            CreateMap<BaseInfo<Guid>, CommonRetrieveData>()
                     .ForMember(dest => dest.FullName,
                         opt => opt.MapFrom(src => src.FirstName + " " + src.LastName))
                     .ForMember(dest => dest.CityName,
@@ -29,31 +29,31 @@ namespace TransitNova.BusinessLayer.Common.Mappings.UserProfileMapping
                             ? src.City.Government.Country.Name
                             : string.Empty));
 
-            CreateMap<BaseInfo, UserSummaryDto>()
+            CreateMap<BaseInfo<Guid>, UserSummaryDto>()
                 .ForMember(dest => dest.FullName,
                     opt => opt.MapFrom(src => src.FirstName + " " + src.LastName));
 
             // Summary CreateMap<UserProfile, UserSummaryDto>();
 
             CreateMap<UserProfile, UserSummaryDto>()
-                .IncludeBase<BaseInfo, UserSummaryDto>();
+                .IncludeBase<BaseInfo<Guid>, UserSummaryDto>();
 
             CreateMap<ReceiverProfile, UserSummaryDto>()
-                .IncludeBase<BaseInfo, UserSummaryDto>();
+                .IncludeBase<BaseInfo<Guid>, UserSummaryDto>();
 
             CreateMap<Carrier, UserSummaryDto>()
-                .IncludeBase<BaseInfo, UserSummaryDto>();
+                .IncludeBase<BaseInfo<Guid>, UserSummaryDto>();
 
             CreateMap<OperationManagerProfile, UserSummaryDto>()
-                .IncludeBase<BaseInfo, UserSummaryDto>();
+                .IncludeBase<BaseInfo<Guid>, UserSummaryDto>();
 
             CreateMap<AdminProfile, UserSummaryDto>()
-              .IncludeBase<BaseInfo, UserSummaryDto>();
+              .IncludeBase<BaseInfo<Guid>, UserSummaryDto>();
 
 
 
             CreateMap<UserProfile, UserProfileDto>()
-                .IncludeBase<BaseInfo, CommonRetrieveData>()
+                .IncludeBase<BaseInfo<Guid>, CommonRetrieveData>()
                 .ForMember(dest => dest.TotalShipmentsSent,
                     opt => opt.MapFrom(src => src.SentShipments == null ? 0 : src.SentShipments.Count))
                 .ForMember(dest => dest.BundleName,
@@ -64,7 +64,7 @@ namespace TransitNova.BusinessLayer.Common.Mappings.UserProfileMapping
 
            
             CreateMap<AdminProfile, AdminProfileDto>()
-                .IncludeBase<BaseInfo, CommonRetrieveData>();
+                .IncludeBase<BaseInfo<Guid>, CommonRetrieveData>();
              
         }
     }

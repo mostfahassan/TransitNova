@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using TransitNova.BusinessLayer.DTOs.Bundle;
 using TransitNova.BusinessLayer.DTOs.Carrier;
-using TransitNova.BusinessLayer.DTOs.CarrierCompany;
 using TransitNova.BusinessLayer.DTOs.City;
 using TransitNova.BusinessLayer.DTOs.Country;
 using TransitNova.BusinessLayer.DTOs.Payment;
@@ -14,6 +13,7 @@ using TransitNova.BusinessLayer.DTOs.UserProfile;
 using TransitNova.BusinessLayer.DTOs.UserProfile.Admin;
 using TransitNova.BusinessLayer.DTOs.Vehicle;
 using TransitNova.BusinessLayer.DTOs.ZoneDtos;
+using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.InfraStructure.Context;
 using TransitNova.InfraStructure.ServiceRegistration;
 using Xunit;
@@ -41,7 +41,6 @@ namespace TransitNova.MappingTests
             _ = context.Payments.ProjectTo<PaymentSummaryDto>(configuration).ToQueryString();
             _ = context.Vehicles.ProjectTo<VehicleDto>(configuration).ToQueryString();
             _ = context.Carriers.ProjectTo<CarrierProfileDto>(configuration).ToQueryString();
-            _ = context.CarrierCompanies.ProjectTo<RetrieveCarrierCompany>(configuration).ToQueryString();
             _ = context.UserProfiles.ProjectTo<UserProfileDto>(configuration).ToQueryString();
             _ = context.UserProfiles.ProjectTo<UserSummaryDto>(configuration).ToQueryString();
             _ = context.ReceiverProfiles.ProjectTo<UserSummaryDto>(configuration).ToQueryString();
@@ -67,7 +66,18 @@ namespace TransitNova.MappingTests
                 .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=TransitNovaMappingTests;Trusted_Connection=True;")
                 .Options;
 
-            return new AppDbContext(options);
+            return new MappingTestDbContext(options);
+        }
+
+        private sealed class MappingTestDbContext(DbContextOptions<AppDbContext> options) : AppDbContext(options)
+        {
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                base.OnModelCreating(modelBuilder);
+                modelBuilder.Entity<IdempotentTable>().HasKey(x => x.RequestId);
+                modelBuilder.Entity<Shipment>().Ignore(x => x.PackageBundle);
+                modelBuilder.Entity<Bundle>().Ignore(x => x.Shipments);
+            }
         }
     }
 }

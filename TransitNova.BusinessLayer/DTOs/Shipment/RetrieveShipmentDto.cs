@@ -26,7 +26,7 @@ namespace TransitNova.BusinessLayer.DTOs.Shipment
         public PaymentSummaryDto? Payment { get; set; }
         public List<RetrieveShipmentStatusDto> ShipmentStates { get; set; } = new();
         public enShipmentType ShipmentType { get; set; }
-        public int? PackageBundleId { get; set; }
+        public Guid? PackageBundleId { get; set; }
         public DateTime CreatedAt { get; set; }
         
     }

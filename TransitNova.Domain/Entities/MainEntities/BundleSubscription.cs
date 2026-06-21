@@ -7,7 +7,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         public bool IsActive { get; set; }
         public Guid SubscribedUserId { get;  set; }
         public virtual UserProfile SubscribedUser { get;  set; } = null!;
-        public int BundleId { get;  set; }
+        public Guid BundleId { get;  set; }
         public virtual Bundle Bundle { get;  set; } = null!;
         public DateTime SubscriptionDate { get;  set; }
         public DateTime? EndDate { get;  set; }

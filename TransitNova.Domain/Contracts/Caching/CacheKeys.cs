@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace TransitNova.BusinessLayer.Common.Caching
+namespace TransitNova.Domain.Contracts.Caching
 {
     public static class CacheKeys
     {
@@ -19,10 +19,8 @@ namespace TransitNova.BusinessLayer.Common.Caching
         public const string ZonesPrefix = "zones";
 
         public static string BundleList() => $"{BundlesPrefix}:list";
-        public static string BundleById(int id) => $"{BundlesPrefix}:id:{id}";
+        public static string BundleById(Guid id) => $"{BundlesPrefix}:id:{id}";
 
-        public static string CarrierCompanyList() => $"{CarrierCompaniesPrefix}:list";
-        public static string CarrierCompanyById(Guid id) => $"{CarrierCompaniesPrefix}:id:{id}";
 
         public static string BundleSubscriptionDetails(Guid subscriptionId) => $"{BundlesPrefix}:subscription-id:{subscriptionId}";
 

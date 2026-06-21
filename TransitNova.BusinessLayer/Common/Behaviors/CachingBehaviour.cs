@@ -1,9 +1,9 @@
 ﻿
 using MediatR;
-using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
+using TransitNova.Domain.Contracts.Caching;
 namespace TransitNova.BusinessLayer.Common.Behaviors
 {
     public class CachingBehaviour<TRequest, TResponse>(ICacheService cacheService) : IPipelineBehavior<TRequest, TResponse>
@@ -14,18 +14,19 @@ namespace TransitNova.BusinessLayer.Common.Behaviors
         {
             if (request is  ICachable cachable)
             {
-                var cachedResponse = await cacheService.GetAsync<TResponse>(cachable.CacheKey);
+                var cachedResponse = await cacheService.GetAsync<TResponse>(cachable.CacheKey,cancellationToken);
                 if (cachedResponse is not null)
                     return cachedResponse;
             }
-            var response = await next();
+            var response = await next(cancellationToken);
 
             if (request is ICachable cache)
             {
                 await cacheService.SetAsync(
                     cache.CacheKey,
                     response,
-                    CacheKeys.DefaultExpiration);
+                    CacheKeys.DefaultExpiration,
+                    cancellationToken);
             }
             return response;
         }

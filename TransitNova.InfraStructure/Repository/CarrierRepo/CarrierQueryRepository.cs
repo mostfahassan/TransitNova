@@ -39,8 +39,6 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
             if (filterCriteria.MaxYearsOfExperience.HasValue)
                 query = query.Where(c => c.YearsOfExperience <= filterCriteria.MaxYearsOfExperience.Value);
 
-            if (filterCriteria.CompanyId.HasValue)
-                query = query.Where(c => c.CompanyId == filterCriteria.CompanyId.Value);
 
             if (!string.IsNullOrWhiteSpace(filterCriteria.City))
             {
@@ -183,7 +181,7 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
                 .Select(carrier => carrier.FullName)
                 .FirstOrDefaultAsync(ct);
 
-        public async Task<CarrierStatus?> GetStatusAsync(Guid carrierId, CancellationToken ct = default)
+        public async Task<CarrierStatus> GetStatusAsync(Guid carrierId, CancellationToken ct = default)
         {
             logger.LogTrace("Fetching status for Carrier {UserId}", carrierId);
 
@@ -192,12 +190,11 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
                 .Where(c => c.Id == carrierId)
                 .Select(c => c.Status)
                 .FirstOrDefaultAsync(ct);
-
+          
             return status;
         }
 
-      
-   
-        
+        public async Task<Carrier?> GetCarrierForTripAsync(Expression<Func<Carrier, bool>> predicate, CancellationToken cancellationToken = default)
+          => await context.Carriers.Where(predicate).Include(c =>c.Trips).FirstOrDefaultAsync(cancellationToken);
     }
 }

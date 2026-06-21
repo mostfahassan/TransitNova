@@ -5,7 +5,7 @@ namespace TransitNovaUI.BusinessLayer.DTOs.BundleSubscription;
 public sealed class UiBundleSubscriptionDetailsDto
 {
     public Guid Id { get; set; }
-    public int BundleId { get; set; }
+    public Guid BundleId { get; set; }
     public string BundleName { get; set; } = string.Empty;
     public Guid UserId { get; set; }
     public string FullName { get; set; } = string.Empty;
