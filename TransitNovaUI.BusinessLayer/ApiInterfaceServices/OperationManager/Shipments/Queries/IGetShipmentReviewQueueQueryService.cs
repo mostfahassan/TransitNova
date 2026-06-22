@@ -3,8 +3,7 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Ship
 public interface IGetShipmentReviewQueueQueryService
 {
     const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/operation-manager/shipments/review-queue";
+    const string Route = "api/v{version:apiVersion}/operation-managers/shipments/review-queue";
 
     Task<ApiResponse<UiPagedResult<UiRetrieveShipmentDto>>> GetShipmentReviewQueueAsync(UiShipmentFilterDto filter, CancellationToken cancellationToken = default);
 }
-

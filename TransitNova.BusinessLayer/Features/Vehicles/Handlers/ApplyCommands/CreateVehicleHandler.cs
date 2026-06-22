@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
@@ -14,13 +15,13 @@ namespace TransitNova.BusinessLayer.Features.Vehicles.Handlers.ApplyCommands
     public sealed class CreateVehicleHandler(
         IVehicleQueryRepository vehicleRepository,
         IUnitOfWork unitOfWork,
+        IMapper mapper,
         ILogger<CreateVehicleHandler> logger)
         : ICommandHandler<CreateVehicleCommand, Result<VehicleDto>>
     {
         public async Task<Result<VehicleDto>> Handle(CreateVehicleCommand request, CancellationToken ct)
         {
-            var plateNumber = request.Dto.PlateNumber.Trim();
-            var vehicle = Vehicle.Create(request.Dto.VehicleType, plateNumber, request.Dto.CapacityWeight, request.Dto.CapacityVolume, request.Dto.IsRefrigerated, request.Dto.CarrierId);
+            var vehicle = mapper.Map<Vehicle>(request.Dto);
 
             await vehicleRepository.AddAsync(vehicle, ct);
             

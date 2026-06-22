@@ -3,7 +3,6 @@ namespace TransitNova.BusinessLayer.DTOs.Shipment
 {
     public record UpdateShipmentDto
      (
-      Guid Id,
       Guid? ReceiverId,
       string? DeliveryAddress,
       string? PickupAddress,

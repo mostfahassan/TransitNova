@@ -2,7 +2,7 @@
 using TransitNova.Domain.Enums.Carrier;
 namespace TransitNova.Domain.Contracts.DomainEvents.Events.CarrierEvents
 {
-    public sealed record CarrierCreatedDomainEvent(Guid Id, string Code) : IDomainEvent;
+    public sealed record CarrierCreatedDomainEvent(Guid Id,string FullName,string Phone ,string Code) : IDomainEvent;
     public sealed record CarrierAdditionalInfoAddedDomainEvent(Guid Id, string LicenseNumber, int MaxDailyShipments) : IDomainEvent;
     public sealed record CarrierProfileUpdatedDomainEvent(Guid Id) : IDomainEvent;
     public sealed record CarrierAssignedToPickupDomainEvent(Guid Id, int AssignedShipmentsCount, CarrierStatus Status) : IDomainEvent;

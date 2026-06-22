@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Token;
+using TransitNova.BusinessLayer.Interfaces.Repositories.TokenRepository;
 using TransitNova.BusinessLayer.Interfaces.Token;
 using TransitNova.InfraStructure.Repository.TokenRepository;
 using TransitNova.InfraStructure.Token;

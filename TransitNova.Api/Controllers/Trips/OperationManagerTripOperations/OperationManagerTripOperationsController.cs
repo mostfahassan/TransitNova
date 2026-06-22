@@ -10,7 +10,7 @@ namespace TransitNova.Api.Controllers.Trips.OperationManagerTripOperations
     [Authorize(Roles = Role.OperationManagerOrAdmin)]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/operation-manager/trips")]
+    [Route("api/v{version:apiVersion}/operation-managers/trips")]
     [Tags("Operation Manager Trips")]
     public class OperationManagerTripOperationsController(IMediator mediator) : ControllerBase
     {

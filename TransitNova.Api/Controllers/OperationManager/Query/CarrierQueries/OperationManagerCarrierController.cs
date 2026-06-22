@@ -13,7 +13,7 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.CarrierQueries
     [Authorize(Roles = Role.OperationManagerOrAdmin)]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/operation-manager/carriers")]
+    [Route("api/v{version:apiVersion}/operation-managers/carriers")]
     [Tags("Operation Manager Carriers")]
     public class OperationManagerCarrierController(IMediator mediator,IAuthorizationService authorizationService) : ControllerBase
     {

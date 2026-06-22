@@ -1,6 +1,5 @@
-﻿
-using TransitNova.Domain.Enums.Shipment;
-namespace TransitNova.BusinessLayer.Interfaces.Repositories.Admin
+﻿using TransitNova.Domain.Enums.Shipment;
+namespace TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository
 {
     public interface IAdminStatisticsQueryRepository
     {

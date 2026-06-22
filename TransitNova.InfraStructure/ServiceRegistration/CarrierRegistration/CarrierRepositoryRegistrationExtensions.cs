@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepo;
+using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.InfraStructure.Repository.CarrierRatings;
 using TransitNova.InfraStructure.Repository.CarrierRepo;

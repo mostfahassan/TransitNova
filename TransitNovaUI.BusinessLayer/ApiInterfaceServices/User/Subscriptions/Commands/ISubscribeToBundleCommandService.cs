@@ -3,8 +3,7 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Subscriptions.Co
 public interface ISubscribeToBundleCommandService
 {
     const string HttpMethod = "POST";
-    const string Route = "api/v{version:apiVersion}/Subscription/bundles/{bundleId:int}/subscription";
+    const string Route = "api/v{version:apiVersion}/subscriptions/bundles/{bundleId:guid}/subscription";
 
     Task<ApiResponse> SubscribeToBundleAsync(int bundleId, CancellationToken cancellationToken = default);
 }
-

@@ -3,8 +3,7 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Ship
 public interface IApproveShipmentCommandService
 {
     const string HttpMethod = "PATCH";
-    const string Route = "api/v{version:apiVersion}/operation-manager/shipments/{shipmentId:guid}/approve";
+    const string Route = "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}/approve";
 
     Task<ApiResponse> ApproveShipmentAsync(Guid shipmentId, CancellationToken cancellationToken = default);
 }
-

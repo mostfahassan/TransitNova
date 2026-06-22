@@ -14,7 +14,7 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.ShipmentQueries
     [Authorize(Roles = Role.OperationManagerOrAdmin)]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/operation-manager/shipments")]
+    [Route("api/v{version:apiVersion}/operation-managers/shipments")]
     [Tags("Operation Manager Shipments")]
     public sealed class OperationManagerShipmentsController(IMediator mediator) : ControllerBase
     {

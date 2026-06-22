@@ -1,4 +1,5 @@
 ﻿using TransitNova.Domain.Contracts.DomainEvents;
+using TransitNova.Domain.Contracts.DomainEvents.Events.UsersEvent;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Users;
 namespace TransitNova.Domain.Entities.MainEntities
@@ -7,12 +8,12 @@ namespace TransitNova.Domain.Entities.MainEntities
     {
         public virtual ICollection<Shipment> SentShipments { get; set; } = new List<Shipment>();
         public ICollection<BundleSubscription> Subscriptions { get; set; } = new List<BundleSubscription>();
-        public Guid AppUserId { get; private set; } 
+        public Guid AppUserId { get; private set; }
         public ICollection<ReceiverProfile> Receivers { get; set; } = new List<ReceiverProfile>();
 
         private UserProfile()
         {
-            
+
         }
 
         private UserProfile(Guid Id, string firstName, string lastName, string email, string phone, string address, int cityId)
@@ -30,9 +31,13 @@ namespace TransitNova.Domain.Entities.MainEntities
             CurrentState = true;
         }
         public static UserProfile Create(Guid Id, string firstName, string lastName, string email, string phone, string address, int cityId)
-                    => new (Id, firstName, lastName, email, phone, address, cityId);
-        
+        {
+            var user = new UserProfile(Id, firstName, lastName, email, phone, address, cityId);
+            user.ReleaseDomainEvent(new UserRegisteredDomainEvent(user.Id, email, user.FullName,phone, user.UserType));
+            return user;
+        }
+
+
     }
-}   
-         
-   
+}
+

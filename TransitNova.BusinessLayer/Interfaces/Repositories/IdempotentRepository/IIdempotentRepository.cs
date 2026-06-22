@@ -1,6 +1,5 @@
-﻿
-using TransitNova.Domain.Entities.MainEntities;
-namespace TransitNova.BusinessLayer.Interfaces.Repositories.Idempotent
+﻿using TransitNova.Domain.Entities.MainEntities;
+namespace TransitNova.BusinessLayer.Interfaces.Repositories.IdempotentRepository
 {
     public interface IIdempotentRepository
     {

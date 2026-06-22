@@ -1,8 +1,10 @@
 
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.Domain.Contracts.Permissions;
+using TransitNova.InfraStructure.Health;
 using TransitNova.InfraStructure.Repository.SystemActivityLogs;
 using TransitNova.InfraStructure.ServiceRegistration.AdminRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.BundleSubscriptionRegistration;
@@ -11,6 +13,7 @@ using TransitNova.InfraStructure.ServiceRegistration.CarrierRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.GenericsRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.InfraStructureRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.LocationRegistration;
+using TransitNova.InfraStructure.ServiceRegistration.NotificationRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.OperationManagerRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.PermissionsRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.ShipmentRegistration;
@@ -56,10 +59,11 @@ namespace TransitNova.InfraStructure.ServiceRegistration
                 .AddOperationManagerRepositories()
                 .AddWarehouseRepositories()
                 .AddLocationRepositories()
+                .AddNotificationServices()
                 .AddBundleSubscriptionRepositories();
 
             services.AddScoped<ISystemLogCommands, SystemLogCommands>();
-
+            
             services
                 .AddRegistrationStrategies()
                 .AddTokenServices();

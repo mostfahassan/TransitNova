@@ -43,7 +43,7 @@ namespace TransitNova.Api.Controllers.Admin.Bundles
 
         [Authorize(Policy = AdminPermissions.UpdateBundle)]
         [EnableRateLimiting("CommandsLimiter")]
-        [HttpPut]
+        [HttpPut("{bundleId:guid}")]
         [MapToApiVersion("1.0")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -55,13 +55,13 @@ namespace TransitNova.Api.Controllers.Admin.Bundles
         [EndpointName("Update Bundle")]
         [EndpointSummary("Update an existing bundle")]
         [EndpointDescription("Updates the details of an existing bundle.")]
-        public async Task<IActionResult> Update([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] UpdateBundleDto dto, CancellationToken ct)
+        public async Task<IActionResult> Update([FromHeader(Name = "X-Idempotency-Key")] string requestId,Guid bundleId , [FromBody] UpdateBundleDto dto, CancellationToken ct)
         {
             if (!Guid.TryParse(requestId, out Guid parsedRequestId))
                 return BadRequest();
 
             var adminId = User.GetUserId();
-            var response = await mediator.Send(new UpdateBundleCommand(parsedRequestId, dto, adminId), ct);
+            var response = await mediator.Send(new UpdateBundleCommand(parsedRequestId, bundleId, dto, adminId), ct);
             return response.ToActionResult();
         }
 

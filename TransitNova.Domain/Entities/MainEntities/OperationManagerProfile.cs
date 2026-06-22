@@ -1,4 +1,5 @@
 ﻿
+using TransitNova.Domain.Contracts.DomainEvents.Events.UsersEvent;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Users;
 namespace TransitNova.Domain.Entities.MainEntities
@@ -26,8 +27,9 @@ namespace TransitNova.Domain.Entities.MainEntities
         }
         public static OperationManagerProfile Create(Guid id, string firstName, string lastName, string email, string phoneNumber, string address, int cityId)
         {
-            return new (id, firstName, lastName, email, phoneNumber, address, cityId);
-
+            var user = new OperationManagerProfile(id, firstName, lastName, email, phoneNumber, address, cityId);
+            user.ReleaseDomainEvent(new UserRegisteredDomainEvent(user.Id, email, user.FullName,phoneNumber, user.UserType));
+            return user;
         }
 
     }

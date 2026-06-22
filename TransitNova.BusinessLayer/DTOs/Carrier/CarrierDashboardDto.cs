@@ -26,7 +26,7 @@ namespace TransitNova.BusinessLayer.DTOs.Carrier
         public int Count { get; set; }
     }
 
-    public sealed record ChangeCarrierStatus(Guid Id ,CarrierStatus Status);
+    public sealed record ChangeCarrierStatus(CarrierStatus Status);
     public class CarrierActivityDto
     {
         public string Title { get; set; } = string.Empty;

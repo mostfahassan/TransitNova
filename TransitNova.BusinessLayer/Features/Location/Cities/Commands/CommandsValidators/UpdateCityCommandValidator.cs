@@ -16,7 +16,9 @@ namespace TransitNova.BusinessLayer.Features.Location.Cities.Commands.CommandsVa
                 .NotNull()
                 .SetValidator(dtoValidator);
 
-            RuleFor(x => x.Dto.Id)
+            RuleFor(x => x.CityId)
+                .GreaterThan(0)
+                .WithMessage("CityId is required.")
                 .MustAsync(cityRepository.ExistsAsync)
                 .WithMessage("City not found.");
 
@@ -24,9 +26,9 @@ namespace TransitNova.BusinessLayer.Features.Location.Cities.Commands.CommandsVa
                 .MustAsync(countryRepository.ExistsAsync)
                 .WithMessage("Government not found.");
 
-            RuleFor(x => x.Dto)
-                .MustAsync(async (dto, ct) =>
-                    !await cityRepository.NameExistsForAnotherAsync(dto.Id,dto.Name, ct, dto.GovernmentId))
+            RuleFor(x => x)
+                .MustAsync(async (command, ct) =>
+                    !await cityRepository.NameExistsForAnotherAsync(command.CityId, command.Dto.Name, ct, command.Dto.GovernmentId))
                 .WithMessage("City name already exists in this country.");
         }
     }

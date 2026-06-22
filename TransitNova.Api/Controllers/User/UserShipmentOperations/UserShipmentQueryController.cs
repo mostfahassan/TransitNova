@@ -9,13 +9,13 @@ using TransitNova.Domain.Contracts.Roles;
 namespace TransitNova.Api.Controllers.User.UserShipmentOperations
 {
     [Authorize(Roles = Role.User)]
-    [Route("api/v{version:apiVersion}/user/shipments")]
+    [Route("api/v{version:apiVersion}/users/shipments")]
     [ApiVersion("1.0")]
     [ApiController]
     [Tags("User Shipments Query Operations")]
     public class UserShipmentQueryController(IMediator mediator ,  IAuthorizationService authorization) : ControllerBase
     {
-        // GET api/v1/user/shipments/{shipmentId}
+        // GET api/v1/users/shipments/{shipmentId}
         [Authorize(Policy = UserPermissions.UserCanViewShipmentDetails)]
         [EnableRateLimiting("DefaultRateLimiter")]
         [HttpGet("{shipmentId:guid}")]

@@ -1,6 +1,5 @@
-﻿
-using TransitNova.BusinessLayer.DTOs.RefreshToken;
-namespace TransitNova.BusinessLayer.Interfaces.Repositories.Token
+﻿using TransitNova.BusinessLayer.DTOs.RefreshToken;
+namespace TransitNova.BusinessLayer.Interfaces.Repositories.TokenRepository
 {
     public interface IRefreshTokenRepository
     {

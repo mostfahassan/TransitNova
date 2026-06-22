@@ -4,7 +4,7 @@ using TransitNova.BusinessLayer.DTOs.Bundle;
 namespace TransitNova.BusinessLayer.Features.Bundles.Commands
 {
     // --- Features/Bundle/Commands/UpdateBundleCommand.cs ---
-    public sealed record UpdateBundleCommand(Guid RequestId, UpdateBundleDto Dto, Guid AppUserId)
+    public sealed record UpdateBundleCommand(Guid RequestId,Guid BundleId , UpdateBundleDto Dto, Guid AppUserId)
         : IdempotantCommand<BaseResult>(RequestId);
 
 }

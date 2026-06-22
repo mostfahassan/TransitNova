@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Idempotent;
+using TransitNova.BusinessLayer.Interfaces.Repositories.IdempotentRepository;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.InfraStructure.Context;
 namespace TransitNova.InfraStructure.Repository.Idempotent

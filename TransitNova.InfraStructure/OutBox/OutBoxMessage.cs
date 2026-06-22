@@ -9,5 +9,6 @@ namespace TransitNova.InfraStructure.OutBox
         public string? Content { get; set; }
         public string? Type {  get; set; }
         public string? Error { get; set; }
+        public int RetryCount { get; set; }
     }
 }

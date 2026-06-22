@@ -7,7 +7,7 @@ using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.Interfaces;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Idempotent;
+using TransitNova.BusinessLayer.Interfaces.Repositories.IdempotentRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 

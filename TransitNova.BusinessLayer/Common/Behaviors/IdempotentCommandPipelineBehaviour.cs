@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using TransitNova.BusinessLayer.Common.Interfaces;
 using TransitNova.BusinessLayer.Common.ResultPattern;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Idempotent;
+using TransitNova.BusinessLayer.Interfaces.Repositories.IdempotentRepository;
 using static TransitNova.BusinessLayer.Common.Exceptions.ReusedRefreshTokenException;
 
 namespace TransitNova.BusinessLayer.Common.Behaviors

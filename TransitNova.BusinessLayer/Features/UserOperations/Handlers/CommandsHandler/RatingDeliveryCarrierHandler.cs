@@ -2,7 +2,6 @@
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
-using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepo;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
@@ -10,6 +9,7 @@ using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
+using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepository;
 namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler
 {
     public class RatingDeliveryCarrierHandler(

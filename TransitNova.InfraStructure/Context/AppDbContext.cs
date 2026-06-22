@@ -14,6 +14,7 @@ namespace TransitNova.InfraStructure.Context
         public DbSet<AdminProfile> Admins { get; set; }
         public DbSet<SystemActivityLog> SystemActivityLogs { get; set; }
         public DbSet<Zone> Zones { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<OutboxMessage> OutboxMessages { get; set; }
         public DbSet<IdempotentTable> IdempotentTableKey { get; set; }
         public DbSet<Government> Governments { get; set; }

@@ -6,9 +6,6 @@ namespace TransitNova.BusinessLayer.Validators.ShipmentValidators
     {
         public UpdateShipmentValidator(IValidator <PackageSpecificationDto> PackageSpecification)
         {
-            RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("Shipment Id is required");
-
             RuleFor(x => x.ReceiverId)
                 .NotEmpty().WithMessage("ReceiverId is required");
 

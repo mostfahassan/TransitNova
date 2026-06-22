@@ -8,15 +8,24 @@ namespace TransitNova.BusinessLayer.Common.Mappings.VehicleMapping
     {
         public VehicleMappingProfile()
         {
+            CreateMap<CreateVehicleDto, Vehicle>(MemberList.None)
+                .ConstructUsing(source => Vehicle.Create(
+                    source.VehicleType,
+                    source.PlateNumber,
+                    source.CapacityWeight,
+                    source.CapacityVolume,
+                    source.IsRefrigerated,
+                    source.CarrierId));
+
             CreateMap<Vehicle, VehicleDto>()
-                .ForMember(dest => dest.CarrierName,
-                    opt => opt.MapFrom(src => src.Carrier != null ? src.Carrier.FirstName + " " + src.Carrier.LastName : string.Empty))
-                .ForMember(dest => dest.CarrierCode,
-                    opt => opt.MapFrom(src => src.Carrier != null ? src.Carrier.Code : string.Empty))
-                .ForMember(dest => dest.CarrierRating,
-                    opt => opt.MapFrom(src => src.Carrier != null ? src.Carrier.AverageRating : default))
-                .ForMember(dest => dest.CarrierStatus,
-                    opt => opt.MapFrom(src => src.Carrier != null ? src.Carrier.Status : default));
+                .ForMember(destination => destination.CarrierName,
+                    options => options.MapFrom(source => source.Carrier.FullName))
+                .ForMember(destination => destination.CarrierCode,
+                    options => options.MapFrom(source => source.Carrier.Code))
+                .ForMember(destination => destination.CarrierRating,
+                    options => options.MapFrom(source => source.Carrier.AverageRating))
+                .ForMember(destination => destination.CarrierStatus,
+                    options => options.MapFrom(source => source.Carrier.Status));
         }
     }
 }

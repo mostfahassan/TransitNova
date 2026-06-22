@@ -57,9 +57,7 @@ namespace TransitNova.Api.Controllers.Admin.Location
             if (!Guid.TryParse(requestId, out Guid parsedRequestId))
                 return BadRequest();
 
-            dto.Id = cityId;
-
-            var response = await mediator.Send(new UpdateCityCommand(parsedRequestId, dto), ct);
+            var response = await mediator.Send(new UpdateCityCommand(parsedRequestId, cityId, dto), ct);
             return response.ToActionResult();
         }
 

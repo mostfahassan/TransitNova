@@ -11,7 +11,7 @@ namespace TransitNova.Api.Controllers.Trips.CarriersOperation
     [Authorize(Policy = CarrierPermissions.HasCompletedProfile)]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/carrier")]
+    [Route("api/v{version:apiVersion}/carriers")]
     [Tags("Operation Manager Trips")]
     public class CarrierTripsController(IMediator mediator, IAuthorizationService authorizationService) : ControllerBase
     {

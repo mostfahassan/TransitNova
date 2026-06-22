@@ -22,7 +22,7 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Commands.CommandsValidators
                  .MustAsync(operationManagerRepository.ExistsAsync)
                  .WithMessage("Operation Manager Not Found");
 
-            RuleFor(x => x.Dto.BundleId)
+            RuleFor(x => x.BundleId)
                 .MustAsync(repository.ExistsAsync)
                 .WithMessage("Bundle not found.");
         }

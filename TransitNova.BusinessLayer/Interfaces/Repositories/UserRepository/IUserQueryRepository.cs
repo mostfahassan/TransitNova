@@ -2,7 +2,6 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
 using TransitNova.Domain.Enums.Shipment;
-
 namespace TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository
 {
     public interface IUserQueryRepository

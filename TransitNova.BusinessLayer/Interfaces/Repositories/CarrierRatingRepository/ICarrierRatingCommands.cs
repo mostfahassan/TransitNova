@@ -1,7 +1,6 @@
-﻿
-using TransitNova.Domain.Entities.MainEntities;
+﻿using TransitNova.Domain.Entities.MainEntities;
 
-namespace TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepo
+namespace TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepository
 {
     public interface ICarrierRatingCommandsRepository
     {

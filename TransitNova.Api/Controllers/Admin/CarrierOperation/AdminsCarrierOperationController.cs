@@ -8,7 +8,7 @@ using TransitNova.Domain.Contracts.Roles;
 namespace TransitNova.Api.Controllers.Admin.CarrierOperation
 {
     [Authorize(Roles = Role.Admin)]
-    [Route("api/v{version:apiVersion}/admins/carriers")]
+    [Route("api/v{version:apiVersion}/admin/carriers")]
     [ApiVersion("1.0")]
     [ApiController]
     [Tags("Admin Carriers")]

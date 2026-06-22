@@ -58,7 +58,6 @@ public sealed class UiUpdateBundleDto
     public static UpdateBundleDto ToDto(UiUpdateBundleDto source) =>
         new()
         {
-            BundleId = source.BundleId,
             BundleName = source.BundleName,
             TotalWeight = source.TotalWeight,
             BundlePrice = source.BundlePrice,

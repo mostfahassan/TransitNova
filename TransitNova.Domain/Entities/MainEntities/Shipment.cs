@@ -138,7 +138,7 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             shipment.CreateHistory(ShipmentStatuses.Pending));
 
         shipment.RaiseDomainEvent(
-            new ShipmentCreatedDomainEvent(shipment.Id, shipment.TrackingNumber));
+            new ShipmentCreatedDomainEvent(senderId,shipment.Id, shipment.TrackingNumber));
 
         return shipment;
     }
@@ -210,7 +210,7 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
     {
         EnsurePending();
         ChangeStatus(ShipmentStatuses.Approved, handledById: handlerId);
-        RaiseDomainEvent(new ShipmentApprovedDomainEvent(Id, TrackingNumber));
+        RaiseDomainEvent(new ShipmentApprovedDomainEvent(SenderId, Id, TrackingNumber));
     }
 
     public void RejectShipment(Guid handlerId, string rejectionReason)

@@ -22,10 +22,10 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingCommands
         public async Task<BaseResult> Handle(UpdateBundleCommand request, CancellationToken ct)
         {
             var operationManagerId= await opQuery.GetUserIdAsync(request.AppUserId, ct);
-            var entity = await repository.GetByIdAsync<Bundle>(request.Dto.BundleId, ct) ?? null ;
+            var entity = await repository.GetByIdAsync<Bundle>(request.BundleId, ct) ?? null ;
             if (entity == null)
             {
-                logger.LogWarning("Bundle not found. Id: {BundleId}", request.Dto.BundleId);
+                logger.LogWarning("Bundle not found. Id: {BundleId}", request.BundleId);
                 return BaseResult.Failure(Errors.BundleNotFound("Bundle not found"));
             }
             entity.Update(operationManagerId.ToString(), request.Dto.BundlePrice, request.Dto.TotalWeight, request.Dto.TotalShipments);
@@ -34,9 +34,9 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingCommands
             
             await unitOfWork.SaveChangesAsync(ct);
    
-            logger.LogInformation("Bundle updated successfully. Id: {BundleId}", request.Dto.BundleId);
+            logger.LogInformation("Bundle updated successfully. Id: {BundleId}", request.BundleId);
             await cacheService.RemoveAsync(CacheKeys.BundleList());
-            await cacheService.RemoveAsync(CacheKeys.BundleById(request.Dto.BundleId));
+            await cacheService.RemoveAsync(CacheKeys.BundleById(request.BundleId));
             return BaseResult.Success();
         }
     }

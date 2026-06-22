@@ -6,7 +6,7 @@ using TransitNova.BusinessLayer.Features.Warehouses.Commands;
 using TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyCommands;
 using TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyQueries;
 using TransitNova.BusinessLayer.Features.Warehouses.Queries;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Admin;
+using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;

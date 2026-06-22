@@ -1,4 +1,4 @@
-﻿using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepo;
+﻿using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepository;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.InfraStructure.Context;
 namespace TransitNova.InfraStructure.Repository.CarrierRatings

@@ -30,7 +30,8 @@ namespace TransitNova.InfraStructure.Common.Interceptors
                     Id = Guid.CreateVersion7(),
                     Type = domainEvent.GetType().AssemblyQualifiedName!,
                     OccuredAt = DateTime.UtcNow,
-                    Content = JsonConvert.SerializeObject(domainEvent)
+                    Content = JsonConvert.SerializeObject(domainEvent),
+                    RetryCount = 0
                 })
                 .ToList();
 

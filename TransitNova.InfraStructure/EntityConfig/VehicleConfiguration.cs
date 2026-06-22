@@ -13,8 +13,7 @@ namespace TransitNova.InfraStructure.EntityConfig
             vehicle.HasOne(x => x.Carrier)
                 .WithOne(c => c.Vehicle)
                 .HasForeignKey<Vehicle>(x => x.CarrierId)
-                .OnDelete(DeleteBehavior.SetNull);
-
+                .OnDelete(DeleteBehavior.Restrict);
             vehicle.Property(x => x.PlateNumber)
                 .IsRequired()
                 .HasMaxLength(20);

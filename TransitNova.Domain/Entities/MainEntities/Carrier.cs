@@ -86,7 +86,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         {
             var carrier = new Carrier(appUserId, firstName, lastName, email, phone, address, cityId);
 
-            carrier.RaiseDomainEvent(new CarrierCreatedDomainEvent(carrier.Id, carrier.Code));
+            carrier.RaiseDomainEvent(new CarrierCreatedDomainEvent(carrier.Id,carrier.FullName, phone, carrier.Code));
 
             return carrier;
         }

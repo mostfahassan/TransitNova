@@ -60,14 +60,12 @@ public sealed class UiCreateCityDto
 
 public sealed class UiUpdateCityDto
 {
-    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public int GovernmentId { get; set; }
 
     public static UpdateCityDto ToDto(UiUpdateCityDto source) =>
         new()
         {
-            Id = source.Id,
             Name = source.Name,
             GovernmentId = source.GovernmentId
         };

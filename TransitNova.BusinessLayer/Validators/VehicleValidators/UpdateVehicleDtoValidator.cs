@@ -3,29 +3,29 @@ using TransitNova.BusinessLayer.DTOs.Vehicle;
 
 namespace TransitNova.BusinessLayer.Validators.VehicleValidators
 {
-    public class VehicleDtoValidator : AbstractValidator<VehicleDto>
+    public sealed class UpdateVehicleDtoValidator : AbstractValidator<UpdateVehicleDto>
     {
-        public VehicleDtoValidator()
+        public UpdateVehicleDtoValidator()
         {
-            RuleFor(v => v.VehicleType)
+            RuleFor(vehicle => vehicle.VehicleType)
                 .IsInEnum()
                 .WithMessage("Vehicle type is invalid.");
 
-            RuleFor(v => v.PlateNumber)
+            RuleFor(vehicle => vehicle.PlateNumber)
                 .NotEmpty()
                 .WithMessage("Plate number is required.")
                 .MaximumLength(50)
                 .WithMessage("Plate number must not exceed 50 characters.");
 
-            RuleFor(v => v.CapacityWeight)
+            RuleFor(vehicle => vehicle.CapacityWeight)
                 .GreaterThan(0)
                 .WithMessage("Capacity weight must be greater than zero.");
 
-            RuleFor(v => v.CapacityVolume)
+            RuleFor(vehicle => vehicle.CapacityVolume)
                 .GreaterThan(0)
                 .WithMessage("Capacity volume must be greater than zero.");
 
-            RuleFor(v => v.CarrierId)
+            RuleFor(vehicle => vehicle.CarrierId)
                 .NotEmpty()
                 .WithMessage("Carrier id is required.");
         }

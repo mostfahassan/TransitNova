@@ -18,6 +18,8 @@
         public const string UserCanRateCarrier = "User.ReviewCarrier";
         public const string CanRatePickupCarrier = "User.RatePickupCarrier";
         public const string CanRateDeliveryCarrier = "User.RateDeliveryCarrier";
+     
+
         public static IReadOnlyList<string> All =>
                 [
                     UserCanShowHisDashboard,
@@ -34,7 +36,7 @@
                     UserCanUnSubscribeBundle,
                     UserCanRateCarrier,
                     CanRatePickupCarrier,
-                    CanRateDeliveryCarrier
+                    CanRateDeliveryCarrier, 
                 ];
     }
 }

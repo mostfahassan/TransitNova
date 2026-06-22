@@ -3,8 +3,7 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Authentication.Comman
 public interface IRevokeRefreshTokenCommandService
 {
     const string HttpMethod = "DELETE";
-    const string Route = "api/v{version:apiVersion}/refreshToken/{id:guid}";
+    const string Route = "api/v{version:apiVersion}/refresh-tokens/{id:guid}";
 
     Task<ApiResponse> RevokeRefreshTokenAsync(Guid id, CancellationToken cancellationToken = default);
 }
-

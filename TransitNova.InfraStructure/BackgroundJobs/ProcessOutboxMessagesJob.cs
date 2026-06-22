@@ -12,7 +12,7 @@ namespace TransitNova.InfraStructure.BackgroundJobs
         public async Task Execute(IJobExecutionContext context)
         {
             var messages = await dbContext.OutboxMessages
-                .Where(x => x.ProcessedOn == null)
+                .Where(x => x.ProcessedOn == null && x.RetryCount < 5)
                 .OrderBy(x => x.OccuredAt)
                 .Take(20)
                 .ToListAsync(context.CancellationToken);
@@ -33,6 +33,7 @@ namespace TransitNova.InfraStructure.BackgroundJobs
                 }
                 catch (Exception ex)
                 {
+                    message.RetryCount++;
                     message.Error = ex.Message;
                 }
                 await dbContext.SaveChangesAsync(context.CancellationToken);

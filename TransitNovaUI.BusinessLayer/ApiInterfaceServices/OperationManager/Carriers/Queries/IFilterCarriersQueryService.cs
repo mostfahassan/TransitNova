@@ -3,8 +3,7 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Carr
 public interface IFilterCarriersQueryService
 {
     const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/operation-manager/carriers";
+    const string Route = "api/v{version:apiVersion}/operation-managers/carriers";
 
     Task<ApiResponse<UiPagedResult<UiCarrierSummaryDetailsDto>>> FilterCarriersAsync(UiFilterCarrierDto filter, CancellationToken cancellationToken = default);
 }
-

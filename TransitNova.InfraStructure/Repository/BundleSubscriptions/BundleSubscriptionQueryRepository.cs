@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TransitNova.BusinessLayer.DTOs.BundleSubscription;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
-using TransitNova.BusinessLayer.Interfaces.Repositories.BundleSubscription;
+using TransitNova.BusinessLayer.Interfaces.Repositories.BundleSubscriptionRepository;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.InfraStructure.Context;
 namespace TransitNova.InfraStructure.Repository.BundleSubscriptions

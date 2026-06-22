@@ -1,7 +1,7 @@
 ﻿using TransitNova.BusinessLayer.DTOs.Admin;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.Domain.Enums.Shipment;
-namespace TransitNova.BusinessLayer.Interfaces.Repositories.Admin
+namespace TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository
 {
     public interface IAdminActivityQueryRepository
     {

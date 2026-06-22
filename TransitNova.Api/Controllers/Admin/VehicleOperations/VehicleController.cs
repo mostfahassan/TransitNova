@@ -30,7 +30,7 @@ namespace TransitNova.Api.Controllers.Admin.VehicleOperations
         [EndpointName("Create Vehicle")]
         [EndpointSummary("Create a new vehicle")]
         [EndpointDescription("Creates a new vehicle and assigns it to a carrier.")]
-        public async Task<IActionResult> CreateVehicle([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] VehicleDto dto, CancellationToken ct)
+        public async Task<IActionResult> CreateVehicle([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] CreateVehicleDto dto, CancellationToken ct)
         {
             if (!Guid.TryParse(requestId, out Guid parsedRequestId))
                 return BadRequest();

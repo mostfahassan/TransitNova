@@ -4,7 +4,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using TransitNova.BusinessLayer.DTOs.Admin;
 using TransitNova.BusinessLayer.DTOs.Shipment;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Admin;
+using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.InfraStructure.Context;
 namespace TransitNova.InfraStructure.Repository.Admin

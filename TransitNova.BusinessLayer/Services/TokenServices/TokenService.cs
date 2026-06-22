@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.DTOs.RefreshToken;
 using TransitNova.BusinessLayer.Features.Token.Handler;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Token;
+using TransitNova.BusinessLayer.Interfaces.Repositories.TokenRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.BusinessLayer.Interfaces.Services.TokenServices;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;

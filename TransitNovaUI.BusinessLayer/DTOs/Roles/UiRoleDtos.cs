@@ -67,13 +67,11 @@ public sealed class UiRoleMemberUpdateDto
 
 public sealed class UiUpdateRoleMembersDto
 {
-    public Guid RoleId { get; set; }
     public IReadOnlyCollection<UiRoleMemberUpdateDto> Users { get; set; } = [];
 
     public static UpdateRoleMembersDto ToDto(UiUpdateRoleMembersDto source) =>
         new()
         {
-            RoleId = source.RoleId,
             Users = source.Users.Select(UiRoleMemberUpdateDto.ToDto).ToList()
         };
 

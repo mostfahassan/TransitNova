@@ -1,0 +1,776 @@
+@baseUrl = https://localhost:7292
+@apiVersion = 1
+@accessToken = replace-with-a-valid-jwt-access-token
+@userId = 11111111-1111-1111-1111-111111111111
+@carrierId = 22222222-2222-2222-2222-222222222222
+@operationManagerId = 33333333-3333-3333-3333-333333333333
+@shipmentId = 44444444-4444-4444-4444-444444444444
+@receiverId = 55555555-5555-5555-5555-555555555555
+@bundleId = 66666666-6666-6666-6666-666666666666
+@warehouseId = 77777777-7777-7777-7777-777777777777
+@zoneId = 88888888-8888-8888-8888-888888888888
+@tripId = 99999999-9999-9999-9999-999999999999
+@roleId = aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+@vehicleId = bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+@subscriptionId = cccccccc-cccc-cccc-cccc-cccccccccccc
+@refreshTokenId = dddddddd-dddd-dddd-dddd-dddddddddddd
+@governmentId = 1
+@countryId = 1
+@cityId = 1
+@trackingNumber = TN-2026-000184
+@plateNumber = ABC-4821
+
+### Authentication - Register
+POST {{baseUrl}}/api/auth/register
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "userName": "ahmed.mohamed",
+  "email": "ahmed.mohamed@example.com",
+  "password": "TransitNova#2026",
+  "confirmPassword": "TransitNova#2026",
+  "phoneNumber": "+201001234567",
+  "firstName": "Ahmed H.",
+  "lastName": "Mohamed",
+  "address": "12 Tahrir Street, Cairo",
+  "userType": "User",
+  "cityId": {{cityId}}
+}
+
+### Authentication - Login
+POST {{baseUrl}}/api/auth/login
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "password": "TransitNova#2026",
+  "email": "ahmed.mohamed@example.com"
+}
+
+### Authentication - Change password
+PUT {{baseUrl}}/api/auth/change-password
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "currentPassword": "TransitNova#2026",
+  "newPassword": "TransitNova#2027",
+  "confirmNewPassword": "TransitNova#2027"
+}
+
+### Authentication - Sign out
+POST {{baseUrl}}/api/auth/signout
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Tokens - Rotate refresh token
+POST {{baseUrl}}/api/v{{apiVersion}}/refresh-tokens
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "token": "replace-with-a-valid-refresh-token"
+}
+
+### Tokens - Revoke refresh token
+DELETE {{baseUrl}}/api/v{{apiVersion}}/refresh-tokens/{{refreshTokenId}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Locations - Get countries
+GET {{baseUrl}}/api/v{{apiVersion}}/countries
+Accept: application/json
+
+### Locations - Get governments for country
+GET {{baseUrl}}/api/v{{apiVersion}}/countries/{{countryId}}/governments
+Accept: application/json
+
+### Locations - Get cities for government
+GET {{baseUrl}}/api/v{{apiVersion}}/governments/{{governmentId}}/cities
+Accept: application/json
+
+### User subscriptions - Subscribe to bundle
+POST {{baseUrl}}/api/v{{apiVersion}}/subscriptions/bundles/{{bundleId}}/subscription
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### User subscriptions - Unsubscribe from bundle
+DELETE {{baseUrl}}/api/v{{apiVersion}}/subscriptions/bundles/{{bundleId}}/subscription
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### User shipments - Create shipment
+POST {{baseUrl}}/api/v{{apiVersion}}/shipments
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "receiver": {
+    "firstName": "Mariam",
+    "senderId": "{{userId}}",
+    "lastName": "Hassan",
+    "email": "mariam.hassan@example.com",
+    "phoneNumber": "+201112345678",
+    "address": "25 El-Nasr Road, Alexandria",
+    "cityId": {{cityId}}
+  },
+  "packageSpecification": {
+    "weight": 12.5,
+    "width": 40.0,
+    "height": 30.0,
+    "length": 55.0
+  },
+  "currency": "EGP",
+  "pickUpDate": "2026-07-15T09:30:00Z",
+  "transportationMode": "Land",
+  "shipmentDeliveryType": "Express",
+  "deliveryAddress": "25 El-Nasr Road, Alexandria",
+  "pickupAddress": "12 Tahrir Street, Cairo",
+  "packageBundleId": "{{bundleId}}"
+}
+
+### User shipments - Update shipment
+PUT {{baseUrl}}/api/v{{apiVersion}}/shipments/{{shipmentId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "receiverId": "{{receiverId}}",
+  "deliveryAddress": "30 Corniche Road, Alexandria",
+  "pickupAddress": "14 Tahrir Street, Cairo",
+  "packageSpecification": {
+    "weight": 13.0,
+    "width": 42.0,
+    "height": 31.0,
+    "length": 56.0
+  },
+  "shipmentType": "Express",
+  "transportationMode": "Land"
+}
+
+### User shipments - Cancel shipment
+PATCH {{baseUrl}}/api/v{{apiVersion}}/shipments/{{shipmentId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### User shipments - Report shipment issue
+PATCH {{baseUrl}}/api/v{{apiVersion}}/shipments/{{shipmentId}}/issue
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "issueReason": "The package label was damaged during pickup."
+}
+
+### User shipments - Delete shipment
+DELETE {{baseUrl}}/api/v{{apiVersion}}/shipments/{{shipmentId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### User shipments - Track shipment
+GET {{baseUrl}}/api/v{{apiVersion}}/shipments/{{trackingNumber}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### User shipments - Get shipment details
+GET {{baseUrl}}/api/v{{apiVersion}}/users/shipments/{{shipmentId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### User profile - Get profile
+GET {{baseUrl}}/api/v{{apiVersion}}/users/profile
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### User carrier rating - Rate pickup carrier
+POST {{baseUrl}}/api/v{{apiVersion}}/shipments/{{shipmentId}}/rate-pickup-carrier
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "carrierId": "{{carrierId}}",
+  "comment": "Pickup was punctual and professional.",
+  "rating": 5
+}
+
+### User carrier rating - Rate delivery carrier
+POST {{baseUrl}}/api/v{{apiVersion}}/shipments/{{shipmentId}}/rate-delivery-carrier
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "carrierId": "{{carrierId}}",
+  "comment": "Delivery was careful and on time.",
+  "rating": 5
+}
+
+### Carrier profile - Update profile
+PUT {{baseUrl}}/api/v{{apiVersion}}/carriers/profile
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": "{{carrierId}}",
+  "firstName": "Omar",
+  "lastName": "Khaled",
+  "phoneNumber": "+201223456789",
+  "email": "omar.khaled@example.com",
+  "cityId": {{cityId}},
+  "address": "8 Makram Ebeid Street, Cairo"
+}
+
+### Carrier profile - Add additional information
+PUT {{baseUrl}}/api/v{{apiVersion}}/carriers/additional-info
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": "{{carrierId}}",
+  "licenseNumber": "EG-CAR-2026-4821",
+  "maxDailyShipments": 24,
+  "defaultCostPerKg": 18.50,
+  "yearsOfExperience": 7,
+  "contractStartDate": "2026-07-01T00:00:00Z",
+  "contractYears": 2,
+  "warehouseId": "{{warehouseId}}"
+}
+
+### Carrier operations - Change status
+PATCH {{baseUrl}}/api/v{{apiVersion}}/carriers/{{carrierId}}/status
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "Available"
+}
+
+### Carrier operations - Complete delivery
+PATCH {{baseUrl}}/api/v{{apiVersion}}/carriers/{{carrierId}}/shipments/{{shipmentId}}/complete-delivery
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Carrier operations - Complete pickup
+PATCH {{baseUrl}}/api/v{{apiVersion}}/carriers/{{carrierId}}/shipments/{{shipmentId}}/complete-pickup
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Carrier queries - Filter carrier shipments
+GET {{baseUrl}}/api/v{{apiVersion}}/carriers/{{carrierId}}/shipments?status=Approved&mode=Land&searchTerm=TN-2026&sortBy=CreatedAt&sortDescending=true&pageNumber=1&pageSize=12
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Carrier queries - Get shipment details
+GET {{baseUrl}}/api/v{{apiVersion}}/carriers/{{carrierId}}/shipments/{{shipmentId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Carrier queries - Get profile
+GET {{baseUrl}}/api/v{{apiVersion}}/carriers/{{carrierId}}/profile
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Carrier queries - Get rating
+GET {{baseUrl}}/api/v{{apiVersion}}/carriers/{{carrierId}}/rating
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Carrier queries - Get revenue
+GET {{baseUrl}}/api/v{{apiVersion}}/carriers/{{carrierId}}/revenue
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Carrier trips - Get trips
+GET {{baseUrl}}/api/v{{apiVersion}}/carriers/{{carrierId}}/trips
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Carrier trips - Get trip details
+GET {{baseUrl}}/api/v{{apiVersion}}/carriers/{{carrierId}}/trips/{{tripId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager trips - Start pickup trip
+PATCH {{baseUrl}}/api/v{{apiVersion}}/operation-managers/trips/{{carrierId}}/start-pickup
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Operation manager trips - Start delivery trip
+PATCH {{baseUrl}}/api/v{{apiVersion}}/operation-managers/trips/{{carrierId}}/start-delivery
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Operation manager shipments - Get assigned shipments
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/shipments/assigned?status=AssignedToPickUpCarrier&mode=Land&from=2026-07-01T00:00:00Z&to=2026-07-31T23:59:59Z&senderId={{userId}}&pageNumber=1&pageSize=20
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager shipments - Get shipment for review
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/shipments/{{shipmentId}}/review
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager shipments - Get shipment histories
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/shipments/{{shipmentId}}/histories
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager shipments - Filter shipments
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/shipments?status=Pending&status=Approved&mode=Land&from=2026-07-01T00:00:00Z&to=2026-07-31T23:59:59Z&senderId={{userId}}&pageNumber=1&pageSize=20
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager shipments - Get review queue
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/shipments/review-queue?status=Pending&mode=Land&pageNumber=1&pageSize=20
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager shipments - Get shipment details
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/shipments/{{shipmentId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager shipments - Approve shipment
+PATCH {{baseUrl}}/api/v{{apiVersion}}/operation-managers/shipments/{{shipmentId}}/approve
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Operation manager shipments - Reject shipment
+PATCH {{baseUrl}}/api/v{{apiVersion}}/operation-managers/shipments/{{shipmentId}}/reject
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "rejectionReason": "The package dimensions exceed the selected service limits."
+}
+
+### Operation manager carriers - Filter carriers
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/carriers?status=Available&minRating=4&maxRating=5&minYearsOfExperience=2&maxYearsOfExperience=15&city=Cairo&cityId={{cityId}}&searchTerm=Omar&availableFrom=2026-07-15T08:00:00Z&pageNumber=1&pageSize=20&sortBy=Rating&sortDescending=true&vehicleCapacityWeight=500&vehicleType=Truck&servedZones=Nasr%20City&servedZones=Maadi
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager carriers - Get carrier details
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/carriers/{{carrierId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager carriers - Get carrier shipments
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/carriers/{{carrierId}}/shipments?status=Approved&mode=Land&searchTerm=TN-2026&sortBy=CreatedAt&sortDescending=true&pageNumber=1&pageSize=12
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager carriers - Get carrier shipment details
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/carriers/{{carrierId}}/shipments/{{shipmentId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager carriers - Assign pickup carrier
+PUT {{baseUrl}}/api/v{{apiVersion}}/operation-managers/carriers/{{shipmentId}}/assign-pickup
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "carrierId": "{{carrierId}}"
+}
+
+### Operation manager carriers - Assign delivery carrier
+PUT {{baseUrl}}/api/v{{apiVersion}}/operation-managers/carriers/{{shipmentId}}/assign-delivery
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "carrierId": "{{carrierId}}"
+}
+
+### Operation manager carriers - Get carrier trips
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/carriers/{{carrierId}}/trips
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation manager carriers - Get carrier trip details
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/carriers/{{carrierId}}/trips/{{tripId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation managers - Get details
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/{{operationManagerId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation managers - Get handled carriers
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/{{operationManagerId}}/handled-carriers?pageNumber=1&pageSize=20
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Operation managers - Get handled shipments
+GET {{baseUrl}}/api/v{{apiVersion}}/operation-managers/{{operationManagerId}}/handled-shipments?pageNumber=1&pageSize=20
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin warehouses - Create warehouse
+POST {{baseUrl}}/api/v{{apiVersion}}/admin/warehouses
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Cairo Central Warehouse",
+  "type": "MainWarehouse",
+  "address": "Industrial Zone, New Cairo",
+  "capacity": 15000.0,
+  "currentUsage": 2500.0,
+  "operatingHours": 24,
+  "zoneIds": ["{{zoneId}}"]
+}
+
+### Admin warehouses - Update warehouse
+PUT {{baseUrl}}/api/v{{apiVersion}}/admin/warehouses/{{warehouseId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Cairo Central Logistics Hub",
+  "type": "MainWarehouse",
+  "address": "Industrial Zone, New Cairo",
+  "capacity": 18000.0,
+  "currentUsage": 3000.0,
+  "operatingHours": 24,
+  "zoneIds": ["{{zoneId}}"]
+}
+
+### Admin warehouses - Delete warehouse
+DELETE {{baseUrl}}/api/v{{apiVersion}}/admin/warehouses/{{warehouseId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Admin warehouses - Get warehouses
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/warehouses
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin warehouses - Get warehouse details
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/warehouses/{{warehouseId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin roles - Get roles
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/roles
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin roles - Get role details
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/roles/{{roleId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin roles - Get role members
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/roles/{{roleId}}/members
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin roles - Create role
+POST {{baseUrl}}/api/v{{apiVersion}}/admin/roles
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "roleName": "DispatchCoordinator"
+}
+
+### Admin roles - Update role
+PUT {{baseUrl}}/api/v{{apiVersion}}/admin/roles/{{roleId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "roleName": "SeniorDispatchCoordinator"
+}
+
+### Admin roles - Delete role
+DELETE {{baseUrl}}/api/v{{apiVersion}}/admin/roles/{{roleId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Admin roles - Update role members
+PUT {{baseUrl}}/api/v{{apiVersion}}/admin/roles/{{roleId}}/members
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "users": [
+    {
+      "userId": "{{userId}}",
+      "isInRole": true
+    }
+  ]
+}
+
+### Admin bundles - Create bundle
+POST {{baseUrl}}/api/v{{apiVersion}}/admin/bundles
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "bundleName": "Business Saver 20",
+  "totalWeight": 250.0,
+  "bundlePrice": 4200.0,
+  "bundleDescription": "Twenty prepaid domestic shipments for small businesses.",
+  "totalDistance": 3000.0,
+  "totalShipments": 20
+}
+
+### Admin bundles - Update bundle
+PUT {{baseUrl}}/api/v{{apiVersion}}/admin/bundles
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "bundleName": "Business Saver 25",
+  "totalWeight": 300.0,
+  "bundlePrice": 4900.0,
+  "bundleDescription": "Twenty-five prepaid domestic shipments for small businesses.",
+  "totalDistance": 3500.0,
+  "totalShipments": 25,
+  "bundleId": "{{bundleId}}"
+}
+
+### Admin bundles - Delete bundle
+DELETE {{baseUrl}}/api/v{{apiVersion}}/admin/bundles/{{bundleId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Admin bundles - Get bundles
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/bundles
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin bundles - Get bundle details
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/bundles/{{bundleId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin cities - Create city
+POST {{baseUrl}}/api/v{{apiVersion}}/admin/cities
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "New Cairo",
+  "governmentId": {{governmentId}}
+}
+
+### Admin cities - Update city
+PUT {{baseUrl}}/api/v{{apiVersion}}/admin/cities/{{cityId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "New Cairo City",
+  "governmentId": {{governmentId}}
+}
+
+### Admin cities - Delete city
+DELETE {{baseUrl}}/api/v{{apiVersion}}/admin/cities/{{cityId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Admin cities - Get city details
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/cities/{{cityId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin cities - Filter cities
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/cities?governmentId={{governmentId}}&searchTerm=Cairo&pageNumber=1&pageSize=20&sortDescending=false
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin governments - Create government
+POST {{baseUrl}}/api/v{{apiVersion}}/admin/governments
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Cairo",
+  "countryId": {{countryId}}
+}
+
+### Admin governments - Update government
+PUT {{baseUrl}}/api/v{{apiVersion}}/admin/governments/{{governmentId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Cairo Governorate",
+  "countryId": {{countryId}}
+}
+
+### Admin governments - Delete government
+DELETE {{baseUrl}}/api/v{{apiVersion}}/admin/governments/{{governmentId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Admin governments - Get government details
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/governments/{{governmentId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin governments - Get governments
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/governments
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin vehicles - Create vehicle
+POST {{baseUrl}}/api/v{{apiVersion}}/admin/vehicles
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "vehicleType": "Truck",
+  "plateNumber": "{{plateNumber}}",
+  "capacityWeight": 3500.0,
+  "capacityVolume": 22.5,
+  "isRefrigerated": false,
+  "carrierId": "{{carrierId}}"
+}
+
+### Admin vehicles - Delete vehicle
+DELETE {{baseUrl}}/api/v{{apiVersion}}/admin/vehicles/{{vehicleId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Admin vehicles - Get vehicles
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/vehicles
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin vehicles - Get active vehicles
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/vehicles/active
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin vehicles - Get vehicle details
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/vehicles/{{vehicleId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin vehicles - Get vehicle by plate number
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/vehicles/plate-number/{{plateNumber}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin carriers - Delete carrier
+DELETE {{baseUrl}}/api/v{{apiVersion}}/admin/carriers/{{carrierId}}
+Authorization: Bearer {{accessToken}}
+X-Idempotency-Key: {{$guid}}
+Accept: application/json
+
+### Admin users - Filter users
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/users?searchTerm=Ahmed&email=ahmed.mohamed%40example.com&userName=ahmed.mohamed&phoneNumber=%2B201001234567&isActive=true&createdFrom=2026-01-01T00:00:00Z&createdTo=2026-12-31T23:59:59Z&pageNumber=1&pageSize=20
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin users - Get user details
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/users/{{userId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin subscriptions - Get subscription details
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/subscriptions/{{subscriptionId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin subscriptions - Get bundle subscribers
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/subscriptions/bundles/{{bundleId}}/subscribers
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin operation managers - Get all
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/operation-managers
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin operation managers - Get active
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/operation-managers/active
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin operation managers - Get details
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/operation-managers/{{operationManagerId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin operation managers - Get handled carriers
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/operation-managers/{{operationManagerId}}/handled-carriers?pageNumber=1&pageSize=20
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Admin operation managers - Get handled shipments
+GET {{baseUrl}}/api/v{{apiVersion}}/admin/operation-managers/{{operationManagerId}}/handled-shipments?pageNumber=1&pageSize=20
+Authorization: Bearer {{accessToken}}
+Accept: application/json

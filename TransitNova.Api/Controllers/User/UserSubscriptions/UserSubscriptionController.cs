@@ -9,7 +9,7 @@ namespace TransitNova.Api.Controllers.User.UserSubscriptions
 {
     [Authorize(Roles = Role.User)]
     [Authorize(Policy = UserPermissions.ShipmentOwner)]
-    [Route("api/v{version:apiVersion}/Subscription")]
+    [Route("api/v{version:apiVersion}/subscriptions")]
     [ApiVersion("1.0")]
     [ApiController]
     [Tags("User Subscription Controller")]

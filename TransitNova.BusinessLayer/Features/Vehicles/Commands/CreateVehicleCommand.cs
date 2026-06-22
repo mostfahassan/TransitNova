@@ -4,6 +4,6 @@ using TransitNova.BusinessLayer.DTOs.Vehicle;
 
 namespace TransitNova.BusinessLayer.Features.Vehicles.Commands
 {
-    public sealed record CreateVehicleCommand(Guid RequestId, VehicleDto Dto)
+    public sealed record CreateVehicleCommand(Guid RequestId, CreateVehicleDto Dto)
         : IdempotantCommand<Result<VehicleDto>>(RequestId);
 }

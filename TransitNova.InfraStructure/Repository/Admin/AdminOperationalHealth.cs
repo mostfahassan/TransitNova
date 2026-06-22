@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Admin;
+using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.InfraStructure.Context;

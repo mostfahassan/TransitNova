@@ -73,7 +73,7 @@ public sealed class BundleHandlerTests
         var handler = new UpdateBundleHandler(repository.Object, managers.Object, unitOfWork.Object, cache.Object, Mock.Of<ILogger<UpdateBundleHandler>>());
 
         var result = await handler.Handle(
-            new UpdateBundleCommand(Guid.NewGuid(), UpdateDto(bundleId), appUserId),
+            new UpdateBundleCommand(Guid.NewGuid(),Guid.NewGuid(), UpdateDto(), appUserId),
             CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
@@ -99,7 +99,7 @@ public sealed class BundleHandlerTests
         var handler = new UpdateBundleHandler(repository.Object, managers.Object, unitOfWork.Object, cache.Object, Mock.Of<ILogger<UpdateBundleHandler>>());
 
         var result = await handler.Handle(
-            new UpdateBundleCommand(Guid.NewGuid(), UpdateDto(bundle.Id), appUserId),
+            new UpdateBundleCommand(Guid.NewGuid(),Guid.NewGuid(), UpdateDto(), appUserId),
             CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
@@ -175,9 +175,8 @@ public sealed class BundleHandlerTests
         result.Data.Should().BeSameAs(bundles);
     }
 
-    private static UpdateBundleDto UpdateDto(Guid id) => new()
+    private static UpdateBundleDto UpdateDto() => new()
     {
-        BundleId = id,
         BundlePrice = 250,
         TotalWeight = 75,
         TotalShipments = 12

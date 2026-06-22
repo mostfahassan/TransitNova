@@ -5,12 +5,14 @@ using TransitNova.BusinessLayer.Features.Location.Cities.Queries;
 namespace TransitNova.Api.Controllers.Locations.City
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/governments")]
     public class CityController(IMediator mediator) : ControllerBase
     {
 
         [EnableRateLimiting("DefaultRateLimiter")]
         [HttpGet("{governmentId}/cities")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetCitiesByGovernment(int governmentId, CancellationToken cancellationToken)
         {
             var query = new GetCitiesByGovernmentQuery(governmentId);

@@ -1,12 +1,26 @@
 ﻿using MediatR;
+using TransitNova.BusinessLayer.Interfaces.Repositories.NotificationRepository;
+using TransitNova.BusinessLayer.Interfaces.Repositories.TripRepository;
+using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.DomainEvents.Events.TripDomainEvents;
+using TransitNova.Domain.Entities.MainEntities;
 
 namespace TransitNova.BusinessLayer.Common.Events.TripEventsHandler
 {
-    public class TripCompletedDomainEventHandler
+    public class TripCompletedDomainEventHandler(ITripQueryRepository tripRepository, INotificationCommand notificationRepo, IUnitOfWork unitOfWork)
         : INotificationHandler<TripCompletedDomainEvent>
     {
-        public Task Handle(TripCompletedDomainEvent notification, CancellationToken cancellationToken)
-            => Task.CompletedTask;
+        public async Task Handle(TripCompletedDomainEvent notification, CancellationToken cancellationToken)
+        {
+            var trip = await tripRepository.GetTripAsync(notification.Id, cancellationToken);
+            if (trip is null) return;
+            var recipientIds = trip.Shipments.Select(shipment => shipment.SenderId).Append(trip.CarrierId).Distinct();
+            foreach (var recipientId in recipientIds)
+            {
+                var notificationCreated = Notification.Create(recipientId, "Trip Completed", $"The trip has been completed with {notification.TotalShipments} shipment(s).");
+                await notificationRepo.AddNotificationAsync(notificationCreated, cancellationToken);
+            }
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+        }
     }
 }

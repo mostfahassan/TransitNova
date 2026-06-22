@@ -2,7 +2,7 @@ using FluentAssertions;
 using Moq;
 using TransitNova.BusinessLayer.Features.Token.Commands;
 using TransitNova.BusinessLayer.Features.Token.Handler;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Token;
+using TransitNova.BusinessLayer.Interfaces.Repositories.TokenRepository;
 
 namespace TransitNova.ApplicationLayer.Tests.Commands.Auth;
 

@@ -5,7 +5,7 @@ using TransitNova.BusinessLayer.Common.Exceptions;
 using TransitNova.BusinessLayer.DTOs.AppUser;
 using TransitNova.BusinessLayer.DTOs.RefreshToken;
 using TransitNova.BusinessLayer.Features.Token.Handler;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Token;
+using TransitNova.BusinessLayer.Interfaces.Repositories.TokenRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.BusinessLayer.Interfaces.Token;

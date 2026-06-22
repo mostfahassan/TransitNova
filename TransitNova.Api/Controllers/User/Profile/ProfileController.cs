@@ -10,7 +10,7 @@ namespace TransitNova.Api.Controllers.User.Profile
     [Authorize(Roles = Role.User)]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/user")]
+    [Route("api/v{version:apiVersion}/users")]
     [Tags("User Profile Controller")]
     public sealed class ProfileController(IMediator mediator) : ControllerBase
     {

@@ -1,17 +1,15 @@
 using FluentValidation;
 using TransitNova.BusinessLayer.DTOs.Vehicle;
-using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.VehicleRepository;
 using TransitNova.Domain.Enums.Result;
-
 namespace TransitNova.BusinessLayer.Features.Vehicles.Commands.CommandsValidators
 {
     public sealed class UpdateVehicleCommandValidator : AbstractValidator<UpdateVehicleCommand>
     {
         public UpdateVehicleCommandValidator(
-            IValidator<VehicleDto> dtoValidator,
-            IVehicleRulesRepository vehicleRepository,
-            ICarrierRulesRepository carrierRepository)
+            IValidator<UpdateVehicleDto> dtoValidator,
+            IVehicleRulesRepository vehicleRepository) 
+        
         {
             RuleFor(x => x.Id)
                 .NotEmpty()
@@ -20,10 +18,6 @@ namespace TransitNova.BusinessLayer.Features.Vehicles.Commands.CommandsValidator
             RuleFor(x => x.Dto)
                 .NotNull()
                 .SetValidator(dtoValidator);
-
-            RuleFor(x => x)
-                .Must(x => x.Dto.Id == Guid.Empty || x.Dto.Id == x.Id)
-                .WithMessage("Vehicle id mismatch.");
 
             RuleFor(x => x.Id)
                 .NotEmpty()

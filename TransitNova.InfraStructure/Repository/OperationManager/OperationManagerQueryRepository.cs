@@ -112,7 +112,12 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
             .Where(op => op.AppUserId == userId)
             .Select(op => op.FullName)
             .FirstOrDefaultAsync(cancellationToken);
-          
+
+        public async Task<List<Guid>> GetOperationManagersIdsAsync(CancellationToken cancellationToken)
+          => await context.OperationManagerProfiles
+                .AsNoTracking()
+                .Select(op => op.Id)
+                .ToListAsync(cancellationToken);
         
     }
 

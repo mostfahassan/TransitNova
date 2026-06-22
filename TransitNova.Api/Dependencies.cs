@@ -10,6 +10,7 @@ using TransitNova.Api.AuthorizationResource.Handler;
 using TransitNova.Api.Exceptions;
 using TransitNova.BusinessLayer;
 using TransitNova.Domain.Contracts.Permissions;
+using TransitNova.InfraStructure.Common.NotificationService.NotificationHubService;
 using TransitNova.InfraStructure.ServiceRegistration;
 using TransitNova.InfraStructure.Token;
 namespace TransitNova.Api
@@ -35,6 +36,29 @@ namespace TransitNova.Api
         }
 
 
+        // ── Middleware
+        public static WebApplication UseDependencies(this WebApplication app)
+        {
+            if (app.Environment.IsDevelopment())
+            {
+                app.MapOpenApi();
+            }
+            app.UseExceptionHandler();
+            app.UseSerilogRequestLogging();
+            app.UseCors("AllowMVC");
+            app.UseHsts();
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseRateLimiter();
+            app.MapHub<NotificationHub>("/hubs/notifications");
+            app.MapHealthChecks("health");
+            app.MapControllers();
+            return app;
+        }
+
+
+        //Service Registeration
         // ── Logging
         public static IHostBuilder AddSerilog(this IHostBuilder hostBuilder)
         {
@@ -197,26 +221,5 @@ namespace TransitNova.Api
         }
 
 
-
-
-
-        // ── Middleware
-        public static WebApplication UseDependencies(this WebApplication app)
-        {
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
-            app.UseExceptionHandler();
-            app.UseSerilogRequestLogging();
-            app.UseCors("AllowMVC");
-            app.UseHsts();
-            app.UseHttpsRedirection();
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.UseRateLimiter();
-            app.MapControllers();
-            return app;
-        }
     }
 }

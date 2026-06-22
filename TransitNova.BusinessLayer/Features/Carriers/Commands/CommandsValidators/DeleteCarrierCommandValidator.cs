@@ -1,5 +1,5 @@
 using FluentValidation;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Admin;
+using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.Domain.Enums.Result;
 namespace TransitNova.BusinessLayer.Features.Carriers.Commands.CommandsValidators

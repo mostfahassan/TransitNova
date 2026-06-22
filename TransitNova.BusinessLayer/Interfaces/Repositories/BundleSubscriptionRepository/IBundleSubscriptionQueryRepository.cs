@@ -1,8 +1,7 @@
-
 using TransitNova.BusinessLayer.DTOs.BundleSubscription;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
 
-namespace TransitNova.BusinessLayer.Interfaces.Repositories.BundleSubscription
+namespace TransitNova.BusinessLayer.Interfaces.Repositories.BundleSubscriptionRepository
 {
     public interface IBundleSubscriptionQueryRepository
     {

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Idempotent;
+using TransitNova.BusinessLayer.Interfaces.Repositories.IdempotentRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.InfraStructure.Common.IdentityService;

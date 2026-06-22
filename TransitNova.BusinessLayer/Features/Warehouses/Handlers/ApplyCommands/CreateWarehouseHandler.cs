@@ -4,7 +4,7 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Warehouse;
 using TransitNova.BusinessLayer.Features.Warehouses.Commands;
 using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Admin;
+using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;

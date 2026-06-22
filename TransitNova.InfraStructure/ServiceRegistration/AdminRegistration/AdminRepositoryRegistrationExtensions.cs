@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Admin;
+using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.InfraStructure.Repository.Admin;
 namespace TransitNova.InfraStructure.ServiceRegistration.AdminRegistration
 {

@@ -91,9 +91,9 @@ public sealed class DtoValidatorCoverageTests
     }
 
     [Fact]
-    public async Task VehicleDtoValidator_Should_AcceptDto_When_AllValuesAreValid()
+    public async Task CreateVehicleDtoValidator_Should_AcceptDto_When_AllValuesAreValid()
     {
-        var result = await new VehicleDtoValidator().ValidateAsync(ValidVehicle());
+        var result = await new CreateVehicleDtoValidator().ValidateAsync(ValidVehicle());
 
         result.IsValid.Should().BeTrue();
     }
@@ -104,7 +104,7 @@ public sealed class DtoValidatorCoverageTests
     [InlineData("volume")]
     [InlineData("carrier")]
     [InlineData("type")]
-    public async Task VehicleDtoValidator_Should_RejectDto_When_BusinessConstraintIsInvalid(string invalidField)
+    public async Task CreateVehicleDtoValidator_Should_RejectDto_When_BusinessConstraintIsInvalid(string invalidField)
     {
         var dto = ValidVehicle();
         switch (invalidField)
@@ -116,7 +116,7 @@ public sealed class DtoValidatorCoverageTests
             case "type": dto.VehicleType = (VehicleType)999; break;
         }
 
-        var result = await new VehicleDtoValidator().ValidateAsync(dto);
+        var result = await new CreateVehicleDtoValidator().ValidateAsync(dto);
 
         result.IsValid.Should().BeFalse();
     }
@@ -215,7 +215,7 @@ public sealed class DtoValidatorCoverageTests
         ZoneIds = [Guid.NewGuid()]
     };
 
-    private static VehicleDto ValidVehicle() => new()
+    private static CreateVehicleDto ValidVehicle() => new()
     {
         VehicleType = VehicleType.Van,
         PlateNumber = "ABC-123",

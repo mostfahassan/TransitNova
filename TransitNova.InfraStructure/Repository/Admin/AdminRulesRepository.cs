@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Admin;
+using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.InfraStructure.Context;
 namespace TransitNova.InfraStructure.Repository.Admin
 {
@@ -15,5 +15,10 @@ namespace TransitNova.InfraStructure.Repository.Admin
                 .Where(admin => admin.AppUserId == adminId)
                 .Select(admin => admin.FullName)
                 .FirstOrDefaultAsync(ct) ?? string.Empty;
+
+        public async Task<List<Guid>> GetAdminIdsAsync(CancellationToken cancellationToken)
+          => await context.Admins.AsNoTracking()
+            .Select(admin => admin.Id)
+            .ToListAsync(cancellationToken);
     }
 }

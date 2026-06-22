@@ -103,7 +103,7 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
 
         [Authorize(Policy = CarrierPermissions.ViewRating)]
         [EnableRateLimiting("DefaultRateLimiter")]
-        [HttpGet("{carrierId:guid}/Rating")]
+        [HttpGet("{carrierId:guid}/rating")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -125,7 +125,7 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
 
         [Authorize(Policy = CarrierPermissions.CanViewRevenue)]
         [EnableRateLimiting("DefaultRateLimiter")]
-        [HttpGet("{carrierId:guid}/Revenue")]
+        [HttpGet("{carrierId:guid}/revenue")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

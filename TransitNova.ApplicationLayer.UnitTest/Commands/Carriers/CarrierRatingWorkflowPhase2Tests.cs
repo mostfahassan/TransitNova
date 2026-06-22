@@ -5,7 +5,7 @@ using Moq;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
 using TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler;
-using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepo;
+using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;

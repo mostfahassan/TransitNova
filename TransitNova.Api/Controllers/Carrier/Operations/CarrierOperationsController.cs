@@ -43,7 +43,7 @@ namespace TransitNova.Api.Controllers.Carrier.Operations
 
         [Authorize(Policy = CarrierPermissions.CanCompleteDeliveryShipment)]
         [EnableRateLimiting("CommandsLimiter")]
-        [HttpPatch("{carrierId:guid}shipments/{shipmentId:guid}/complete-delivery")]
+        [HttpPatch("{carrierId:guid}/shipments/{shipmentId:guid}/complete-delivery")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

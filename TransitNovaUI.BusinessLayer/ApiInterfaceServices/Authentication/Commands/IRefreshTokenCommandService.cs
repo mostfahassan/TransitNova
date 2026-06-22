@@ -3,8 +3,7 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Authentication.Comman
 public interface IRefreshTokenCommandService
 {
     const string HttpMethod = "POST";
-    const string Route = "api/v{version:apiVersion}/refreshToken";
+    const string Route = "api/v{version:apiVersion}/refresh-tokens";
 
     Task<ApiResponse<UiAuthResponseDto>> RefreshTokenAsync(UiRefreshTokenDto request, CancellationToken cancellationToken = default);
 }
-

@@ -4,11 +4,11 @@ using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.UserProfile.Auth;
 using TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.Commands;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Token;
+using TransitNova.BusinessLayer.Interfaces.Repositories.TokenRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.BusinessLayer.Interfaces.Token;
- 
+
 using TransitNova.Domain.DomainExceptions;
 namespace TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.Handlers.ApplyingCommands
 {

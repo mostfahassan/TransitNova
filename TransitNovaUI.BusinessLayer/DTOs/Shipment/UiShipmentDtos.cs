@@ -64,7 +64,6 @@ public sealed record UiCreateShipmentDto(
 }
 
 public sealed record UiUpdateShipmentDto(
-    Guid Id,
     Guid? ReceiverId,
     string? DeliveryAddress,
     string? PickupAddress,
@@ -74,7 +73,6 @@ public sealed record UiUpdateShipmentDto(
 {
     public static UpdateShipmentDto ToDto(UiUpdateShipmentDto source) =>
         new(
-            source.Id,
             source.ReceiverId,
             source.DeliveryAddress,
             source.PickupAddress,

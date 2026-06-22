@@ -102,7 +102,7 @@ public sealed class ShipmentCommandHandlerTests
         var handler = new UpdateShipmentHandler(Mock.Of<ILogger<UpdateShipmentHandler>>(), shipments.Object, service.Object, cache.Object, unitOfWork.Object);
 
         var result = await handler.Handle(
-            new UpdateShipmentCommand(Guid.NewGuid(), Guid.NewGuid(), shipmentId, ValidUpdateDto(shipmentId)),
+            new UpdateShipmentCommand(Guid.NewGuid(), Guid.NewGuid(), shipmentId, ValidUpdateDto()),
             CancellationToken.None);
 
         result.Status.Should().Be(ResultStatus.NotFound);
@@ -120,7 +120,7 @@ public sealed class ShipmentCommandHandlerTests
         var cache = new Mock<ICacheService>();
         var unitOfWork = new Mock<IUnitOfWork>();
         var userId = Guid.NewGuid();
-        var updateDto = ValidUpdateDto(shipment.Id);
+        var updateDto = ValidUpdateDto();
         shipments.Setup(x => x.GetEntityAsync(shipment.Id, It.IsAny<CancellationToken>())).ReturnsAsync(shipment);
         unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
         var handler = new UpdateShipmentHandler(Mock.Of<ILogger<UpdateShipmentHandler>>(), shipments.Object, service.Object, cache.Object, unitOfWork.Object);
@@ -147,7 +147,7 @@ public sealed class ShipmentCommandHandlerTests
         var handler = new UpdateShipmentHandler(Mock.Of<ILogger<UpdateShipmentHandler>>(), shipments.Object, service.Object, Mock.Of<ICacheService>(), unitOfWork.Object);
 
         var act = () => handler.Handle(
-            new UpdateShipmentCommand(Guid.NewGuid(), Guid.NewGuid(), shipment.Id, ValidUpdateDto(shipment.Id)),
+            new UpdateShipmentCommand(Guid.NewGuid(), Guid.NewGuid(), shipment.Id, ValidUpdateDto()),
             CancellationToken.None);
 
         await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("invalid transition");
@@ -247,8 +247,7 @@ public sealed class ShipmentCommandHandlerTests
         "Pickup Address",
         null);
 
-    private static UpdateShipmentDto ValidUpdateDto(Guid shipmentId) => new(
-        shipmentId,
+    private static UpdateShipmentDto ValidUpdateDto() => new(
         null,
         "New Delivery Address",
         "New Pickup Address",

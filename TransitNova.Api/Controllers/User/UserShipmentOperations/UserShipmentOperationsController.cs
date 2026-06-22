@@ -47,7 +47,7 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
         // PATCH api/v1/shipments/{shipmentId}
         [Authorize(Policy = UserPermissions.UserCanCancelShipment)]
         [EnableRateLimiting("CommandsLimiter")]
-        [HttpPatch("{shipmentId:guid}")]
+        [HttpPatch("{shipmentId:guid}/cancel")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -103,7 +103,7 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
 
 
 
-        // DELETE api/v1/shipments/{shipmentId}
+        // GET api/v1/shipments/{trackingNumber}
         [EnableRateLimiting("CommandsLimiter")]
         [HttpDelete("{shipmentId:guid}")]
         [Authorize(Policy = UserPermissions.UserCanDeleteShipment)]
@@ -147,7 +147,7 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
         [EndpointName("TrackShipment")]
         [EndpointSummary("Track an existing shipment for the authenticated user.")]
         [EndpointDescription("This endpoint allows an authenticated user to Track an existing shipment by providing the Tracking Number in the request URL. The user must have the 'User.UserCanTrackShipment' permission to access this endpoint.")]
-        public async Task<IActionResult> DeleteShipment(string trackingNumber, CancellationToken ct)
+        public async Task<IActionResult> TrackShipment(string trackingNumber, CancellationToken ct)
         {
             var response = await mediator.Send(new TrackShipmentQuery(trackingNumber), ct);
             return response.ToActionResult();

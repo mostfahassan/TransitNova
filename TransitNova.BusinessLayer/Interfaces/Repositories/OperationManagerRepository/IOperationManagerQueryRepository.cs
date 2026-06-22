@@ -8,6 +8,7 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepo
     public interface IOperationManagerQueryRepository
     {
         Task<Guid> GetUserIdAsync(Guid userId, CancellationToken cancellationToken);
+        Task<List<Guid>> GetOperationManagersIdsAsync(CancellationToken cancellationToken);
         Task<string?> GetOperationManagerNameAsync(Guid userId, CancellationToken cancellationToken);
         Task<OperationManagerProfileDto?> GetOperationManagerProfileAsync(Guid id, CancellationToken cancellationToken);
         Task<List<OperationManagerProfileDto>> GetAllAsync(CancellationToken cancellationToken);

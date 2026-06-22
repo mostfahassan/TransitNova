@@ -42,10 +42,10 @@ public sealed record UiRatingCarrierDto(Guid CarrierId, string? Comment, int Rat
 
 }
 
-public sealed record UiChangeCarrierStatusDto(Guid Id, CarrierStatus Status)
+public sealed record UiChangeCarrierStatusDto(CarrierStatus Status)
 {
     public static ChangeCarrierStatus ToDto(UiChangeCarrierStatusDto source) =>
-        new(source.Id, source.Status);
+        new(source.Status);
 
 }
 

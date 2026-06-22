@@ -3,7 +3,7 @@ using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.BundleSubscription;
 using TransitNova.BusinessLayer.Features.BundleSubscriptions.Queries;
-using TransitNova.BusinessLayer.Interfaces.Repositories.BundleSubscription;
+using TransitNova.BusinessLayer.Interfaces.Repositories.BundleSubscriptionRepository;
 
 namespace TransitNova.BusinessLayer.Features.BundleSubscriptions.Handlers.ApplyQueries
 {

@@ -32,11 +32,10 @@ public sealed class UiCreateGovernmentDto
 
 public sealed class UiUpdateGovernmentDto
 {
-    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public int CountryId { get; set; }
 
     public static UpdateGovernmentDto ToDto(UiUpdateGovernmentDto source) =>
-        new() { Id = source.Id, Name = source.Name, CountryId = source.CountryId };
+        new() { Name = source.Name, CountryId = source.CountryId };
 
 }

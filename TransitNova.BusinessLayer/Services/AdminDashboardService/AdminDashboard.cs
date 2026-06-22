@@ -1,7 +1,7 @@
 ﻿
 
 using TransitNova.BusinessLayer.DTOs.Admin;
-using TransitNova.BusinessLayer.Interfaces.Repositories.Admin;
+using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.AdminDashboard;
 using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.BusinessLayer.Services.AdminDashboardService

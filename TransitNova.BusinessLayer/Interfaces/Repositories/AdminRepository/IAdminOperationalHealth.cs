@@ -1,5 +1,4 @@
-﻿
-namespace TransitNova.BusinessLayer.Interfaces.Repositories.Admin
+﻿namespace TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository
 {
     public interface IAdminOperationalHealth
     {

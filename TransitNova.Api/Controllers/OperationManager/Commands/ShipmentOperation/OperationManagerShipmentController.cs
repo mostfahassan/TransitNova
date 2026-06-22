@@ -10,7 +10,7 @@ using TransitNova.Domain.Contracts.Roles;
 namespace TransitNova.Api.Controllers.OperationManager.Commands.ShipmentOperation
 {
     [Authorize(Roles = Role.OperationManagerOrAdmin)]
-    [Route("api/v{version:apiVersion}/operation-manager/shipments")]
+    [Route("api/v{version:apiVersion}/operation-managers/shipments")]
     [ApiVersion("1.0")]
     [Tags("Operation Manager Shipment Commands")]
     [ApiController]

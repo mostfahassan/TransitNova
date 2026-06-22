@@ -70,8 +70,6 @@ namespace TransitNova.BusinessLayer.DTOs.Roles
 
     public sealed class UpdateRoleMembersDto
     {
-        public Guid RoleId { get; set; }
-
         public IReadOnlyCollection<RoleMemberUpdateDto> Users { get; set; } = [];
     }
 }
