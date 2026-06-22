@@ -11,7 +11,7 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
         public async Task<decimal?> GetAverageRatingAsync(Guid carrierId, CancellationToken ct = default)
             => await context.Carriers
                 .Where(c => c.Id == carrierId)
-                .AverageAsync(c => c.AverageRating, ct);
+                .AverageAsync(c => (decimal?)c.AverageRating, ct);
          
         public async Task<decimal?> GetCarrierRevenueAsync(Guid carrierId, CancellationToken ct = default)
            => await context.Shipments

@@ -23,7 +23,7 @@ namespace TransitNova.Api.Controllers.Trips.OperationManagerTripOperations.Carri
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Trips")]
+        [EndpointName("Get Carrier Trips For Operation Manager")]
         [EndpointSummary("Get trips for the authenticated carrier")]
         [EndpointDescription("Returns the trips assigned to the authenticated carrier.")]
         public async Task<IActionResult> Trips(Guid carrierId, CancellationToken ct)
@@ -43,7 +43,7 @@ namespace TransitNova.Api.Controllers.Trips.OperationManagerTripOperations.Carri
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Trip Details")]
+        [EndpointName("Get Carrier Trip Details For Operation Manager")]
         [EndpointSummary("Get details of a specific carrier trip")]
         [EndpointDescription("Returns the detailed information for a trip that belongs to the authenticated carrier.")]
         public async Task<IActionResult> Trip(Guid tripId, Guid carrierId, CancellationToken ct)

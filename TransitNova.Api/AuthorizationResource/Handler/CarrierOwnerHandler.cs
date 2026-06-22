@@ -22,7 +22,7 @@ namespace TransitNova.Api.AuthorizationResource.Handler
 
             if (isCarrierOwner) context.Succeed(requirement);
 
-            return;
+          
         }
     }
 

@@ -17,7 +17,9 @@ namespace TransitNova.InfraStructure.Repository.Admin
         public async Task<decimal> AverageCarrierRatingAsync(CancellationToken cancellationToken)
         {
             await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
-            return await context.Carriers.AsNoTracking().AverageAsync(r => r.AverageRating,cancellationToken);
+            return await context.Carriers
+                .AsNoTracking()
+                .AverageAsync(r => (decimal?)r.AverageRating, cancellationToken) ?? 0m;
             
         }
 
@@ -50,15 +52,17 @@ namespace TransitNova.InfraStructure.Repository.Admin
                         })
                         .FirstOrDefaultAsync(cancellationToken);
 
-            return stats is null|| stats.Total == 0  
-                            ? 0
-                            : stats.Total / stats.Cancelled * 100;
+            return stats is null || stats.Total == 0
+                            ? 0m
+                            : stats.Cancelled * 100m / stats.Total;
         }
 
         public async Task<decimal> DeliverySuccessRateAsync(CancellationToken cancellationToken)
         {
             await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
-            return await context.Carriers.AverageAsync(c => c.SuccessRate, cancellationToken);
+            return await context.Carriers
+                .AsNoTracking()
+                .AverageAsync(c => (decimal?)c.SuccessRate, cancellationToken) ?? 0m;
         }
 
         public async Task<int> GetActiveCarriersCountAsync(CancellationToken cancellationToken)

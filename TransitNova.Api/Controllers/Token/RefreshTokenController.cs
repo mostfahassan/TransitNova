@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.DTOs.RefreshToken;
 using TransitNova.BusinessLayer.Features.Token.Commands;
-using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
 namespace TransitNova.Api.Controllers.Token
 {

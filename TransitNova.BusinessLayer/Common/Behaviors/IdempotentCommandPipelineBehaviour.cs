@@ -16,10 +16,9 @@ namespace TransitNova.BusinessLayer.Common.Behaviors
             if (RequestKeyExists)
                 throw new IdempotentConflicExceptionException();
 
-            await idempotent.CreateRequestAsync(request.RequestId, typeof(TRequest).Name, cancellationToken);
-
             var response = await next(cancellationToken);
-
+            
+            await idempotent.CreateRequestAsync(request.RequestId, typeof(TRequest).Name, cancellationToken);
             return response;
         }
     }

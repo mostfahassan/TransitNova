@@ -21,11 +21,21 @@ namespace TransitNova.InfraStructure.Repository.Generic
                 .ToListAsync(ct);
 
         public async Task<TRetrieve?> GetByIdAsync<TRetrieve>(TKey id, CancellationToken ct)
-            => await _dbSet
+        {
+            var query = _dbSet
                 .AsNoTracking()
-                .Where(x => x.Id!.Equals(id))
+                .Where(x => x.Id!.Equals(id));
+
+            if (typeof(TRetrieve) == typeof(TEntity))
+            {
+                var entity = await query.FirstOrDefaultAsync(ct);
+                return (TRetrieve?)(object?)entity;
+            }
+
+            return await query
                 .ProjectTo<TRetrieve>(mapperConfig)
                 .FirstOrDefaultAsync(ct);
+        }
 
         public async Task<TRetrieve?> FindAsync<TRetrieve>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
             => await _dbSet

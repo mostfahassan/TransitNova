@@ -89,9 +89,9 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Profile")]
-        [EndpointSummary("Get the authenticated carrier profile")]
-        [EndpointDescription("Returns the profile information for the authenticated carrier.")]
+        [EndpointName("Get Carrier Rating")]
+        [EndpointSummary("Get the authenticated carrier rating")]
+        [EndpointDescription("Returns the rating information for the authenticated carrier.")]
         public async Task<IActionResult> Profile(Guid carrierId,CancellationToken ct)
         {
             if (!await IsCarrierOwnerAsync(carrierId))
@@ -110,9 +110,9 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Profile")]
-        [EndpointSummary("Get the authenticated carrier profile")]
-        [EndpointDescription("Returns the profile information for the authenticated carrier.")]
+        [EndpointName("Get Carrier Revenue")]
+        [EndpointSummary("Get the authenticated carrier revenue")]
+        [EndpointDescription("Returns the revenue information for the authenticated carrier.")]
         public async Task<IActionResult> Rating(Guid carrierId, CancellationToken ct)
         {
             if (!await IsCarrierOwnerAsync(carrierId))

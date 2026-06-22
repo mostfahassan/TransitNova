@@ -6,6 +6,7 @@
     <Project Path="TransitNova.InfraStructure/TransitNova.InfraStructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="TransitNova.Api.IntegrationTests/TransitNova.Api.IntegrationTests.csproj" />
     <Project Path="TransitNova.ApplicationLayer.UnitTest/TransitNova.ApplicationLayer.Tests.csproj" Id="01b73d15-0c22-484b-8be9-d462b610b35d" />
     <Project Path="TransitNova.Domain.Tests/TransitNova.Domain.Tests.csproj" Id="e4dcbe89-b6f7-4e21-99c6-0a5e02b10e7e" />
     <Project Path="TransitNova.InfraStructure.UnitTest/TransitNova.InfraStructure.Tests.csproj" Id="907ac3a8-0bdc-4819-8c1a-ecc90bd80048" />

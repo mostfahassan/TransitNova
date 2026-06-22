@@ -11,3 +11,5 @@ builder.Host.AddSerilog();
 var app = builder.Build();
 app.UseDependencies();
 app.Run();
+
+public partial class Program;

@@ -67,7 +67,7 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.CarrierQueries
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Shipments")]
+        [EndpointName("Get Carrier Shipments For Operation Manager")]
         [EndpointSummary("Get authenticated carrier shipments for operation management")]
         [EndpointDescription("Returns the shipments assigned to the authenticated carrier using the provided filter criteria.")]
         public async Task<IActionResult> Shipments(Guid carrierId, [FromQuery] CarrierShipmentFilterDto filter, CancellationToken ct)
@@ -89,7 +89,7 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.CarrierQueries
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Shipment Details")]
+        [EndpointName("Get Carrier Shipment Details For Operation Manager")]
         [EndpointSummary("Get details of a specific carrier shipment")]
         [EndpointDescription("Returns the detailed information for a shipment that belongs to the authenticated carrier.")]
         public async Task<IActionResult> Shipment(Guid shipmentId, Guid carrierId, CancellationToken ct)

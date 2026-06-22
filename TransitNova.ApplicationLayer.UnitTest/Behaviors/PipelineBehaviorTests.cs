@@ -167,26 +167,31 @@ public sealed class PipelineBehaviorTests
     }
 
     [Fact]
-    public async Task CachingBehaviour_WhenCancellationTokenIsPassed_ShouldInvokeHandlerWithDelegateDefaultToken()
+    public async Task CachingBehaviour_Should_ForwardCancellationTokenToCacheAndHandler_When_TokenIsProvided()
     {
         var cache = new Mock<ICacheService>();
-        var cancellationToken = CancellationToken.None;
-        cache.Setup(x => x.GetAsync<BaseResult>("test:key", cancellationToken)).ReturnsAsync((BaseResult?)null);
-        var behavior = new CachingBehaviour<CacheableRequest, BaseResult>(cache.Object);
         using var cancellation = new CancellationTokenSource();
+        cache.Setup(x => x.GetAsync<BaseResult>("test:key", cancellation.Token)).ReturnsAsync((BaseResult?)null);
+        var behavior = new CachingBehaviour<CacheableRequest, BaseResult>(cache.Object);
         var received = CancellationToken.None;
+        var response = BaseResult.Success();
 
         await behavior.Handle(
             new CacheableRequest("test:key"),
             token =>
             {
                 received = token;
-                return Task.FromResult(BaseResult.Success());
+                return Task.FromResult(response);
             },
             cancellation.Token);
 
-        received.Should().Be(CancellationToken.None,
-            "the current behavior invokes next() without passing its pipeline token");
+        received.Should().Be(cancellation.Token);
+        cache.Verify(x => x.GetAsync<BaseResult>("test:key", cancellation.Token), Times.Once);
+        cache.Verify(x => x.SetAsync(
+            "test:key",
+            response,
+            TimeSpan.FromMinutes(20),
+            cancellation.Token), Times.Once);
     }
 
     [Fact]

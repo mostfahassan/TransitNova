@@ -26,10 +26,11 @@ namespace TransitNova.InfraStructure.BackgroundJobs
 
                     var domainEvent = (IDomainEvent?)JsonConvert.DeserializeObject(message.Content ?? string.Empty, type)
                         ?? throw new InvalidOperationException("Deserialization returned null");
-
+                    
                     await publisher.Publish(domainEvent, context.CancellationToken);
 
                     message.ProcessedOn = DateTime.UtcNow;
+                    await dbContext.SaveChangesAsync(context.CancellationToken);
                 }
                 catch (Exception ex)
                 {

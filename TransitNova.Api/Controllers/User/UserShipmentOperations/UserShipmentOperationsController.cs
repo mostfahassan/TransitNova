@@ -134,7 +134,7 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
 
         // DELETE api/v1/shipments/{shipmentId}
         [EnableRateLimiting("DefaultRateLimiter")]
-        [HttpGet("{trackingNumber:string}")]
+        [HttpGet("{trackingNumber}")]
         [Authorize(Policy = UserPermissions.UserCanTrackShipment)]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]

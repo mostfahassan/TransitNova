@@ -56,6 +56,7 @@
                 ViewRejectedShipments,
                 ViewAllShipments,
                 TrackShipment,
+                ViewShipmentHistory,
                 ViewCarriers,
                 ViewCarrierDetails,
                 CheckCarrierAvailability,

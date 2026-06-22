@@ -19,7 +19,6 @@
         public const string CanRatePickupCarrier = "User.RatePickupCarrier";
         public const string CanRateDeliveryCarrier = "User.RateDeliveryCarrier";
      
-
         public static IReadOnlyList<string> All =>
                 [
                     UserCanShowHisDashboard,

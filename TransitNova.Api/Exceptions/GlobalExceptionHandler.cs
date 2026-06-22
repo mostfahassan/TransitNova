@@ -33,6 +33,12 @@ internal sealed class GlobalExceptionHandler(
             UnauthorizedAccessException
                 => StatusCodes.Status401Unauthorized,
 
+            KeyNotFoundException
+                => StatusCodes.Status404NotFound,
+
+            EntityNotFoundException
+                => StatusCodes.Status404NotFound,
+
             InvalidShipmentStateException
                 => StatusCodes.Status400BadRequest,
 

@@ -88,6 +88,15 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
 
             var totalCount = await query.CountAsync(ct);
 
+            if (totalCount == 0)
+            {
+                return PagedResult<TRetrieve>.From(
+                    [],
+                    totalCount,
+                    filterCriteria.PageNumber,
+                    filterCriteria.PageSize);
+            }
+
             query = filterCriteria.SortBy switch
             {
                 CarrierSortBy.Rating => filterCriteria.SortDescending
@@ -156,8 +165,7 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
             return carrier;
         }
 
-        public async Task<Guid> GetCarrierIdByUserIdAsync(Guid appUserId, CancellationToken ct = default)
-         => await context.Carriers.Where(c => c.Id == appUserId).Select(c => c.Id).FirstOrDefaultAsync(ct);
+      
 
         public async Task<IEnumerable<CarrierProfileDto>> GetCarriersInStatusAsync(CarrierStatus status, CancellationToken ct = default)
         {
@@ -167,11 +175,6 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
                .ProjectTo<CarrierProfileDto>(mapper.ConfigurationProvider)
                .ToListAsync(ct);
             return carrierInStatus;
-        }
-
-        public Task<PagedResult<CarrierSummaryDetailsDto>> GetCarriersServingCityAsync(int pageNumber, int pageSize, CancellationToken ct = default)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<string?> GetCarrierNameAsync(Guid carrierId, CancellationToken ct = default)

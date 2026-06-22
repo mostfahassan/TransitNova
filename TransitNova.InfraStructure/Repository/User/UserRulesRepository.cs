@@ -8,7 +8,6 @@ namespace TransitNova.InfraStructure.Repository.User
     internal class UserRulesRepository(AppDbContext context) : IUserRulesRepository
     {
         public async Task<bool> OwnsAccountAsync(Guid AppUserId, CancellationToken cancellationToken)
-
              => await context.UserProfiles.AnyAsync(up => up.AppUserId == AppUserId, cancellationToken);
         
 
