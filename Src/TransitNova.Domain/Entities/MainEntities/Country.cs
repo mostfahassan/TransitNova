@@ -1,0 +1,28 @@
+﻿using TransitNova.Domain.Entities.Common;
+namespace TransitNova.Domain.Entities.MainEntities
+{
+    public class Country : BaseEntity<int>
+    {
+        public string Name { get; set; } = null!;
+        public ICollection<Government> Governments { get;} = new List<Government>();
+
+        private Country()
+        {
+            
+        }
+        private Country(string name)
+        {
+            Name = name;
+            CurrentState = true;
+        }
+        public static Country Create(string name)
+            => new (name);
+      
+
+        public void Update(string name)
+        {
+            Name = name;
+            UpdatedAt = DateTime.UtcNow;
+        }
+    }
+}

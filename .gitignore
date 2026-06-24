@@ -361,3 +361,23 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# IDE folders
+.vs/
+.vscode/
+
+# AI / Agent folders
+.codex/
+.agents/
+
+# Review files
+ENGINEERING_REVIEW
+ENGINEERING_REVIEW.*
+
+
+# Test artifacts
+TestResults/
+TestResultsExpansion/
+*.trx
+*.coverage
+*.coveragexml

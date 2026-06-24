@@ -1,0 +1,60 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: transitnova-db
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${SQL_PASSWORD}"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q \"SELECT 1\" || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q \"SELECT 1\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - transitnova
+
+  transitnova_api:
+    build:
+      context: .
+      dockerfile: Src/Dockerfile
+    container_name: transitnova-api
+    ports:
+      - "5200:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      MVC__Host: http://transitnova-ui:80
+      JWT__Key: "${JWT_KEY}"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=${SQL_DATABASE};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=True"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - transitnova
+
+  transitnova-ui:
+    build:
+      context: .
+      dockerfile: Ui/Dockerfile
+    container_name: transitnova-ui
+    ports:
+      - "5169:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+    depends_on:
+      - transitnova_api
+    networks:
+      - transitnova
+
+networks:
+  transitnova:
+    driver: bridge
+
+volumes:
+  sqlserver-data:

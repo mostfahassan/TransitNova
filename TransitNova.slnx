@@ -1,22 +1,27 @@
 <Solution>
-  <Folder Name="/scr/">
-    <Project Path="TransitNova.Api/TransitNova.Api.csproj" />
-    <Project Path="TransitNova.BusinessLayer/TransitNova.BusinessLayer.csproj" Id="b249fc41-8e9f-4140-97e9-70e33d9a19c4" />
-    <Project Path="TransitNova.Domain/TransitNova.Domain.csproj" />
-    <Project Path="TransitNova.InfraStructure/TransitNova.InfraStructure.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="TransitNova.Api.IntegrationTests/TransitNova.Api.IntegrationTests.csproj" />
-    <Project Path="TransitNova.ApplicationLayer.UnitTest/TransitNova.ApplicationLayer.Tests.csproj" Id="01b73d15-0c22-484b-8be9-d462b610b35d" />
-    <Project Path="TransitNova.Domain.Tests/TransitNova.Domain.Tests.csproj" Id="e4dcbe89-b6f7-4e21-99c6-0a5e02b10e7e" />
-    <Project Path="TransitNova.InfraStructure.UnitTest/TransitNova.InfraStructure.Tests.csproj" Id="907ac3a8-0bdc-4819-8c1a-ecc90bd80048" />
-    <Project Path="TransitNova.MappingTests/TransitNova.MappingTests.csproj" />
-  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
-  <Folder Name="/TransitNova.Ui/">
-    <Project Path="TransitNova.UI/TransitNova.UI.csproj" Id="e00b64c0-c3d0-4a96-8ba1-634064eb64e7" />
-    <Project Path="TransitNovaUI.BusinessLayer/TransitNovaUI.BusinessLayer.csproj" Id="603895a0-bb1f-41da-92d2-aa104b8c2777" />
+  <Folder Name="/src/">
+    <Project Path="Src/TransitNova.Api/TransitNova.Api.csproj" />
+    <Project Path="Src/TransitNova.BusinessLayer/TransitNova.BusinessLayer.csproj" />
+    <Project Path="Src/TransitNova.Domain/TransitNova.Domain.csproj" />
+    <Project Path="Src/TransitNova.InfraStructure/TransitNova.InfraStructure.csproj" />
+  </Folder>
+  <Folder Name="/TransitNovaPayment/">
+    <Project Path="TransitNovaPayment/TransitNovaPayment.API/TransitNovaPayment.API.csproj" />
+    <Project Path="TransitNovaPayment/TransitNovaPayment.Busieness/TransitNovaPayment.Busieness.csproj" />
+    <Project Path="TransitNovaPayment/TransitNovaPayment.Infrastructure/TransitNovaPayment.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Ui/">
+    <Project Path="UI/TransitNova.UI/TransitNova.UI.csproj" />
+    <Project Path="UI/TransitNovaUI.BusinessLayer/TransitNovaUI.BusinessLayer.csproj" />
+  </Folder>
+  <Folder Name="/UnitTesting/">
+    <Project Path="Tests/TransitNova.Api.IntegrationTests/TransitNova.Api.IntegrationTests.csproj" />
+    <Project Path="Tests/TransitNova.ApplicationLayer.UnitTest/TransitNova.ApplicationLayer.Tests.csproj" />
+    <Project Path="Tests/TransitNova.Domain.Tests/TransitNova.Domain.Tests.csproj" />
+    <Project Path="Tests/TransitNova.InfraStructure.UnitTest/TransitNova.InfraStructure.Tests.csproj" />
+    <Project Path="Tests/TransitNova.MappingTests/TransitNova.MappingTests.csproj" />
   </Folder>
 </Solution>
