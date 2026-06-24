@@ -381,3 +381,7 @@ TestResultsExpansion/
 *.trx
 *.coverage
 *.coveragexml
+
+.vscode/
+.codex/
+.github/Validations/
