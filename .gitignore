@@ -385,3 +385,5 @@ TestResultsExpansion/
 .vscode/
 .codex/
 .github/Validations/
+.env
+.env.*
