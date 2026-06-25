@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.ApplicationLayer.Tests.TestData;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Shipments;
-using TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Commands.ShipmentsHandler;
+using TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Commands.Shipments;
 using TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;

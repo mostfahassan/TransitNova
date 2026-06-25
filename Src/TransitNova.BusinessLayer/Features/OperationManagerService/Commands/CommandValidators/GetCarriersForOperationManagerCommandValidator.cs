@@ -1,7 +1,7 @@
 using FluentValidation;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Trips;
-using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
+using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Carriers;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepository;
 using TransitNova.Domain.Enums.Carrier;

@@ -1,14 +1,17 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
+    <File Path="docker-compose.yml" />
   </Folder>
   <Folder Name="/src/">
+    <File Path="Src/Dockerfile" />
     <Project Path="Src/TransitNova.Api/TransitNova.Api.csproj" />
     <Project Path="Src/TransitNova.BusinessLayer/TransitNova.BusinessLayer.csproj" />
     <Project Path="Src/TransitNova.Domain/TransitNova.Domain.csproj" />
     <Project Path="Src/TransitNova.InfraStructure/TransitNova.InfraStructure.csproj" />
   </Folder>
   <Folder Name="/TransitNovaPayment/">
+    <File Path="TransitNovaPayment/Dockerfile" />
     <Project Path="TransitNovaPayment/TransitNovaPayment.API/TransitNovaPayment.API.csproj" />
     <Project Path="TransitNovaPayment/TransitNovaPayment.Busieness/TransitNovaPayment.Busieness.csproj" />
     <Project Path="TransitNovaPayment/TransitNovaPayment.Infrastructure/TransitNovaPayment.Infrastructure.csproj" />

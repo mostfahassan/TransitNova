@@ -1,39 +1,62 @@
-﻿using TransitNovaPayment.Busieness.Models.Common;
-using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
+﻿using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
 using TransitNovaPayment.Busieness.Models.PaymentHistoryEntity;
 namespace TransitNovaPayment.Busieness.Models.PaymentEntity
 {
     public  class Payment : BaseEntity<Guid>
     {
-        public decimal Amount { get; private set; }
-        public decimal Commission { get; private set; }
+        private readonly List<PaymentHistory> PaymentHistories = [] ;
+        public decimal TotalAmount { get; private set; }
         public byte[] RowVersion { get; private set; } = default!;
         public PaymentMethod PaymentMethod { get; private set; }
         public PaymentStatus Status { get; private set; }
         public DateTime? PaidAt { get; private set; }
-        public string? Notes { get; private set; }
+        public DateTime? FailedAt { get; private set; }
+        public string? FailedReason { get; private set; }
         public Guid ShipmentId { get; private set; }
-      
-        public virtual ICollection<PaymentHistory> PaymentHistories { get; set; } = new List<PaymentHistory>();
+        public IReadOnlyCollection<PaymentHistory> Histories => PaymentHistories;      
 
         private Payment()
         {
         }
 
-        private Payment(decimal amount, PaymentMethod paymentMethod, string? notes, Guid shipmentId)
+        private Payment(decimal amount, Guid shipmentId, PaymentMethod paymentMethod)
         {
             Id = Guid.CreateVersion7();
-            Amount = amount;
+            TotalAmount = amount;
             PaymentMethod = paymentMethod;
             Status = PaymentStatus.Pending;
-            Notes = notes;
             ShipmentId = shipmentId;
-            CurrentState = true;
         }
 
-        public static Payment Create(decimal amount,  PaymentMethod paymentMethod, PaymentStatus status, string? notes, Guid shipmentId)
+        public static Payment Create(decimal amount, Guid shipmentId,  PaymentMethod paymentMethod)
         {
-            return new Payment(amount, paymentMethod, notes, shipmentId);
+            return new Payment(amount, shipmentId, paymentMethod);
+        }
+
+        PaymentHistory AddPaymentHistory(PaymentStatus status)
+            => new()
+            {
+                PaymentId = Id,
+                OldStatus = PaymentStatus.Pending,
+                NewStatus = status,
+                ChangedAt = DateTime.UtcNow,
+            };
+
+        public void MarkAsSucess()
+        {
+            if (Status != PaymentStatus.Pending)
+                throw new InvalidOperationException();
+
+            Status = PaymentStatus.Success;
+            PaidAt = DateTime.UtcNow;
+            PaymentHistories.Add(AddPaymentHistory(PaymentStatus.Success));
+        }
+        public void MarkAsFailure(string reason)
+        {
+            Status = PaymentStatus.Failed;
+            FailedReason = reason;
+            FailedAt = DateTime.UtcNow;
+            PaymentHistories.Add(AddPaymentHistory(PaymentStatus.Failed));
         }
     }
 }

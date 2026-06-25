@@ -16,7 +16,7 @@ namespace TransitNovaPayment.Infrastructure.EntityConfiguration
             payment.Property(p => p.RowVersion)
                 .IsRowVersion();
 
-            payment.HasMany(p => p.PaymentHistories)
+            payment.HasMany(p => p.Histories)
                 .WithOne(h => h.Payment)
                 .HasForeignKey(p => p.PaymentId)
                 .OnDelete(DeleteBehavior.Restrict); 

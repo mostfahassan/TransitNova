@@ -7,6 +7,7 @@ using TransitNova.BusinessLayer.Features.Carriers.Commands;
 using TransitNova.BusinessLayer.Features.Carriers.Queries.Carrier;
 using TransitNova.BusinessLayer.Features.Carriers.Queries.Shipment;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
+using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Carriers;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
 namespace TransitNova.Api.Controllers.Admin.CarrierOperation

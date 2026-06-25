@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Shipment;
-using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
+using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Shipments;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Queries

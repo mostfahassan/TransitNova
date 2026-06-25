@@ -6,6 +6,7 @@ using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.OperationManagerQueryHandler;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
+using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.OperationManagerQueries;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.Domain.Enums.Shipment;
 

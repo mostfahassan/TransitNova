@@ -29,6 +29,9 @@ namespace TransitNova.Api.Controllers.Carrier.Command
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Consumes("application/json")]
+        [EndpointName("Update Carrier Profile")]
+        [EndpointSummary("Update Authenticated Carrier Profile")]
+        [EndpointDescription("Updates the primary profile details for the authenticated carrier. Requires a valid X-Idempotency-Key header and resource ownership validation to ensure safe and idempotent updates.")]
         public async Task<IActionResult> UpdateProfileAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId,  [FromBody] UpdateCarrierDto dto, CancellationToken ct)
         {
             if (!Guid.TryParse(requestId, out Guid parsedRequestId))
@@ -54,6 +57,9 @@ namespace TransitNova.Api.Controllers.Carrier.Command
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Consumes("application/json")]
+        [EndpointName("Add Carrier Additional Info ")]
+        [EndpointSummary("Add Carrier Additional Info For Authenticated Carrier")]
+        [EndpointDescription("Appends or updates supplementary information for the authenticated carrier. Requires a valid X-Idempotency-Key header and resource ownership validation to ensure safe execution")]
         public async Task<IActionResult> AddCarrierInfoAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] AdditionalInfoDto dto, CancellationToken ct)
         {
             if (!Guid.TryParse(requestId, out Guid parsedRequestId))

@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Trips;
-using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
+using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Trips;
 using TransitNova.BusinessLayer.Interfaces.Repositories.TripRepository;
 namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Queries
 {

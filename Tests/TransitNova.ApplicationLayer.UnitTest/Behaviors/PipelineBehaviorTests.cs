@@ -1,6 +1,7 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Text.Json;
 using TransitNova.BusinessLayer.Common.Behaviors;
@@ -152,7 +153,7 @@ public sealed class PipelineBehaviorTests
     [Fact]
     public async Task CachingBehavior_WhenHandlerThrows_ShouldNotCacheResponseAsync()
     {
-        var cache = new Mock<ICacheService>(); 
+        var cache = new Mock<ICacheService>();
         var cancellationToken = CancellationToken.None;
 
         cache.Setup(x => x.GetAsync<BaseResult>("test:key", cancellationToken)).ReturnsAsync((BaseResult?)null);
@@ -194,7 +195,6 @@ public sealed class PipelineBehaviorTests
             TimeSpan.FromMinutes(20),
             cancellation.Token), Times.Once);
     }
-
     [Fact]
     public async Task IdempotencyBehavior_Should_ReturnStoredResponseAndSkipNext_When_RequestAlreadyExistsAsync()
     {

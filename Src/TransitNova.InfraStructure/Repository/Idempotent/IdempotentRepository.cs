@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.EntityFrameworkCore;
 using TransitNova.BusinessLayer.Interfaces.Repositories.IdempotentRepository;
 using TransitNova.Domain.Entities.MainEntities;
@@ -29,7 +29,18 @@ namespace TransitNova.InfraStructure.Repository.Idempotent
           => await context.IdempotentTableKey.AsNoTracking().Where(r => r.RequestId == requestId)
                .Select(r => r.ResponseJson)
                .FirstOrDefaultAsync(cancellationToken);
-            
-        
+
+        public async Task RemoveRequestAsync(Guid requestId, CancellationToken cancellationToken)
+        {
+            var request = await context.IdempotentTableKey
+                .Where(r => r.RequestId == requestId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (request is null)
+                return;
+
+            context.IdempotentTableKey.Remove(request);
+            await context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

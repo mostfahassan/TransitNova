@@ -30,7 +30,28 @@ services:
       ASPNETCORE_URLS: http://+:80
       MVC__Host: http://transitnova-ui:80
       JWT__Key: "${JWT_KEY}"
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=${SQL_DATABASE};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=True"
+      PaymentSettings__PrivateKey: "${PaymentSettings__PrivateKey}"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=${SQL_DATABASE:-TransitNovaDb};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=True"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      transitnova-payment:
+        condition: service_started
+    networks:
+      - transitnova
+
+  transitnova-payment:
+    build:
+      context: .
+      dockerfile: TransitNovaPayment/Dockerfile
+    container_name: transitnova-payment
+    ports:
+      - "5300:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      PaymentSettings__PrivateKey: "V7mF8L2nWQp0Xj6kR4sYc9TgH1uEaD3bN5qMz+7PvKo="
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=${PAYMENT_SQL_DATABASE:-TransitNovaPaymentDb};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=True"
     depends_on:
       sqlserver:
         condition: service_healthy

@@ -14,20 +14,9 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Abstraction\Interfaces\" />
-	  <Folder Include="Abstraction\Repositories\" />
-	  <Folder Include="Common\ResultResponse\PagedResult\" />
-	  <Folder Include="Common\ResultResponse\Result\" />
+	  <Folder Include="Common\Abstract\Abstraction\Repositories\PaymentHistoryRepository\" />
 	  <Folder Include="Common\DTO\PaymentHistoryDto\" />
-	  <Folder Include="Common\DTO\PaymentDto\" />
-	  <Folder Include="Services\PaymentHistory\Command\" />
-	  <Folder Include="Services\PaymentHistory\Handler\" />
-	  <Folder Include="Services\PaymentHistory\Query\" />
-	  <Folder Include="Services\Payment\Handler\" />
-	  <Folder Include="Services\Payment\Command\" />
-	  <Folder Include="Services\Payment\Query\" />
 	  <Folder Include="Validation\PaymentHistoryValidator\" />
-	  <Folder Include="Validation\PaymentValidators\" />
 	</ItemGroup>
 	
 </Project>

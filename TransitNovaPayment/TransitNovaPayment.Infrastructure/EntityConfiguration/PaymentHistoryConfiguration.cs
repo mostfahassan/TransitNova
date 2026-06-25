@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TransitNovaPayment.Busieness.Models.PaymentHistoryEntity;
-
 namespace TransitNovaPayment.Infrastructure.EntityConfiguration
 {
     public class PaymentHistoryConfiguration : IEntityTypeConfiguration<PaymentHistory>
@@ -9,7 +8,7 @@ namespace TransitNovaPayment.Infrastructure.EntityConfiguration
         public void Configure(EntityTypeBuilder<PaymentHistory> paymentHistory)
         {
             paymentHistory.HasOne(ph => ph.Payment)
-            .WithMany(p => p.PaymentHistories)
+            .WithMany(p => p.Histories)
             .HasForeignKey(ph => ph.PaymentId)
             .OnDelete(DeleteBehavior.Restrict);
 

@@ -1,15 +1,11 @@
 ﻿using FluentValidation;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Carriers;
 using TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepository;
-using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 namespace TransitNova.BusinessLayer.Features.OperationManagerService.Commands.CommandValidators
 {
     public sealed class AssignShipmentPickupToCarrierCommandValidator : AbstractValidator<AssignShipmentPickupToCarrierCommand>
     {
-        public AssignShipmentPickupToCarrierCommandValidator(
-            IOperationManagerRulesRepository managerRepository,
-            IShipmentRulesRepository shipmentRepository)
-
+        public AssignShipmentPickupToCarrierCommandValidator(IOperationManagerRulesRepository managerRepository)
         {
             RuleFor(x => x.OperationManagerId)
                 .MustAsync(managerRepository.ExistsAsync)
