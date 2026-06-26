@@ -12,13 +12,18 @@
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="16.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+		<PackageReference Include="Serilog.Sinks.Seq" Version="9.1.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.19.1" />
 		<PackageReference Include="Ulid" Version="1.4.1" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.16.0" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.16.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.16.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.16.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\TransitNovaPayment.Busieness\TransitNovaPayment.Busieness.csproj" />

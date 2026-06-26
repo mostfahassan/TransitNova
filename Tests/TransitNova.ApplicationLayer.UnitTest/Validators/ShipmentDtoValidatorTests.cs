@@ -4,6 +4,7 @@ using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Validators.ShipmentValidators;
 using TransitNova.BusinessLayer.Validators.UserProfile.User;
+using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
 
 namespace TransitNova.ApplicationLayer.Tests.Validators;
@@ -171,5 +172,7 @@ public sealed class ShipmentDtoValidatorTests
         enShipmentType.Standard,
         "Alexandria Port",
         "Cairo Hub",
-        Guid.NewGuid());
+        Guid.NewGuid(),
+        Guid.NewGuid(),
+        PaymentMethod.CreditCard);
 }

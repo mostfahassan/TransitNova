@@ -16,7 +16,7 @@ namespace TransitNova.InfraStructure.ServiceRegistration.InfraStructureRegistrat
                 {
                     policy.WithOrigins(mvcHost!)
                           .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE")
-                          .WithHeaders("Authorization", "Content-Type", "Accept", "X-Requested-With", "X - Idempotency - Key")
+                          .WithHeaders("Authorization", "Content-Type", "Accept", "X-Requested-With", "X-Idempotency-Key")
                           .AllowCredentials();
                 });
             });

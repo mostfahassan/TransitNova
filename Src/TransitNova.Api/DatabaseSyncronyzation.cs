@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.Api
 {
 public static class DatabaseSyncronyzation

@@ -29,7 +29,7 @@ namespace TransitNova.Api.Controllers.Admin.User
         [EndpointDescription("Returns paginated users using the provided filter criteria.")]
         public async Task<IActionResult> UsersAsync([FromQuery] UserFiltrationDto filter, CancellationToken ct)
         {
-            var response = await mediator.Send(new FilterUsersCommand(filter), ct);
+            var response = await mediator.Send(new FilterUsersQuery(filter), ct);
             return response.ToActionResult();
         }
 

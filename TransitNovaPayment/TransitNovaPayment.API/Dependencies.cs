@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.RateLimiting;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Serilog;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
@@ -15,6 +17,7 @@ namespace TransitNovaPayment.Api
             service.AddBuisnessDependencies();
             service.AddInfrastructureDependencies();
             service.AddJsonSerializer();
+            service.AddOpenTelemetryServices();
             service.AddAuthentication();
             service.AddAuthorization();
             service.AddCorsConfiguration();
@@ -165,6 +168,20 @@ namespace TransitNovaPayment.Api
             return service;
         }
 
+        public static IServiceCollection AddOpenTelemetryServices(
+               this IServiceCollection services)
+        {
+            services.AddOpenTelemetry()
+                .ConfigureResource(resource => resource.AddService("transitnova-payment"))
+                .WithTracing(tracing =>
+                {
+                    tracing
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation();
+                    tracing.AddOtlpExporter();
+                });
 
+            return services;
+        }
     }
 }

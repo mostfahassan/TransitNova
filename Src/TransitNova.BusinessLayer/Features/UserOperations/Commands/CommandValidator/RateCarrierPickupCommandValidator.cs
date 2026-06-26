@@ -1,6 +1,7 @@
 ﻿
 using FluentValidation;
 using TransitNova.BusinessLayer.DTOs.Carrier;
+using TransitNova.BusinessLayer.Features.UserOperations.Commands.Carrier;
 using TransitNova.Domain.Enums.Result;
 namespace TransitNova.BusinessLayer.Features.UserOperations.Commands.CommandValidator
 {

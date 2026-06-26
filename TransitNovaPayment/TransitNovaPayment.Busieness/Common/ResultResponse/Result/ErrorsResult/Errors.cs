@@ -7,5 +7,7 @@ namespace TransitNovaPayment.Busieness.Common.ResultResponse.Result.ErrorsResult
             => new(ErrorCode.FAILED, message);
         public static Error Validation(string message)
             => new(ErrorCode.VALIDATION_ERROR, message);
+        public static Error UnAuthorized(string message)
+            => new(ErrorCode.UNAUTHORIZED, message);
     }
 }

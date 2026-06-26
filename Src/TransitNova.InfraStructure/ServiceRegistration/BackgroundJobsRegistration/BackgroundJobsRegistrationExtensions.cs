@@ -14,7 +14,7 @@ namespace TransitNova.InfraStructure.ServiceRegistration.BackgroundJobsRegistrat
                 options.AddJob<ProcessOutboxMessagesJob>(jobKey)
                 .AddTrigger(trigger => trigger.ForJob(jobKey)
                                 .WithIdentity($"{nameof(ProcessOutboxMessagesJob)}-trigger")
-                                            .WithSimpleSchedule(schedule => schedule.WithIntervalInSeconds(10).RepeatForever()
+                                            .WithSimpleSchedule(schedule => schedule.WithIntervalInMinutes(5).RepeatForever()
                                                           .WithMisfireHandlingInstructionIgnoreMisfires()));
             });
             services.AddQuartzHostedService();

@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
-using TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler;
+using TransitNova.BusinessLayer.Features.UserOperations.Commands.Bundles;
+using TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler.Bundles;
 using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;

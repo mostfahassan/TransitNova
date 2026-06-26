@@ -4,6 +4,6 @@ namespace TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IP
 {
     public interface IPayment
     {
-        Task<BaseResult?> Pay(CreatePaymentDto dto,CancellationToken cancellationToken);
+        Task<BaseResult?> Pay(CreatePaymentDto dto,string publicKey ,CancellationToken cancellationToken);
     }
 }

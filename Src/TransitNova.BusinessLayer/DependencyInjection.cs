@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using TransitNova.BusinessLayer.Common.Behaviors;
+using TransitNova.BusinessLayer.Interfaces.PaymentService;
 using TransitNova.BusinessLayer.Interfaces.Services.AdminDashboard;
 using TransitNova.BusinessLayer.Interfaces.Services.CompleteShipmentService;
 using TransitNova.BusinessLayer.Interfaces.Services.ShipmentAssignmentServices;
@@ -10,6 +11,7 @@ using TransitNova.BusinessLayer.Interfaces.Services.TokenServices;
 using TransitNova.BusinessLayer.Interfaces.Services.TripService;
 using TransitNova.BusinessLayer.Services.AdminDashboardService;
 using TransitNova.BusinessLayer.Services.CompleteShipmentService;
+using TransitNova.BusinessLayer.Services.PaymentServices;
 using TransitNova.BusinessLayer.Services.ShipmentAssignmentServices;
 using TransitNova.BusinessLayer.Services.ShipmentServices;
 using TransitNova.BusinessLayer.Services.TokenServices;
@@ -41,6 +43,7 @@ namespace TransitNova.BusinessLayer
                 .AddScoped<IShipmentAssignmentService, ShipmentAssignmentService>()
                 .AddScoped<IShipmentService, ShipmentService>()
                 .AddScoped<ITripServices, TripManagementService>()
+                .AddScoped<IPaymentService, PaymentService>()
                 .AddScoped<IAdminDashboard, AdminDashboard>();
 
 

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using Quartz;
@@ -197,9 +198,17 @@ public sealed class ProcessOutboxMessagesJobTests
     }
 
     private static ProcessOutboxMessagesJob CreateJob(
-        SqliteAppDbContextFixture fixture,
-        Mock<IPublisher> publisher) => new(fixture.Context, publisher.Object);
+       SqliteAppDbContextFixture fixture,
+       Mock<IPublisher> publisher,
+       Mock<ILogger<ProcessOutboxMessagesJob>>? logger = null)
+    {
+        logger ??= new Mock<ILogger<ProcessOutboxMessagesJob>>();
 
+        return new ProcessOutboxMessagesJob(
+            fixture.Context,
+            publisher.Object,
+            logger.Object);
+    }
     private static IJobExecutionContext CreateExecutionContext(CancellationToken cancellationToken = default)
     {
         var context = new Mock<IJobExecutionContext>();

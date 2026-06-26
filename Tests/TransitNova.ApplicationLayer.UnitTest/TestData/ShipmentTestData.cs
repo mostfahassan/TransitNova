@@ -1,5 +1,6 @@
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
 
 namespace TransitNova.ApplicationLayer.Tests.TestData;
@@ -29,6 +30,8 @@ internal static class ShipmentTestData
             enShipmentType.Standard,
             TransportationMode.Land,
             null,
+            Guid.NewGuid(),
+            PaymentMethod.MobileWallets,
             125,
             DateTime.UtcNow.AddDays(4));
     }

@@ -1,4 +1,5 @@
 using FluentValidation;
+using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
 using TransitNova.Domain.Enums.Result;

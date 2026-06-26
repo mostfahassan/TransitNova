@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using TransitNova.BusinessLayer.DTOs.Shipment;
-using TransitNova.BusinessLayer.Features.UserOperations.Commands;
+using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
 using TransitNova.Domain.Entities.MainEntities;

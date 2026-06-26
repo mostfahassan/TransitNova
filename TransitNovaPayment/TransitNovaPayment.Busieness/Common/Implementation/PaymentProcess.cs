@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TransitNovaPayment.Busieness.Common.Abstract;
 using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces;
@@ -14,10 +15,27 @@ namespace TransitNovaPayment.Busieness.Common.Implementation
     internal class PaymentProcess(IEnumerable<PaymentMethodService> Payments,
         IPaymentCommandRepository payment,
         IUnitOfWork unitOfWork,
+        IConfiguration configuration,
         ILogger<PaymentProcess> logger) : IPayment
     {
-        public async Task<BaseResult?> Pay(CreatePaymentDto dto, CancellationToken cancellationToken)
+        public async Task<BaseResult?> Pay(CreatePaymentDto dto, string publicKey,CancellationToken cancellationToken)
         {
+            logger.LogDebug("Validating payment gateway authentication key.");
+
+            var secretKey = configuration["PaymentSettings:PrivateKey"];
+            if (string.IsNullOrEmpty(secretKey))
+            {
+                logger.LogCritical("Payment gateway private key is missing from configuration. Key: PaymentSettings:PrivateKey");
+                throw new ArgumentNullException(nameof(secretKey));
+            }
+            if (secretKey != publicKey)
+            {
+                logger.LogWarning("Payment gateway authentication failed due to an invalid API key.");
+                return BaseResult.Failure(Errors.UnAuthorized("Invalid payment gateway authentication key."));
+            }
+            logger.LogDebug("Payment gateway authentication key validated successfully.");
+
+
             logger.LogInformation("Starting payment process for ShipmentId: {ShipmentId} using Method: {PaymentMethod}.",
             dto.ShipmentId, dto.PaymentMethod);
 

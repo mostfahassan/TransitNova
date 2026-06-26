@@ -12,18 +12,10 @@ public sealed record UiCreateShipmentDto(
     enShipmentType ShipmentDeliveryType,
     string DeliveryAddress,
     string PickupAddress,
-    Guid? PackageBundleId)
+    Guid? PackageBundleId,
+    Guid PaymentId
+    )
 {
-    public static CreateShipmentDto ToDto(UiCreateShipmentDto source) =>
-        new(
-            UiCreateReceiverDto.ToDto(source.Receiver),
-            UiPackageSpecificationRequestDto.ToDto(source.PackageSpecification),
-            source.Currency,
-            source.PickUpDate,
-            source.TransportationMode,
-            source.ShipmentDeliveryType,
-            source.DeliveryAddress,
-            source.PickupAddress,
-            source.PackageBundleId);
+  
 
 }

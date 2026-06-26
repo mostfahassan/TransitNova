@@ -3,7 +3,8 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.BusinessLayer.DTOs.AppUser;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
-using TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler;
+using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
+using TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
@@ -11,6 +12,7 @@ using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Result;
 using TransitNova.Domain.Enums.SystemLogs;
 
@@ -100,6 +102,8 @@ public sealed class CancelShipmentHandlerTests
             TransitNova.Domain.Enums.Shipment.enShipmentType.Standard,
             TransitNova.Domain.Enums.Shipment.TransportationMode.Land,
             null,
+            Guid.NewGuid(),
+            PaymentMethod.MobileWallets,
             100m,
             DateTime.UtcNow.AddDays(2));
     }

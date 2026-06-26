@@ -6,7 +6,8 @@ using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.AppUser;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
-using TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler;
+using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
+using TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
@@ -14,6 +15,7 @@ using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.BusinessLayer.Interfaces.Services.ShipmentServices;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Result;
 using TransitNova.Domain.Enums.SystemLogs;
 
@@ -245,7 +247,10 @@ public sealed class ShipmentCommandHandlerTests
         TransitNova.Domain.Enums.Shipment.enShipmentType.Standard,
         "Delivery Address",
         "Pickup Address",
-        null);
+        null,
+        Guid.NewGuid(),
+        PaymentMethod.PayPal
+        );
 
     private static UpdateShipmentDto ValidUpdateDto() => new(
         null,

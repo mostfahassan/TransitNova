@@ -3,6 +3,7 @@ using TransitNova.Domain.Contracts.DomainEvents.Events.ShipmentEvents;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Tests.TestData;
 
@@ -28,6 +29,8 @@ public sealed class ShipmentTests
             enShipmentType.Express,
             TransportationMode.Land,
             Guid.NewGuid(),
+            Guid.NewGuid(),
+            PaymentMethod.MobileWallets,
             500m,
             DateTime.UtcNow.AddDays(2));
 

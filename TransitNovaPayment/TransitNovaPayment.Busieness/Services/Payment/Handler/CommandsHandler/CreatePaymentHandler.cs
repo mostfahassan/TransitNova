@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IPaymentService;
 using TransitNovaPayment.Busieness.Common.CQRS;
 using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ErrorsResult;
@@ -13,7 +14,7 @@ namespace TransitNovaPayment.Busieness.Services.Payment.Handler.CommandsHandler
             logger.LogInformation("Handling command {CommandName} for ShipmentId: {ShipmentId}.",
                 nameof(CreatePaymentCommand), request.Dto.ShipmentId);
 
-            var paymentProcessResult = await payment.Pay(request.Dto, cancellationToken);
+            var paymentProcessResult = await payment.Pay(request.Dto,request.Key, cancellationToken);
 
             if (paymentProcessResult is null)
             {

@@ -2,12 +2,12 @@
 using TransitNova.Domain.Contracts.DomainEvents.Events.ShipmentEvents;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.Common;
+using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.Domain.Entities.MainEntities;
 public class Shipment : AggregateRoot<Guid>, ISoftDeletable
 {
     private readonly List<ShipmentStatus> _shipmentStates = new();
-
     public IReadOnlyCollection<ShipmentStatus> ShipmentStates => _shipmentStates;
 
     // ===== Soft Delete =====
@@ -60,6 +60,9 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
     public virtual Trip? Trip { get; private set; }
     public Guid? TripId { get; set; }
 
+    public Guid PaymentId { get; private set; }
+
+    public PaymentMethod PaymentMethod { get; private set; }
     private Shipment() { }
 
     private Shipment(
@@ -73,6 +76,8 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         enShipmentType shipmentType,
         TransportationMode mode,
         Guid? packageBundleId,
+        Guid paymentId,
+        PaymentMethod paymentMethod,
         decimal shipmentCost,
         DateTime deliveryDate)
     {
@@ -101,6 +106,9 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
 
         CreatedBy = senderId.ToString();
         CurrentState = true;
+
+        PaymentId = paymentId;
+        PaymentMethod = paymentMethod;
     }
 
     public static Shipment Create(
@@ -114,6 +122,8 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         enShipmentType shipmentType,
         TransportationMode mode,
         Guid? packageBundleId,
+        Guid paymentId,
+        PaymentMethod paymentMethod,
         decimal shipmentCost,
         DateTime deliveryDate)
     {
@@ -128,6 +138,8 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             shipmentType,
             mode,
             packageBundleId,
+            paymentId,
+            paymentMethod,
             shipmentCost,
             deliveryDate);
 

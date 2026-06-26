@@ -29,9 +29,12 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
       MVC__Host: http://transitnova-ui:80
+      PaymentSettings__BaseUrl: http://transitnova-payment:80 
       JWT__Key: "${JWT_KEY}"
-      PaymentSettings__PrivateKey: "${PaymentSettings__PrivateKey}"
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=${SQL_DATABASE:-TransitNovaDb};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=True"
+      PaymentSettings__PrivateKey: "${PaymentSettings__PublicKey}"
+      ConnectionStrings__DefaultConnection: "${ConnectionStrings__ApiDefaultConnection}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://transitnova-seq:5341/ingest/otlp/v1/traces
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -50,8 +53,10 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
-      PaymentSettings__PrivateKey: "V7mF8L2nWQp0Xj6kR4sYc9TgH1uEaD3bN5qMz+7PvKo="
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=${PAYMENT_SQL_DATABASE:-TransitNovaPaymentDb};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=True"
+      PaymentSettings__PrivateKey: "${PaymentSettings__PrivateKey}"
+      ConnectionStrings__DefaultConnection: "${ConnectionStrings__PaymentDefaultConnection}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://transitnova-seq:5341/ingest/otlp/v1/traces
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -73,9 +78,24 @@ services:
     networks:
       - transitnova
 
+  transitnova-seq:
+    image: datalust/seq:latest
+    container_name: transitnova-seq
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=True
+    volumes:
+      - seq-data:/data
+    networks:
+      - transitnova
+    ports:
+      - "5341:5341"
+      - "8081:80"
+
 networks:
   transitnova:
     driver: bridge
 
 volumes:
   sqlserver-data:
+  seq-data:

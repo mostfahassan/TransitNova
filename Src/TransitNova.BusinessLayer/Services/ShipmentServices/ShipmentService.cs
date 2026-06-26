@@ -25,7 +25,7 @@ namespace TransitNova.BusinessLayer.Services.ShipmentServices
             var (cost, estimatedDeliveryDate) = pricingService.CalculateShipment(packageSpecification, Dto.ShipmentDeliveryType, Dto.TransportationMode);
 
             var shipment = Shipment.Create(senderId, receiverToCreate, packageSpecification, Dto.Currency, Dto.PickUpDate, Dto.DeliveryAddress, Dto.PickupAddress,
-                 Dto.ShipmentDeliveryType, Dto.TransportationMode, Dto.PackageBundleId, cost, estimatedDeliveryDate);
+                 Dto.ShipmentDeliveryType, Dto.TransportationMode, Dto.PackageBundleId,Dto.PaymentId,Dto.PaymentMethod, cost, estimatedDeliveryDate);
             //==== Create Receiver =========//
             await receiver.CreateReceiverAsync(receiverToCreate, cancellationToken);
 

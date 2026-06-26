@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Users;
 using TransitNova.Domain.Enums.Warehouse;
@@ -130,6 +131,8 @@ internal static class Phase2RepositoryTestData
             enShipmentType.Standard,
             TransportationMode.Land,
             null,
+            Guid.NewGuid(),
+            PaymentMethod.CreditCard,
             125m,
             DateTime.UtcNow.AddDays(4));
         typeof(Shipment).GetProperty(nameof(Shipment.Sender))!.SetValue(shipment, sender);

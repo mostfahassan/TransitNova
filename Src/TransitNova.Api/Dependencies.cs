@@ -14,6 +14,9 @@ using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.InfraStructure.Common.NotificationService.NotificationHubService;
 using TransitNova.InfraStructure.ServiceRegistration;
 using TransitNova.InfraStructure.Token;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 namespace TransitNova.Api
 {
     public static class Dependencies
@@ -27,6 +30,7 @@ namespace TransitNova.Api
             service.AddJWTConfiguration(configuration);
             service.AddInfraStructureService(configuration).AddInBusinessService();
             service.AddJsonSerializer();
+            service.AddOpenTelemetryServices();
             service.AddRateLimiting();
             service.AddCachingConfiguration();
             service.AddExceptionHandler<GlobalExceptionHandler>();
@@ -60,7 +64,6 @@ namespace TransitNova.Api
 
 
         //Service Registeration
-        // â”€â”€ Logging
         public static IHostBuilder AddSerilog(this IHostBuilder hostBuilder)
         {
             return hostBuilder.UseSerilog((context, configuration) =>
@@ -69,6 +72,23 @@ namespace TransitNova.Api
             });
         }
 
+        public static IServiceCollection AddOpenTelemetryServices(
+                  this IServiceCollection services)
+        {
+            services.AddOpenTelemetry()
+                .ConfigureResource(resource => resource.AddService("transitnova_api"))
+                .WithTracing(tracing =>
+                {
+                    tracing
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation();
+                    tracing.AddOtlpExporter();
+                });
+              
+            return services;
+        }
+
+        
         // --- Problem Details
         public static IServiceCollection AddProblemDetailsService(this IServiceCollection service)
         {

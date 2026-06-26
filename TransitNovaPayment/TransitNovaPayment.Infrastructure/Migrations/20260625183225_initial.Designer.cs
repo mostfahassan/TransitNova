@@ -13,7 +13,7 @@ namespace TransitNovaPayment.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260625183225_initial")]
-    partial class initial
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

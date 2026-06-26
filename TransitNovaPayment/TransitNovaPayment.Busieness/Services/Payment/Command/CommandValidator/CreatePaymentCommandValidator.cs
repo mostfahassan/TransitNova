@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using TransitNovaPayment.Busieness.Common.DTO.PaymentDto;
 using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ErrorsResult.Enum;
-
 namespace TransitNovaPayment.Busieness.Services.Payment.Command.CommandValidator
 {
     public sealed class CreatePaymentCommandValidator:AbstractValidator<CreatePaymentCommand>
@@ -11,7 +10,10 @@ namespace TransitNovaPayment.Busieness.Services.Payment.Command.CommandValidator
             RuleFor(x => x.Dto)
                 .NotEmpty()
                 .SetValidator(dto);
-            
+
+            RuleFor(x => x.Key)
+                .NotEmpty()
+                .WithErrorCode($"{ErrorCode.UNAUTHORIZED}");
         }
     }
 }

@@ -1,5 +1,6 @@
 
 using TransitNova.BusinessLayer.Common.CommonData;
+using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.BusinessLayer.DTOs.Shipment
 {
@@ -13,6 +14,9 @@ namespace TransitNova.BusinessLayer.DTOs.Shipment
         enShipmentType ShipmentDeliveryType,
         string DeliveryAddress,
         string PickupAddress,
-        Guid? PackageBundleId
+        Guid? PackageBundleId,
+        Guid PaymentId ,
+        PaymentMethod PaymentMethod
+
     );
 }
