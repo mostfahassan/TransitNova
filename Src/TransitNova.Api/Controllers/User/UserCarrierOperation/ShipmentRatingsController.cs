@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -6,6 +6,7 @@ using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Carrier;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.User.UserCarrierOperation
 {
     [Authorize(Roles = Role.User)]
@@ -33,16 +34,14 @@ namespace TransitNova.Api.Controllers.User.UserCarrierOperation
         [EndpointDescription(
             "Allows the authenticated shipment owner to rate the carrier responsible for pickup. " +
             "The operation validates that the shipment can be rated, that the carrier exists, and then stores the rating.")]
-        public async Task<IActionResult> RatePickupCarrierAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid shipmentId, [FromBody] RatingCarrierDto dto, CancellationToken ct)
+        public async Task<IActionResult> RatePickupCarrierAsync([IdempotencyKey] Guid requestId, Guid shipmentId, [FromBody] RatingCarrierDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             if (!await UserOwnsShipmentAsync(shipmentId))
                 return Forbid();
 
             var userId = User.GetUserId();
-            var response = await mediator.Send(new RatePickupCarrierCommand(parsedRequestId, userId, shipmentId, dto), ct);
+            var response = await mediator.Send(new RatePickupCarrierCommand(requestId, userId, shipmentId, dto), ct);
             return response.ToActionResult();
         }
 
@@ -63,16 +62,14 @@ namespace TransitNova.Api.Controllers.User.UserCarrierOperation
         [EndpointDescription(
             "Allows the authenticated shipment owner to rate the carrier responsible for delivery. " +
             "The operation validates that the shipment can be rated, that the carrier exists, and then stores the rating.")]
-        public async Task<IActionResult> RateDeliveryCarrierAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid shipmentId, [FromBody] RatingCarrierDto dto, CancellationToken ct)
+        public async Task<IActionResult> RateDeliveryCarrierAsync([IdempotencyKey] Guid requestId, Guid shipmentId, [FromBody] RatingCarrierDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             if (!await UserOwnsShipmentAsync(shipmentId))
                 return Forbid();
 
             var userId = User.GetUserId();
-            var response = await mediator.Send(new RateDeliveryCarrierCommand(parsedRequestId, userId, shipmentId, dto), ct);
+            var response = await mediator.Send(new RateDeliveryCarrierCommand(requestId, userId, shipmentId, dto), ct);
             return response.ToActionResult();
         }
 

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -6,6 +6,7 @@ using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Carriers;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.OperationManager.Commands.CarrierOperations
 {
     [Authorize(Roles = Role.OperationManagerOrAdmin)]
@@ -29,13 +30,11 @@ namespace TransitNova.Api.Controllers.OperationManager.Commands.CarrierOperation
         [EndpointName("Assign Pickup Carrier")]
         [EndpointSummary("Assign a pickup carrier to a shipment")]
         [EndpointDescription("Allows an authorized operation manager to assign a pickup carrier to an approved shipment.The assigned carrier becomes responsible for collecting the shipment from the sender and initiating the pickup process.")]
-        public async Task<IActionResult> AssignPickupCarrierAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid shipmentId, [FromBody] AssignCarrierDto request, CancellationToken ct)
+        public async Task<IActionResult> AssignPickupCarrierAsync([IdempotencyKey] Guid requestId, Guid shipmentId, [FromBody] AssignCarrierDto request, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var operationManagerId = User.GetUserId();
-            var response = await mediator.Send(new AssignShipmentPickupToCarrierCommand(parsedRequestId, shipmentId, operationManagerId, request.CarrierId), ct);
+            var response = await mediator.Send(new AssignShipmentPickupToCarrierCommand(requestId, shipmentId, operationManagerId, request.CarrierId), ct);
             return response.ToActionResult();
         }
 
@@ -53,13 +52,11 @@ namespace TransitNova.Api.Controllers.OperationManager.Commands.CarrierOperation
         [EndpointName("Assign Delivery Carrier")]
         [EndpointSummary("Assign a delivery carrier to a shipment")]
         [EndpointDescription("Allows an authorized operation manager to assign a delivery carrier to a shipment.The assigned carrier becomes responsible for transporting the shipment from the warehouse to the final recipient.")]
-        public async Task<IActionResult> AssignDeliveryCarrierAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid shipmentId, [FromBody] AssignCarrierDto request, CancellationToken ct)
+        public async Task<IActionResult> AssignDeliveryCarrierAsync([IdempotencyKey] Guid requestId, Guid shipmentId, [FromBody] AssignCarrierDto request, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var operationManagerId = User.GetUserId();
-            var response = await mediator.Send(new AssignShipmentDeliveryToCarrierCommand(parsedRequestId, shipmentId, operationManagerId, request.CarrierId), ct);
+            var response = await mediator.Send(new AssignShipmentDeliveryToCarrierCommand(requestId, shipmentId, operationManagerId, request.CarrierId), ct);
             return response.ToActionResult();
         }
     }

@@ -1,6 +1,7 @@
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using TransitNovaPayment.Busieness.Common.Abstract;
 using TransitNovaPayment.Busieness.Common.DTO.PaymentDto;
+using TransitNovaPayment.Busieness.Common.Options;
 using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
 using PaymentEntity = TransitNovaPayment.Busieness.Models.PaymentEntity.Payment;
 using PaymentHistoryEntity = TransitNovaPayment.Busieness.Models.PaymentHistoryEntity.PaymentHistory;
@@ -22,15 +23,8 @@ internal static class PaymentTestData
         };
     }
 
-    internal static IConfiguration CreateConfiguration(string? privateKey = "payment-private-key")
-    {
-        return new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["PaymentSettings:PrivateKey"] = privateKey
-            })
-            .Build();
-    }
+    internal static IOptions<PaymentGatewaySettings> CreatePaymentGatewayOptions(string? privateKey = "payment-private-key") =>
+        Options.Create(new PaymentGatewaySettings { PrivateKey = privateKey });
 
     internal static PaymentEntity CreatePayment(
         PaymentMethod paymentMethod = PaymentMethod.CreditCard,

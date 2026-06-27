@@ -1,4 +1,4 @@
-﻿
+
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.DTOs.RefreshToken;
 using TransitNova.BusinessLayer.Features.Token.Commands;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.Token
 {
     [Authorize(Roles = Role.AllUsers)]
@@ -27,14 +28,12 @@ namespace TransitNova.Api.Controllers.Token
         [EndpointSummary("Refresh user authentication tokens")]
         [EndpointDescription("Allows a user to obtain a new access token without re-authenticating. The endpoint validates the supplied refresh token, generates a new JWT access token, " +
              "issues a new refresh token, and returns the updated authentication information. An invalid or expired refresh token will result in an unauthorized response.")]
-        public async Task<IActionResult> GenerateRefreshTokenAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] RefreshToken refreshToken, CancellationToken ct)
+        public async Task<IActionResult> GenerateRefreshTokenAsync([IdempotencyKey] Guid requestId, [FromBody] RefreshToken refreshToken, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
             if (!await UserOwnsRefreshTokenAsync(refreshToken.Token))
                 return Forbid();
 
-            var response = await mediator.Send(new GenerateRefreshTokenCommand(parsedRequestId, refreshToken.Token), ct);
+            var response = await mediator.Send(new GenerateRefreshTokenCommand(requestId, refreshToken.Token), ct);
             return response.ToActionResult();
         }
 
@@ -49,14 +48,12 @@ namespace TransitNova.Api.Controllers.Token
         [EndpointName("Revoke Refresh Token")]
         [EndpointSummary("Revoke user authentication tokens")]
         [EndpointDescription("Revokes the user's active refresh token and invalidates the current authentication session. Once revoked, the refresh token can no longer be used to generate new access tokens.Users must authenticate again to obtain new authentication tokens")]
-        public async Task<IActionResult> RevokeRefreshTokenAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid userId, CancellationToken ct)
+        public async Task<IActionResult> RevokeRefreshTokenAsync([IdempotencyKey] Guid requestId, Guid userId, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
             if (!await IsTokenOwner(userId))
                 return Forbid();
 
-            var response = await mediator.Send(new RevokeRefreshTokenCommand(parsedRequestId, userId), ct);
+            var response = await mediator.Send(new RevokeRefreshTokenCommand(requestId, userId), ct);
             return response.ToActionResult();
         }
         private async Task<bool> UserOwnsRefreshTokenAsync(string token)

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -6,7 +6,7 @@ using TransitNova.BusinessLayer.DTOs.Country;
 using TransitNova.BusinessLayer.Features.Location.Governments.Commands;
 using TransitNova.BusinessLayer.Features.Location.Governments.Queries;
 using TransitNova.Domain.Contracts.Roles;
-
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.Admin.Location
 {
     [Authorize(Roles = Role.Admin)]
@@ -29,13 +29,11 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [EndpointName("Create Government")]
         [EndpointSummary("Create a new government")]
         [EndpointDescription("Creates a new government under a country.")]
-        public async Task<IActionResult> CreateGovernmentAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] CreateGovernmentDto dto, CancellationToken ct)
+        public async Task<IActionResult> CreateGovernmentAsync([IdempotencyKey] Guid requestId, [FromBody] CreateGovernmentDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var response = await mediator.Send(
-                new CreateGovernmentCommand(parsedRequestId, dto.Name, dto.CountryId), ct);
+                new CreateGovernmentCommand(requestId, dto.Name, dto.CountryId), ct);
             return response.ToActionResult();
         }
 
@@ -53,13 +51,11 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [EndpointName("Update Government")]
         [EndpointSummary("Update an existing government")]
         [EndpointDescription("Updates government details and country assignment.")]
-        public async Task<IActionResult> UpdateGovernmentAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, int governmentId, [FromBody] UpdateGovernmentDto dto, CancellationToken ct)
+        public async Task<IActionResult> UpdateGovernmentAsync([IdempotencyKey] Guid requestId, int governmentId, [FromBody] UpdateGovernmentDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var response = await mediator.Send(
-                new UpdateGovernmentCommand(parsedRequestId, governmentId, dto.Name, dto.CountryId), ct);
+                new UpdateGovernmentCommand(requestId, governmentId, dto.Name, dto.CountryId), ct);
             return response.ToActionResult();
         }
 
@@ -74,12 +70,10 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [EndpointName("Delete Government")]
         [EndpointSummary("Delete a government")]
         [EndpointDescription("Deletes an existing government from the system.")]
-        public async Task<IActionResult> DeleteGovernmentAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, int governmentId, CancellationToken ct)
+        public async Task<IActionResult> DeleteGovernmentAsync([IdempotencyKey] Guid requestId, int governmentId, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
-            var response = await mediator.Send(new DeleteGovernmentCommand(parsedRequestId, governmentId), ct);
+            var response = await mediator.Send(new DeleteGovernmentCommand(requestId, governmentId), ct);
             return response.ToActionResult();
         }
 

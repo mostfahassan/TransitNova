@@ -30,7 +30,9 @@ public sealed class TransitNovaWebApplicationFactory : WebApplicationFactory<Pro
                 ["JWT:Key"] = "TransitNova-Integration-Tests-Signing-Key-2026-At-Least-64-Characters",
                 ["JWT:Issuer"] = "TransitNova.IntegrationTests",
                 ["JWT:Audience"] = "TransitNova.IntegrationTests",
-                ["MVC:Host"] = "https://localhost"
+                ["MVC:Host"] = "https://localhost",
+                ["PaymentSettings:PublicKey"] = "integration-payment-public-key",
+                ["PaymentSettings:BaseUrl"] = "https://payments.local"
             });
         });
 

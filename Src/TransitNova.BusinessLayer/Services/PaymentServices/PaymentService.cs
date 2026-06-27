@@ -1,13 +1,14 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 using System.Text.Json;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Payment;
 using TransitNova.BusinessLayer.Interfaces.PaymentService;
+using TransitNova.BusinessLayer.Options;
 namespace TransitNova.BusinessLayer.Services.PaymentServices
 {
-    internal class PaymentService(HttpClient client , ILogger<PaymentService> logger,IConfiguration configuration) : IPaymentService
+    internal class PaymentService(HttpClient client, ILogger<PaymentService> logger, IOptions<PaymentSettings> paymentOptions) : IPaymentService
     {
         private static readonly JsonSerializerOptions PaymentJsonOptions = new(JsonSerializerDefaults.Web);
 
@@ -15,13 +16,14 @@ namespace TransitNova.BusinessLayer.Services.PaymentServices
         {
             logger.LogInformation("Payment started for ShipmentId: {ShipmentId}", dto.ShipmentId);
 
-            var key = configuration["PaymentSettings:PublicKey"];
-            var baseUrl = configuration["PaymentSettings:BaseUrl"];
+            var settings = paymentOptions.Value;
+            var key = settings.PublicKey;
+            var baseUrl = settings.BaseUrl;
 
             if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(baseUrl))
                 return Result<Invoice>.Failure(Errors.FailedOperation("Payment configuration missing"));
 
-            using var request = PrepareRequest(dto, key);
+            using var request = PrepareRequest(dto, settings);
 
             try
             {
@@ -70,17 +72,16 @@ namespace TransitNova.BusinessLayer.Services.PaymentServices
         }
 
 
-        private HttpRequestMessage PrepareRequest(CreatePaymentDto dto,string key)
+        private static HttpRequestMessage PrepareRequest(CreatePaymentDto dto, PaymentSettings settings)
         {
-            var paymentBaseUrl = configuration["PaymentSettings:BaseUrl"];
-            if (string.IsNullOrWhiteSpace(paymentBaseUrl))
+            if (string.IsNullOrWhiteSpace(settings.BaseUrl))
             {
                 throw new InvalidOperationException(
                     "Payment service base URL is not configured.");
             }
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,$"{paymentBaseUrl}/api/payments/pay" );
+            HttpRequestMessage request = new(HttpMethod.Post, $"{settings.BaseUrl}/api/payments/pay");
             request.Content = JsonContent.Create(dto);
-            request.Headers.Add("X-PaymentKey", key);
+            request.Headers.Add("X-PaymentKey", settings.PublicKey);
 
             return request;
         }

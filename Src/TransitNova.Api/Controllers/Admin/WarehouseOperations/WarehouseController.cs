@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -7,6 +7,7 @@ using TransitNova.BusinessLayer.Features.Warehouses.Commands;
 using TransitNova.BusinessLayer.Features.Warehouses.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.Admin.WarehouseOperations
 {
     [Authorize(Roles = Role.Admin)]
@@ -30,13 +31,11 @@ namespace TransitNova.Api.Controllers.Admin.WarehouseOperations
         [EndpointName("Create Warehouse")]
         [EndpointSummary("Create a new warehouse")]
         [EndpointDescription("Creates a new warehouse and optionally links it to served zones.")]
-        public async Task<IActionResult> CreateWarehouseAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] CreateWarehouseDto dto, CancellationToken ct)
+        public async Task<IActionResult> CreateWarehouseAsync([IdempotencyKey] Guid requestId, [FromBody] CreateWarehouseDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var adminId = User.GetUserId();
-            var response = await mediator.Send(new CreateWarehouseCommand(parsedRequestId, adminId, dto), ct);
+            var response = await mediator.Send(new CreateWarehouseCommand(requestId, adminId, dto), ct);
             return response.ToActionResult();
         }
 
@@ -55,13 +54,11 @@ namespace TransitNova.Api.Controllers.Admin.WarehouseOperations
         [EndpointName("Update Warehouse")]
         [EndpointSummary("Update an existing warehouse")]
         [EndpointDescription("Updates warehouse details and served zone assignments.")]
-        public async Task<IActionResult> UpdateWarehouseAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid warehouseId, [FromBody] UpdateWarehouseDto dto, CancellationToken ct)
+        public async Task<IActionResult> UpdateWarehouseAsync([IdempotencyKey] Guid requestId, Guid warehouseId, [FromBody] UpdateWarehouseDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var adminId = User.GetUserId();
-            var response = await mediator.Send(new UpdateWarehouseCommand(parsedRequestId, warehouseId, adminId, dto), ct);
+            var response = await mediator.Send(new UpdateWarehouseCommand(requestId, warehouseId, adminId, dto), ct);
             return response.ToActionResult();
         }
 
@@ -77,13 +74,11 @@ namespace TransitNova.Api.Controllers.Admin.WarehouseOperations
         [EndpointName("Delete Warehouse")]
         [EndpointSummary("Delete a warehouse")]
         [EndpointDescription("Deletes an existing warehouse from the system.")]
-        public async Task<IActionResult> DeleteWarehouseAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid warehouseId, CancellationToken ct)
+        public async Task<IActionResult> DeleteWarehouseAsync([IdempotencyKey] Guid requestId, Guid warehouseId, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var adminId = User.GetUserId();
-            var response = await mediator.Send(new DeleteWarehouseCommand(parsedRequestId, warehouseId, adminId), ct);
+            var response = await mediator.Send(new DeleteWarehouseCommand(requestId, warehouseId, adminId), ct);
             return response.ToActionResult();
         }
 

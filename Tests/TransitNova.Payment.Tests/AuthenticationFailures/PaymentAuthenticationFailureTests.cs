@@ -19,7 +19,7 @@ public sealed class PaymentAuthenticationFailureTests
         var unitOfWork = new Mock<IUnitOfWork>();
         var cache = new Mock<ICacheService>();
         var executionStrategy = new Mock<IPaymentExecutionStrategy>();
-        var sut = CreateSut(repository, unitOfWork, cache, executionStrategy, PaymentTestData.CreateConfiguration());
+        var sut = CreateSut(repository, unitOfWork, cache, executionStrategy, PaymentTestData.CreatePaymentGatewayOptions());
 
         var result = await sut.Pay(PaymentTestData.CreatePaymentDto(paymentMethod: PaymentMethod.PayPal), "invalid-key", CancellationToken.None);
 
@@ -36,11 +36,11 @@ public sealed class PaymentAuthenticationFailureTests
         var unitOfWork = new Mock<IUnitOfWork>();
         var cache = new Mock<ICacheService>();
         var executionStrategy = new Mock<IPaymentExecutionStrategy>();
-        var sut = CreateSut(repository, unitOfWork, cache, executionStrategy, PaymentTestData.CreateConfiguration(privateKey: null));
+        var sut = CreateSut(repository, unitOfWork, cache, executionStrategy, PaymentTestData.CreatePaymentGatewayOptions(privateKey: null));
 
         var act = () => sut.Pay(PaymentTestData.CreatePaymentDto(), "payment-private-key", CancellationToken.None);
 
-        await act.Should().ThrowAsync<ArgumentNullException>();
+        await act.Should().ThrowAsync<InvalidOperationException>();
         repository.Verify(x => x.CreatePaymentAsync(It.IsAny<TransitNovaPayment.Busieness.Models.PaymentEntity.Payment>(), It.IsAny<CancellationToken>()), Times.Never);
         unitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         cache.Verify(x => x.RemoveByPrefixAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -51,7 +51,7 @@ public sealed class PaymentAuthenticationFailureTests
         Mock<IUnitOfWork> unitOfWork,
         Mock<ICacheService> cache,
         Mock<IPaymentExecutionStrategy> executionStrategy,
-        Microsoft.Extensions.Configuration.IConfiguration configuration)
+        Microsoft.Extensions.Options.IOptions<TransitNovaPayment.Busieness.Common.Options.PaymentGatewaySettings> paymentGatewayOptions)
     {
         return new PaymentProcessSut(
             [
@@ -62,7 +62,7 @@ public sealed class PaymentAuthenticationFailureTests
             unitOfWork.Object,
             cache.Object,
             executionStrategy.Object,
-            configuration,
+            paymentGatewayOptions,
             Microsoft.Extensions.Logging.Abstractions.NullLogger<PaymentProcessSut>.Instance);
     }
 }

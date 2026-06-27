@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -6,7 +6,7 @@ using TransitNova.BusinessLayer.DTOs.City;
 using TransitNova.BusinessLayer.Features.Location.Cities.Commands;
 using TransitNova.BusinessLayer.Features.Location.Cities.Queries;
 using TransitNova.Domain.Contracts.Roles;
-
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.Admin.Location
 {
     [Authorize(Roles = Role.Admin)]
@@ -29,12 +29,10 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [EndpointName("Create City")]
         [EndpointSummary("Create a new city")]
         [EndpointDescription("Creates a new city under a government.")]
-        public async Task<IActionResult> CreateCityAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] CreateCityDto dto, CancellationToken ct)
+        public async Task<IActionResult> CreateCityAsync([IdempotencyKey] Guid requestId, [FromBody] CreateCityDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
-            var response = await mediator.Send(new CreateCityCommand(parsedRequestId, dto), ct);
+            var response = await mediator.Send(new CreateCityCommand(requestId, dto), ct);
             return response.ToActionResult();
         }
 
@@ -52,12 +50,10 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [EndpointName("Update City")]
         [EndpointSummary("Update an existing city")]
         [EndpointDescription("Updates city details and government assignment.")]
-        public async Task<IActionResult> UpdateCityAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, int cityId, [FromBody] UpdateCityDto dto, CancellationToken ct)
+        public async Task<IActionResult> UpdateCityAsync([IdempotencyKey] Guid requestId, int cityId, [FromBody] UpdateCityDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
-            var response = await mediator.Send(new UpdateCityCommand(parsedRequestId, cityId, dto), ct);
+            var response = await mediator.Send(new UpdateCityCommand(requestId, cityId, dto), ct);
             return response.ToActionResult();
         }
 
@@ -72,12 +68,10 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [EndpointName("Delete City")]
         [EndpointSummary("Delete a city")]
         [EndpointDescription("Deletes an existing city from the system.")]
-        public async Task<IActionResult> DeleteCityAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, int cityId, CancellationToken ct)
+        public async Task<IActionResult> DeleteCityAsync([IdempotencyKey] Guid requestId, int cityId, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
-            var response = await mediator.Send(new DeleteCityCommand(parsedRequestId, cityId), ct);
+            var response = await mediator.Send(new DeleteCityCommand(requestId, cityId), ct);
             return response.ToActionResult();
         }
 

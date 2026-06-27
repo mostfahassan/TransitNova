@@ -21,7 +21,9 @@ namespace TransitNovaPayment.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<ICacheService, MemoryCacheService>();
             services.AddHealthChecks()
-                .AddCheck<DatabaseHealthCheck>("Dataabase Health Checking",HealthStatus.Unhealthy);
+                .AddCheck<DatabaseHealthCheck>("Database Health Check", HealthStatus.Unhealthy)
+                .AddCheck<PaymentGatewayConfigurationHealthCheck>("Payment Gateway Configuration", HealthStatus.Unhealthy)
+                .AddCheck<ObservabilityConfigurationHealthCheck>("Observability Configuration", HealthStatus.Unhealthy);
             return services;
         }
     }

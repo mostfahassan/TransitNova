@@ -1,4 +1,4 @@
-﻿
+
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +7,7 @@ using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Shipments;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.OperationManager.Commands.ShipmentOperation
 {
     [Authorize(Roles = Role.OperationManagerOrAdmin)]
@@ -31,13 +32,11 @@ namespace TransitNova.Api.Controllers.OperationManager.Commands.ShipmentOperatio
         [EndpointSummary("Approve a pending shipment")]
         [EndpointDescription("Allows an authorized operation manager to approve a pending shipment.Once approved, the shipment status is updated and becomes eligible for the next stage of the shipping workflow. " +
                  "The operation requires the appropriate shipment approval permission.")]
-        public async Task<IActionResult> ApproveShipmentAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid shipmentId, CancellationToken ct)
+        public async Task<IActionResult> ApproveShipmentAsync([IdempotencyKey] Guid requestId, Guid shipmentId, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var operationManagerId = User.GetUserId();
-            var response = await mediator.Send(new ApproveShipmentCommand(parsedRequestId, operationManagerId, shipmentId),ct);
+            var response = await mediator.Send(new ApproveShipmentCommand(requestId, operationManagerId, shipmentId),ct);
             return response.ToActionResult();
         }
 
@@ -58,13 +57,11 @@ namespace TransitNova.Api.Controllers.OperationManager.Commands.ShipmentOperatio
         [EndpointSummary("Reject a pending shipment")]
         [EndpointDescription("Allows an authorized operation manager to reject a pending shipment and provide a rejection reason.The shipment status is updated to rejected, and the supplied reason is recorded for auditing and customer communication purposes."
               + "The operation requires the appropriate shipment rejection permission.")]  
-        public async Task<IActionResult> RejectShipmentAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid shipmentId, [FromBody] RejectShipmentReason request, CancellationToken ct)
+        public async Task<IActionResult> RejectShipmentAsync([IdempotencyKey] Guid requestId, Guid shipmentId, [FromBody] RejectShipmentReason request, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var operationManagerId = User.GetUserId();
-            var response = await mediator.Send(new RejectShipmentCommand(parsedRequestId, operationManagerId, shipmentId, request.RejectionReason),ct);
+            var response = await mediator.Send(new RejectShipmentCommand(requestId, operationManagerId, shipmentId, request.RejectionReason),ct);
             return response.ToActionResult();
         }
     }

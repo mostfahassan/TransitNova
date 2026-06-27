@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -8,6 +8,7 @@ using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
 using TransitNova.BusinessLayer.Features.UserOperations.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.User.UserShipmentOperations
 {
     [Authorize(Roles = Role.User)]
@@ -33,15 +34,13 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
         [EndpointName("UpdateShipmentDetails")]
         [EndpointSummary("Updates an existing shipment for the authenticated user.")]
         [EndpointDescription("This endpoint allows an authenticated user to update an existing shipment by providing the updated shipment details in the request body. The user must have the 'User.UpdateShipmentDetails' permission to access this endpoint.")]
-        public async Task<IActionResult> UpdateShipmentAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid shipmentId, [FromBody] UpdateShipmentDto dto, CancellationToken ct)
+        public async Task<IActionResult> UpdateShipmentAsync([IdempotencyKey] Guid requestId, Guid shipmentId, [FromBody] UpdateShipmentDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             if (!await UserOwnsShipmentAsync(shipmentId))
                 return Forbid();
             var userId = User.GetUserId();
-            var response = await mediator.Send(new UpdateShipmentCommand(parsedRequestId, userId, shipmentId, dto), ct);
+            var response = await mediator.Send(new UpdateShipmentCommand(requestId, userId, shipmentId, dto), ct);
             return response.ToActionResult();
         }
 
@@ -60,15 +59,13 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
         [EndpointName("CancelShipment")]
         [EndpointSummary("Cancels an existing shipment for the authenticated user.")]
         [EndpointDescription("This endpoint allows an authenticated user to cancel an existing shipment by providing the shipment ID in the request URL. The user must have the 'User.CancelShipment' permission to access this endpoint.")]
-        public async Task<IActionResult> CancelShipmentAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid shipmentId, CancellationToken ct)
+        public async Task<IActionResult> CancelShipmentAsync([IdempotencyKey] Guid requestId, Guid shipmentId, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             if (!await UserOwnsShipmentAsync(shipmentId))
                 return Forbid();
             var userId = User.GetUserId();
-            var response = await mediator.Send(new CancelShipmentCommand(parsedRequestId, userId, shipmentId), ct);
+            var response = await mediator.Send(new CancelShipmentCommand(requestId, userId, shipmentId), ct);
             return response.ToActionResult();
         }
 
@@ -90,15 +87,13 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
         [EndpointName("IssueShipment")]
         [EndpointSummary("Issues a Delivered shipment for the authenticated user.")]
         [EndpointDescription("This endpoint allows an authenticated user to issue a new shipment by providing the shipment details in the request body. The user must have the 'User.IssueShipment' permission to access this endpoint.")]
-        public async Task<IActionResult> IssueShipmentAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid shipmentId, [FromBody] IssueShipmentReason issue, CancellationToken ct)
+        public async Task<IActionResult> IssueShipmentAsync([IdempotencyKey] Guid requestId, Guid shipmentId, [FromBody] IssueShipmentReason issue, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             if (!await UserOwnsShipmentAsync(shipmentId))
                 return Forbid();
             var userId = User.GetUserId();
-            var response = await mediator.Send(new IssueShipmentCommand(parsedRequestId, userId, shipmentId, issue.IssueReason), ct);
+            var response = await mediator.Send(new IssueShipmentCommand(requestId, userId, shipmentId, issue.IssueReason), ct);
             return response.ToActionResult();
         }
 
@@ -119,16 +114,14 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
         [EndpointName("DeleteShipment")]
         [EndpointSummary("Deletes an existing shipment for the authenticated user.")]
         [EndpointDescription("This endpoint allows an authenticated user to delete an existing shipment by providing the shipment ID in the request URL. The user must have the 'User.DeleteShipment' permission to access this endpoint.")]
-        public async Task<IActionResult> DeleteShipmentAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid shipmentId, CancellationToken ct)
+        public async Task<IActionResult> DeleteShipmentAsync([IdempotencyKey] Guid requestId, Guid shipmentId, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             if (!await UserOwnsShipmentAsync(shipmentId))
                 return Forbid();
 
             var userId = User.GetUserId();
-            var response = await mediator.Send(new DeleteShipmentCommand(parsedRequestId, shipmentId, userId), ct);
+            var response = await mediator.Send(new DeleteShipmentCommand(requestId, shipmentId, userId), ct);
             return response.ToActionResult();
         }
 

@@ -1,22 +1,27 @@
-﻿
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.RateLimiting;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Scalar.AspNetCore;
 using Serilog;
+using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using TransitNova.Api.AuthorizationResource.Handler;
 using TransitNova.Api.AuthorizationResource.Requirement;
+using TransitNova.Api.CustomMiddlewares;
+using TransitNova.Api.Documentation;
 using TransitNova.Api.Exceptions;
 using TransitNova.BusinessLayer;
+using TransitNova.BusinessLayer.Options;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.InfraStructure.Common.NotificationService.NotificationHubService;
 using TransitNova.InfraStructure.ServiceRegistration;
 using TransitNova.InfraStructure.Token;
-using OpenTelemetry.Trace;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
 namespace TransitNova.Api
 {
     public static class Dependencies
@@ -28,15 +33,18 @@ namespace TransitNova.Api
             service.RegisterApiService();
             service.AddOpenApi();
             service.AddJWTConfiguration(configuration);
+            service.AddPaymentSettingsConfiguration(configuration);
             service.AddInfraStructureService(configuration).AddInBusinessService();
             service.AddJsonSerializer();
             service.AddOpenTelemetryServices();
             service.AddRateLimiting();
+            service.AddOpenApiDocumentation();
             service.AddCachingConfiguration();
             service.AddExceptionHandler<GlobalExceptionHandler>();
             service.AddProblemDetailsService();
             service.AddApiVersioning();
             service.AddAuthorizationBehavior();
+            service.AddHttpClient();
             return service;
         }
 
@@ -44,21 +52,26 @@ namespace TransitNova.Api
         // â”€â”€ Middleware
         public static WebApplication UseDependencies(this WebApplication app)
         {
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
+           
             app.UseExceptionHandler(); 
             app.UseHsts();
             app.UseHttpsRedirection();
             app.UseCors("AllowMVC");
             app.UseSerilogRequestLogging();
+            app.UseMiddleware<CorrelationIDMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseRateLimiter();
             app.MapHub<NotificationHub>("/hubs/notifications");
             app.MapHealthChecks("health");
             app.MapControllers();
+            if (app.Environment.IsDevelopment())
+            {
+                app.MapOpenApi();
+
+                app.MapScalarApiReference();
+            }
+
             return app;
         }
 
@@ -69,7 +82,11 @@ namespace TransitNova.Api
             return hostBuilder.UseSerilog((context, configuration) =>
             {
                 configuration.ReadFrom.Configuration(context.Configuration);
+                configuration.Enrich.FromLogContext().WriteTo.Console(
+                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{CorrelationId}] {Message:lj}{NewLine}{Exception}");
+
             });
+       
         }
 
         public static IServiceCollection AddOpenTelemetryServices(
@@ -124,7 +141,24 @@ namespace TransitNova.Api
         // Add JWt Configuration
         public static IServiceCollection AddJWTConfiguration(this IServiceCollection service, IConfiguration configuration)
         {
-            service.Configure<JwtSettings>(configuration.GetSection("JWT"));
+            service.AddOptions<JwtSettings>()
+                .Bind(configuration.GetSection("JWT"))
+                .Validate(settings => !string.IsNullOrWhiteSpace(settings.Key), "JWT:Key is required.")
+                .Validate(settings => !string.IsNullOrWhiteSpace(settings.Issuer), "JWT:Issuer is required.")
+                .Validate(settings => !string.IsNullOrWhiteSpace(settings.Audience), "JWT:Audience is required.")
+                .Validate(settings => Encoding.UTF8.GetByteCount(settings.Key ?? string.Empty) >= 48, "JWT:Key must be at least 48 bytes for HS384 signing.")
+                .ValidateOnStart();
+            return service;
+        }
+
+        public static IServiceCollection AddPaymentSettingsConfiguration(this IServiceCollection service, IConfiguration configuration)
+        {
+            service.AddOptions<PaymentSettings>()
+                .Bind(configuration.GetSection(PaymentSettings.SectionName))
+                .Validate(settings => !string.IsNullOrWhiteSpace(settings.PublicKey), "PaymentSettings:PublicKey is required.")
+                .Validate(settings => Uri.TryCreate(settings.BaseUrl, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https", "PaymentSettings:BaseUrl must be an absolute HTTP(S) URL.")
+                .ValidateOnStart();
+
             return service;
         }
 
@@ -256,6 +290,20 @@ namespace TransitNova.Api
             return service;
         }
 
+        public static IServiceCollection AddOpenApiDocumentation(this IServiceCollection services)
+        {
+            services.AddOpenApi(options =>
+            {
+                options.AddDocumentTransformer<ApiVersionDocumentation>();
+
+                options.AddDocumentTransformer<ApiSecuritySchemeDocumentation>();
+                options.AddOperationTransformer<ApiOperationSecuritySchemeDocumentation>();
+            });
+
+
+
+            return services;
+        }
 
     }
 }

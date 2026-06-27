@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -7,7 +7,7 @@ using TransitNova.BusinessLayer.Features.Vehicles.Commands;
 using TransitNova.BusinessLayer.Features.Vehicles.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
-
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.Admin.VehicleOperations
 {
     [Authorize(Roles = Role.Admin)]
@@ -30,12 +30,10 @@ namespace TransitNova.Api.Controllers.Admin.VehicleOperations
         [EndpointName("Create Vehicle")]
         [EndpointSummary("Create a new vehicle")]
         [EndpointDescription("Creates a new vehicle and assigns it to a carrier.")]
-        public async Task<IActionResult> CreateVehicleAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] CreateVehicleDto dto, CancellationToken ct)
+        public async Task<IActionResult> CreateVehicleAsync([IdempotencyKey] Guid requestId, [FromBody] CreateVehicleDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
-            var response = await mediator.Send(new CreateVehicleCommand(parsedRequestId, dto), ct);
+            var response = await mediator.Send(new CreateVehicleCommand(requestId, dto), ct);
             return response.ToActionResult();
         }
 
@@ -51,12 +49,10 @@ namespace TransitNova.Api.Controllers.Admin.VehicleOperations
         [EndpointName("Delete Vehicle")]
         [EndpointSummary("Delete a vehicle")]
         [EndpointDescription("Deletes an existing vehicle from the system.")]
-        public async Task<IActionResult> DeleteVehicleAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid vehicleId, CancellationToken ct)
+        public async Task<IActionResult> DeleteVehicleAsync([IdempotencyKey] Guid requestId, Guid vehicleId, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
-            var response = await mediator.Send(new DeleteVehicleCommand(parsedRequestId, vehicleId), ct);
+            var response = await mediator.Send(new DeleteVehicleCommand(requestId, vehicleId), ct);
             return response.ToActionResult();
         }
 

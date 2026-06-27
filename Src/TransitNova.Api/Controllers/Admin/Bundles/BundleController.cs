@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -7,7 +7,7 @@ using TransitNova.BusinessLayer.Features.Bundles.Commands;
 using TransitNova.BusinessLayer.Features.Bundles.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
-
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.Admin.Bundles
 {
     [Authorize(Roles = Role.Admin)]
@@ -31,13 +31,11 @@ namespace TransitNova.Api.Controllers.Admin.Bundles
         [EndpointName("Create Bundle")]
         [EndpointSummary("Create a new bundle")]
         [EndpointDescription("Creates a new bundle and makes it available for user subscriptions.")]
-        public async Task<IActionResult> CreateAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] CreateBundleDto dto, CancellationToken ct)
+        public async Task<IActionResult> CreateAsync([IdempotencyKey] Guid requestId, [FromBody] CreateBundleDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var adminId = User.GetUserId();
-            var response = await mediator.Send(new CreateBundleCommand(parsedRequestId, adminId, dto), ct);
+            var response = await mediator.Send(new CreateBundleCommand(requestId, adminId, dto), ct);
             return response.ToActionResult();
         }
 
@@ -55,13 +53,11 @@ namespace TransitNova.Api.Controllers.Admin.Bundles
         [EndpointName("Update Bundle")]
         [EndpointSummary("Update an existing bundle")]
         [EndpointDescription("Updates the details of an existing bundle.")]
-        public async Task<IActionResult> UpdateAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId,Guid bundleId , [FromBody] UpdateBundleDto dto, CancellationToken ct)
+        public async Task<IActionResult> UpdateAsync([IdempotencyKey] Guid requestId,Guid bundleId , [FromBody] UpdateBundleDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var adminId = User.GetUserId();
-            var response = await mediator.Send(new UpdateBundleCommand(parsedRequestId, bundleId, dto, adminId), ct);
+            var response = await mediator.Send(new UpdateBundleCommand(requestId, bundleId, dto, adminId), ct);
             return response.ToActionResult();
         }
 
@@ -77,12 +73,10 @@ namespace TransitNova.Api.Controllers.Admin.Bundles
         [EndpointName("Delete Bundle")]
         [EndpointSummary("Delete a bundle")]
         [EndpointDescription("Deletes an existing bundle from the system.")]
-        public async Task<IActionResult> DeleteAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid bundleId, CancellationToken ct)
+        public async Task<IActionResult> DeleteAsync([IdempotencyKey] Guid requestId, Guid bundleId, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
-            var response = await mediator.Send(new DeleteBundleCommand(parsedRequestId, bundleId), ct);
+            var response = await mediator.Send(new DeleteBundleCommand(requestId, bundleId), ct);
             return response.ToActionResult();
         }
 

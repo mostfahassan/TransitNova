@@ -32,7 +32,7 @@ namespace TransitNovaPayment.API.Controllers.Payment
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpGet("history")]
+        [HttpPost("history")]
         [EnableRateLimiting("CommandsLimiter")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

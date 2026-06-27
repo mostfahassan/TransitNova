@@ -6,6 +6,7 @@ using Serilog;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using TransitNovaPayment.Busieness;
+using TransitNovaPayment.Busieness.Common.Options;
 using TransitNovaPayment.Infrastructure;
 namespace TransitNovaPayment.Api
 {
@@ -14,6 +15,7 @@ namespace TransitNovaPayment.Api
         public static IServiceCollection AddDependencies(this IServiceCollection service, IConfiguration configuration)
         {
             service.AddOpenApi();
+            service.AddPaymentSettingsConfiguration(configuration);
             service.AddBuisnessDependencies();
             service.AddInfrastructureDependencies();
             service.AddJsonSerializer();
@@ -61,6 +63,15 @@ namespace TransitNovaPayment.Api
             });
         }
 
+        public static IServiceCollection AddPaymentSettingsConfiguration(this IServiceCollection service, IConfiguration configuration)
+        {
+            service.AddOptions<PaymentGatewaySettings>()
+                .Bind(configuration.GetSection(PaymentGatewaySettings.SectionName))
+                .Validate(settings => !string.IsNullOrWhiteSpace(settings.PrivateKey), "PaymentSettings:PrivateKey is required.")
+                .ValidateOnStart();
+
+            return service;
+        }
         // Problem Details
         public static IServiceCollection AddProblemDetailsService(this IServiceCollection service)
         {

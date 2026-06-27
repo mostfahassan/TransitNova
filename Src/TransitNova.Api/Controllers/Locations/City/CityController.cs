@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.Features.Location.Cities.Queries;
@@ -11,7 +11,7 @@ namespace TransitNova.Api.Controllers.Locations.City
     {
 
         [EnableRateLimiting("DefaultRateLimiter")]
-        [HttpGet("{governmentId}/cities")]
+        [HttpGet("{governmentId:int}/cities")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetCitiesByGovernmentAsync(int governmentId, CancellationToken cancellationToken)
         {

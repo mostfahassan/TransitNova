@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -10,6 +10,7 @@ using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Carriers;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.Admin.CarrierOperation
 {
     [Authorize(Roles = Role.Admin)]
@@ -33,13 +34,11 @@ namespace TransitNova.Api.Controllers.Admin.CarrierOperation
         [EndpointName("Delete Carrier")]
         [EndpointSummary("Delete a carrier")]
         [EndpointDescription("Deletes an existing carrier from the system.")]
-        public async Task<IActionResult> DeleteCarrierAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid id, CancellationToken ct)
+        public async Task<IActionResult> DeleteCarrierAsync([IdempotencyKey] Guid requestId, Guid id, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var adminId = User.GetUserId();
-            var response = await mediator.Send(new DeleteCarrierCommand(parsedRequestId, id, adminId), ct);
+            var response = await mediator.Send(new DeleteCarrierCommand(requestId, id, adminId), ct);
             return response.ToActionResult();
         }
 

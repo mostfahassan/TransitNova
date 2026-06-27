@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using TransitNovaPayment.Busieness.Common.Abstract;
 using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces;
 using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IPaymentExecution;
@@ -7,6 +7,7 @@ using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IPayme
 using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Repositories.PaymentRepository;
 using TransitNovaPayment.Busieness.Common.DTO.PaymentDto;
 using TransitNovaPayment.Busieness.Common.Mapping;
+using TransitNovaPayment.Busieness.Common.Options;
 using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ErrorsResult;
 using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ResultPattern;
 using TransitNovaPayment.Busieness.Contracts.Keys;
@@ -20,18 +21,18 @@ namespace TransitNovaPayment.Busieness.Common.Implementation
         IUnitOfWork unitOfWork,
         ICacheService cacheService,
         IPaymentExecutionStrategy paymentExecutionStrategy,
-        IConfiguration configuration,
+        IOptions<PaymentGatewaySettings> paymentGatewayOptions,
         ILogger<PaymentProcess> logger) : IPayment
     {
         public async Task<BaseResult?> Pay(CreatePaymentDto dto, string publicKey, CancellationToken cancellationToken)
         {
             logger.LogDebug("Validating payment gateway authentication key.");
 
-            var secretKey = configuration["PaymentSettings:PrivateKey"];
+            var secretKey = paymentGatewayOptions.Value.PrivateKey;
             if (string.IsNullOrEmpty(secretKey))
             {
                 logger.LogCritical("Payment gateway private key is missing from configuration. Key: PaymentSettings:PrivateKey");
-                throw new ArgumentNullException(nameof(secretKey));
+                throw new InvalidOperationException("Payment gateway private key is not configured.");
             }
 
             if (secretKey != publicKey)

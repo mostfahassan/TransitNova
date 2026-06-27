@@ -169,6 +169,24 @@ public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebAp
     }
 
     [Fact]
+    public void RateCalculationEndpoint_Should_BeAnonymousAndUseCommandsRateLimiter()
+    {
+        var endpoint = ControllerEndpointCatalog.Discover(_factory.Services)
+            .Single(endpoint => string.Equals(
+                endpoint.EndpointName,
+                "Calculate Shipment Rate",
+                StringComparison.Ordinal));
+
+        endpoint.HttpMethod.Should().Be("POST");
+        endpoint.RouteTemplate.Should().Be("api/v{version:apiVersion}/shipments/rate-calculation");
+        endpoint.RequiresAuthorization.Should().BeFalse();
+        endpoint.ActionDescriptor.EndpointMetadata
+            .OfType<EnableRateLimitingAttribute>()
+            .Should()
+            .ContainSingle(attribute => attribute.PolicyName == "CommandsLimiter");
+    }
+
+    [Fact]
     public async Task HealthEndpoint_Should_ReturnSuccess_When_TestDatabaseIsAvailableAsync()
     {
         using var client = _factory.CreateAnonymousClient();

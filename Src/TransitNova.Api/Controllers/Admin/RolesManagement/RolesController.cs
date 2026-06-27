@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -8,7 +8,7 @@ using TransitNova.BusinessLayer.Features.Roles.Commands;
 using TransitNova.BusinessLayer.Features.Roles.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
-
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.Admin.RolesManagement
 {
     [Authorize(Roles = Role.Admin)]
@@ -85,12 +85,10 @@ namespace TransitNova.Api.Controllers.Admin.RolesManagement
         [EndpointName("Create Role")]
         [EndpointSummary("Create a new role")]
         [EndpointDescription("Creates a new role in the system.")]
-        public async Task<IActionResult> CreateRoleAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] RoleNameDto dto, CancellationToken ct)
+        public async Task<IActionResult> CreateRoleAsync([IdempotencyKey] Guid requestId, [FromBody] RoleNameDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
-            var response = await mediator.Send(new CreateRoleCommand(parsedRequestId, dto.RoleName), ct);
+            var response = await mediator.Send(new CreateRoleCommand(requestId, dto.RoleName), ct);
             return response.ToActionResult();
         }
 
@@ -109,12 +107,10 @@ namespace TransitNova.Api.Controllers.Admin.RolesManagement
         [EndpointName("Update Role")]
         [EndpointSummary("Update an existing role")]
         [EndpointDescription("Updates the name of an existing role.")]
-        public async Task<IActionResult> UpdateRoleAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid roleId, [FromBody] RoleNameDto dto, CancellationToken ct)
+        public async Task<IActionResult> UpdateRoleAsync([IdempotencyKey] Guid requestId, Guid roleId, [FromBody] RoleNameDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
-            var response = await mediator.Send(new UpdateRoleCommand(parsedRequestId, roleId, dto.RoleName), ct);
+            var response = await mediator.Send(new UpdateRoleCommand(requestId, roleId, dto.RoleName), ct);
             return response.ToActionResult();
         }
 
@@ -130,12 +126,10 @@ namespace TransitNova.Api.Controllers.Admin.RolesManagement
         [EndpointName("Delete Role")]
         [EndpointSummary("Delete a role")]
         [EndpointDescription("Deletes an existing role from the system.")]
-        public async Task<IActionResult> DeleteRoleAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid roleId, CancellationToken ct)
+        public async Task<IActionResult> DeleteRoleAsync([IdempotencyKey] Guid requestId, Guid roleId, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
-            var response = await mediator.Send(new DeleteRoleCommand(parsedRequestId, roleId), ct);
+            var response = await mediator.Send(new DeleteRoleCommand(requestId, roleId), ct);
             return response.ToActionResult();
         }
 
@@ -154,13 +148,11 @@ namespace TransitNova.Api.Controllers.Admin.RolesManagement
         [EndpointName("Update Role Members")]
         [EndpointSummary("Update role members")]
         [EndpointDescription("Synchronizes the users assigned to a role using the submitted membership state.")]
-        public async Task<IActionResult> UpdateRoleMembersAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, Guid roleId, [FromBody] UpdateRoleMembersDto dto, CancellationToken ct)
+        public async Task<IActionResult> UpdateRoleMembersAsync([IdempotencyKey] Guid requestId, Guid roleId, [FromBody] UpdateRoleMembersDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             var response = await mediator.Send(
-                new UpdateRoleMembersCommand(parsedRequestId, roleId, dto.Users), ct);
+                new UpdateRoleMembersCommand(requestId, roleId, dto.Users), ct);
             return response.ToActionResult();
         }
     }

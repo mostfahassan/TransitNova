@@ -112,7 +112,7 @@ public sealed class PaymentProcessPersistenceWorkflowTests
                 UnitOfWork.Object,
                 Cache.Object,
                 ExecutionStrategy.Object,
-                PaymentTestData.CreateConfiguration(),
+                PaymentTestData.CreatePaymentGatewayOptions(),
                 Microsoft.Extensions.Logging.Abstractions.NullLogger<PaymentProcessSut>.Instance);
         }
     }

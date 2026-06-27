@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -20,7 +20,9 @@ namespace TransitNova.InfraStructure.ServiceRegistration.InfraStructureRegistrat
             });
             services.AddDbContextFactory<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")),lifetime:ServiceLifetime.Scoped);
             services.AddHealthChecks()
-                .AddCheck<DatabaseHealthCheck>("Dataabase Health Checking",HealthStatus.Unhealthy);
+                .AddCheck<DatabaseHealthCheck>("Database Health Check", HealthStatus.Unhealthy)
+                .AddCheck<PaymentGatewayConfigurationHealthCheck>("Payment Gateway Configuration", HealthStatus.Unhealthy)
+                .AddCheck<ObservabilityConfigurationHealthCheck>("Observability Configuration", HealthStatus.Unhealthy);
             return services;
         }
     }

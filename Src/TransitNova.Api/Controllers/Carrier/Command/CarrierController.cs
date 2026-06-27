@@ -1,4 +1,4 @@
-﻿
+
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +8,7 @@ using TransitNova.BusinessLayer.Features.Carriers.Commands;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.Carrier.Command
 {
     [Authorize(Roles = Role.Carrier)]
@@ -32,16 +33,14 @@ namespace TransitNova.Api.Controllers.Carrier.Command
         [EndpointName("Update Carrier Profile")]
         [EndpointSummary("Update Authenticated Carrier Profile")]
         [EndpointDescription("Updates the primary profile details for the authenticated carrier. Requires a valid X-Idempotency-Key header and resource ownership validation to ensure safe and idempotent updates.")]
-        public async Task<IActionResult> UpdateProfileAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId,  [FromBody] UpdateCarrierDto dto, CancellationToken ct)
+        public async Task<IActionResult> UpdateProfileAsync([IdempotencyKey] Guid requestId,  [FromBody] UpdateCarrierDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             if (!await IsCarrierOwnerAsync(dto.Id))
                 return Forbid();
 
             var userId = User.GetUserId();
-            var response = await mediator.Send(new UpdateCarrierProfileCommand(parsedRequestId, userId, dto), ct);
+            var response = await mediator.Send(new UpdateCarrierProfileCommand(requestId, userId, dto), ct);
             return response.ToActionResult();
         }
 
@@ -57,18 +56,16 @@ namespace TransitNova.Api.Controllers.Carrier.Command
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Consumes("application/json")]
-        [EndpointName("Add Carrier Additional Info ")]
+        [EndpointName("Add Carrier Additional Info")]
         [EndpointSummary("Add Carrier Additional Info For Authenticated Carrier")]
         [EndpointDescription("Appends or updates supplementary information for the authenticated carrier. Requires a valid X-Idempotency-Key header and resource ownership validation to ensure safe execution")]
-        public async Task<IActionResult> AddCarrierInfoAsync([FromHeader(Name = "X-Idempotency-Key")] string requestId, [FromBody] AdditionalInfoDto dto, CancellationToken ct)
+        public async Task<IActionResult> AddCarrierInfoAsync([IdempotencyKey] Guid requestId, [FromBody] AdditionalInfoDto dto, CancellationToken ct)
         {
-            if (!Guid.TryParse(requestId, out Guid parsedRequestId))
-                return BadRequest();
 
             if (!await IsCarrierOwnerAsync(dto.Id))
                 return Forbid();
             var userId = User.GetUserId();
-            var response = await mediator.Send(new AddingCarrierAdditionalInfoCommand(parsedRequestId, dto , userId), ct);
+            var response = await mediator.Send(new AddingCarrierAdditionalInfoCommand(requestId, dto , userId), ct);
             return response.ToActionResult();
         }
 

@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using FluentValidation;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Moq;
 using System.Net;
 using System.Text;
@@ -11,6 +11,7 @@ using TransitNova.BusinessLayer.Features.Payment.Command;
 using TransitNova.BusinessLayer.Features.Payment.Command.CommandValidator;
 using TransitNova.BusinessLayer.Features.Payment.Handler;
 using TransitNova.BusinessLayer.Interfaces.PaymentService;
+using TransitNova.BusinessLayer.Options;
 using TransitNova.BusinessLayer.Services.PaymentServices;
 using TransitNova.BusinessLayer.Validators.PaymentValidators;
 using TransitNova.Domain.Enums.Payment;
@@ -235,15 +236,17 @@ public sealed class PaymentWorkflowTests
         string? publicKey = "public-key",
         string? baseUrl = "https://payments.test")
     {
-        var configuration = new Mock<IConfiguration>();
-        configuration.Setup(x => x["PaymentSettings:PublicKey"]).Returns(publicKey);
-        configuration.Setup(x => x["PaymentSettings:BaseUrl"]).Returns(baseUrl);
+        var options = Options.Create(new PaymentSettings
+        {
+            PublicKey = publicKey,
+            BaseUrl = baseUrl
+        });
 
         var client = new HttpClient(handler);
         var service = new PaymentService(
             client,
             NullLogger<PaymentService>.Instance,
-            configuration.Object);
+            options);
 
         return new TestPaymentService(service, handler, client);
     }

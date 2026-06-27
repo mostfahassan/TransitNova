@@ -19,14 +19,12 @@ namespace TransitNova.BusinessLayer.Common.Behaviors
                     return cachedResponse;
             }
             var response = await next(cancellationToken);
-
-            if (request is ICachable cache)
+            if (response.IsSuccess)
             {
-                await cacheService.SetAsync(
-                    cache.CacheKey,
-                    response,
-                    CacheKeys.DefaultExpiration,
-                    cancellationToken);
+                if (request is ICachable cache)
+                {
+                    await cacheService.SetAsync(cache.CacheKey, response, CacheKeys.DefaultExpiration, cancellationToken);
+                }
             }
             return response;
         }
