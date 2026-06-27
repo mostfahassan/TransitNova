@@ -6,7 +6,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.IdempotentRepository;
 namespace TransitNova.BusinessLayer.Common.Behaviors
 {
     public sealed class IdempotentCommandPipelineBehavior<TRequest, TResponse>(
-        IIdempotentRepository idempotent)
+        IIdempotentRepository idempotent,ILogger<IdempotentCommandPipelineBehavior<TRequest, TResponse>> logger)
         : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IdempotentCommand<TResponse>
     {
@@ -28,10 +28,17 @@ namespace TransitNova.BusinessLayer.Common.Behaviors
 
             var response = await next(cancellationToken);
 
-            var SerializedResponse = JsonSerializer.Serialize(response, JsonOption);
+            var serializeResponse = JsonSerializer.Serialize(response, JsonOption);
 
-            await idempotent.CreateRequestAsync(request.RequestId, typeof(TRequest).Name, SerializedResponse, cancellationToken);
+            try
+            {
+                await idempotent.CreateRequestAsync(request.RequestId, typeof(TRequest).Name, serializeResponse, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to store idempotent response for RequestId: {RequestId}", request.RequestId);
 
+            }
             return response;
         }
     }

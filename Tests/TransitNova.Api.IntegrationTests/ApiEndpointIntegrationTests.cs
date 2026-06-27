@@ -1,8 +1,9 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net;
 using System.Net.Http.Json;
 using TransitNova.Api.IntegrationTests.Infrastructure;
@@ -37,15 +38,14 @@ public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebAp
     public void ControllerEndpointCatalog_Should_DiscoverEveryCurrentApiAction()
     {
         var endpoints = ControllerEndpointCatalog.Discover(_factory.Services);
+        var signatures = ControllerEndpointCatalogSnapshot.CreateSurfaceSignatures(endpoints);
+        var checksum = ControllerEndpointCatalogSnapshot.ComputeChecksum(signatures);
 
-        endpoints.Should().HaveCount(105);
-        endpoints
-            .Select(endpoint => $"{endpoint.HttpMethod} {endpoint.RouteTemplate}")
-            .Should().OnlyHaveUniqueItems();
-        endpoints
-            .Where(endpoint => endpoint.EndpointName is not null)
-            .Select(endpoint => endpoint.EndpointName)
-            .Should().OnlyHaveUniqueItems();
+        signatures.Should().HaveCount(ControllerEndpointCatalogSnapshot.ExpectedEndpointCount);
+        checksum.Should().Be(
+            ControllerEndpointCatalogSnapshot.ExpectedSurfaceChecksum,
+            $"public API surface changed; update {nameof(ControllerEndpointCatalogSnapshot)} only for intentional endpoint additions/removals. Current checksum: {checksum}");
+        signatures.Should().OnlyHaveUniqueItems();
         endpoints
             .Where(endpoint => endpoint.RouteTemplate.Contains(":string", StringComparison.OrdinalIgnoreCase))
             .Select(endpoint => $"{endpoint.RouteTemplate} ({endpoint.ActionDescriptor.ControllerTypeInfo.FullName})")
@@ -131,7 +131,7 @@ public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebAp
     {
         var endpoints = ControllerEndpointCatalog.Discover(_factory.Services)
             .Where(endpoint => endpoint.HttpMethod is "POST" or "PUT" or "PATCH" or "DELETE")
-            .Where(endpoint => endpoint.ActionDescriptor.ControllerName != "Authentication")
+            .Where(RequiresIdempotencyHeaderContract)
             .ToArray();
 
         var missingContracts = endpoints
@@ -204,4 +204,9 @@ public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebAp
                 attribute.Name,
                 "X-Idempotency-Key",
                 StringComparison.OrdinalIgnoreCase));
+
+    private static bool RequiresIdempotencyHeaderContract(ControllerEndpoint endpoint)
+    {
+        return endpoint.HttpMethod == "DELETE" || HasIdempotencyHeaderParameter(endpoint.ActionDescriptor);
+    }
 }

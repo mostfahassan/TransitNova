@@ -2,7 +2,6 @@
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.Warehouses.Commands;
-using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseRepository;
@@ -18,7 +17,7 @@ namespace TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyCommands
         ISystemLogCommands systemLogCommands,
         IUnitOfWork unitOfWork,
         ILogger<UpdateWarehouseHandler> logger)
-        : ICommandHandler<UpdateWarehouseCommand, BaseResult>, ITransactional
+        : ICommandHandler<UpdateWarehouseCommand, BaseResult>
     {
         public async Task<BaseResult> Handle(UpdateWarehouseCommand request, CancellationToken ct)
         {

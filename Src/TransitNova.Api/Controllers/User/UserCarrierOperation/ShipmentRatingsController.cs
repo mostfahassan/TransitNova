@@ -3,19 +3,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.DTOs.Carrier;
-using TransitNova.BusinessLayer.Features.UserOperations.Commands;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Carrier;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
 namespace TransitNova.Api.Controllers.User.UserCarrierOperation
 {
     [Authorize(Roles = Role.User)]
-    [Authorize(Policy = UserPermissions.ShipmentOwner)]
     [Route("api/v{version:apiVersion}/shipments")]
     [ApiController]
     [ApiVersion("1.0")]
     [Tags("User Shipment Ratings")]
-    public sealed class ShipmentRatingsController(IMediator mediator) : ControllerBase
+    public sealed class ShipmentRatingsController(IMediator mediator,IAuthorizationService authorizationService) : ControllerBase
     {
 
         [Authorize(Policy = UserPermissions.CanRatePickupCarrier)]
@@ -39,6 +37,9 @@ namespace TransitNova.Api.Controllers.User.UserCarrierOperation
         {
             if (!Guid.TryParse(requestId, out Guid parsedRequestId))
                 return BadRequest();
+
+            if (!await UserOwnsShipmentAsync(shipmentId))
+                return Forbid();
 
             var userId = User.GetUserId();
             var response = await mediator.Send(new RatePickupCarrierCommand(parsedRequestId, userId, shipmentId, dto), ct);
@@ -67,9 +68,23 @@ namespace TransitNova.Api.Controllers.User.UserCarrierOperation
             if (!Guid.TryParse(requestId, out Guid parsedRequestId))
                 return BadRequest();
 
+            if (!await UserOwnsShipmentAsync(shipmentId))
+                return Forbid();
+
             var userId = User.GetUserId();
             var response = await mediator.Send(new RateDeliveryCarrierCommand(parsedRequestId, userId, shipmentId, dto), ct);
             return response.ToActionResult();
+        }
+
+        private async Task<bool> UserOwnsShipmentAsync(Guid shipmentId)
+        {
+            var authorizationResult =
+               await authorizationService.AuthorizeAsync(
+                   User,
+                   shipmentId,
+                   UserPermissions.ShipmentOwner);
+
+            return authorizationResult.Succeeded;
         }
     }
 }

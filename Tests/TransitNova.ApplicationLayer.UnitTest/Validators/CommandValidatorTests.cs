@@ -8,7 +8,11 @@ using TransitNova.BusinessLayer.Features.Bundles.Commands.CommandsValidators;
 using TransitNova.BusinessLayer.Features.Location.Cities.Commands;
 using TransitNova.BusinessLayer.Features.Location.Cities.Commands.CommandsValidators;
 using TransitNova.BusinessLayer.Interfaces.Repositories.LocationRepository;
-
+using TransitNova.BusinessLayer.DTOs.Shipment;
+using TransitNova.BusinessLayer.Features.Shipments.Commands;
+using TransitNova.BusinessLayer.Features.Shipments.Commands.CommandsValidators;
+using TransitNova.BusinessLayer.Validators.ShipmentValidators;
+using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.ApplicationLayer.Tests.Validators;
 
 public sealed class CommandValidatorTests
@@ -101,6 +105,32 @@ public sealed class CommandValidatorTests
         result.Errors.Should().Contain(e => e.ErrorMessage == "City name already exists in this government.");
     }
 
+
+    [Fact]
+    public async Task RateCalculatorCommandValidator_Should_AcceptCommand_When_DtoIsValidAsync()
+    {
+        var validator = CreateRateCalculatorCommandValidator();
+        var command = new RateCalculatorCommand(new RateCalculatorDto(
+            ValidPackage(),
+            TransportationMode.Land,
+            enShipmentType.Standard));
+
+        var result = await validator.ValidateAsync(command);
+
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task RateCalculatorCommandValidator_Should_RejectCommand_When_DtoIsMissingAsync()
+    {
+        var validator = CreateRateCalculatorCommandValidator();
+        var command = new RateCalculatorCommand(null!);
+
+        var result = await validator.ValidateAsync(command);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.PropertyName == nameof(RateCalculatorCommand.Dto));
+    }
     private static InlineValidator<CreateBundleDto> CreateBundleDtoValidator()
     {
         var validator = new InlineValidator<CreateBundleDto>();
@@ -119,6 +149,16 @@ public sealed class CommandValidatorTests
         return validator;
     }
 
+    private static RateCalculatorCommandValidator CreateRateCalculatorCommandValidator() =>
+        new(new RateCalculatorDtoValidator(new PackageSpecificationValidator()));
+
+    private static PackageSpecificationDto ValidPackage() => new()
+    {
+        Weight = 5,
+        Width = 10,
+        Height = 10,
+        Length = 10
+    };
     private static CreateBundleDto ValidBundleDto() => new()
     {
         BundleName = "Business",

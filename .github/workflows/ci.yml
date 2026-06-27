@@ -1,0 +1,67 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'codex/**'
+  pull_request:
+
+jobs:
+  build-test-coverage:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore TransitNova.slnx
+
+      - name: Build
+        run: dotnet build TransitNova.slnx --configuration Release --no-restore
+
+      - name: Install ReportGenerator
+        shell: pwsh
+        run: |
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+          "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Test With Coverage
+        shell: pwsh
+        run: |
+          $projects = @(
+            @{ Name = 'domain'; Project = 'Tests/TransitNova.Domain.Tests/TransitNova.Domain.Tests.csproj'; Target = 'artifacts/coverage/domain'; AssemblyFilter = '+TransitNova.Domain' },
+            @{ Name = 'application'; Project = 'Tests/TransitNova.ApplicationLayer.UnitTest/TransitNova.ApplicationLayer.Tests.csproj'; Target = 'artifacts/coverage/application'; AssemblyFilter = '+TransitNova.BusinessLayer' },
+            @{ Name = 'infrastructure'; Project = 'Tests/TransitNova.InfraStructure.UnitTest/TransitNova.InfraStructure.Tests.csproj'; Target = 'artifacts/coverage/infrastructure'; AssemblyFilter = '+TransitNova.InfraStructure' },
+            @{ Name = 'api'; Project = 'Tests/TransitNova.Api.IntegrationTests/TransitNova.Api.IntegrationTests.csproj'; Target = 'artifacts/coverage/api'; AssemblyFilter = '+TransitNova.Api' },
+            @{ Name = 'payment'; Project = 'Tests/TransitNova.Payment.Tests/TransitNova.Payment.Tests.csproj'; Target = 'artifacts/coverage/payment'; AssemblyFilter = '+TransitNovaPayment.*' }
+          )
+
+          foreach ($project in $projects) {
+            dotnet test $project.Project --configuration Release --no-build --logger "trx;LogFileName=$($project.Name).trx" --results-directory "artifacts/test-results/$($project.Name)" --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+
+            reportgenerator "-reports:artifacts/test-results/$($project.Name)/**/coverage.cobertura.xml" "-targetdir:$($project.Target)" "-reporttypes:HtmlInline;Cobertura;TextSummary" "-assemblyfilters:$($project.AssemblyFilter)"
+          }
+
+      - name: Enforce Coverage Thresholds
+        shell: pwsh
+        run: ./build/coverage/Test-Coverage.ps1
+
+      - name: Upload Coverage Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: artifacts/coverage
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: artifacts/test-results

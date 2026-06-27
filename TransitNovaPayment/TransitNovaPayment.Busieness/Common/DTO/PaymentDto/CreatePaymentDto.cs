@@ -4,8 +4,8 @@ namespace TransitNovaPayment.Busieness.Common.DTO.PaymentDto
 {
     public sealed class CreatePaymentDto
     {
-        public Guid ShipmentId { get;}
-        public PaymentMethod PaymentMethod { get;}
-        public decimal ShippingCost {get;}
+        public Guid ShipmentId { get; init; }
+        public PaymentMethod PaymentMethod { get; init; }
+        public decimal ShippingCost { get; init; }
     }
 }

@@ -97,7 +97,8 @@ public sealed class ProcessOutboxMessagesJobTests
         var stored = await fixture.Context.OutboxMessages.AsNoTracking().SingleAsync();
         stored.ProcessedOn.Should().BeNull();
         stored.RetryCount.Should().Be(1);
-        stored.Error.Should().StartWith("Unknown type:");
+        stored.Error.Should().StartWith("System.InvalidOperationException");
+        stored.Error.Should().Contain($"Unable to resolve event type '{message.Type}'.");
     }
 
     [Fact]
@@ -134,7 +135,8 @@ public sealed class ProcessOutboxMessagesJobTests
         var stored = await fixture.Context.OutboxMessages.AsNoTracking().SingleAsync();
         stored.ProcessedOn.Should().BeNull();
         stored.RetryCount.Should().Be(1);
-        stored.Error.Should().Be("broker unavailable");
+        stored.Error.Should().StartWith("System.InvalidOperationException");
+        stored.Error.Should().Contain("broker unavailable");
     }
 
     [Fact]
@@ -159,7 +161,8 @@ public sealed class ProcessOutboxMessagesJobTests
         stored[0].RetryCount.Should().Be(0);
         stored[1].ProcessedOn.Should().BeNull();
         stored[1].RetryCount.Should().Be(1);
-        stored[1].Error.Should().Be("second publish failed");
+        stored[1].Error.Should().StartWith("System.InvalidOperationException");
+        stored[1].Error.Should().Contain("second publish failed");
     }
 
     [Fact]

@@ -29,7 +29,7 @@ namespace TransitNovaPayment.API.Controllers.Payment
         {
           
             var response = await mediator.Send(new CreatePaymentCommand(dto, PublicKey), cancellationToken);
-            return Ok(response);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("history")]

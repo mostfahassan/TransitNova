@@ -1,0 +1,94 @@
+using Microsoft.Extensions.Configuration;
+using TransitNovaPayment.Busieness.Common.Abstract;
+using TransitNovaPayment.Busieness.Common.DTO.PaymentDto;
+using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
+using PaymentEntity = TransitNovaPayment.Busieness.Models.PaymentEntity.Payment;
+using PaymentHistoryEntity = TransitNovaPayment.Busieness.Models.PaymentHistoryEntity.PaymentHistory;
+
+namespace TransitNova.Payment.Tests.TestInfrastructure;
+
+internal static class PaymentTestData
+{
+    internal static CreatePaymentDto CreatePaymentDto(
+        PaymentMethod paymentMethod = PaymentMethod.CreditCard,
+        decimal shippingCost = 100m,
+        Guid? shipmentId = null)
+    {
+        return new CreatePaymentDto
+        {
+            ShipmentId = shipmentId ?? Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            PaymentMethod = paymentMethod,
+            ShippingCost = shippingCost
+        };
+    }
+
+    internal static IConfiguration CreateConfiguration(string? privateKey = "payment-private-key")
+    {
+        return new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["PaymentSettings:PrivateKey"] = privateKey
+            })
+            .Build();
+    }
+
+    internal static PaymentEntity CreatePayment(
+        PaymentMethod paymentMethod = PaymentMethod.CreditCard,
+        decimal totalAmount = 100m,
+        Guid? shipmentId = null)
+    {
+        var payment = PaymentEntity.Create(
+            totalAmount,
+            shipmentId ?? Guid.Parse("22222222-2222-2222-2222-222222222222"),
+            paymentMethod);
+
+        typeof(PaymentEntity)
+            .GetProperty("RowVersion")!
+            .SetValue(payment, new byte[] { 1 });
+
+        return payment;
+    }
+
+    internal static PaymentHistoryEntity CreateHistory(
+        PaymentEntity payment,
+        PaymentStatus oldStatus,
+        PaymentStatus newStatus,
+        DateTime createdAt,
+        string createdBy)
+    {
+        var history = new PaymentHistoryEntity
+        {
+            Payment = payment,
+            PaymentId = payment.Id,
+            OldStatus = oldStatus,
+            NewStatus = newStatus,
+            ChangedAt = createdAt.AddMinutes(5)
+        };
+
+        typeof(PaymentHistoryEntity).BaseType!
+            .GetProperty("CreatedAt")!
+            .SetValue(history, createdAt);
+        typeof(PaymentHistoryEntity).BaseType!
+            .GetProperty("CreatedBy")!
+            .SetValue(history, createdBy);
+
+        return history;
+    }
+
+    internal static FixedPaymentMethodService FixedPaymentMethod(
+        PaymentMethod paymentMethod,
+        decimal commission)
+    {
+        return new FixedPaymentMethodService(paymentMethod, commission);
+    }
+
+    internal sealed class FixedPaymentMethodService(PaymentMethod paymentMethod, decimal commission) : PaymentMethodService
+    {
+        public override decimal Commision => commission;
+
+        public override PaymentMethod PaymentMethod => paymentMethod;
+
+        public override decimal Pay(decimal shippingCost)
+            => shippingCost + (shippingCost * commission);
+    }
+}

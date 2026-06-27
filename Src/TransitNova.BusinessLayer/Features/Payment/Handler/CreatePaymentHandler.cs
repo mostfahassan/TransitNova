@@ -1,4 +1,3 @@
-﻿
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Payment;
@@ -12,10 +11,12 @@ namespace TransitNova.BusinessLayer.Features.Payment.Handler
         {
             var response = await paymentService.Pay(request.Dto, cancellationToken);
 
-            if (response is null || response.IsFailure || response.Data is null)
-            {
-                return Result<Invoice>.Failure(Errors.FailedOperation(response?.Message ?? "Payment operation failed"));
-            }
+            if (response is null)
+                return Result<Invoice>.Failure(Errors.FailedOperation("Payment operation failed"));
+
+            if (response.IsFailure || response.Data is null)
+                return Result<Invoice>.Failure(response.Error ?? Errors.FailedOperation(response.Message ?? "Payment operation failed"));
+
             return Result<Invoice>.Success(response.Data);
         }
     }

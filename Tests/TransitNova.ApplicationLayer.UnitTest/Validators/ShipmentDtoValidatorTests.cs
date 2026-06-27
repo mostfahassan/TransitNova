@@ -141,6 +141,36 @@ public sealed class ShipmentDtoValidatorTests
         result.IsValid.Should().BeFalse();
     }
 
+
+    [Fact]
+    public async Task RateCalculatorDtoValidator_CompletePayload_Should_BeValidAsync()
+    {
+        var validator = new RateCalculatorDtoValidator(new PackageSpecificationValidator());
+        var dto = new RateCalculatorDto(ValidPackage(), TransportationMode.Land, enShipmentType.Standard);
+
+        var result = await validator.ValidateAsync(dto);
+
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData("package")]
+    [InlineData("transportation")]
+    [InlineData("delivery-type")]
+    public async Task RateCalculatorDtoValidator_InvalidPayload_Should_BeInvalidAsync(string field)
+    {
+        var validator = new RateCalculatorDtoValidator(new PackageSpecificationValidator());
+        var dto = field switch
+        {
+            "package" => new RateCalculatorDto(null!, TransportationMode.Land, enShipmentType.Standard),
+            "transportation" => new RateCalculatorDto(ValidPackage(), (TransportationMode)999, enShipmentType.Standard),
+            _ => new RateCalculatorDto(ValidPackage(), TransportationMode.Land, (enShipmentType)999)
+        };
+
+        var result = await validator.ValidateAsync(dto);
+
+        result.IsValid.Should().BeFalse();
+    }
     private static IValidator<CreateShipmentDto> CreateValidator() =>
         new CreateShipmentValidation(new CreateReceiverValidator());
 

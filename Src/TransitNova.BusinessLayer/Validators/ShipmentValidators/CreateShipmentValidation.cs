@@ -8,9 +8,7 @@ namespace TransitNova.BusinessLayer.Validators.ShipmentValidators
     {
         public CreateShipmentValidation(IValidator<CreateReceiverDto> dto)
         {
-            ClassLevelCascadeMode = CascadeMode.Stop;
-
-    
+     
 
             RuleFor(x => x.PackageSpecification)
                 .NotNull().WithMessage("Package specification is required.");

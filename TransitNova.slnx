@@ -26,5 +26,6 @@
     <Project Path="Tests/TransitNova.Domain.Tests/TransitNova.Domain.Tests.csproj" />
     <Project Path="Tests/TransitNova.InfraStructure.UnitTest/TransitNova.InfraStructure.Tests.csproj" />
     <Project Path="Tests/TransitNova.MappingTests/TransitNova.MappingTests.csproj" />
+    <Project Path="Tests/TransitNova.Payment.Tests/TransitNova.Payment.Tests.csproj" />
   </Folder>
 </Solution>

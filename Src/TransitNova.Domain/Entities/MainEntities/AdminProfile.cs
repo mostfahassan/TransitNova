@@ -23,7 +23,6 @@ namespace TransitNova.Domain.Entities.MainEntities
             Address = address;
             AppUserId = appUserId;
             UserType = UserType.Admin;
-         
             CurrentState = true;
             CityId = cityId;
         }

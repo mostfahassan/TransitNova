@@ -2,6 +2,7 @@ using FluentAssertions;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using System.Text.Json;
 using TransitNova.BusinessLayer.Common.Behaviors;
@@ -202,7 +203,7 @@ public sealed class PipelineBehaviorTests
         var repository = new Mock<IIdempotentRepository>();
         repository.Setup(x => x.ReturnRequestIfExistsAsync(requestId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Serialize(BaseResult.Success()));
-        var behavior = new IdempotentCommandPipelineBehavior<TestCommand, BaseResult>(repository.Object);
+        var behavior = CreateIdempotentBehavior(repository);
         var nextCalls = 0;
 
         var result = await behavior.Handle(
@@ -228,7 +229,7 @@ public sealed class PipelineBehaviorTests
     {
         var requestId = Guid.NewGuid();
         var repository = new Mock<IIdempotentRepository>();
-        var behavior = new IdempotentCommandPipelineBehavior<TestCommand, BaseResult>(repository.Object);
+        var behavior = CreateIdempotentBehavior(repository);
         var expected = BaseResult.Success();
 
         var result = await behavior.Handle(
@@ -249,7 +250,7 @@ public sealed class PipelineBehaviorTests
     {
         var requestId = Guid.NewGuid();
         var repository = new Mock<IIdempotentRepository>();
-        var behavior = new IdempotentCommandPipelineBehavior<TestCommand, BaseResult>(repository.Object);
+        var behavior = CreateIdempotentBehavior(repository);
 
         var act = () => behavior.Handle(
             new TestCommand(requestId, "test"),
@@ -270,7 +271,7 @@ public sealed class PipelineBehaviorTests
         var requestId = Guid.NewGuid();
         var repository = new Mock<IIdempotentRepository>();
         using var cancellation = new CancellationTokenSource();
-        var behavior = new IdempotentCommandPipelineBehavior<TestCommand, BaseResult>(repository.Object);
+        var behavior = CreateIdempotentBehavior(repository);
         var handlerToken = CancellationToken.None;
 
         await behavior.Handle(
@@ -298,7 +299,7 @@ public sealed class PipelineBehaviorTests
         var repository = new Mock<IIdempotentRepository>();
         repository.Setup(x => x.ReturnRequestIfExistsAsync(requestId, It.IsAny<CancellationToken>()))
             .ReturnsAsync("not-json");
-        var behavior = new IdempotentCommandPipelineBehavior<TestCommand, BaseResult>(repository.Object);
+        var behavior = CreateIdempotentBehavior(repository);
 
         var act = () => behavior.Handle(
             new TestCommand(requestId, "test"),
@@ -383,4 +384,10 @@ public sealed class PipelineBehaviorTests
     };
 
     private static string Serialize<T>(T value) => JsonSerializer.Serialize(value, JsonOptions);
+    private static IdempotentCommandPipelineBehavior<TestCommand, BaseResult> CreateIdempotentBehavior(Mock<IIdempotentRepository> repository)
+    {
+        return new IdempotentCommandPipelineBehavior<TestCommand, BaseResult>(
+            repository.Object,
+            NullLogger<IdempotentCommandPipelineBehavior<TestCommand, BaseResult>>.Instance);
+    }
 }

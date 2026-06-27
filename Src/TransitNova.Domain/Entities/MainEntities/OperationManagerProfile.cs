@@ -27,7 +27,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         public static OperationManagerProfile Create(Guid id, string firstName, string lastName, string email, string phoneNumber, string address, int cityId)
         {
             var user = new OperationManagerProfile(id, firstName, lastName, email, phoneNumber, address, cityId);
-            user.ReleaseDomainEvent(new UserRegisteredDomainEvent(user.Id, email, user.FullName,phoneNumber, user.UserType));
+            user.RaiseDomainEvent(new UserRegisteredDomainEvent(user.Id, email, user.FullName,phoneNumber, user.UserType));
             return user;
         }
 

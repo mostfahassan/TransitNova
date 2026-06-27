@@ -31,7 +31,7 @@ services:
       MVC__Host: http://transitnova-ui:80
       PaymentSettings__BaseUrl: http://transitnova-payment:80 
       JWT__Key: "${JWT_KEY}"
-      PaymentSettings__PrivateKey: "${PaymentSettings__PublicKey}"
+      PaymentSettings__PublicKey: "${PaymentSettings__PublicKey}"
       ConnectionStrings__DefaultConnection: "${ConnectionStrings__ApiDefaultConnection}"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://transitnova-seq:5341/ingest/otlp/v1/traces
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf

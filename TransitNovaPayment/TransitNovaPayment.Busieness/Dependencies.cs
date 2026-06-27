@@ -2,10 +2,12 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using TransitNovaPayment.Busieness.Common.Abstract;
+using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IPaymentExecution;
 using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IPaymentService;
 using TransitNovaPayment.Busieness.Common.Abstract.PaymentMethods;
 using TransitNovaPayment.Busieness.Common.Behaviour;
 using TransitNovaPayment.Busieness.Common.Implementation;
+
 namespace TransitNovaPayment.Busieness
 {
     public static class Dependencies
@@ -21,6 +23,7 @@ namespace TransitNovaPayment.Busieness
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
 
             services.AddScoped<IPayment, PaymentProcess>();
+            services.AddScoped<IPaymentExecutionStrategy, RandomizedPaymentExecutionStrategy>();
             services.AddScoped<PaymentMethodService, CreditCard>();
             services.AddScoped<PaymentMethodService, PaypalPayment>();
             services.AddScoped<PaymentMethodService, WalletsPayment>();

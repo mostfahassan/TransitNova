@@ -32,7 +32,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         public static UserProfile Create(Guid Id, string firstName, string lastName, string email, string phone, string address, int cityId)
         {
             var user = new UserProfile(Id, firstName, lastName, email, phone, address, cityId);
-            user.ReleaseDomainEvent(new UserRegisteredDomainEvent(user.Id, email, user.FullName,phone, user.UserType));
+            user.RaiseDomainEvent(new UserRegisteredDomainEvent(user.Id, email, user.FullName,phone, user.UserType));
             return user;
         }
 

@@ -15,7 +15,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.Cru
         IUnitOfWork unitOfWork,
         ICacheService cacheService,
         ILogger<UpdateCarrierProfileHandler> logger)
-        : ICommandHandler<UpdateCarrierProfileCommand, Result<CarrierProfileDto>>,ITransactional
+        : ICommandHandler<UpdateCarrierProfileCommand, Result<CarrierProfileDto>>
     {
         public async Task<Result<CarrierProfileDto>> Handle(UpdateCarrierProfileCommand request, CancellationToken ct)
         {
