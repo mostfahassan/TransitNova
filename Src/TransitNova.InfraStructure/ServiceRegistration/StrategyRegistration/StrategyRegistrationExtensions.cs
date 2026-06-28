@@ -13,7 +13,9 @@ namespace TransitNova.InfraStructure.ServiceRegistration.StrategyRegistration
                     .AddScoped<IUserRegistrationStrategy, CarrierRegistrationStrategy>()
                     .AddScoped<IUserRegistrationStrategy, OperationManagerRegistrationStrategy>()
                     .AddScoped<IUserRegistrationStrategy, AdminRegistrationStrategy>()
+                    .AddScoped<IUserRegistrationStrategy, WarehouseManagerStrategy>()
                     .AddScoped<IUserStrategyFactory, UserStrategyFactory>();
+                 
 
             return services;
         }

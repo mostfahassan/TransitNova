@@ -53,7 +53,7 @@ internal static class Phase2RepositoryTestData
     {
         await EnsureSqliteRowVersionDefaultAsync(fixture, "Warehouses");
         var warehouse = Warehouse.Create(
-            name, WarehouseType.MainWarehouse, 1_000m, 100m, 24, "Cairo", Guid.NewGuid());
+            name, WarehouseType.MainWarehouse, 1_000m, 100m, 24, "Cairo", Guid.NewGuid(), Guid.NewGuid());
         typeof(Warehouse).GetProperty(nameof(Warehouse.RowVersion))!.SetValue(warehouse, new byte[] { 1 });
         if (zone is not null)
             warehouse.AddZone(zone);

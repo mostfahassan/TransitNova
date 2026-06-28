@@ -7,7 +7,7 @@ namespace TransitNova.InfraStructure.EntityConfig
     {
         public void Configure(EntityTypeBuilder<UserProfile> user)
         {
-            user.HasKey(u => u.Id).HasName("UserProfileKey");
+            user.HasKey(u => u.Id).IsClustered();
 
             user.HasMany(u => u.SentShipments)
             .WithOne(s => s.Sender)
@@ -19,12 +19,14 @@ namespace TransitNova.InfraStructure.EntityConfig
                 .HasForeignKey(u => u.CityId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            user.HasIndex(c => c.AppUserId).IsUnique();
+          
             user.HasOne<AppUser>()
                     .WithOne()
                     .HasForeignKey<UserProfile>(x => x.AppUserId)
                     .OnDelete(DeleteBehavior.Restrict);
 
+
+            user.HasIndex(c => c.AppUserId).IsUnique();
             user.HasIndex(u => u.CityId);
             user.HasIndex(u => u.Email);
         }

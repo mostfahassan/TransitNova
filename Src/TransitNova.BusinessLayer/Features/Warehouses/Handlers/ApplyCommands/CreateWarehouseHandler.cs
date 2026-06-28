@@ -3,7 +3,6 @@ using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Warehouse;
 using TransitNova.BusinessLayer.Features.Warehouses.Commands;
-using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseRepository;
@@ -43,7 +42,8 @@ namespace TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyCommands
                 request.Dto.CurrentUsage,
                 request.Dto.OperatingHours,
                 request.Dto.Address,
-                request.AdminId);
+                request.AdminId,
+                request.Dto.ManagerId);
 
             foreach (var zone in zones)
             {

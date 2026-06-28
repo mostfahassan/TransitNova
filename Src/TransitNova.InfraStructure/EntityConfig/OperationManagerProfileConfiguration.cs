@@ -9,7 +9,7 @@ namespace TransitNova.InfraStructure.EntityConfig
         public void Configure(EntityTypeBuilder<OperationManagerProfile> admin)
         {
             admin.HasKey(a => a.Id)
-                 .HasName("OperationManagerProfileKey");
+                 .IsClustered();
 
           
             admin.HasOne(c => c.City)
@@ -24,8 +24,5 @@ namespace TransitNova.InfraStructure.EntityConfig
                     .OnDelete(DeleteBehavior.Restrict);
 
         }
-
-
-
     }
 }

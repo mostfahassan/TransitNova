@@ -1,4 +1,5 @@
 ﻿
+using System.Runtime.CompilerServices;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Warehouse;
@@ -11,6 +12,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         private readonly List<Carrier> _carriers = [];
         public string Name { get; private set; } = string.Empty;
         public WarehouseType Type { get; private set; }
+        public bool HasManager { get; private set; } = false;
         public string Address { get; private set; } = string.Empty;
         public byte[] RowVersion { get; private set; } = default!;
         public virtual ICollection<Trip> Trips { get; set; } = new List<Trip>();
@@ -18,16 +20,18 @@ namespace TransitNova.Domain.Entities.MainEntities
         public decimal CurrentUsage { get; private set; }
         public IReadOnlyCollection<Zone> ZonesServed => _zonesServed.AsReadOnly();
         public IReadOnlyCollection<Carrier> Carriers => _carriers.AsReadOnly();
+        public WarehouseManagerProfile Manager { get; private set; } = null!;
+        public Guid ManagerId { get; private set; }
         public int? OperatingHours { get; private set; }
         private Warehouse()
         {
 
         }
 
-        private Warehouse(string name, WarehouseType type, decimal capacity, decimal currentUsage, int operatingHours, string address, Guid createdBy)
+        private Warehouse(string name, WarehouseType type, decimal capacity, decimal currentUsage, int operatingHours, string address, Guid createdBy,Guid managerId)
         {
             Validate(name, capacity, currentUsage, operatingHours, address);
-
+            EnsureNoManager();
             Id = Guid.CreateVersion7();
             Name = name.Trim();
             Type = type;
@@ -37,15 +41,18 @@ namespace TransitNova.Domain.Entities.MainEntities
             CreatedBy = createdBy.ToString();
             Address = address;
             CurrentState = true;
+            ManagerId = managerId;
+            HasManager = true;
         }
 
        
-        public static Warehouse Create(string name, WarehouseType type, decimal capacity, decimal currentUsage, int operatingHours, string address, Guid createdBy)
-            => new (name, type, capacity, currentUsage, operatingHours, address, createdBy);
+        public static Warehouse Create(string name, WarehouseType type, decimal capacity, decimal currentUsage, int operatingHours, string address, Guid createdBy, Guid managerId)
+            => new (name, type, capacity, currentUsage, operatingHours, address, createdBy, managerId);
 
-        public void Update(string name, WarehouseType type ,decimal capacity, decimal currentUsage, int? operatingHours, string address, Guid updatedBy)
+        public void Update(string name, WarehouseType type ,decimal capacity, decimal currentUsage, int? operatingHours, string address, Guid updatedBy,Guid managerId)
         {
             Validate(name, capacity, currentUsage, operatingHours, address);
+            EnsureNotSameManager(managerId);
             Name = name.Trim();
             Type = type;
             Capacity = capacity;
@@ -54,6 +61,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             Address = address.Trim();
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = updatedBy.ToString();
+            ManagerId = ManagerId;
         }
      
 
@@ -86,6 +94,17 @@ namespace TransitNova.Domain.Entities.MainEntities
             _zonesServed.AddRange(distinctZones);
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = updatedBy.ToString();
+        }
+
+        private void EnsureNoManager ()
+        {
+            if (HasManager)
+                throw new WarehouseAlreadyHasManagerException("Warehoues Already Has Manager Can't Have Another Manager", Id);
+        }
+        private void EnsureNotSameManager (Guid managerId)
+        {
+            if (managerId == ManagerId)
+                throw new SameWarehouseManagerException("Warehoues Already Has Same Manager Can't Assign Same Manager Twice", Id);
         }
 
         // Validations

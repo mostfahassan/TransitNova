@@ -84,7 +84,6 @@ namespace TransitNova.Api
                 configuration.ReadFrom.Configuration(context.Configuration);
                 configuration.Enrich.FromLogContext().WriteTo.Console(
                 outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{CorrelationId}] {Message:lj}{NewLine}{Exception}");
-
             });
        
         }

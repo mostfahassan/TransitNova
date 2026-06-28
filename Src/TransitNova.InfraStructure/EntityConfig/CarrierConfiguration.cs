@@ -8,7 +8,7 @@ namespace TransitNova.InfraStructure.EntityConfig
     {
         public void Configure(EntityTypeBuilder<Carrier> carrier)
         {
-            carrier.HasKey(c => c.Id);
+            carrier.HasKey(c => c.Id).IsClustered();
 
             carrier.Property(c => c.FirstName)
                 .IsRequired()

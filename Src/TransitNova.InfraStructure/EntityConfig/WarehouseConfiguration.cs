@@ -9,7 +9,7 @@ namespace TransitNova.InfraStructure.EntityConfig
         public void Configure(EntityTypeBuilder<Warehouse> wareHouse)
         {
 
-            wareHouse.HasKey(w => w.Id);
+            wareHouse.HasKey(w => w.Id).IsClustered();
 
             wareHouse.Property(w => w.Name)
                 .IsRequired()
@@ -50,6 +50,7 @@ namespace TransitNova.InfraStructure.EntityConfig
             wareHouse.HasIndex(w => w.CreatedBy);
             wareHouse.HasIndex(w => w.Name);
             wareHouse.HasIndex(w => w.Type);
+            wareHouse.HasIndex(w => w.ManagerId);
             
 
         }

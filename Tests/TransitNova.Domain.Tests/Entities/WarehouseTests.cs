@@ -11,8 +11,9 @@ public sealed class WarehouseTests
     public void CreateWarehouse_Should_Create_ActiveWarehouse_When_DataIsValid()
     {
         var userId = Guid.NewGuid();
+        var managerId = Guid.NewGuid();
 
-        var warehouse = Warehouse.Create(" Main ", WarehouseType.MainWarehouse, 1000m, 100m, 24, "Cairo", userId);
+        var warehouse = Warehouse.Create(" Main ", WarehouseType.MainWarehouse, 1000m, 100m, 24, "Cairo", userId, managerId);
 
         warehouse.Id.Should().NotBeEmpty();
         warehouse.Name.Should().Be("Main");
@@ -27,7 +28,7 @@ public sealed class WarehouseTests
     [InlineData("Name", 100, 0, 8, "")]
     public void CreateWarehouse_Should_ThrowException_When_RequiredTextIsMissing(string name, decimal capacity, decimal usage, int hours, string address)
     {
-        var act = () => Warehouse.Create(name, WarehouseType.MainWarehouse, capacity, usage, hours, address, Guid.NewGuid());
+        var act = () => Warehouse.Create(name, WarehouseType.MainWarehouse, capacity, usage, hours, address, Guid.NewGuid(), Guid.NewGuid());
 
         act.Should().Throw<DomainArgumentException>();
     }
@@ -37,7 +38,7 @@ public sealed class WarehouseTests
     [InlineData(-1)]
     public void CreateWarehouse_Should_ThrowException_When_CapacityIsNotPositive(decimal capacity)
     {
-        var act = () => Warehouse.Create("Name", WarehouseType.MainWarehouse, capacity, 0m, 8, "Address", Guid.NewGuid());
+        var act = () => Warehouse.Create("Name", WarehouseType.MainWarehouse, capacity, 0m, 8, "Address", Guid.NewGuid(), Guid.NewGuid());
 
         act.Should().Throw<DomainArgumentOutOfRangeException>().Which.ErrorCode.Should().Be("WAREHOUSE_CAPACITY_INVALID");
     }
@@ -45,7 +46,7 @@ public sealed class WarehouseTests
     [Fact]
     public void CreateWarehouse_Should_ThrowException_When_UsageExceedsCapacity()
     {
-        var act = () => Warehouse.Create("Name", WarehouseType.MainWarehouse, 100m, 101m, 8, "Address", Guid.NewGuid());
+        var act = () => Warehouse.Create("Name", WarehouseType.MainWarehouse, 100m, 101m, 8, "Address", Guid.NewGuid(), Guid.NewGuid());
 
         act.Should().Throw<DomainOperationException>().Which.ErrorCode.Should().Be("WAREHOUSE_USAGE_EXCEEDS_CAPACITY");
     }
@@ -53,7 +54,7 @@ public sealed class WarehouseTests
     [Fact]
     public void CreateWarehouse_Should_ThrowException_When_UsageIsNegative()
     {
-        var act = () => Warehouse.Create("Name", WarehouseType.MainWarehouse, 100m, -1m, 8, "Address", Guid.NewGuid());
+        var act = () => Warehouse.Create("Name", WarehouseType.MainWarehouse, 100m, -1m, 8, "Address", Guid.NewGuid(), Guid.NewGuid());
 
         act.Should().Throw<DomainArgumentOutOfRangeException>().Which.ErrorCode.Should().Be("WAREHOUSE_USAGE_INVALID");
     }
@@ -61,7 +62,7 @@ public sealed class WarehouseTests
     [Fact]
     public void CreateWarehouse_Should_ThrowException_When_OperatingHoursAreNotPositive()
     {
-        var act = () => Warehouse.Create("Name", WarehouseType.MainWarehouse, 100m, 0m, 0, "Address", Guid.NewGuid());
+        var act = () => Warehouse.Create("Name", WarehouseType.MainWarehouse, 100m, 0m, 0, "Address", Guid.NewGuid(), Guid.NewGuid());
 
         act.Should().Throw<DomainArgumentOutOfRangeException>().Which.ErrorCode.Should().Be("WAREHOUSE_OPERATING_HOURS_INVALID");
     }
@@ -139,5 +140,5 @@ public sealed class WarehouseTests
     }
 
     private static Warehouse CreateWarehouse() =>
-        Warehouse.Create("Main", WarehouseType.MainWarehouse, 1000m, 100m, 24, "Cairo", Guid.NewGuid());
+        Warehouse.Create("Main", WarehouseType.MainWarehouse, 1000m, 100m, 24, "Cairo", Guid.NewGuid(), Guid.NewGuid());
 }

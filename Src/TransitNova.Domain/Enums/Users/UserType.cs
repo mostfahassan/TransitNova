@@ -7,5 +7,6 @@ namespace TransitNova.Domain.Enums.Users
         OperationManager = 3 ,
         Carrier = 4,
         Receiver = 5,
+        WarehouseManager = 6 
     }
 }

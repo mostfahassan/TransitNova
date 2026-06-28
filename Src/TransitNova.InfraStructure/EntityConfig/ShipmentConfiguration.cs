@@ -9,7 +9,7 @@ namespace TransitNova.InfraStructure.EntityConfig
         {
             shipment.HasQueryFilter(sh => !sh.IsDeleted);
 
-
+            shipment.HasKey(sh => sh.Id).IsClustered();
             shipment.Property(sh => sh.RowVersion)
                 .IsRowVersion();
             shipment.HasOne(s => s.HandledBy)
@@ -19,8 +19,7 @@ namespace TransitNova.InfraStructure.EntityConfig
 
             shipment.Property(s => s.ShipmentCost)
                     .HasPrecision(18, 2);
-           
-
+          
             shipment.HasQueryFilter(SH => !SH.IsDeleted);
 
             shipment.OwnsOne(x => x.PackageSpecification, nav =>

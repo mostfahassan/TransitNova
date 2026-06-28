@@ -107,7 +107,7 @@ public sealed class WarehouseHandlerTests
     public async Task UpdateWarehouseHandler_Should_ReturnValidationAndSkipWrites_When_AnyZoneIsMissingAsync()
     {
         var fixture = new Fixture();
-        var warehouse = Warehouse.Create("Old", WarehouseType.MainWarehouse, 100, 20, 8, "Cairo", Guid.NewGuid());
+        var warehouse = Warehouse.Create("Old", WarehouseType.MainWarehouse, 100, 20, 8, "Cairo", Guid.NewGuid(), Guid.NewGuid());
         fixture.Queries.Setup(x => x.GetWarehouseForUpdateAsync(warehouse.Id, It.IsAny<CancellationToken>())).ReturnsAsync(warehouse);
         fixture.Queries.Setup(x => x.GetZonesByIdsAsync(It.IsAny<IReadOnlyCollection<Guid>>(), It.IsAny<CancellationToken>())).ReturnsAsync([]);
 
@@ -125,7 +125,8 @@ public sealed class WarehouseHandlerTests
     {
         var fixture = new Fixture();
         var adminId = Guid.NewGuid();
-        var warehouse = Warehouse.Create("Old", WarehouseType.MainWarehouse, 100, 20, 8, "Old Address", adminId);
+        var managerId = Guid.NewGuid();
+        var warehouse = Warehouse.Create("Old", WarehouseType.MainWarehouse, 100, 20, 8, "Old Address", adminId, managerId);
         var zone = Zone.Create("North", "N", 1);
         fixture.Queries.Setup(x => x.GetWarehouseForUpdateAsync(warehouse.Id, It.IsAny<CancellationToken>())).ReturnsAsync(warehouse);
         fixture.Queries.Setup(x => x.GetZonesByIdsAsync(It.IsAny<IReadOnlyCollection<Guid>>(), It.IsAny<CancellationToken>())).ReturnsAsync([zone]);
