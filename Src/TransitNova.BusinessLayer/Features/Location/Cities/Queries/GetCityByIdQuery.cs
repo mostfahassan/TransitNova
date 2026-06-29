@@ -8,6 +8,7 @@ namespace TransitNova.BusinessLayer.Features.Location.Cities.Queries
 {
     public sealed record GetCityByIdQuery(int Id) : IQuery<Result<CityDto?>>, ICachable
     {
-        public string CacheKey => CacheKeys.CityById(Id);
+        public string CacheKey => CacheKeys.Cities.ById(Id);
     }
 }
+

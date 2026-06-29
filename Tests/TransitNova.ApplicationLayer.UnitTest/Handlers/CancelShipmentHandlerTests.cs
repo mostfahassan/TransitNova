@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.BusinessLayer.DTOs.AppUser;
@@ -64,7 +64,6 @@ public sealed class CancelShipmentHandlerTests
         capturedLog.PerformedByUserId.Should().Be(userId);
         capturedLog.PerformedByName.Should().Be("Ahmed Ali");
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(7));
     }
 
     [Fact]
@@ -84,7 +83,6 @@ public sealed class CancelShipmentHandlerTests
 
         await act.Should().ThrowAsync<DomainOperationException>()
             .Where(e => e.ErrorCode == "SHIPMENT_CANCELLATION_FAILED");
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Never);
     }
 
     private static Shipment CreateShipment()
@@ -125,8 +123,9 @@ public sealed class CancelShipmentHandlerTests
                 Users.Object,
                 Logs.Object,
                 UnitOfWork.Object,
-                Cache.Object,
                 Mock.Of<ILogger<CancelShipmentHandler>>());
         }
     }
 }
+
+

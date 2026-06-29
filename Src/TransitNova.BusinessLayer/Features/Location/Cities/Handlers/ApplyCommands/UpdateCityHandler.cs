@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.Location.Cities.Commands;
 using TransitNova.BusinessLayer.Interfaces.Repositories.LocationRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.DomainExceptions;
@@ -13,7 +13,6 @@ namespace TransitNova.BusinessLayer.Features.Location.Cities.Handlers.ApplyComma
     public sealed class UpdateCityHandler(
         ICityRepository repository,
         ILogger<UpdateCityHandler> logger,
-        ICacheService cacheService,
         IUnitOfWork unitOfWork)
         : ICommandHandler<UpdateCityCommand, BaseResult>
     {
@@ -29,10 +28,14 @@ namespace TransitNova.BusinessLayer.Features.Location.Cities.Handlers.ApplyComma
             entity.Update(request.Dto.Name.Trim(), request.Dto.GovernmentId);
             repository.Update(entity);
             await unitOfWork.SaveChangesAsync(ct);
-            await cacheService.RemoveAsync(CacheKeys.CityById(request.CityId));
-            await cacheService.RemoveAsync(CacheKeys.CitiesByGovernment(oldGovernmentId));
-            await cacheService.RemoveAsync(CacheKeys.CitiesByGovernment(request.Dto.GovernmentId));
+            CacheInvalidationContext.Set(
+                request,
+                CacheKeys.Cities.ById(request.CityId),
+                CacheKeys.Cities.ByGovernment(oldGovernmentId),
+                CacheKeys.Cities.ByGovernment(request.Dto.GovernmentId));
             return BaseResult.Success();
         }
     }
 }
+
+

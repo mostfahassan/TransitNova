@@ -1,8 +1,11 @@
-﻿using TransitNova.BusinessLayer.Common.Interfaces;
+using TransitNova.BusinessLayer.Common.Interfaces;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 
 namespace TransitNova.BusinessLayer.Features.Vehicles.Commands
 {
     public sealed record DeleteVehicleCommand(Guid RequestId, Guid Id)
-        : IdempotentCommand<BaseResult>(RequestId);
+        : IdempotentCommand<BaseResult>(RequestId), ICacheInvalidator;
 }
+
+

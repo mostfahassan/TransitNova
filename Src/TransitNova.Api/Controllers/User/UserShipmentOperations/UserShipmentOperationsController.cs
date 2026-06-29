@@ -12,7 +12,7 @@ using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.User.UserShipmentOperations
 {
     [Authorize(Roles = Role.User)]
-    [Route("api/v{version:apiVersion}/shipments")]
+    [Route("api/v{version:apiVersion}/users/shipments")]
     [ApiVersion("1.0")]
     [ApiController]
     [Tags("User Shipments Operations")]

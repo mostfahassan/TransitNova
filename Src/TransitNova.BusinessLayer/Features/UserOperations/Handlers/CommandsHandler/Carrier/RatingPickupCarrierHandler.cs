@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
@@ -17,7 +17,6 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
                  ICarrierQueryRepository carrierQuery,
                  ICarrierRatingCommandsRepository ratingRepo,
                  IUnitOfWork unitOfWork,
-                 ICacheService cacheService,
                  ILogger<RatingPickupCarrierHandler> logger)
                  : ICommandHandler<RatePickupCarrierCommand, BaseResult>
     {
@@ -73,11 +72,14 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
                 request.Dto.CarrierId,
                 request.Dto.Rating,
                 request.shipmentId);
-
-            await cacheService.RemoveAsync(CacheKeys.CarrierProfile(request.Dto.CarrierId));
-            await cacheService.RemoveAsync(CacheKeys.CarrierDashboard(request.Dto.CarrierId));
-            await cacheService.RemoveAsync(CacheKeys.CarrierRating(request.Dto.CarrierId));
+            CacheInvalidationContext.Set(
+                request,
+                CacheKeys.Carriers.Profile(request.Dto.CarrierId),
+                CacheKeys.Carriers.Dashboard(request.Dto.CarrierId),
+                CacheKeys.Carriers.Rating(request.Dto.CarrierId));
             return BaseResult.Success();
         }
     }
 }
+
+

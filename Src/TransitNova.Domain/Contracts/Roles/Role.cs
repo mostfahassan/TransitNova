@@ -11,4 +11,5 @@ public static class Role
     public const string OperationManagerOrAdmin =  OperationManager + "," + Admin;
     public const string OperationManagerCarrierOrUser =  OperationManager + "," + Carrier + "," + User;
     public const string OperationManagerOrDriverOrAdmin =  OperationManager + "," + Carrier + "," + Admin;
+    public const string WarehouseManager = "WarehouseManager";
 }

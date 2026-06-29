@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Moq;
 using TransitNova.BusinessLayer.DTOs.City;
 using TransitNova.BusinessLayer.Features.Location.Cities.Commands;
@@ -54,7 +54,7 @@ public sealed class CityHandlerTests
         unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
         repository.Setup(x => x.AddAsync(It.IsAny<City>(), It.IsAny<CancellationToken>()));
           
-        var handler = new CreateCityHandler(repository.Object, cache.Object, unitOfWork.Object);
+        var handler = new CreateCityHandler(repository.Object, unitOfWork.Object);
         var command = new CreateCityCommand(Guid.NewGuid(), new CreateCityDto { Name = " Nasr City ", GovernmentId = 1 });
 
         var result = await handler.Handle(command, CancellationToken.None);
@@ -64,6 +64,7 @@ public sealed class CityHandlerTests
         result.Data.GovernmentId.Should().Be(1);
         repository.Verify(x => x.AddAsync(It.Is<City>(c => c.Name == "Nasr City"), It.IsAny<CancellationToken>()), Times.Once);
         unitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        cache.Verify(x => x.RemoveAsync(CacheKeys.CitiesByGovernment(1)), Times.Once);
     }
 }
+
+

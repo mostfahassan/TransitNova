@@ -49,19 +49,19 @@ namespace TransitNova.Domain.Entities.MainEntities
         public static Warehouse Create(string name, WarehouseType type, decimal capacity, decimal currentUsage, int operatingHours, string address, Guid createdBy, Guid managerId)
             => new (name, type, capacity, currentUsage, operatingHours, address, createdBy, managerId);
 
-        public void Update(string name, WarehouseType type ,decimal capacity, decimal currentUsage, int? operatingHours, string address, Guid updatedBy,Guid managerId)
+        public void Update(Guid updatedBy, string? name = null, WarehouseType? type =null ,decimal? capacity = null, decimal? currentUsage = null, int? operatingHours = null, string? address = null, Guid? managerId = null)
         {
             Validate(name, capacity, currentUsage, operatingHours, address);
             EnsureNotSameManager(managerId);
-            Name = name.Trim();
-            Type = type;
-            Capacity = capacity;
-            CurrentUsage = currentUsage;
-            OperatingHours = operatingHours;
-            Address = address.Trim();
+            Name = name ?? Name;
+            Type = type ?? Type;
+            Capacity = capacity ?? Capacity;
+            CurrentUsage = currentUsage ?? CurrentUsage;
+            OperatingHours = operatingHours ?? OperatingHours;
+            Address = address ?? Address;
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = updatedBy.ToString();
-            ManagerId = ManagerId;
+            ManagerId = managerId ?? ManagerId;
         }
      
 
@@ -101,25 +101,28 @@ namespace TransitNova.Domain.Entities.MainEntities
             if (HasManager)
                 throw new WarehouseAlreadyHasManagerException("Warehoues Already Has Manager Can't Have Another Manager", Id);
         }
-        private void EnsureNotSameManager (Guid managerId)
+        private void EnsureNotSameManager (Guid? managerId)
         {
-            if (managerId == ManagerId)
-                throw new SameWarehouseManagerException("Warehoues Already Has Same Manager Can't Assign Same Manager Twice", Id);
+            if (managerId.HasValue)
+            {
+                if (managerId == ManagerId)
+                    throw new SameWarehouseManagerException("Warehoues Already Has Same Manager Can't Assign Same Manager Twice", Id);
+            }
         }
 
         // Validations
-        private static void Validate(string name, decimal capacity, decimal currentUsage, int? operatingHours, string address)
+        private static void Validate(string? name =null, decimal? capacity = null , decimal? currentUsage = null, int? operatingHours = null, string? address = null)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (name is not null && string.IsNullOrWhiteSpace(name) )
                 throw new DomainArgumentException(nameof(name), "Warehouse name is required.", "WAREHOUSE_NAME_REQUIRED", "Warehouse");
 
-            if (string.IsNullOrWhiteSpace(address))
+            if (address is not null&& string.IsNullOrWhiteSpace(address))
                 throw new DomainArgumentException(nameof(address), "Warehouse address is required.", "WAREHOUSE_ADDRESS_REQUIRED", "Warehouse");
 
-            if (capacity <= 0)
+            if (capacity is not null && capacity <= 0)
                 throw new DomainArgumentOutOfRangeException(nameof(capacity), "Warehouse capacity must be greater than zero.", "WAREHOUSE_CAPACITY_INVALID", "Warehouse");
 
-            if (currentUsage < 0)
+            if (currentUsage is not null && currentUsage < 0)
                 throw new DomainArgumentOutOfRangeException(nameof(currentUsage), "Warehouse current usage cannot be negative.", "WAREHOUSE_USAGE_INVALID", "Warehouse");
 
             if (currentUsage > capacity)

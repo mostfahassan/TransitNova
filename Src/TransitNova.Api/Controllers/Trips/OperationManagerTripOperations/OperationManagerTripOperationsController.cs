@@ -31,7 +31,6 @@ namespace TransitNova.Api.Controllers.Trips.OperationManagerTripOperations
         [EndpointDescription("Allows an authorized operation manager to start a pickup trip. The trip status is transitioned to the active pickup stage and becomes available for shipment collection operations.")]
         public async Task<IActionResult> StartPickupTripAsync([IdempotencyKey] Guid requestId, Guid carrierId, CancellationToken ct)
         {
-
             var operationManagerId = User.GetUserId();
             var response = await mediator.Send(new StartPickupTripCommand(requestId, operationManagerId, carrierId), ct);
             return response.ToActionResult();

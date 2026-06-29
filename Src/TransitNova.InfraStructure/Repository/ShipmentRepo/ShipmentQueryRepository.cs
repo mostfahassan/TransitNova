@@ -24,7 +24,7 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
             // Status Filter
             if (filter.Status != null && filter.Status.Length > 0)
             {
-                logger.LogTrace("Applying Status filter: {Status}", filter.Status.Length);
+              
 
                 query = query.Where(sh => filter.Status.Contains(sh.CurrentStatus));
             }
@@ -32,7 +32,7 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
             // Pickup Date From
             if (filter.From.HasValue)
             {
-                logger.LogTrace("Applying From date filter: {From}", filter.From.Value);
+              
 
                 query = query.Where(sh =>
                     sh.PickupDate >= filter.From.Value);
@@ -40,18 +40,18 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
 
             // Delivery Date To
             if (filter.To.HasValue)
-            {
-                logger.LogTrace("Applying To date filter: {To}", filter.To.Value);
-
+            { 
                 query = query.Where(sh => sh.ActualDeliveryDate <= filter.To.Value);
 
+            }
+            if (filter.WarehouseId.HasValue)
+            {  
+                query = query.Where(sh => sh.Trip != null ? sh.Trip.WarehouseId == filter.WarehouseId.Value:false);
             }
 
             // Sender Filter
             if (filter.SenderId.HasValue)
             {
-                logger.LogTrace("Applying SenderId filter: {SenderId}", filter.SenderId.Value);
-
                 query = query.Where(sh =>
                     sh.SenderId == filter.SenderId.Value);
             }
@@ -59,8 +59,6 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
             // Transportation Mode Filter
             if (filter.Mode.HasValue)
             {
-                logger.LogTrace("Applying TransportationMode filter: {TransportationMode}", filter.Mode.Value);
-
                 query = query.Where(sh =>
                     sh.Mode == filter.Mode.Value);
             }

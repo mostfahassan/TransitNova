@@ -1,11 +1,10 @@
 
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.Bundles.Commands;
-using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.Entities.MainEntities;
@@ -14,7 +13,6 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingCommands
     public sealed class CreateBundleHandler(
      IGenericRepository<Bundle, Guid> repository,
      IUnitOfWork unitOfWork,
-     ICacheService cacheService,
      ILogger<CreateBundleHandler> logger)
      :ICommandHandler<CreateBundleCommand, BaseResult>
     {
@@ -35,9 +33,11 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingCommands
             await unitOfWork.SaveChangesAsync(ct);
 
             logger.LogInformation("Bundle created successfully. Id: {BundleId}", bundle.Id);
-            await cacheService.RemoveAsync(CacheKeys.BundleList());
+            CacheInvalidationContext.Set(request, CacheKeys.Bundles.List);
             return BaseResult.Created("Bundle created successfully.");
         }
     }
 
 }
+
+

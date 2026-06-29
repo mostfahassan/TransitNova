@@ -21,6 +21,7 @@ using TransitNova.InfraStructure.ServiceRegistration.TripRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.UserRepositoryRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.VehicleRepositoryRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.WarehouseRegistration;
+using TransitNova.InfraStructure.ServiceRegistration.WarehouseManagerRegistration;
 namespace TransitNova.InfraStructure.ServiceRegistration
 {
     public static class DependencyInjection
@@ -43,6 +44,7 @@ namespace TransitNova.InfraStructure.ServiceRegistration
                     ..UserPermissions.All,
                     ..CarrierPermissions.All,
                     ..OperationManagerPermissions.All,
+                    ..WarehouseManagerPermissions.All,
                     ..AdminPermissions.All
                 ]);
 
@@ -57,6 +59,7 @@ namespace TransitNova.InfraStructure.ServiceRegistration
                 .AddCarrierRatingRepositories()
                 .AddOperationManagerRepositories()
                 .AddWarehouseRepositories()
+                .AddWarehouseManagerRepositories()
                 .AddLocationRepositories()
                 .AddNotificationServices()
                 .AddBundleSubscriptionRepositories();

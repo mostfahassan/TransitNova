@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.UserProfile.OperationManager;
@@ -9,8 +9,9 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Ope
 {
     public sealed record GetOperationManagerDetailsQuery(Guid OperationManagerId) : IQuery<Result<OperationManagerProfileDto>>, ICachable
     {
-        public string CacheKey => CacheKeys.OperationManagerDetails(OperationManagerId);
+        public string CacheKey => CacheKeys.OperationManagers.Details(OperationManagerId);
     }
 
 }
+
 

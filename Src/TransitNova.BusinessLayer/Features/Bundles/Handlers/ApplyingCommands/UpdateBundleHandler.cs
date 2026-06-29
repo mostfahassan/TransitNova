@@ -1,11 +1,11 @@
 
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.Bundles.Commands;
 using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.Entities.MainEntities;
@@ -15,7 +15,6 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingCommands
     IGenericRepository<Bundle, Guid> repository,
     IOperationManagerQueryRepository opQuery,
     IUnitOfWork unitOfWork,
-    ICacheService cacheService,
     ILogger<UpdateBundleHandler> logger)
     : ICommandHandler<UpdateBundleCommand, BaseResult>
     {
@@ -35,10 +34,12 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingCommands
             await unitOfWork.SaveChangesAsync(ct);
    
             logger.LogInformation("Bundle updated successfully. Id: {BundleId}", request.BundleId);
-            await cacheService.RemoveAsync(CacheKeys.BundleList());
-            await cacheService.RemoveAsync(CacheKeys.BundleById(request.BundleId));
+            CacheInvalidationContext.Set(request, CacheKeys.Bundles.List, CacheKeys.Bundles.ById(request.BundleId));
+
             return BaseResult.Success();
         }
     }
 
 }
+
+

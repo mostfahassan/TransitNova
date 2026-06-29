@@ -1,11 +1,11 @@
 
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.Carriers.Commands;
 using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
 namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.Crud
@@ -13,7 +13,6 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.Cru
     public sealed class AddCarrierAdditionalInfoCommandHandler(
         ICarrierQueryRepository carrierQueryRepo,
         IUnitOfWork unitOfWork,
-        ICacheService cacheService,
         ILogger<AddCarrierAdditionalInfoCommandHandler> logger)
         : ICommandHandler<AddingCarrierAdditionalInfoCommand, BaseResult>
     {
@@ -44,9 +43,13 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.Cru
           
 
             logger.LogInformation("Carrier additional information saved successfully for Carrier {CarrierId}", request.UserId);
-            await cacheService.RemoveAsync(CacheKeys.CarrierProfile(carrier.Id));
-            await cacheService.RemoveAsync(CacheKeys.CarrierDashboard(carrier.Id));
+            CacheInvalidationContext.Set(
+                request,
+                CacheKeys.Carriers.Profile(carrier.Id),
+                CacheKeys.Carriers.Dashboard(carrier.Id));
             return BaseResult.Success();
         }
     }
 }
+
+

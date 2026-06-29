@@ -12,10 +12,12 @@
         InTransit = 7,         
         OutForDelivery = 8,     
         OutForPickup = 9,     
-        Delivered = 10,        
+        Delivered = 10, 
         FailedDelivery = 11,  
         Issue = 12,
         Cancelled = 13,
-        Deleted = 14
+        Deleted = 14,
+        PickedUp = 15,
+
     }
 }

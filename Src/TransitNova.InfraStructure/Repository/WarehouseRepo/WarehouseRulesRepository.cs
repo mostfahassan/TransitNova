@@ -19,6 +19,8 @@ namespace TransitNova.InfraStructure.Repository.WarehouseRepo
                     (!excludedWarehouseId.HasValue || w.Id != excludedWarehouseId.Value),
                     ct);
         }
+       
+    }
     }
 
-}
+

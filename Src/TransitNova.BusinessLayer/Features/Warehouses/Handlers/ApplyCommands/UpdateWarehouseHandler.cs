@@ -42,13 +42,14 @@ namespace TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyCommands
             }
 
             warehouse.Update(
+                request.AdminId,
                 request.Dto.Name,
                 request.Dto.Type,
                 request.Dto.Capacity,
                 request.Dto.CurrentUsage,
                 request.Dto.OperatingHours,
                 request.Dto.Address,
-                request.AdminId);
+                request.Dto.ManagerId);
 
             warehouse.ReplaceZones(zones, request.AdminId);
 

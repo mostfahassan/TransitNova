@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.ApplicationLayer.Tests.TestData;
@@ -64,7 +64,6 @@ public sealed class CancelIssueWorkflowPhase2Tests
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
 
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(7));
     }
 
     [Fact]
@@ -135,7 +134,6 @@ public sealed class CancelIssueWorkflowPhase2Tests
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
 
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(7));
     }
 
     [Fact]
@@ -191,7 +189,7 @@ public sealed class CancelIssueWorkflowPhase2Tests
                 .ReturnsAsync(new AppUserDto { Id = Command.AppUserId, FullName = "Mona Ali" });
             UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
             Handler = new CancelShipmentHandler(
-                Shipments.Object, Users.Object, Logs.Object, UnitOfWork.Object, Cache.Object,
+                Shipments.Object, Users.Object, Logs.Object, UnitOfWork.Object,
                 Mock.Of<ILogger<CancelShipmentHandler>>());
         }
     }
@@ -213,8 +211,10 @@ public sealed class CancelIssueWorkflowPhase2Tests
                 .ReturnsAsync(Shipment);
             UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
             Handler = new IssueShipmentHandler(
-                Shipments.Object, UnitOfWork.Object, Cache.Object,
+                Shipments.Object, UnitOfWork.Object,
                 Mock.Of<ILogger<IssueShipmentHandler>>());
         }
     }
 }
+
+

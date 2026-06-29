@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using System.Text.Json;
 using TransitNova.BusinessLayer.Common.Behaviors;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.Interfaces;
 using TransitNova.BusinessLayer.Common.ResultPattern;
@@ -197,6 +198,45 @@ public sealed class PipelineBehaviorTests
             cancellation.Token), Times.Once);
     }
     [Fact]
+    public async Task CacheInvalidationBehavior_Should_RemoveDeclaredKeys_When_ResponseSucceedsAsync()
+    {
+        var cache = new Mock<ICacheService>();
+        var request = new CacheInvalidatingRequest();
+        CacheInvalidationContext.Set(request, "cache:key:1", "cache:key:2", "cache:key:1");
+        var behavior = new CacheInvalidationBehavior<CacheInvalidatingRequest, BaseResult>(
+            cache.Object,
+            NullLogger<CacheInvalidationBehavior<CacheInvalidatingRequest, BaseResult>>.Instance);
+
+        var result = await behavior.Handle(
+            request,
+            _ => Task.FromResult(BaseResult.Success()),
+            CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        cache.Verify(x => x.RemoveAsync("cache:key:1"), Times.Once);
+        cache.Verify(x => x.RemoveAsync("cache:key:2"), Times.Once);
+    }
+
+    [Fact]
+    public async Task CacheInvalidationBehavior_Should_NotRemoveKeys_When_ResponseFailsAsync()
+    {
+        var cache = new Mock<ICacheService>();
+        var request = new CacheInvalidatingRequest();
+        CacheInvalidationContext.Set(request, "cache:key:1");
+        var behavior = new CacheInvalidationBehavior<CacheInvalidatingRequest, BaseResult>(
+            cache.Object,
+            NullLogger<CacheInvalidationBehavior<CacheInvalidatingRequest, BaseResult>>.Instance);
+
+        var result = await behavior.Handle(
+            request,
+            _ => Task.FromResult(BaseResult.Failure(Errors.FailedOperation("failed"))),
+            CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Never);
+    }
+
+[Fact]
     public async Task IdempotencyBehavior_Should_ReturnStoredResponseAndSkipNext_When_RequestAlreadyExistsAsync()
     {
         var requestId = Guid.NewGuid();
@@ -375,6 +415,7 @@ public sealed class PipelineBehaviorTests
     private sealed record TestQuery(string Name) : IQuery<BaseResult>;
     private sealed record CacheableRequest(string CacheKey) : IRequest<BaseResult>, ICachable;
     private sealed record PlainRequest : IRequest<BaseResult>;
+    private sealed record CacheInvalidatingRequest : IRequest<BaseResult>, ICacheInvalidator;
     private sealed record TransactionalRequest : IRequest<BaseResult>, ITransactional;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -391,3 +432,8 @@ public sealed class PipelineBehaviorTests
             NullLogger<IdempotentCommandPipelineBehavior<TestCommand, BaseResult>>.Instance);
     }
 }
+
+
+
+
+

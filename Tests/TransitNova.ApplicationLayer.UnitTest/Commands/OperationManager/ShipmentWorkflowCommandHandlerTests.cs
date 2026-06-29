@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.ApplicationLayer.Tests.TestData;
@@ -65,7 +65,6 @@ public sealed class ShipmentWorkflowCommandHandlerTests
         captured!.Action.Should().Be(ActivityAction.Approved);
         captured.PerformedByName.Should().Be("Omar Manager");
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -110,7 +109,6 @@ public sealed class ShipmentWorkflowCommandHandlerTests
         shipment.RejectionReason.Should().Be("Invalid address");
         captured!.Action.Should().Be(ActivityAction.Rejected);
         captured.Description.Should().Contain("Invalid address");
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -136,7 +134,6 @@ public sealed class ShipmentWorkflowCommandHandlerTests
         captured!.Action.Should().Be(ActivityAction.Assigned);
         captured.Description.Should().Contain("TN-PICKUP").And.Contain(carrierId.ToString());
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(6));
     }
 
     [Fact]
@@ -177,7 +174,6 @@ public sealed class ShipmentWorkflowCommandHandlerTests
         result.IsSuccess.Should().BeTrue();
         captured!.Description.Should().Contain("TN-DELIVERY");
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(6));
     }
 
     [Fact]
@@ -218,14 +214,12 @@ public sealed class ShipmentWorkflowCommandHandlerTests
                 Mock.Of<ILogger<ApproveShipmentHandler>>(),
                 Managers.Object,
                 Logs.Object,
-                Cache.Object,
                 UnitOfWork.Object);
             RejectHandler = new RejectShipmentHandler(
                 Shipments.Object,
                 Mock.Of<ILogger<RejectShipmentHandler>>(),
                 Managers.Object,
                 Logs.Object,
-                Cache.Object,
                 UnitOfWork.Object);
         }
     }
@@ -247,15 +241,15 @@ public sealed class ShipmentWorkflowCommandHandlerTests
                 Mock.Of<ILogger<AssignShipmentPickupToCarrierHandler>>(),
                 Managers.Object,
                 Logs.Object,
-                Cache.Object,
                 UnitOfWork.Object);
             DeliveryHandler = new AssignShipmentDeliveryToCarrierHandler(
                 Assignment.Object,
                 Mock.Of<ILogger<AssignShipmentDeliveryToCarrierHandler>>(),
                 Managers.Object,
                 Logs.Object,
-                Cache.Object,
                 UnitOfWork.Object);
         }
     }
 }
+
+

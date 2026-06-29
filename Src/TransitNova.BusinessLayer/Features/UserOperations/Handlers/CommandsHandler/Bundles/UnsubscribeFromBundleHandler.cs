@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Bundles;
 using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.DomainExceptions;
@@ -17,7 +17,6 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
         IGenericRepository<Bundle, Guid> bundleRepository,
         IUserQueryRepository userRepository,
         IUnitOfWork unitOfWork,
-        ICacheService cacheService,
         ILogger<UnsubscribeFromBundleHandler> logger)
         : ICommandHandler<UnsubscribeFromBundleCommand, BaseResult>
     {
@@ -52,12 +51,16 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("User {UserId} successfully unsubscribed from Bundle {BundleId}", request.UserId, request.BundleId);
-            await cacheService.RemoveAsync(CacheKeys.UserProfile(request.UserId));
-            await cacheService.RemoveAsync(CacheKeys.AdminUserDetails(request.UserId));
-            await cacheService.RemoveAsync(CacheKeys.BundleList());
-            await cacheService.RemoveAsync(CacheKeys.BundleById(request.BundleId));
+            CacheInvalidationContext.Set(
+                request,
+                CacheKeys.Users.Profile(request.UserId),
+                CacheKeys.Users.AdminDetails(request.UserId),
+                CacheKeys.Bundles.List,
+                CacheKeys.Bundles.ById(request.BundleId));
             return BaseResult.Success();
 
         }
     }
 }
+
+

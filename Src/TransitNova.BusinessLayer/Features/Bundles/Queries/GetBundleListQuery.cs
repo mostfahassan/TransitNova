@@ -7,6 +7,7 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Queries
 {
     public sealed record GetBundleListQuery() : IQuery<Result<List<RetrieveBundleDto>>>, ICachable
     {
-        public string CacheKey => CacheKeys.BundleList();
+        public string CacheKey => CacheKeys.Bundles.List;
     }
 }
+

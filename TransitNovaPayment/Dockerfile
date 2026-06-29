@@ -5,9 +5,7 @@ COPY ["TransitNovaPayment/TransitNovaPayment.API/TransitNovaPayment.API.csproj",
 COPY ["TransitNovaPayment/TransitNovaPayment.Busieness/TransitNovaPayment.Busieness.csproj", "TransitNovaPayment.Busieness/"]
 COPY ["TransitNovaPayment/TransitNovaPayment.Infrastructure/TransitNovaPayment.Infrastructure.csproj", "TransitNovaPayment.Infrastructure/"]
 
-
 RUN dotnet restore "TransitNovaPayment.API/TransitNovaPayment.API.csproj"
-
 
 COPY ["TransitNovaPayment/TransitNovaPayment.API/", "TransitNovaPayment.API/"]
 COPY ["TransitNovaPayment/TransitNovaPayment.Busieness/", "TransitNovaPayment.Busieness/"]

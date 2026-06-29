@@ -8,7 +8,8 @@ namespace TransitNova.BusinessLayer.Features.Vehicles.Queries
     public sealed record GetVehicleListQuery()
         : IQuery<Result<List<VehicleDto>>>, ICachable
     {
-        public string CacheKey => CacheKeys.VehicleList();
+        public string CacheKey => CacheKeys.Vehicles.List;
     }
 
 }
+

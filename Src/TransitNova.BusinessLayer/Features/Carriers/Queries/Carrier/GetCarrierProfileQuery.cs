@@ -9,6 +9,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Queries.Carrier
     public sealed record GetCarrierProfileQuery(Guid CarrierId)
         : IQuery<Result<CarrierProfileDto>>, ICachable
     {
-        public string CacheKey => CacheKeys.CarrierProfile(CarrierId);
+        public string CacheKey => CacheKeys.Carriers.Profile(CarrierId);
     }
 }
+

@@ -28,7 +28,6 @@ public sealed class TripMutationWorkflowTests
 
         result.Status.Should().Be(TransitNova.Domain.Enums.Result.ResultStatus.NotFound);
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -39,7 +38,6 @@ public sealed class TripMutationWorkflowTests
         var operationManagerId = Guid.NewGuid();
         fixture.Repository.Setup(x => x.GetTripForCommandsAsync(trip.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(trip);
-        var removedKeys = fixture.CaptureRemovedCacheKeys();
 
         var result = await fixture.CreateCancelHandler().Handle(
             new CancelTripCommand(trip.Id, operationManagerId),
@@ -49,12 +47,6 @@ public sealed class TripMutationWorkflowTests
         trip.Status.Should().Be(TripStatus.Cancelled);
         trip.UpdatedBy.Should().Be(operationManagerId.ToString());
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        removedKeys.Should().BeEquivalentTo([
-            CacheKeys.CarrierTrips(trip.CarrierId),
-            CacheKeys.CarrierTripDetails(trip.CarrierId, trip.Id),
-            CacheKeys.CarrierDashboard(trip.CarrierId),
-            CacheKeys.TripFilter(new FilterTripsDto()),
-            CacheKeys.OperationManagerDashboard()]);
     }
 
     [Fact]
@@ -72,7 +64,6 @@ public sealed class TripMutationWorkflowTests
             CancellationToken.None);
 
         await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("database unavailable");
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -85,7 +76,6 @@ public sealed class TripMutationWorkflowTests
 
         result.Status.Should().Be(TransitNova.Domain.Enums.Result.ResultStatus.NotFound);
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -99,7 +89,6 @@ public sealed class TripMutationWorkflowTests
         var plannedDate = DateTime.UtcNow.AddDays(2);
         fixture.Repository.Setup(x => x.GetTripForCommandsAsync(trip.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(trip);
-        var removedKeys = fixture.CaptureRemovedCacheKeys();
         var command = new UpdateTripCommand(
             trip.Id,
             Guid.NewGuid(),
@@ -121,15 +110,6 @@ public sealed class TripMutationWorkflowTests
         trip.PlannedDate.Should().Be(plannedDate);
         trip.TotalShipments.Should().Be(7);
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        removedKeys.Should().BeEquivalentTo([
-            CacheKeys.CarrierTrips(oldCarrierId),
-            CacheKeys.CarrierTripDetails(oldCarrierId, trip.Id),
-            CacheKeys.CarrierDashboard(oldCarrierId),
-            CacheKeys.CarrierTrips(newCarrierId),
-            CacheKeys.CarrierTripDetails(newCarrierId, trip.Id),
-            CacheKeys.CarrierDashboard(newCarrierId),
-            CacheKeys.TripFilter(new FilterTripsDto()),
-            CacheKeys.OperationManagerDashboard()]);
     }
 
     [Fact]
@@ -147,7 +127,6 @@ public sealed class TripMutationWorkflowTests
             CancellationToken.None);
 
         await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("database unavailable");
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Never);
     }
 
     private static Trip CreatePickupTrip()
@@ -175,7 +154,6 @@ public sealed class TripMutationWorkflowTests
             return new CancelTripHandler(
                 Repository.Object,
                 UnitOfWork.Object,
-                Cache.Object,
                 NullLogger<CancelTripHandler>.Instance);
         }
 
@@ -184,7 +162,6 @@ public sealed class TripMutationWorkflowTests
             return new UpdateTripHandler(
                 Repository.Object,
                 UnitOfWork.Object,
-                Cache.Object,
                 NullLogger<UpdateTripHandler>.Instance);
         }
 
@@ -198,3 +175,5 @@ public sealed class TripMutationWorkflowTests
         }
     }
 }
+
+

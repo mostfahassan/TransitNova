@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.ApplicationLayer.Tests.TestData;
@@ -49,7 +49,6 @@ public sealed class ShipmentCommandHandlerTests
         capturedLog.PerformedByUserId.Should().Be(userId);
         capturedLog.PerformedByName.Should().Be("Ahmed Ali");
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(6));
     }
 
     [Fact]
@@ -101,7 +100,7 @@ public sealed class ShipmentCommandHandlerTests
         var unitOfWork = new Mock<IUnitOfWork>();
         var shipmentId = Guid.NewGuid();
         shipments.Setup(x => x.GetEntityAsync(shipmentId, It.IsAny<CancellationToken>())).ReturnsAsync((Shipment?)null);
-        var handler = new UpdateShipmentHandler(Mock.Of<ILogger<UpdateShipmentHandler>>(), shipments.Object, service.Object, cache.Object, unitOfWork.Object);
+        var handler = new UpdateShipmentHandler(Mock.Of<ILogger<UpdateShipmentHandler>>(), shipments.Object, service.Object, unitOfWork.Object);
 
         var result = await handler.Handle(
             new UpdateShipmentCommand(Guid.NewGuid(), Guid.NewGuid(), shipmentId, ValidUpdateDto()),
@@ -125,7 +124,7 @@ public sealed class ShipmentCommandHandlerTests
         var updateDto = ValidUpdateDto();
         shipments.Setup(x => x.GetEntityAsync(shipment.Id, It.IsAny<CancellationToken>())).ReturnsAsync(shipment);
         unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        var handler = new UpdateShipmentHandler(Mock.Of<ILogger<UpdateShipmentHandler>>(), shipments.Object, service.Object, cache.Object, unitOfWork.Object);
+        var handler = new UpdateShipmentHandler(Mock.Of<ILogger<UpdateShipmentHandler>>(), shipments.Object, service.Object, unitOfWork.Object);
 
         var result = await handler.Handle(
             new UpdateShipmentCommand(Guid.NewGuid(), userId, shipment.Id, updateDto),
@@ -134,7 +133,6 @@ public sealed class ShipmentCommandHandlerTests
         result.IsSuccess.Should().BeTrue();
         service.Verify(x => x.UpdateShipmentDetails(shipment, updateDto), Times.Once);
         unitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(7));
     }
 
     [Fact]
@@ -146,7 +144,7 @@ public sealed class ShipmentCommandHandlerTests
         var unitOfWork = new Mock<IUnitOfWork>();
         shipments.Setup(x => x.GetEntityAsync(shipment.Id, It.IsAny<CancellationToken>())).ReturnsAsync(shipment);
         service.Setup(x => x.UpdateShipmentDetails(shipment, It.IsAny<UpdateShipmentDto>())).Throws(new InvalidOperationException("invalid transition"));
-        var handler = new UpdateShipmentHandler(Mock.Of<ILogger<UpdateShipmentHandler>>(), shipments.Object, service.Object, Mock.Of<ICacheService>(), unitOfWork.Object);
+        var handler = new UpdateShipmentHandler(Mock.Of<ILogger<UpdateShipmentHandler>>(), shipments.Object, service.Object, unitOfWork.Object);
 
         var act = () => handler.Handle(
             new UpdateShipmentCommand(Guid.NewGuid(), Guid.NewGuid(), shipment.Id, ValidUpdateDto()),
@@ -162,7 +160,7 @@ public sealed class ShipmentCommandHandlerTests
         var shipments = new Mock<IShipmentQueryRepository>();
         var unitOfWork = new Mock<IUnitOfWork>();
         shipments.Setup(x => x.GetShipmentForCommandsAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((Shipment?)null);
-        var handler = new DeleteShipmentHandler(shipments.Object, unitOfWork.Object, Mock.Of<ICacheService>(), Mock.Of<ILogger<DeleteShipmentHandler>>());
+        var handler = new DeleteShipmentHandler(shipments.Object, unitOfWork.Object, Mock.Of<ILogger<DeleteShipmentHandler>>());
 
         var result = await handler.Handle(
             new DeleteShipmentCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
@@ -181,7 +179,7 @@ public sealed class ShipmentCommandHandlerTests
         var cache = new Mock<ICacheService>();
         shipments.Setup(x => x.GetShipmentForCommandsAsync(shipment.Id, It.IsAny<CancellationToken>())).ReturnsAsync(shipment);
         unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        var handler = new DeleteShipmentHandler(shipments.Object, unitOfWork.Object, cache.Object, Mock.Of<ILogger<DeleteShipmentHandler>>());
+        var handler = new DeleteShipmentHandler(shipments.Object, unitOfWork.Object, Mock.Of<ILogger<DeleteShipmentHandler>>());
 
         var result = await handler.Handle(
             new DeleteShipmentCommand(Guid.NewGuid(), shipment.Id, Guid.NewGuid()),
@@ -190,7 +188,6 @@ public sealed class ShipmentCommandHandlerTests
         result.IsSuccess.Should().BeTrue();
         shipment.IsDeleted.Should().BeTrue();
         unitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(7));
     }
 
     [Fact]
@@ -199,7 +196,7 @@ public sealed class ShipmentCommandHandlerTests
         var shipments = new Mock<IShipmentQueryRepository>();
         var unitOfWork = new Mock<IUnitOfWork>();
         shipments.Setup(x => x.GetShipmentForCommandsAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((Shipment?)null);
-        var handler = new IssueShipmentHandler(shipments.Object, unitOfWork.Object, Mock.Of<ICacheService>(), Mock.Of<ILogger<IssueShipmentHandler>>());
+        var handler = new IssueShipmentHandler(shipments.Object, unitOfWork.Object, Mock.Of<ILogger<IssueShipmentHandler>>());
 
         var result = await handler.Handle(
             new IssueShipmentCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "Damaged package"),
@@ -218,7 +215,7 @@ public sealed class ShipmentCommandHandlerTests
         var cache = new Mock<ICacheService>();
         shipments.Setup(x => x.GetShipmentForCommandsAsync(shipment.Id, It.IsAny<CancellationToken>())).ReturnsAsync(shipment);
         unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        var handler = new IssueShipmentHandler(shipments.Object, unitOfWork.Object, cache.Object, Mock.Of<ILogger<IssueShipmentHandler>>());
+        var handler = new IssueShipmentHandler(shipments.Object, unitOfWork.Object, Mock.Of<ILogger<IssueShipmentHandler>>());
 
         var result = await handler.Handle(
             new IssueShipmentCommand(Guid.NewGuid(), Guid.NewGuid(), shipment.Id, "Damaged package"),
@@ -227,7 +224,6 @@ public sealed class ShipmentCommandHandlerTests
         result.IsSuccess.Should().BeTrue();
         shipment.CurrentStatus.Should().Be(TransitNova.Domain.Enums.Shipment.ShipmentStatuses.Issue);
         unitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(7));
     }
 
     private static CreateShipmentDto ValidCreateDto() => new(
@@ -278,8 +274,9 @@ public sealed class ShipmentCommandHandlerTests
                 Users.Object,
                 Logs.Object,
                 UnitOfWork.Object,
-                Cache.Object,
                 Mock.Of<ILogger<CreateShipmentCommandHandler>>());
         }
     }
 }
+
+

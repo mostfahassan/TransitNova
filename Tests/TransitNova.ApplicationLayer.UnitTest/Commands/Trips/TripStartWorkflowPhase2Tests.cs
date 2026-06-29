@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.ApplicationLayer.Tests.TestData;
@@ -88,7 +88,6 @@ public sealed class TripStartWorkflowPhase2Tests
     {
         var fixture = new PickupTripFixture();
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(4));
     }
 
     [Fact]
@@ -219,7 +218,6 @@ public sealed class TripStartWorkflowPhase2Tests
     {
         var fixture = new DeliveryTripFixture();
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(4));
     }
 
     [Fact]
@@ -320,7 +318,7 @@ public sealed class TripStartWorkflowPhase2Tests
                 .ReturnsAsync(ManagerName);
             UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
             Handler = new StartPickupTripHandler(
-                Service.Object, Managers.Object, Logs.Object, UnitOfWork.Object, Cache.Object,
+                Service.Object, Managers.Object, Logs.Object, UnitOfWork.Object,
                 Mock.Of<ILogger<StartPickupTripHandler>>());
         }
     }
@@ -347,8 +345,10 @@ public sealed class TripStartWorkflowPhase2Tests
                 .ReturnsAsync(ManagerName);
             UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
             Handler = new StartDeliveryTripHandler(
-                Service.Object, Managers.Object, Logs.Object, UnitOfWork.Object, Cache.Object,
+                Service.Object, Managers.Object, Logs.Object, UnitOfWork.Object,
                 Mock.Of<ILogger<StartDeliveryTripHandler>>());
         }
     }
 }
+
+

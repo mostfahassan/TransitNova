@@ -4,7 +4,6 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.TripRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.DomainEvents.Events.TripDomainEvents;
 using TransitNova.Domain.Entities.MainEntities;
-
 namespace TransitNova.BusinessLayer.Common.Events.TripEventsHandler
 {
     public class TripCancelledDomainEventHandler(ITripQueryRepository tripRepository, INotificationCommand notificationRepo, IUnitOfWork unitOfWork)

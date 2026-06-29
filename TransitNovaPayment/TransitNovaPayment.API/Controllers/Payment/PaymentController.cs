@@ -7,8 +7,9 @@ using TransitNovaPayment.Busieness.Services.Payment.Command;
 using TransitNovaPayment.Busieness.Services.Payment.Query;
 namespace TransitNovaPayment.API.Controllers.Payment
 {
-    [Route("api/payments")]
+    [Route("api/v{version:apiVersion}/payments")]
     [ApiController]
+    [ApiVersion("1.0")]
     [Tags("Payment")]
     public class PaymentController(IMediator mediator) : ControllerBase
     {

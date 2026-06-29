@@ -17,7 +17,7 @@ namespace TransitNova.InfraStructure.EntityConfig
 
             manager.HasOne<AppUser>()
                     .WithOne()
-                    .HasForeignKey<UserProfile>(x => x.AppUserId)
+                    .HasForeignKey<WarehouseManagerProfile>(x => x.AppUserId)
                     .OnDelete(DeleteBehavior.Restrict);
 
             manager.HasIndex(u => u.CityId);

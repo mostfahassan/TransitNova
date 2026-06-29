@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Trips;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Trips;
 using TransitNova.BusinessLayer.Interfaces.Repositories.TripRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
 namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Commands.Trips
@@ -12,7 +12,6 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
     public sealed class UpdateTripHandler(
         ITripCommandRepository tripRepository,
         IUnitOfWork unitOfWork,
-        ICacheService cacheService,
         ILogger<UpdateTripHandler> logger)
         : ICommandHandler<UpdateTripCommand, BaseResult>
     {
@@ -33,23 +32,22 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
                 request.Dto.TotalShipments ?? trip.TotalShipments);
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
-
-            await cacheService.RemoveAsync(CacheKeys.CarrierTrips(oldCarrierId));
-            await cacheService.RemoveAsync(CacheKeys.CarrierTripDetails(oldCarrierId, trip.Id));
-            await cacheService.RemoveAsync(CacheKeys.CarrierDashboard(oldCarrierId));
-
-            if (oldCarrierId != trip.CarrierId)
-            {
-                await cacheService.RemoveAsync(CacheKeys.CarrierTrips(trip.CarrierId));
-                await cacheService.RemoveAsync(CacheKeys.CarrierTripDetails(trip.CarrierId, trip.Id));
-                await cacheService.RemoveAsync(CacheKeys.CarrierDashboard(trip.CarrierId));
-            }
-
-            await cacheService.RemoveAsync(CacheKeys.TripFilter(new FilterTripsDto()));
-            await cacheService.RemoveAsync(CacheKeys.OperationManagerDashboard());
+            CacheInvalidationContext.Set(
+                request,
+                CacheKeys.Carriers.Trips(oldCarrierId),
+                CacheKeys.Carriers.TripDetails(oldCarrierId, trip.Id),
+                CacheKeys.Carriers.Dashboard(oldCarrierId),
+                oldCarrierId != trip.CarrierId ? CacheKeys.Carriers.Trips(trip.CarrierId) : string.Empty,
+                oldCarrierId != trip.CarrierId ? CacheKeys.Carriers.TripDetails(trip.CarrierId, trip.Id) : string.Empty,
+                oldCarrierId != trip.CarrierId ? CacheKeys.Carriers.Dashboard(trip.CarrierId) : string.Empty,
+                CacheKeys.Trips.Details(trip.Id),
+                CacheKeys.Trips.Filter(new FilterTripsDto()),
+                CacheKeys.OperationManagers.Dashboard);
 
             logger.LogInformation("Trip updated successfully. TripId: {TripId}, OperationManagerId: {OperationManagerId}", trip.Id, request.OperationManagerId);
             return BaseResult.Success();
         }
     }
 }
+
+

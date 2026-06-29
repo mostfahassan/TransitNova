@@ -1,4 +1,4 @@
-﻿using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Trips;
 using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
@@ -9,6 +9,6 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Tri
     public sealed record FilterTripsQuery(FilterTripsDto Filter)
         : IQuery<Result<PagedResult<TripDetailsDto>>>, ICachable
     {
-        public string CacheKey => CacheKeys.TripFilter(Filter);
+        public string CacheKey => CacheKeys.Trips.Filter(Filter);
     }
 }

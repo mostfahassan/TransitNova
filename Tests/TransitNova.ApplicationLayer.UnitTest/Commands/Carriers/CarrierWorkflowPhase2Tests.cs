@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -32,7 +32,7 @@ public sealed class CarrierWorkflowPhase2Tests
                 It.IsAny<Guid>(), status, It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
         var handler = new UpdateCarrierStatusCommandHandler(
-            repository.Object, Mock.Of<ICacheService>(), Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
+            repository.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
 
         var result = await handler.Handle(
             new UpdateCarrierStatusCommand(Guid.NewGuid(), Guid.NewGuid(), status), CancellationToken.None);
@@ -48,7 +48,7 @@ public sealed class CarrierWorkflowPhase2Tests
                 It.IsAny<Guid>(), It.IsAny<CarrierStatus>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(0);
         var handler = new UpdateCarrierStatusCommandHandler(
-            repository.Object, Mock.Of<ICacheService>(), Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
+            repository.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
 
         var result = await handler.Handle(
             new UpdateCarrierStatusCommand(Guid.NewGuid(), Guid.NewGuid(), CarrierStatus.Available), CancellationToken.None);
@@ -66,12 +66,10 @@ public sealed class CarrierWorkflowPhase2Tests
                 It.IsAny<Guid>(), It.IsAny<CarrierStatus>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
         var handler = new UpdateCarrierStatusCommandHandler(
-            repository.Object, cache.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
+            repository.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
 
         await handler.Handle(
             new UpdateCarrierStatusCommand(Guid.NewGuid(), Guid.NewGuid(), CarrierStatus.Available), CancellationToken.None);
-
-        cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -82,7 +80,7 @@ public sealed class CarrierWorkflowPhase2Tests
                 It.IsAny<Guid>(), It.IsAny<CarrierStatus>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
         var handler = new UpdateCarrierStatusCommandHandler(
-            repository.Object, Mock.Of<ICacheService>(), Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
+            repository.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
         var carrierId = Guid.NewGuid();
         using var cancellation = new CancellationTokenSource();
 
@@ -101,7 +99,7 @@ public sealed class CarrierWorkflowPhase2Tests
                 It.IsAny<Guid>(), It.IsAny<CarrierStatus>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException("update failed"));
         var handler = new UpdateCarrierStatusCommandHandler(
-            repository.Object, cache.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
+            repository.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
 
         var act = () => handler.Handle(
             new UpdateCarrierStatusCommand(Guid.NewGuid(), Guid.NewGuid(), CarrierStatus.Available), CancellationToken.None);
@@ -192,7 +190,6 @@ public sealed class CarrierWorkflowPhase2Tests
         var fixture = new CarrierInfoFixture();
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(2));
     }
 
     [Fact]
@@ -257,8 +254,10 @@ public sealed class CarrierWorkflowPhase2Tests
                 .ReturnsAsync(Carrier);
             UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
             Handler = new AddCarrierAdditionalInfoCommandHandler(
-                Repository.Object, UnitOfWork.Object, Cache.Object,
+                Repository.Object, UnitOfWork.Object,
                 Mock.Of<ILogger<AddCarrierAdditionalInfoCommandHandler>>());
         }
     }
 }
+
+

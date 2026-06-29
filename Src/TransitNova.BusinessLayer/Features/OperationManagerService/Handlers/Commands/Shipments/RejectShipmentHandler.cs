@@ -1,12 +1,12 @@
-﻿
+
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Shipments;
 using TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.DomainExceptions;
@@ -19,7 +19,6 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
         ILogger<RejectShipmentHandler> logger,
         IOperationManagerQueryRepository operationManagerRepository,
         ISystemLogCommands systemLogCommands,
-        ICacheService cacheService,
         IUnitOfWork unitOfWork)
         : ICommandHandler<RejectShipmentCommand, BaseResult>
     {
@@ -48,11 +47,14 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
             await systemLogCommands.LogAsync(log, cancellationToken);
             logger.LogInformation("Shipment with ID {ShipmentId} rejected by operation manager with ID {OperationManagerId}.", request.ShipmentId, request.OperationManagerId);
             await unitOfWork.SaveChangesAsync(cancellationToken);
-    
-            await cacheService.RemoveAsync(CacheKeys.ShipmentByTrackingNumber(shipmentToReject.TrackingNumber));
-            await cacheService.RemoveAsync(CacheKeys.OperationManagerDashboard());
-            await cacheService.RemoveAsync(CacheKeys.OperationManagerShipmentHistories(request.ShipmentId));
+            CacheInvalidationContext.Set(
+                request,
+                CacheKeys.Shipments.ByTrackingNumber(shipmentToReject.TrackingNumber),
+                CacheKeys.OperationManagers.Dashboard,
+                CacheKeys.OperationManagers.ShipmentHistories(request.ShipmentId));
             return BaseResult.Success();
         }
     }
 }
+
+

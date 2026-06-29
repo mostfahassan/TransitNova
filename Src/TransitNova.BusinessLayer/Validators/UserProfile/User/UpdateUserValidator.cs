@@ -15,4 +15,15 @@ namespace TransitNova.BusinessLayer.Validators.UserProfile.User
             });
         }
     }
+    public class UpdateWarehouseManagerValidator : BaseValidator<UpdateWarehouseManagerProfile>
+    {
+        public UpdateWarehouseManagerValidator()
+        {
+            When(x => x.WarehouseId != null, () =>
+            {
+                RuleFor(x => x.WarehouseId)
+                    .NotEmpty();     
+            });
+        }
+    }
 }

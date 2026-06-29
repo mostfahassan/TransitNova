@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.OperationManagerQueries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
@@ -11,7 +10,7 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.OperationManager
     [Authorize(Roles = Role.OperationManagerOrAdmin)]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/operation-manager/dashboard")]
+    [Route("api/v{version:apiVersion}/operation-managers/dashboard")]
     [Tags("Operation Manager Dashboard")]
     public sealed class OperationManagerDashboardController(IMediator mediator) : ControllerBase
     {

@@ -56,6 +56,10 @@ namespace TransitNova.InfraStructure.Repository.TripRepository
             {
                 query = query.Where(t => filterDto.Status.Contains(t.Status));
             }
+            if (filterDto.WarehouseId is not null)
+            {
+                query = query.Where(t =>t.WarehouseId == filterDto.WarehouseId );
+            }
 
             if (filterDto.CreatedAt.HasValue)
             {

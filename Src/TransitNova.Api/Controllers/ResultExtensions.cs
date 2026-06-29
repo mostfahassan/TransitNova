@@ -43,7 +43,11 @@ namespace TransitNova.Api.Controllers
                     {
                         StatusCode = StatusCodes.Status201Created
                     },
-                    _ => new OkObjectResult(BuildSuccess(result, result.Data))
+                    ResultStatus.NoContent => new ObjectResult(BuildSuccess(result, result.Data))
+                    {
+                        StatusCode = StatusCodes.Status204NoContent
+                    },
+                   _ => new OkObjectResult(BuildSuccess(result, result.Data))
                 };
             }
 

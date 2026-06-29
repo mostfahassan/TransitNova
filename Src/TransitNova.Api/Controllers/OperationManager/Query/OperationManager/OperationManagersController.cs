@@ -44,11 +44,7 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.OperationManager
         [EndpointName("Get Handled Carriers")]
         [EndpointSummary("Get handled carriers")]
         [EndpointDescription("Returns carriers handled by the specified operation manager.")]
-        public async Task<IActionResult> HandledCarriersAsync(
-            Guid operationManagerId,
-            [FromQuery] int pageNumber = 1,
-            [FromQuery] int pageSize = 20,
-            CancellationToken ct = default)
+        public async Task<IActionResult> HandledCarriersAsync(Guid operationManagerId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
         {
             var response = await mediator.Send(new GetOperationManagerHandledCarriersQuery(operationManagerId, pageNumber, pageSize), ct);
             return response.ToActionResult();
@@ -65,11 +61,7 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.OperationManager
         [EndpointName("Get Handled Shipments")]
         [EndpointSummary("Get handled shipments")]
         [EndpointDescription("Returns shipments handled by the specified operation manager.")]
-        public async Task<IActionResult> HandledShipmentsAsync(
-            Guid operationManagerId,
-            [FromQuery] int pageNumber = 1,
-            [FromQuery] int pageSize = 20,
-            CancellationToken ct = default)
+        public async Task<IActionResult> HandledShipmentsAsync(Guid operationManagerId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20,CancellationToken ct = default)
         {
             var response = await mediator.Send(new GetOperationManagerHandledShipmentsQuery(operationManagerId, pageNumber, pageSize), ct);
             return response.ToActionResult();

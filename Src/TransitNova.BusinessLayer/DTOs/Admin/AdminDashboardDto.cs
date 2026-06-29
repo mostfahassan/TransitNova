@@ -1,6 +1,5 @@
 
 using TransitNova.BusinessLayer.DTOs.Shipment;
-using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.BusinessLayer.DTOs.Admin
 {
     public sealed class AdminDashboardDto

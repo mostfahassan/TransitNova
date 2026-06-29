@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -68,7 +68,6 @@ public sealed class CarrierRatingWorkflowPhase2Tests
         var fixture = new PickupRatingFixture();
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -131,7 +130,6 @@ public sealed class CarrierRatingWorkflowPhase2Tests
         var fixture = new DeliveryRatingFixture();
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -168,7 +166,7 @@ public sealed class CarrierRatingWorkflowPhase2Tests
                 .ReturnsAsync(Carrier);
             UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
             Handler = new RatingPickupCarrierHandler(
-                ShipmentRules.Object, Carriers.Object, Ratings.Object, UnitOfWork.Object, Cache.Object,
+                ShipmentRules.Object, Carriers.Object, Ratings.Object, UnitOfWork.Object,
                 Mock.Of<ILogger<RatingPickupCarrierHandler>>());
         }
     }
@@ -197,8 +195,10 @@ public sealed class CarrierRatingWorkflowPhase2Tests
                 .ReturnsAsync(Carrier);
             UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
             Handler = new RatingDeliveryCarrierHandler(
-                ShipmentRules.Object, Carriers.Object, Ratings.Object, UnitOfWork.Object, Cache.Object,
+                ShipmentRules.Object, Carriers.Object, Ratings.Object, UnitOfWork.Object,
                 Mock.Of<ILogger<RatingDeliveryCarrierHandler>>());
         }
     }
 }
+
+

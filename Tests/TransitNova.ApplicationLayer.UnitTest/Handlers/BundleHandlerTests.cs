@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.BusinessLayer.Common.ResultPattern;
@@ -31,7 +31,7 @@ public sealed class BundleHandlerTests
         repository.Setup(x => x.AddAsync(It.IsAny<Bundle>(), It.IsAny<CancellationToken>()))
             .Callback<Bundle, CancellationToken>((bundle, _) => captured = bundle)
             .Returns(Task.CompletedTask);
-        var handler = new CreateBundleHandler(repository.Object, unitOfWork.Object, cache.Object, logger.Object);
+        var handler = new CreateBundleHandler(repository.Object, unitOfWork.Object, logger.Object);
         var userId = Guid.NewGuid();
         var command = new CreateBundleCommand(
             Guid.NewGuid(),
@@ -55,7 +55,6 @@ public sealed class BundleHandlerTests
         captured.CreatedBy.Should().Be(userId.ToString());
         repository.Verify(x => x.AddAsync(It.IsAny<Bundle>(), It.IsAny<CancellationToken>()), Times.Once);
         unitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        cache.Verify(x => x.RemoveAsync(CacheKeys.BundleList()), Times.Once);
     }
 
     [Fact]
@@ -70,7 +69,7 @@ public sealed class BundleHandlerTests
         var bundleId = Guid.NewGuid();
         managers.Setup(x => x.GetUserIdAsync(appUserId, It.IsAny<CancellationToken>())).ReturnsAsync(managerId);
         repository.Setup(x => x.GetByIdAsync<Bundle>(bundleId, It.IsAny<CancellationToken>())).ReturnsAsync((Bundle?)null);
-        var handler = new UpdateBundleHandler(repository.Object, managers.Object, unitOfWork.Object, cache.Object, Mock.Of<ILogger<UpdateBundleHandler>>());
+        var handler = new UpdateBundleHandler(repository.Object, managers.Object, unitOfWork.Object, Mock.Of<ILogger<UpdateBundleHandler>>());
 
         var result = await handler.Handle(
             new UpdateBundleCommand(Guid.NewGuid(), bundleId, UpdateDto(), appUserId),
@@ -96,7 +95,7 @@ public sealed class BundleHandlerTests
         managers.Setup(x => x.GetUserIdAsync(appUserId, It.IsAny<CancellationToken>())).ReturnsAsync(managerId);
         repository.Setup(x => x.GetByIdAsync<Bundle>(bundle.Id, It.IsAny<CancellationToken>())).ReturnsAsync(bundle);
         unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        var handler = new UpdateBundleHandler(repository.Object, managers.Object, unitOfWork.Object, cache.Object, Mock.Of<ILogger<UpdateBundleHandler>>());
+        var handler = new UpdateBundleHandler(repository.Object, managers.Object, unitOfWork.Object, Mock.Of<ILogger<UpdateBundleHandler>>());
 
         var result = await handler.Handle(
             new UpdateBundleCommand(Guid.NewGuid(), bundle.Id, UpdateDto(), appUserId),
@@ -109,8 +108,6 @@ public sealed class BundleHandlerTests
         bundle.UpdatedBy.Should().Be(managerId.ToString());
         repository.Verify(x => x.Update(bundle), Times.Once);
         unitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        cache.Verify(x => x.RemoveAsync(CacheKeys.BundleList()), Times.Once);
-        cache.Verify(x => x.RemoveAsync(CacheKeys.BundleById(bundle.Id)), Times.Once);
     }
 
     [Fact]
@@ -122,15 +119,13 @@ public sealed class BundleHandlerTests
         var id = Guid.NewGuid();
         repository.Setup(x => x.DeleteAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(true);
         unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        var handler = new DeleteBundleHandler(repository.Object, unitOfWork.Object, cache.Object, Mock.Of<ILogger<DeleteBundleHandler>>());
+        var handler = new DeleteBundleHandler(repository.Object, unitOfWork.Object, Mock.Of<ILogger<DeleteBundleHandler>>());
 
         var result = await handler.Handle(new DeleteBundleCommand(Guid.NewGuid(), id), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
         repository.Verify(x => x.DeleteAsync(id, CancellationToken.None), Times.Once);
         unitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        cache.Verify(x => x.RemoveAsync(CacheKeys.BundleList()), Times.Once);
-        cache.Verify(x => x.RemoveAsync(CacheKeys.BundleById(id)), Times.Once);
     }
 
     [Theory]
@@ -182,3 +177,5 @@ public sealed class BundleHandlerTests
         TotalShipments = 12
     };
 }
+
+

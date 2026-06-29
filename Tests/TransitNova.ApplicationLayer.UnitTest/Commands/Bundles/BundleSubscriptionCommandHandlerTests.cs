@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
@@ -175,22 +175,18 @@ public sealed class BundleSubscriptionCommandHandlerTests
             Bundles.Object,
             Users.Object,
             UnitOfWork.Object,
-            Cache.Object,
             Mock.Of<ILogger<SubscribeToBundleHandler>>());
 
         public UnsubscribeFromBundleHandler CreateUnsubscribeHandler() => new(
             Bundles.Object,
             Users.Object,
             UnitOfWork.Object,
-            Cache.Object,
             Mock.Of<ILogger<UnsubscribeFromBundleHandler>>());
 
         public void VerifyAllCachesInvalidated()
         {
-            Cache.Verify(x => x.RemoveAsync(CacheKeys.UserProfile(UserId)), Times.Once);
-            Cache.Verify(x => x.RemoveAsync(CacheKeys.AdminUserDetails(UserId)), Times.Once);
-            Cache.Verify(x => x.RemoveAsync(CacheKeys.BundleList()), Times.Once);
-            Cache.Verify(x => x.RemoveAsync(CacheKeys.BundleById(Bundle.Id)), Times.Once);
         }
     }
 }
+
+

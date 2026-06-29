@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.DTOs.Shipment;
-using TransitNova.BusinessLayer.Features.UserOperations.Commands;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
@@ -12,7 +11,7 @@ using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.User.UserShipmentOperations
 {
     [Authorize(Roles = Role.User)]
-    [Route("api/v{version:apiVersion}/shipments")]
+    [Route("api/v{version:apiVersion}/users/shipments")]
     [ApiVersion("1.0")]
     [ApiController]
     [Tags("User Shipments")]

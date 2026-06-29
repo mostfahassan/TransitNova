@@ -28,5 +28,19 @@ namespace TransitNova.Domain.Entities.MainEntities
             return user;
         }
 
+        public void Update(string? firstName = null, string? lastName = null, string? phoneNumber = null, string? email = null, int? cityId = null,
+            string? address = null)
+        {
+
+            FirstName = firstName ?? FirstName;
+            LastName = lastName ?? LastName;
+            PhoneNumber = phoneNumber ?? PhoneNumber;
+            Email = email ?? Email;
+            CityId = cityId ?? CityId;
+            Address = address ?? Address;
+            UpdatedAt = DateTime.UtcNow;
+            UpdatedBy = Id.ToString();
+        }
+
     }
 }   

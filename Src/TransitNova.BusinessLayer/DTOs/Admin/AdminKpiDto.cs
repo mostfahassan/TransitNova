@@ -1,6 +1,4 @@
 
-using TransitNova.BusinessLayer.DTOs.Shipment;
-using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.BusinessLayer.DTOs.Admin
 {
 
@@ -15,11 +13,9 @@ namespace TransitNova.BusinessLayer.DTOs.Admin
         public int PendingShipments { get; set; }
 
         public int TotalUsers { get; set; }
-
         public int TotalCarriers { get; set; }
-
+        public int ActiveCarriers { get; set; }
         public int TotalOperationManagers { get; set; }
-
         public int ActiveTrips { get; set; }
     }
 

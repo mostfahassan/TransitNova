@@ -9,6 +9,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Queries
     public sealed record GetAdminUserDetailsQuery(Guid UserId)
         : IQuery<Result<AdminUserDetailsDto>>, ICachable
     {
-        public string CacheKey => CacheKeys.AdminUserDetails(UserId);
+        public string CacheKey => CacheKeys.Users.AdminDetails(UserId);
     }
 }
+

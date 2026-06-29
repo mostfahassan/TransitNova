@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -31,7 +31,7 @@ public sealed class VehicleHandlerTests
             .Returns(Task.CompletedTask);
         repository.Setup(x => x.GetByIdAsync<VehicleDto>(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((Guid id, CancellationToken _) => new VehicleDto { Id = id, PlateNumber = "ABC-123" });
-        var handler = new CreateVehicleHandler(repository.Object, unitOfWork.Object, CreateMapper(),Mock.Of<ICacheService>(),Mock.Of<ILogger<CreateVehicleHandler>>());
+        var handler = new CreateVehicleHandler(repository.Object, unitOfWork.Object, CreateMapper(),Mock.Of<ILogger<CreateVehicleHandler>>());
 
         var result = await handler.Handle(
             new CreateVehicleCommand(Guid.NewGuid(), ValidCreateDto("  ABC-123  ")),
@@ -51,7 +51,7 @@ public sealed class VehicleHandlerTests
         var unitOfWork = SuccessfulUnitOfWork();
         repository.Setup(x => x.GetByIdAsync<VehicleDto>(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((VehicleDto?)null);
-        var handler = new CreateVehicleHandler(repository.Object, unitOfWork.Object, CreateMapper(), Mock.Of<ICacheService>(), Mock.Of<ILogger<CreateVehicleHandler>>());
+        var handler = new CreateVehicleHandler(repository.Object, unitOfWork.Object, CreateMapper(), Mock.Of<ILogger<CreateVehicleHandler>>());
 
         var result = await handler.Handle(new CreateVehicleCommand(Guid.NewGuid(), ValidCreateDto()), CancellationToken.None);
 
@@ -68,7 +68,7 @@ public sealed class VehicleHandlerTests
         var repository = new Mock<IVehicleQueryRepository>();
         var unitOfWork = SuccessfulUnitOfWork();
         repository.Setup(x => x.GetByIdAsync<Vehicle?>(vehicle.Id, It.IsAny<CancellationToken>())).ReturnsAsync(vehicle);
-        var handler = new UpdateVehicleHandler(repository.Object, unitOfWork.Object, Mock.Of<ICacheService>(), Mock.Of<ILogger<UpdateVehicleHandler>>());
+        var handler = new UpdateVehicleHandler(repository.Object, unitOfWork.Object, Mock.Of<ILogger<UpdateVehicleHandler>>());
         var dto = ValidUpdateDto("  NEW-1  ");
         dto.CarrierId = newCarrierId;
         dto.IsRefrigerated = true;
@@ -88,7 +88,7 @@ public sealed class VehicleHandlerTests
         var repository = new Mock<IVehicleQueryRepository>();
         var unitOfWork = new Mock<IUnitOfWork>();
         repository.Setup(x => x.GetByIdAsync<Vehicle?>(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((Vehicle?)null);
-        var handler = new UpdateVehicleHandler(repository.Object, unitOfWork.Object, Mock.Of<ICacheService>(), Mock.Of<ILogger<UpdateVehicleHandler>>());
+        var handler = new UpdateVehicleHandler(repository.Object, unitOfWork.Object, Mock.Of<ILogger<UpdateVehicleHandler>>());
 
         var result = await handler.Handle(new UpdateVehicleCommand(Guid.NewGuid(), Guid.NewGuid(), ValidUpdateDto()), CancellationToken.None);
 
@@ -105,7 +105,7 @@ public sealed class VehicleHandlerTests
         repository.Setup(x => x.GetByIdAsync<Vehicle>(id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Vehicle.Create(VehicleType.Van, "ABC", 100, 20, false, Guid.NewGuid()));
         repository.Setup(x => x.DeleteAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(true);
-        var handler = new DeleteVehicleHandler(repository.Object, unitOfWork.Object, Mock.Of<ICacheService>(), Mock.Of<ILogger<DeleteVehicleHandler>>());
+        var handler = new DeleteVehicleHandler(repository.Object, unitOfWork.Object, Mock.Of<ILogger<DeleteVehicleHandler>>());
 
         var result = await handler.Handle(new DeleteVehicleCommand(Guid.NewGuid(), id), CancellationToken.None);
 
@@ -279,3 +279,4 @@ public sealed class VehicleHandlerTests
         return unitOfWork;
     }
 }
+

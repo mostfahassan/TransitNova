@@ -8,6 +8,7 @@ namespace TransitNova.BusinessLayer.Features.BundleSubscriptions.Queries
     public sealed record GetBundleSubscriptionDetailsQuery(Guid SubscriptionId)
         : IQuery<Result<BundleSubscriptionDetailsDto>>, ICachable
     {
-        public string CacheKey => CacheKeys.BundleSubscriptionDetails(SubscriptionId);
+        public string CacheKey => CacheKeys.Bundles.SubscriptionDetails(SubscriptionId);
     }
 }
+

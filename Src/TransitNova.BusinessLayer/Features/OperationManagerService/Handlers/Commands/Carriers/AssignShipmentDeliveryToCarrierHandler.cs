@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Carriers;
 using TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.ShipmentAssignmentServices;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
@@ -18,7 +18,6 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
         ILogger<AssignShipmentDeliveryToCarrierHandler> logger,
         IOperationManagerQueryRepository operationManagerRepository,
         ISystemLogCommands systemLogCommands,
-        ICacheService cacheService,
         IUnitOfWork unitOfWork)
         : ICommandHandler<AssignShipmentDeliveryToCarrierCommand, BaseResult>
     {
@@ -40,15 +39,17 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
             //==== Save Changes 
             await unitOfWork.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Shipment with ID {ShipmentId} assigned to delivery carrier with ID {CarrierId} by operation manager with ID {OperationManagerId}.", request.ShipmentId, request.CarrierId, request.OperationManagerId);
-            
-            // === Invalidate Cache
-            await cacheService.RemoveAsync(CacheKeys.CarrierShipmentDetails(request.CarrierId, request.ShipmentId));
-            await cacheService.RemoveAsync(CacheKeys.CarrierDashboard(request.CarrierId));
-            await cacheService.RemoveAsync(CacheKeys.CarrierTrips(request.CarrierId));
-            await cacheService.RemoveAsync(CacheKeys.ShipmentByTrackingNumber(assignedShipmentTrackingNumber));
-            await cacheService.RemoveAsync(CacheKeys.OperationManagerDashboard());
-            await cacheService.RemoveAsync(CacheKeys.OperationManagerShipmentHistories(request.ShipmentId));
+            CacheInvalidationContext.Set(
+                request,
+                CacheKeys.Carriers.ShipmentDetails(request.CarrierId, request.ShipmentId),
+                CacheKeys.Carriers.Dashboard(request.CarrierId),
+                CacheKeys.Carriers.Trips(request.CarrierId),
+                CacheKeys.Shipments.ByTrackingNumber(assignedShipmentTrackingNumber),
+                CacheKeys.OperationManagers.Dashboard,
+                CacheKeys.OperationManagers.ShipmentHistories(request.ShipmentId));
             return BaseResult.Success();
         }
     }
 }
+
+

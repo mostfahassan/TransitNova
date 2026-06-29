@@ -72,8 +72,9 @@ public sealed class WarehouseTests
     {
         var warehouse = CreateWarehouse();
         var userId = Guid.NewGuid();
+        var admin = Guid.NewGuid();
 
-        warehouse.Update(" Updated ", WarehouseType.BranchWarehouse, 500m, 50m, 12, " New address ", userId);
+        warehouse.Update(userId," Updated ", WarehouseType.BranchWarehouse, 500m, 50m, 12, " New address ", admin);
 
         warehouse.Name.Should().Be("Updated");
         warehouse.Type.Should().Be(WarehouseType.BranchWarehouse);

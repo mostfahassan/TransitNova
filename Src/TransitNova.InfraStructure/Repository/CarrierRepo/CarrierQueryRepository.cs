@@ -29,6 +29,9 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
             if (filterCriteria.MaxRating.HasValue)
                 query = query.Where(c => c.AverageRating <= filterCriteria.MaxRating.Value);
 
+            if (filterCriteria.WarehouseId.HasValue)
+                query = query.Where(c => c.HomeWarehouseId == filterCriteria.WarehouseId.Value);
+
             if (filterCriteria.MinYearsOfExperience.HasValue)
 
                 query = query.Where(c => c.YearsOfExperience >= filterCriteria.MinYearsOfExperience.Value);

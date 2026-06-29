@@ -230,16 +230,27 @@ namespace TransitNova.Api
                     policy.AddRequirements(new RefreshTokenOwnershipRequirement());
                 });
 
+            service.AddAuthorizationBuilder()
+                .AddPolicy(WarehouseManagerPermissions.IsWarehouseManager,
+                policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.AddRequirements(new IsWarehouseManagerRequirement());
+                });
+
             return service;
         }
         
        public static IServiceCollection RegisterApiService(this IServiceCollection service)
         {
+            service.AddHttpContextAccessor();
+
             service.AddScoped<IAuthorizationHandler, ShipmentOwnerHandler>();
 
             service.AddScoped<IAuthorizationHandler, CarrierOwnerHandler>();
 
             service.AddScoped<IAuthorizationHandler, CompletedProfileHandler>();
+            service.AddScoped<IAuthorizationHandler, IsWarehouseManagerRequirementHandler>();
             return service;
         }
 

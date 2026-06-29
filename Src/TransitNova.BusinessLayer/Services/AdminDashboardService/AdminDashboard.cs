@@ -87,6 +87,7 @@ namespace TransitNova.BusinessLayer.Services.AdminDashboardService
                 TotalCarriers = totalCarriers,
                 TotalOperationManagers = totalOperationManagers,
                 TotalUsers = totalUsers,
+                ActiveCarriers = activeCarriers,
                 ActiveTrips = activeTrips,
                 ActiveShipments = activeShipments,
                 PendingShipments = CalculateShipmentsInStatus(shipmentStats, ShipmentStatuses.Pending),
@@ -125,13 +126,13 @@ namespace TransitNova.BusinessLayer.Services.AdminDashboardService
             return count;
         }
 
-        List<ShipmentStatusStatDto> BuildShipmentStatusStatistics(Dictionary<ShipmentStatuses, int> stats)
+        static List<ShipmentStatusStatDto> BuildShipmentStatusStatistics(Dictionary<ShipmentStatuses, int> stats)
         {
-            return stats.Select(s => new ShipmentStatusStatDto
-            {
-                Status = s.Key,
-                Count = s.Value
-            } ).ToList();
+            return [.. stats.Select(s => new ShipmentStatusStatDto
+            { 
+                Status = s.Key, 
+                Count = s.Value 
+            })];
         }
 
      }

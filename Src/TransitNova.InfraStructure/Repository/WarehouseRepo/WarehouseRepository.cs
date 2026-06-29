@@ -4,7 +4,6 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseRepository;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Trip;
 using TransitNova.InfraStructure.Context;
-
 namespace TransitNova.InfraStructure.Repository.WarehouseRepo
 {
     internal class WarehouseRepository(AppDbContext context) : IWarehouseQueriesRepository
@@ -23,12 +22,9 @@ namespace TransitNova.InfraStructure.Repository.WarehouseRepo
                 .Include(w => w.ZonesServed)
                 .FirstOrDefaultAsync(w => w.Id == warehouseId, ct);
 
-     
-
         public async Task<List<Zone>> GetZonesByIdsAsync(IReadOnlyCollection<Guid> zoneIds, CancellationToken ct)
         {
             var ids = zoneIds.Distinct().ToList();
-
             return await context.Zones
                 .Where(z => ids.Contains(z.Id))
                 .ToListAsync(ct);
@@ -51,6 +47,7 @@ namespace TransitNova.InfraStructure.Repository.WarehouseRepo
                 Capacity = w.Capacity,
                 CurrentUsage = w.CurrentUsage,
                 OperatingHours = w.OperatingHours,
+                WarehouseManagerName = w.Manager.FullName,
                 ZoneIds = w.ZonesServed.Select(z => z.Id).ToList(),
                 ZoneNames = w.ZonesServed.Select(z => z.Name).ToList(),
                 CarrierCount = context.Carriers.Count(c => c.HomeWarehouseId == w.Id),

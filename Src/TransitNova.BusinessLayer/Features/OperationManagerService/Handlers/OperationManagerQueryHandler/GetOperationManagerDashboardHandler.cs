@@ -3,15 +3,13 @@ using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.OperationManager;
 using TransitNova.BusinessLayer.DTOs.Shipment;
-using TransitNova.BusinessLayer.Features.OperationManagerService;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.OperationManagerQueries;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.OperationManagerQueryHandler
 {
     public sealed class GetOperationManagerDashboardHandler(
           IShipmentQueryRepository shipmentRepository,
-          ILogger<GetOperationManagerDashboardHandler> logger 
-        )
+          ILogger<GetOperationManagerDashboardHandler> logger)
         : IQueryHandler<GetOperationManagerDashboardQuery, Result<OperationManagerDashboardDto>>
     {
         public async Task<Result<OperationManagerDashboardDto>> Handle(GetOperationManagerDashboardQuery request, CancellationToken cancellationToken)
@@ -36,6 +34,5 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Op
             var result = Result<OperationManagerDashboardDto>.Success(dashboard);
             return result;
         }
-
     }
 }

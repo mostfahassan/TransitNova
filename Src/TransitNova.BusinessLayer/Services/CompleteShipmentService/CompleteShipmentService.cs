@@ -39,7 +39,7 @@ namespace TransitNova.BusinessLayer.Services.CompleteShipmentService
 
             //======= 3- Update Audits 
             carrier.CompleteShipment();
-            shipment.DeliveredToWarehouse(carrier.Id);
+            shipment.Delivered(carrier.Id);
             if (shipment.Trip is { Status: TripStatus.Active } trip &&
                 trip.Shipments.All(s => s.CurrentStatus == ShipmentStatuses.InWarehouse))
             {
@@ -88,7 +88,7 @@ namespace TransitNova.BusinessLayer.Services.CompleteShipmentService
             }
 
             carrier.CompleteShipment();
-            shipment.Delivered(carrier.Id);
+            shipment.DeliveredToWarehouse(carrier.Id);
             if (shipment.Trip is { Status: TripStatus.Active } trip &&
                 trip.Shipments.All(s => s.CurrentStatus == ShipmentStatuses.Delivered))
             {

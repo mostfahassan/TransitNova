@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.ApplicationLayer.Tests.TestData;
@@ -71,8 +71,6 @@ public sealed class ApprovalRejectionWorkflowPhase2Tests
         var fixture = new ApprovalFixture();
 
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
-
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -169,8 +167,6 @@ public sealed class ApprovalRejectionWorkflowPhase2Tests
         var fixture = new RejectionFixture();
 
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
-
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -242,7 +238,6 @@ public sealed class ApprovalRejectionWorkflowPhase2Tests
                 Mock.Of<ILogger<ApproveShipmentHandler>>(),
                 Managers.Object,
                 Logs.Object,
-                Cache.Object,
                 UnitOfWork.Object);
         }
     }
@@ -277,8 +272,9 @@ public sealed class ApprovalRejectionWorkflowPhase2Tests
                 Mock.Of<ILogger<RejectShipmentHandler>>(),
                 Managers.Object,
                 Logs.Object,
-                Cache.Object,
                 UnitOfWork.Object);
         }
     }
 }
+
+

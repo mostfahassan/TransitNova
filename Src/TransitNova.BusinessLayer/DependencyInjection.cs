@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using TransitNova.BusinessLayer.Common.Behaviors;
@@ -9,6 +9,7 @@ using TransitNova.BusinessLayer.Interfaces.Services.ShipmentAssignmentServices;
 using TransitNova.BusinessLayer.Interfaces.Services.ShipmentServices;
 using TransitNova.BusinessLayer.Interfaces.Services.TokenServices;
 using TransitNova.BusinessLayer.Interfaces.Services.TripService;
+using TransitNova.BusinessLayer.Interfaces.Services.WarehouseManagerDashboardService;
 using TransitNova.BusinessLayer.Services.AdminDashboardService;
 using TransitNova.BusinessLayer.Services.CompleteShipmentService;
 using TransitNova.BusinessLayer.Services.PaymentServices;
@@ -16,6 +17,7 @@ using TransitNova.BusinessLayer.Services.ShipmentAssignmentServices;
 using TransitNova.BusinessLayer.Services.ShipmentServices;
 using TransitNova.BusinessLayer.Services.TokenServices;
 using TransitNova.BusinessLayer.Services.TripServices;
+using TransitNova.BusinessLayer.Services.WarehouseManagerDashboardService;
 namespace TransitNova.BusinessLayer
 {
     public static class DependencyInjection
@@ -30,6 +32,7 @@ namespace TransitNova.BusinessLayer
                 AddMediatR(options => options.RegisterServicesFromAssembly(assembly))
                 .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>))
                 .AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>))
+                .AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheInvalidationBehavior<,>))
                 .AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionPipelineBehavior<,>))
                 .AddTransient(typeof(IPipelineBehavior<,>), typeof(IdempotentCommandPipelineBehavior<,>))
                 .AddAutoMapper(config =>
@@ -42,6 +45,7 @@ namespace TransitNova.BusinessLayer
                 .AddScoped<ITokenService, TokenService>()
                 .AddScoped<IShipmentAssignmentService, ShipmentAssignmentService>()
                 .AddScoped<IShipmentService, ShipmentService>()
+                .AddScoped<IWarehouseManagerDashboard, WarehouseManagerDashboardBuilder>()
                 .AddScoped<ITripServices, TripManagementService>()
                 .AddScoped<IPaymentService, PaymentService>()
                 .AddScoped<IAdminDashboard, AdminDashboard>();
@@ -51,3 +55,4 @@ namespace TransitNova.BusinessLayer
         }
     }
 }
+

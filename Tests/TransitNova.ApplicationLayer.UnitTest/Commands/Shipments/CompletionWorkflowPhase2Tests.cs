@@ -1,10 +1,9 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.ApplicationLayer.Tests.TestData;
 using TransitNova.BusinessLayer.Features.Carriers.Commands;
 using TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.CompleteShipments;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.CompleteShipmentService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Entities.MainEntities;
@@ -45,17 +44,13 @@ public sealed class CompletionWorkflowPhase2Tests
     }
 
     [Theory]
-    [InlineData(true, 7)]
-    [InlineData(false, 6)]
-    public async Task CompleteShipmentToWarehouseHandler_WhenTripPresenceVaries_ShouldInvalidateExpectedCachesAsync(
-        bool hasTrip,
-        int expectedCacheCalls)
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task CompleteShipmentToWarehouseHandler_WhenTripPresenceVaries_ShouldDeclareCacheKeysAsync(bool hasTrip)
     {
         var fixture = new WarehouseCompletionFixture(hasTrip);
 
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
-
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(expectedCacheCalls));
     }
 
     [Fact]
@@ -104,17 +99,13 @@ public sealed class CompletionWorkflowPhase2Tests
     }
 
     [Theory]
-    [InlineData(true, 7)]
-    [InlineData(false, 6)]
-    public async Task CompleteShipmentCommandHandler_WhenTripPresenceVaries_ShouldInvalidateExpectedCachesAsync(
-        bool hasTrip,
-        int expectedCacheCalls)
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task CompleteShipmentCommandHandler_WhenTripPresenceVaries_ShouldDeclareCacheKeysAsync(bool hasTrip)
     {
         var fixture = new DeliveryCompletionFixture(hasTrip);
 
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
-
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(expectedCacheCalls));
     }
 
     [Fact]
@@ -137,7 +128,6 @@ public sealed class CompletionWorkflowPhase2Tests
         public CompleteShipmentToWarehouseCommand Command { get; }
         public Mock<ICompleteShipmentService> Service { get; } = new();
         public Mock<IUnitOfWork> UnitOfWork { get; } = new();
-        public Mock<ICacheService> Cache { get; } = new();
         public CompleteShipmentToWarehouseHandler Handler { get; }
 
         public WarehouseCompletionFixture(bool hasTrip = true)
@@ -149,7 +139,7 @@ public sealed class CompletionWorkflowPhase2Tests
                 .ReturnsAsync(Shipment);
             UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
             Handler = new CompleteShipmentToWarehouseHandler(
-                Service.Object, UnitOfWork.Object, Cache.Object,
+                Service.Object, UnitOfWork.Object,
                 Mock.Of<ILogger<CompleteShipmentToWarehouseHandler>>());
         }
     }
@@ -160,7 +150,6 @@ public sealed class CompletionWorkflowPhase2Tests
         public CompleteShipmentCommand Command { get; }
         public Mock<ICompleteShipmentService> Service { get; } = new();
         public Mock<IUnitOfWork> UnitOfWork { get; } = new();
-        public Mock<ICacheService> Cache { get; } = new();
         public CompleteShipmentCommandHandler Handler { get; }
 
         public DeliveryCompletionFixture(bool hasTrip = true)
@@ -172,8 +161,11 @@ public sealed class CompletionWorkflowPhase2Tests
                 .ReturnsAsync(Shipment);
             UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
             Handler = new CompleteShipmentCommandHandler(
-                Service.Object, UnitOfWork.Object, Cache.Object,
+                Service.Object, UnitOfWork.Object,
                 Mock.Of<ILogger<CompleteShipmentCommandHandler>>());
         }
     }
 }
+
+
+

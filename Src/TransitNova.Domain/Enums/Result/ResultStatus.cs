@@ -5,6 +5,7 @@ namespace TransitNova.Domain.Enums.Result
     {
         Success = 200,
         Created = 201,
+        NoContent = 204,
         ValidationError = 422,
         Unauthorized = 401,
         Forbidden = 403,

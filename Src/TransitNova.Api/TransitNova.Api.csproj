@@ -38,4 +38,11 @@
     <ProjectReference Include="..\TransitNova.InfraStructure\TransitNova.InfraStructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Trips\OperationManagerTripOperations\Carrier\" />
+    <Folder Include="Controllers\WarehouseManager\Carriers\" />
+    <Folder Include="Controllers\WarehouseManager\Trips\" />
+    <Folder Include="Controllers\WarehouseManager\Shipments\" />
+  </ItemGroup>
+
 </Project>

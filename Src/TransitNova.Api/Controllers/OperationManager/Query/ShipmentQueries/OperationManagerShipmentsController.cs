@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Shipments;
-using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Shipments;
 using TransitNova.BusinessLayer.Features.Shipments.Queries;
 using TransitNova.Domain.Contracts.Permissions;

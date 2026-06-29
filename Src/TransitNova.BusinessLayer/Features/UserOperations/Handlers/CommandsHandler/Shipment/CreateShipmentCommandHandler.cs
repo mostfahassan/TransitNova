@@ -1,12 +1,12 @@
-﻿
+
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.BusinessLayer.Interfaces.Services.ShipmentServices;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
@@ -21,7 +21,6 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
      IUserAuthQueryService userQuery,
      ISystemLogCommands systemLogCommands,
      IUnitOfWork unitOfWork,
-     ICacheService cacheService,
      ILogger<CreateShipmentCommandHandler> logger)
      : ICommandHandler<CreateShipmentCommand, Result<RetrieveShipmentDto>>
     {
@@ -54,16 +53,19 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
 
             logger.LogInformation("Shipment created successfully. TrackingNumber: {TrackingNumber}, " + "ShipmentId: {ShipmentId}, Cost: {Cost}", detailedShipment.TrackingNumber,
                                           detailedShipment.Id, detailedShipment.ShippingCost);
-
-            await cacheService.RemoveAsync(CacheKeys.UserDashboard(request.AppUserId));
-            await cacheService.RemoveAsync(CacheKeys.UserProfile(request.AppUserId));
-            await cacheService.RemoveAsync(CacheKeys.AdminUserDetails(request.AppUserId));
-            await cacheService.RemoveAsync(CacheKeys.UserShipment(request.AppUserId, detailedShipment.Id));
-            await cacheService.RemoveAsync(CacheKeys.ShipmentByTrackingNumber(detailedShipment.TrackingNumber));
-            await cacheService.RemoveAsync(CacheKeys.OperationManagerDashboard());
+            CacheInvalidationContext.Set(
+                request,
+                CacheKeys.Users.Dashboard(request.AppUserId),
+                CacheKeys.Users.Profile(request.AppUserId),
+                CacheKeys.Users.AdminDetails(request.AppUserId),
+                CacheKeys.Users.Shipment(request.AppUserId, detailedShipment.Id),
+                CacheKeys.Shipments.ByTrackingNumber(detailedShipment.TrackingNumber),
+                CacheKeys.OperationManagers.Dashboard);
 
             //====== Return Created Result with detailed shipment data ======//
             return Result<RetrieveShipmentDto>.Created(detailedShipment);
         }
     }
 }
+
+

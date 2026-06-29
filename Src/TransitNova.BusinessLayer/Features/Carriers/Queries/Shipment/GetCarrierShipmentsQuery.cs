@@ -8,6 +8,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Queries.Shipment
     public sealed record GetCarrierShipmentsQuery(Guid CarrierId, CarrierShipmentFilterDto Filter)
         : IQuery<Result<CarrierShipmentListDto>>, ICachable
     {
-        public string CacheKey => CacheKeys.CarrierShipments(CarrierId,Filter);
+        public string CacheKey => CacheKeys.Carriers.Shipments(CarrierId,Filter);
     }
 }
+

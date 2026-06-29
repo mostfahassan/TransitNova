@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Carriers;
@@ -73,7 +73,6 @@ public sealed class AssignmentWorkflowPhase2Tests
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
 
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(6));
     }
 
     [Fact]
@@ -164,7 +163,6 @@ public sealed class AssignmentWorkflowPhase2Tests
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
 
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.Cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(6));
     }
 
     [Fact]
@@ -223,7 +221,6 @@ public sealed class AssignmentWorkflowPhase2Tests
                 Mock.Of<ILogger<AssignShipmentPickupToCarrierHandler>>(),
                 Managers.Object,
                 Logs.Object,
-                Cache.Object,
                 UnitOfWork.Object);
         }
     }
@@ -254,8 +251,9 @@ public sealed class AssignmentWorkflowPhase2Tests
                 Mock.Of<ILogger<AssignShipmentDeliveryToCarrierHandler>>(),
                 Managers.Object,
                 Logs.Object,
-                Cache.Object,
                 UnitOfWork.Object);
         }
     }
 }
+
+

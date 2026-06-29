@@ -10,6 +10,7 @@ namespace TransitNova.BusinessLayer.DTOs.Warehouse
         public decimal Capacity { get; set; }
         public decimal CurrentUsage { get; set; }
         public int? OperatingHours { get; set; }
+        public Guid? ManagerId { get; set; }
         public IReadOnlyCollection<Guid> ZoneIds { get; set; } = [];
     }
 }

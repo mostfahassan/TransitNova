@@ -1,4 +1,4 @@
-﻿
+
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Carrier;
@@ -10,7 +10,8 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Ope
     public sealed record GetOperationManagerHandledCarriersQuery(Guid OperationManagerId , int PageNumber , int PageSize) 
         : IQuery<Result<PagedResult<CarrierSummaryDetailsDto>>>, ICachable
     {
-        public string CacheKey => CacheKeys.OperationManagerHandledCarriers(OperationManagerId, PageNumber, PageSize);
+        public string CacheKey => CacheKeys.OperationManagers.HandledCarriers(OperationManagerId, PageNumber, PageSize);
     }
    
 }
+

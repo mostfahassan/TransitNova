@@ -1,4 +1,4 @@
-﻿using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.OperationManager;
 using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
@@ -8,7 +8,8 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Ope
 {
     public sealed record GetOperationManagerDashboardQuery : IQuery<Result<OperationManagerDashboardDto>>, ICachable
     {
-        public string CacheKey => CacheKeys.OperationManagerDashboard();
+        public string CacheKey => CacheKeys.OperationManagers.Dashboard;
     }
    
 }
+

@@ -299,6 +299,18 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         RaiseDomainEvent(new ShipmentDeliveredDomainEvent(Id, TrackingNumber));
 
     }
+    public void PickeUp(Guid carrierId)
+    {
+        if (CurrentStatus != ShipmentStatuses.OutForPickup)
+            throw new ShipmentNotAssignedException(Id, carrierId);
+
+        PickupDate = DateTime.UtcNow;
+
+        ChangeStatus(ShipmentStatuses.PickedUp, carrierId);
+
+        RaiseDomainEvent(new ShipmentDeliveredDomainEvent(Id, TrackingNumber));
+
+    }
 
     public void DeliveredToWarehouse(Guid carrierId)
     {

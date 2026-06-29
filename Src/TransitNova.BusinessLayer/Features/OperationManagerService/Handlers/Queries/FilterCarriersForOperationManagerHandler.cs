@@ -7,9 +7,9 @@ using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Carrier
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Queries
 {
-    public class FilterCarriersForOperationManagerCommandHandler(
+    public class FilterCarriersForOperationManagerHandler(
      ICarrierQueryRepository carrierRepo,
-     ILogger<FilterCarriersForOperationManagerCommandHandler> logger)
+     ILogger<FilterCarriersForOperationManagerHandler> logger)
 
      : IQueryHandler<GetCarriersForOperationManagerQuery, Result<PagedResult<CarrierSummaryDetailsDto>>>
     {

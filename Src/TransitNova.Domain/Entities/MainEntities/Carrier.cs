@@ -45,7 +45,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         public virtual Vehicle Vehicle { get;} = null!;
 
         public Guid? HomeWarehouseId { get; private set; }
-        public Warehouse? HomeWarehouse { get;}
+        public Warehouse? HomeWarehouse { get; set; }
 
         public Guid AppUserId { get; private set; }
 

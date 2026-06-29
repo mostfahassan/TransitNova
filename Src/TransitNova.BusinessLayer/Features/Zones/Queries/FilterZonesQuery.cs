@@ -1,4 +1,4 @@
-﻿using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.ZoneDtos;
 using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
@@ -8,7 +8,8 @@ namespace TransitNova.BusinessLayer.Features.Zones.Queries
 {
     public sealed record FilterZonesQuery(ZoneFilterDto Filter) : IQuery<Result<PagedResult<ZoneDto>>>, ICachable
     {
-        public string CacheKey => CacheKeys.ZoneFilter(Filter);
+        public string CacheKey => CacheKeys.Zones.Filter(Filter);
     }
 }
+
 

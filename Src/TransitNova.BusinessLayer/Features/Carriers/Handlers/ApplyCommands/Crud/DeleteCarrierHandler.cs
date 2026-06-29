@@ -1,16 +1,15 @@
 
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Features.Carriers.Commands;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Common.ResultPattern;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.Domain.Contracts.Caching;
 namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.Crud
 {
     public sealed class DeleteCarrierHandler(
         ICarrierCommandRepository carrierRepository,
-        ICacheService cacheService,
         ILogger<DeleteCarrierHandler> logger)
         : ICommandHandler<DeleteCarrierCommand, BaseResult>
     {
@@ -21,12 +20,16 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.Cru
             if (affectedRows > 0)
             {
                 logger.LogInformation("Carrier {CarrierId} was deleted by administrator {AdminId}.", request.CarrierId, request.AdminId);
-                await cacheService.RemoveAsync(CacheKeys.CarrierProfile(request.CarrierId));
-                await cacheService.RemoveAsync(CacheKeys.CarrierDashboard(request.CarrierId));
-                await cacheService.RemoveAsync(CacheKeys.CarrierTrips(request.CarrierId));
+                CacheInvalidationContext.Set(
+                    request,
+                    CacheKeys.Carriers.Profile(request.CarrierId),
+                    CacheKeys.Carriers.Dashboard(request.CarrierId),
+                    CacheKeys.Carriers.Trips(request.CarrierId));
                 return BaseResult.Success();
             }
             return BaseResult.Failure(Errors.FailedOperation("Carrier Deletion Failed"));
         }
     }
 }
+
+

@@ -9,7 +9,8 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Queries
     public record TrackShipmentQuery(string TrackingNumber) 
         : IQuery<Result<RetrieveShipmentSummaryDto>>, ICachable
     {
-        public string CacheKey => CacheKeys.ShipmentByTrackingNumber(TrackingNumber);
+        public string CacheKey => CacheKeys.Shipments.ByTrackingNumber(TrackingNumber);
     }
    
 }
+

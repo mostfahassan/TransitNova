@@ -1,5 +1,4 @@
 using TransitNova.Domain.Enums.Warehouse;
-
 namespace TransitNova.BusinessLayer.DTOs.Warehouse
 {
     public class WarehouseDto
@@ -7,6 +6,7 @@ namespace TransitNova.BusinessLayer.DTOs.Warehouse
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public WarehouseType Type { get; set; }
+        public string WarehouseManagerName { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public decimal Capacity { get; set; }
         public decimal CurrentUsage { get; set; }

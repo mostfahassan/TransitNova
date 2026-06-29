@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.Vehicles.Commands;
 using TransitNova.BusinessLayer.Interfaces.Repositories.VehicleRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.Entities.MainEntities;
@@ -13,7 +13,6 @@ namespace TransitNova.BusinessLayer.Features.Vehicles.Handlers.ApplyCommands
     public sealed class DeleteVehicleHandler(
         IVehicleQueryRepository vehicleRepository,
         IUnitOfWork unitOfWork,
-        ICacheService cacheService,
         ILogger<DeleteVehicleHandler> logger)
         : ICommandHandler<DeleteVehicleCommand, BaseResult>
     {
@@ -32,11 +31,12 @@ namespace TransitNova.BusinessLayer.Features.Vehicles.Handlers.ApplyCommands
             }
 
             await unitOfWork.SaveChangesAsync(ct);
-
-            await cacheService.RemoveAsync(CacheKeys.VehicleList());
+            CacheInvalidationContext.Set(request, CacheKeys.Vehicles.List);
 
             logger.LogInformation("Vehicle deleted successfully. VehicleId: {VehicleId}", request.Id);
             return BaseResult.Success();
         }
     }
 }
+
+

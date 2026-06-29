@@ -18,6 +18,7 @@ namespace TransitNova.BusinessLayer.DTOs.Carrier
         public bool SortDescending { get; set; } = false;
         public decimal? VehicleCapacityWeight { get; set; }
         public VehicleType? VehicleType { get; set; }
+        public Guid? WarehouseId {  get; set; }
         public List<string>? ServedZones { get; set; }
     }
 }

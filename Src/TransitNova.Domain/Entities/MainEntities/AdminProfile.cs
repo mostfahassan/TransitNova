@@ -11,8 +11,6 @@ namespace TransitNova.Domain.Entities.MainEntities
             
 
         }
-
-
         private AdminProfile(Guid appUserId, string firstName, string lastName,string email,string phone, string address, int cityId)
         {
             Id = Guid.CreateVersion7();

@@ -1,15 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Trips;
-using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.TripService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
-using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.SystemLogs;
 namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Commands.Trips
@@ -19,7 +17,6 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
         IOperationManagerQueryRepository operationManagerRepository,
         ISystemLogCommands systemLogCommands,
         IUnitOfWork unitOfWork,
-        ICacheService cacheService,
         ILogger<StartPickupTripHandler> logger) : ICommandHandler<StartPickupTripCommand, BaseResult>
     {
         public async Task<BaseResult> Handle(StartPickupTripCommand request, CancellationToken cancellationToken)
@@ -57,14 +54,17 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Trip started successfully by operation Manager {UserId}. TripId: {TripId}, UserId: {UserId}, StartedAt: {StartedAt}", request.OperationManagerId, trip.Id, trip.CarrierId, DateTime.UtcNow);
-            await cacheService.RemoveAsync(CacheKeys.CarrierTrips(request.CarrierId));
-            await cacheService.RemoveAsync(CacheKeys.CarrierTripDetails(request.CarrierId, trip.Id));
-            await cacheService.RemoveAsync(CacheKeys.CarrierDashboard(request.CarrierId));
-            await cacheService.RemoveAsync(CacheKeys.OperationManagerDashboard());
+            CacheInvalidationContext.Set(
+                request,
+                CacheKeys.Carriers.Trips(request.CarrierId),
+                CacheKeys.Carriers.TripDetails(request.CarrierId, trip.Id),
+                CacheKeys.Carriers.Dashboard(request.CarrierId),
+                CacheKeys.OperationManagers.Dashboard,
+                CacheKeys.Trips.Details(trip.Id));
             return BaseResult.Success();
-
         }
-
     }
 }
+
+
 

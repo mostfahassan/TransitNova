@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -25,14 +25,13 @@ public sealed class CarrierCommandHandlerTests
         var cache = new Mock<ICacheService>();
         var carrierId = Guid.NewGuid();
         repository.Setup(x => x.UpdateStatusAsync(carrierId, CarrierStatus.InActive, It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        var handler = new UpdateCarrierStatusCommandHandler(repository.Object, cache.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
+        var handler = new UpdateCarrierStatusCommandHandler(repository.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
 
         var result = await handler.Handle(
             new UpdateCarrierStatusCommand(Guid.NewGuid(), carrierId, CarrierStatus.InActive),
             CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -41,7 +40,7 @@ public sealed class CarrierCommandHandlerTests
         var repository = new Mock<ICarrierCommandRepository>();
         var cache = new Mock<ICacheService>();
         repository.Setup(x => x.UpdateStatusAsync(It.IsAny<Guid>(), It.IsAny<CarrierStatus>(), It.IsAny<CancellationToken>())).ReturnsAsync(0);
-        var handler = new UpdateCarrierStatusCommandHandler(repository.Object, cache.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
+        var handler = new UpdateCarrierStatusCommandHandler(repository.Object, Mock.Of<ILogger<UpdateCarrierStatusCommandHandler>>());
 
         var result = await handler.Handle(
             new UpdateCarrierStatusCommand(Guid.NewGuid(), Guid.NewGuid(), CarrierStatus.InActive),
@@ -59,14 +58,13 @@ public sealed class CarrierCommandHandlerTests
         var cache = new Mock<ICacheService>();
         var carrierId = Guid.NewGuid();
         repository.Setup(x => x.DeleteCarrierAsync(carrierId, It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        var handler = new DeleteCarrierHandler(repository.Object, cache.Object, Mock.Of<ILogger<DeleteCarrierHandler>>());
+        var handler = new DeleteCarrierHandler(repository.Object, Mock.Of<ILogger<DeleteCarrierHandler>>());
 
         var result = await handler.Handle(
             new DeleteCarrierCommand(Guid.NewGuid(), carrierId, Guid.NewGuid()),
             CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(3));
     }
 
     [Fact]
@@ -75,7 +73,7 @@ public sealed class CarrierCommandHandlerTests
         var repository = new Mock<ICarrierCommandRepository>();
         var cache = new Mock<ICacheService>();
         repository.Setup(x => x.DeleteCarrierAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(0);
-        var handler = new DeleteCarrierHandler(repository.Object, cache.Object, Mock.Of<ILogger<DeleteCarrierHandler>>());
+        var handler = new DeleteCarrierHandler(repository.Object, Mock.Of<ILogger<DeleteCarrierHandler>>());
 
         var result = await handler.Handle(
             new DeleteCarrierCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
@@ -106,7 +104,7 @@ public sealed class CarrierCommandHandlerTests
         var repository = new Mock<ICarrierQueryRepository>();
         var unitOfWork = new Mock<IUnitOfWork>();
         repository.Setup(x => x.GetCarrierAsync(It.IsAny<Expression<Func<Carrier, bool>>>(), It.IsAny<CancellationToken>())).ReturnsAsync((Carrier?)null);
-        var handler = new AddCarrierAdditionalInfoCommandHandler(repository.Object, unitOfWork.Object, Mock.Of<ICacheService>(), Mock.Of<ILogger<AddCarrierAdditionalInfoCommandHandler>>());
+        var handler = new AddCarrierAdditionalInfoCommandHandler(repository.Object, unitOfWork.Object, Mock.Of<ILogger<AddCarrierAdditionalInfoCommandHandler>>());
 
         var result = await handler.Handle(
             new AddingCarrierAdditionalInfoCommand(Guid.NewGuid(), ValidInfo(), Guid.NewGuid()),
@@ -126,7 +124,7 @@ public sealed class CarrierCommandHandlerTests
         var cache = new Mock<ICacheService>();
         repository.Setup(x => x.GetCarrierAsync(It.IsAny<Expression<Func<Carrier, bool>>>(), It.IsAny<CancellationToken>())).ReturnsAsync(carrier);
         unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        var handler = new AddCarrierAdditionalInfoCommandHandler(repository.Object, unitOfWork.Object, cache.Object, Mock.Of<ILogger<AddCarrierAdditionalInfoCommandHandler>>());
+        var handler = new AddCarrierAdditionalInfoCommandHandler(repository.Object, unitOfWork.Object, Mock.Of<ILogger<AddCarrierAdditionalInfoCommandHandler>>());
 
         var result = await handler.Handle(
             new AddingCarrierAdditionalInfoCommand(Guid.NewGuid(), ValidInfo(), userId),
@@ -136,7 +134,6 @@ public sealed class CarrierCommandHandlerTests
         carrier.HasAdditionalInfo.Should().BeTrue();
         carrier.LicenseNumber.Should().Be("LIC-100");
         unitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Exactly(2));
     }
 
     [Fact]
@@ -148,7 +145,7 @@ public sealed class CarrierCommandHandlerTests
         var repository = new Mock<ICarrierQueryRepository>();
         var unitOfWork = new Mock<IUnitOfWork>();
         repository.Setup(x => x.GetCarrierAsync(It.IsAny<Expression<Func<Carrier, bool>>>(), It.IsAny<CancellationToken>())).ReturnsAsync(carrier);
-        var handler = new AddCarrierAdditionalInfoCommandHandler(repository.Object, unitOfWork.Object, Mock.Of<ICacheService>(), Mock.Of<ILogger<AddCarrierAdditionalInfoCommandHandler>>());
+        var handler = new AddCarrierAdditionalInfoCommandHandler(repository.Object, unitOfWork.Object, Mock.Of<ILogger<AddCarrierAdditionalInfoCommandHandler>>());
 
         var act = () => handler.Handle(
             new AddingCarrierAdditionalInfoCommand(Guid.NewGuid(), ValidInfo(), userId),
@@ -172,3 +169,5 @@ public sealed class CarrierCommandHandlerTests
         WarehouseId = Guid.NewGuid()
     };
 }
+
+

@@ -27,6 +27,8 @@ namespace TransitNova.BusinessLayer.Common.ResultPattern
 
         public static BaseResult Success()
             => new(true, ResultStatus.Success);
+        public static BaseResult NoContent()
+            => new(true, ResultStatus.NoContent);
         public static BaseResult Created(string? message = null)
             => new(true, ResultStatus.Created) { Message = message };
 

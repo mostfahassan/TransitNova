@@ -1,10 +1,10 @@
-﻿
+
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.DomainExceptions;
@@ -13,7 +13,6 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
     public class IssueShipmentHandler(
          IShipmentQueryRepository shipmentRepo,
          IUnitOfWork unitOfWork,
-         ICacheService cacheService,
          ILogger<IssueShipmentHandler> logger)
        : ICommandHandler<IssueShipmentCommand, BaseResult>
     {
@@ -35,14 +34,18 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
            
             //====== Handle Failure to Issue ======
             logger.LogInformation("Shipment {ShipmentId} issued successfully", request.ShipmentId);
-            await cacheService.RemoveAsync(CacheKeys.UserDashboard(request.AppUserId));
-            await cacheService.RemoveAsync(CacheKeys.UserProfile(request.AppUserId));
-            await cacheService.RemoveAsync(CacheKeys.AdminUserDetails(request.AppUserId));
-            await cacheService.RemoveAsync(CacheKeys.UserShipment(request.AppUserId, request.ShipmentId));
-            await cacheService.RemoveAsync(CacheKeys.ShipmentByTrackingNumber(issued.TrackingNumber));
-            await cacheService.RemoveAsync(CacheKeys.OperationManagerDashboard());
-            await cacheService.RemoveAsync(CacheKeys.OperationManagerShipmentHistories(request.ShipmentId));
+            CacheInvalidationContext.Set(
+                request,
+                CacheKeys.Users.Dashboard(request.AppUserId),
+                CacheKeys.Users.Profile(request.AppUserId),
+                CacheKeys.Users.AdminDetails(request.AppUserId),
+                CacheKeys.Users.Shipment(request.AppUserId, request.ShipmentId),
+                CacheKeys.Shipments.ByTrackingNumber(issued.TrackingNumber),
+                CacheKeys.OperationManagers.Dashboard,
+                CacheKeys.OperationManagers.ShipmentHistories(request.ShipmentId));
             return BaseResult.Success();
         }
     }
 }
+
+

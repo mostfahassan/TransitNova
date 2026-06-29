@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.Features.Admin.Queries;
-using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
 namespace TransitNova.Api.Controllers.Admin.AdminDashboard
 {
     [Authorize(Roles = Role.Admin)]
-    [Route("api/v{version:apiVersion}/admins/dashboard")]
+    [Route("api/v{version:apiVersion}/admin/dashboard")]
     [ApiController]
     [ApiVersion("1.0")]
     public class AdminsController(IMediator mediator) : ControllerBase
