@@ -19,7 +19,7 @@ using TransitNova.Api.Exceptions;
 using TransitNova.BusinessLayer;
 using TransitNova.BusinessLayer.Options;
 using TransitNova.Domain.Contracts.Permissions;
-using TransitNova.InfraStructure.Common.NotificationService.NotificationHubService;
+using TransitNova.InfraStructure.SignalR.NotificationHubService;
 using TransitNova.InfraStructure.ServiceRegistration;
 using TransitNova.InfraStructure.Token;
 namespace TransitNova.Api
@@ -216,13 +216,6 @@ namespace TransitNova.Api
                 });
                 
             service.AddAuthorizationBuilder()
-                .AddPolicy("RefreshTokenOwner",
-                policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.AddRequirements(new RefreshTokenAuthenticationRequirement());
-                });
-            service.AddAuthorizationBuilder()
                 .AddPolicy("IsTokenOwner",
                 policy =>
                 {
@@ -244,13 +237,12 @@ namespace TransitNova.Api
        public static IServiceCollection RegisterApiService(this IServiceCollection service)
         {
             service.AddHttpContextAccessor();
-
+            service.AddTransient<CorrelationIDMiddleware>();
             service.AddScoped<IAuthorizationHandler, ShipmentOwnerHandler>();
-
             service.AddScoped<IAuthorizationHandler, CarrierOwnerHandler>();
-
             service.AddScoped<IAuthorizationHandler, CompletedProfileHandler>();
             service.AddScoped<IAuthorizationHandler, IsWarehouseManagerRequirementHandler>();
+            service.AddScoped<IAuthorizationHandler, TokenOwnerHandler>();
             return service;
         }
 

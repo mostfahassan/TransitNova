@@ -67,7 +67,7 @@ internal static class ControllerEndpointCatalog
 
         if (parameter.ParameterPolicies.Any(policy =>
                 policy.Content?.Contains("int", StringComparison.OrdinalIgnoreCase) == true))
-            return "1";
+            return "999999";
 
         if (parameter.ParameterPolicies.Any(policy =>
                 policy.Content?.Contains("guid", StringComparison.OrdinalIgnoreCase) == true) ||

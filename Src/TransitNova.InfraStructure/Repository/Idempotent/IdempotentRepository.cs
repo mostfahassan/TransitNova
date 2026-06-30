@@ -18,7 +18,7 @@ namespace TransitNova.InfraStructure.Repository.Idempotent
             };
 
             await context.AddAsync(table,cancellationToken);
-            await context.SaveChangesAsync(cancellationToken);
+           
         }
 
         public async Task<bool> RequestExistsAsync(Guid requestId, CancellationToken cancellationToken)

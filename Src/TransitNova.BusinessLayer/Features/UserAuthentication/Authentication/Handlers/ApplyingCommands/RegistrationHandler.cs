@@ -5,15 +5,12 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.AppUser;
 using TransitNova.BusinessLayer.DTOs.UserProfile.Auth;
 using TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.Commands;
-using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.TokenRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.BusinessLayer.Interfaces.Services.Users.RegistrationStrategy;
 using TransitNova.BusinessLayer.Interfaces.Token;
-
-using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.SystemLogs;
 using TransitNova.Domain.Enums.Users;

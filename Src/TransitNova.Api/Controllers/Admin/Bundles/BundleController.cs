@@ -33,7 +33,6 @@ namespace TransitNova.Api.Controllers.Admin.Bundles
         [EndpointDescription("Creates a new bundle and makes it available for user subscriptions.")]
         public async Task<IActionResult> CreateAsync([IdempotencyKey] Guid requestId, [FromBody] CreateBundleDto dto, CancellationToken ct)
         {
-
             var adminId = User.GetUserId();
             var response = await mediator.Send(new CreateBundleCommand(requestId, adminId, dto), ct);
             return response.ToActionResult();
@@ -55,7 +54,6 @@ namespace TransitNova.Api.Controllers.Admin.Bundles
         [EndpointDescription("Updates the details of an existing bundle.")]
         public async Task<IActionResult> UpdateAsync([IdempotencyKey] Guid requestId,Guid bundleId , [FromBody] UpdateBundleDto dto, CancellationToken ct)
         {
-
             var adminId = User.GetUserId();
             var response = await mediator.Send(new UpdateBundleCommand(requestId, bundleId, dto, adminId), ct);
             return response.ToActionResult();
@@ -75,7 +73,6 @@ namespace TransitNova.Api.Controllers.Admin.Bundles
         [EndpointDescription("Deletes an existing bundle from the system.")]
         public async Task<IActionResult> DeleteAsync([IdempotencyKey] Guid requestId, Guid bundleId, CancellationToken ct)
         {
-
             var response = await mediator.Send(new DeleteBundleCommand(requestId, bundleId), ct);
             return response.ToActionResult();
         }

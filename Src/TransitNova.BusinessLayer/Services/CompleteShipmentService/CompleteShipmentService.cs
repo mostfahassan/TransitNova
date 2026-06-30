@@ -20,7 +20,7 @@ namespace TransitNova.BusinessLayer.Services.CompleteShipmentService
          ISystemLogCommands systemLogCommands,
         ILogger<CompleteShipmentToWarehouseHandler> logger) : ICompleteShipmentService
     {
-        public async  Task<Shipment> CompleteShipmentAsync(Guid ShipmentId, Guid CarrierId, CancellationToken cancellationToken)
+        public async Task<Shipment> CompleteShipmentAsync(Guid ShipmentId, Guid CarrierId, CancellationToken cancellationToken)
         {
             //===== 1- Retrieve Carrier  Attempts 
             var carrier = await carrierQueryRepo.GetCarrierAsync(c => c.Id == CarrierId, cancellationToken);

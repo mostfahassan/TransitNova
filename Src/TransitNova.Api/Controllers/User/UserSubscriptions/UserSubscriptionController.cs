@@ -32,7 +32,6 @@ namespace TransitNova.Api.Controllers.User.UserSubscriptions
         [EndpointDescription("Allows the authenticated user to subscribe to a bundle. The operation validates bundle availability, subscription eligibility, and applies the selected bundle to the user's account.")]
         public async Task<IActionResult> SubscribeToBundleAsync([IdempotencyKey] Guid requestId, Guid bundleId, CancellationToken ct)
         {
-
             var userId = User.GetUserId();
             var response = await mediator.Send(new SubscribeToBundleCommand(requestId, userId, bundleId), ct);
             return response.ToActionResult();
@@ -54,7 +53,6 @@ namespace TransitNova.Api.Controllers.User.UserSubscriptions
         [EndpointDescription("Allows the authenticated user to cancel an active bundle subscription. The operation validates the current subscription status and removes the bundle association from the user's account.")]
         public async Task<IActionResult> UnsubscribeFromBundleAsync([IdempotencyKey] Guid requestId, Guid bundleId, CancellationToken ct)
         {
-
             var userId = User.GetUserId();
             var response = await mediator.Send(new UnsubscribeFromBundleCommand(requestId, userId, bundleId), ct);
             return response.ToActionResult();

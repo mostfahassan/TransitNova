@@ -13,7 +13,7 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
     [ApiVersion("1.0")]
     [ApiController]
     [Tags("User Shipments Query Operations")]
-    public class UserShipmentQueryController(IMediator mediator ,  IAuthorizationService authorization) : ControllerBase
+    public class UserShipmentQueryController(IMediator mediator) : ControllerBase
     {
         // GET api/v1/users/shipments/{shipmentId}
         [Authorize(Policy = UserPermissions.UserCanViewShipmentDetails)]
@@ -39,8 +39,8 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
         }
         private async Task<bool> UserOwnsShipmentAsync(Guid shipmentId)
         {
-            var authorizationResult =
-               await authorization.AuthorizeAsync(User, shipmentId, UserPermissions.ShipmentOwner);
+            var authorizationService = HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, shipmentId, UserPermissions.ShipmentOwner);
             return authorizationResult.Succeeded;
         }
     }

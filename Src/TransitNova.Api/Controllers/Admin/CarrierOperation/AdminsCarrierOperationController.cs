@@ -6,7 +6,6 @@ using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.Carriers.Commands;
 using TransitNova.BusinessLayer.Features.Carriers.Queries.Carrier;
 using TransitNova.BusinessLayer.Features.Carriers.Queries.Shipment;
-using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Carriers;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
@@ -18,7 +17,7 @@ namespace TransitNova.Api.Controllers.Admin.CarrierOperation
     [ApiVersion("1.0")]
     [ApiController]
     [Tags("Admin Carriers")]
-    public class AdminsCarrierOperationController(IMediator mediator, IAuthorizationService authorizationService) : ControllerBase
+    public class AdminsCarrierOperationController(IMediator mediator) : ControllerBase
     {
 
         [Authorize(Policy = AdminPermissions.DeleteCarrier)]
@@ -36,7 +35,6 @@ namespace TransitNova.Api.Controllers.Admin.CarrierOperation
         [EndpointDescription("Deletes an existing carrier from the system.")]
         public async Task<IActionResult> DeleteCarrierAsync([IdempotencyKey] Guid requestId, Guid id, CancellationToken ct)
         {
-
             var adminId = User.GetUserId();
             var response = await mediator.Send(new DeleteCarrierCommand(requestId, id, adminId), ct);
             return response.ToActionResult();
@@ -125,16 +123,10 @@ namespace TransitNova.Api.Controllers.Admin.CarrierOperation
         }
 
 
-
-
         private async Task<bool> IsCarrierOwnerAsync(Guid carrierId)
         {
-            var authorizationResult =
-                await authorizationService.AuthorizeAsync(
-                    User,
-                    carrierId,
-                    CarrierPermissions.IsCarrierOwner);
-
+            var authorizationService = HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, carrierId, CarrierPermissions.IsCarrierOwner);
             return authorizationResult.Succeeded;
         }
     }

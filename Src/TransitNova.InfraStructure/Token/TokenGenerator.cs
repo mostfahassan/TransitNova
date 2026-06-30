@@ -24,14 +24,13 @@ namespace TransitNova.InfraStructure.Token
             var claims = new List<Claim>
              {
                 new (ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new (ClaimTypes.Email, user.Email!),
-                new (ClaimTypes.Name, user.UserName!),
+                new (ClaimTypes.Email, user.Email),
+                new (ClaimTypes.Name, user.UserName),
                 new (ClaimTypes.MobilePhone, user.PhoneNumber!),
                 new ("user_Type" , user.UserType.ToString()),
                 new (Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
              };
            
-
             var roles = user.Roles;
             var permissions = new HashSet<string>();
             foreach (var role in roles)

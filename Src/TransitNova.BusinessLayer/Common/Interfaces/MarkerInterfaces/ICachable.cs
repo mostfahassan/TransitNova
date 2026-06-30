@@ -1,5 +1,4 @@
-﻿
-namespace TransitNova.BusinessLayer.Interfaces.MarkerInterfaces
+﻿namespace TransitNova.BusinessLayer.Common.Interfaces.MarkerInterfaces
 {
     internal interface ICachable
     {

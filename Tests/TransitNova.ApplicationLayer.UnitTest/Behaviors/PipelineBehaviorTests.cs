@@ -9,8 +9,8 @@ using TransitNova.BusinessLayer.Common.Behaviors;
 using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.Interfaces;
+using TransitNova.BusinessLayer.Common.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Common.ResultPattern;
-using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.IdempotentRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
@@ -269,7 +269,9 @@ public sealed class PipelineBehaviorTests
     {
         var requestId = Guid.NewGuid();
         var repository = new Mock<IIdempotentRepository>();
-        var behavior = CreateIdempotentBehavior(repository);
+        var unitOfWork = new Mock<IUnitOfWork>();
+        unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+        var behavior = CreateIdempotentBehavior(repository, unitOfWork);
         var expected = BaseResult.Success();
 
         var result = await behavior.Handle(
@@ -283,6 +285,10 @@ public sealed class PipelineBehaviorTests
             nameof(TestCommand),
             It.Is<string>(json => JsonSerializer.Deserialize<BaseResult>(json, JsonOptions)!.IsSuccess),
             It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
+        unitOfWork.Verify(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
+        unitOfWork.Verify(x => x.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
+        unitOfWork.Verify(x => x.RollbackAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -352,6 +358,31 @@ public sealed class PipelineBehaviorTests
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public void IdempotentCommand_Should_ImplementTransactionalMarker()
+    {
+        var request = new TestCommand(Guid.NewGuid(), "test");
+
+        request.Should().BeAssignableTo<ITransactional>();
+    }
+
+    [Fact]
+    public async Task TransactionBehavior_Should_WrapIdempotentCommands_When_RequestSucceedsAsync()
+    {
+        var unitOfWork = new Mock<IUnitOfWork>();
+        var behavior = new TransactionPipelineBehavior<TestCommand, BaseResult>(unitOfWork.Object);
+
+        var result = await behavior.Handle(
+            new TestCommand(Guid.NewGuid(), "test"),
+            _ => Task.FromResult(BaseResult.Success()),
+            CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        unitOfWork.Verify(x => x.BeginTransactionAsync(CancellationToken.None), Times.Once);
+        unitOfWork.Verify(x => x.CommitAsync(CancellationToken.None), Times.Once);
+        unitOfWork.Verify(x => x.RollbackAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -425,9 +456,15 @@ public sealed class PipelineBehaviorTests
     };
 
     private static string Serialize<T>(T value) => JsonSerializer.Serialize(value, JsonOptions);
-    private static IdempotentCommandPipelineBehavior<TestCommand, BaseResult> CreateIdempotentBehavior(Mock<IIdempotentRepository> repository)
+    private static IdempotentCommandPipelineBehavior<TestCommand, BaseResult> CreateIdempotentBehavior(
+      Mock<IIdempotentRepository> repository,
+      Mock<IUnitOfWork>? unitOfWork = null)
     {
+        unitOfWork ??= new Mock<IUnitOfWork>();
+        unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+
         return new IdempotentCommandPipelineBehavior<TestCommand, BaseResult>(
+            unitOfWork.Object,
             repository.Object,
             NullLogger<IdempotentCommandPipelineBehavior<TestCommand, BaseResult>>.Instance);
     }

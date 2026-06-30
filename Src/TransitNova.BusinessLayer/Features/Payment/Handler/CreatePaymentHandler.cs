@@ -2,7 +2,7 @@ using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Payment;
 using TransitNova.BusinessLayer.Features.Payment.Command;
-using TransitNova.BusinessLayer.Interfaces.PaymentService;
+using TransitNova.BusinessLayer.Interfaces.Services.PaymentService;
 namespace TransitNova.BusinessLayer.Features.Payment.Handler
 {
     public sealed class CreatePaymentHandler(IPaymentService paymentService) : ICommandHandler<CreatePaymentCommand, Result<Invoice>>

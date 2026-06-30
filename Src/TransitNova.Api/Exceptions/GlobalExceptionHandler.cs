@@ -25,36 +25,41 @@ internal sealed class GlobalExceptionHandler(
     {
         return exception switch
         {
-            ValidationException
-                => StatusCodes.Status400BadRequest,
+            // --- System & Validations ---
+            ValidationException => StatusCodes.Status400BadRequest,
+            UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+            KeyNotFoundException => StatusCodes.Status404NotFound,
+            TimeoutException => StatusCodes.Status504GatewayTimeout,
 
-            UnauthorizedAccessException
-                => StatusCodes.Status401Unauthorized,
+            // --- Not Found Exceptions ---
+            EntityNotFoundException => StatusCodes.Status404NotFound,
+            NotFoundException => StatusCodes.Status404NotFound, 
 
-            KeyNotFoundException
-                => StatusCodes.Status404NotFound,
+            // --- Domain Logic & Business Rules (400 Bad Request) ---
+            InvalidShipmentStateException => StatusCodes.Status400BadRequest,
+            TripPlanningException => StatusCodes.Status400BadRequest,
+            DomainArgumentException => StatusCodes.Status400BadRequest, 
+            DomainArgumentOutOfRangeException => StatusCodes.Status400BadRequest, 
+            DomainOperationException => StatusCodes.Status400BadRequest, 
+            InvalidCarrierStatusException => StatusCodes.Status400BadRequest,
+            ShipmentNotAssignedException => StatusCodes.Status400BadRequest, 
 
-            EntityNotFoundException
-                => StatusCodes.Status404NotFound,
+            // --- Conflicts (409 Conflict) ---
+            DuplicateShipmentInTripException => StatusCodes.Status409Conflict,
+            SameWarehouseManagerException => StatusCodes.Status409Conflict, 
+            WarehouseAlreadyHasManagerException => StatusCodes.Status409Conflict, 
 
-            InvalidShipmentStateException
-                => StatusCodes.Status400BadRequest,
+            // --- Unprocessable Entity (422) ---
+            VehicleCapacityExceededException => StatusCodes.Status422UnprocessableEntity,
 
-            TripPlanningException
-                => StatusCodes.Status400BadRequest,
+            // --- Authentication / Tokens ---
+            ReusedRefreshTokenException => StatusCodes.Status403Forbidden,
+            InvalidRefreshTokenException => StatusCodes.Status401Unauthorized, 
+            RefreshTokenNotFoundException => StatusCodes.Status401Unauthorized, 
+            RevokingRefreshTokenException => StatusCodes.Status400BadRequest, 
 
-            DuplicateShipmentInTripException
-                => StatusCodes.Status409Conflict,
 
-            VehicleCapacityExceededException
-                => StatusCodes.Status422UnprocessableEntity,
-
-            ReusedRefreshTokenException
-                => StatusCodes.Status403Forbidden,
-
-            TimeoutException
-                => StatusCodes.Status504GatewayTimeout,
-
+            // --- Fallback ---
             _ => StatusCodes.Status500InternalServerError
         };
     }
@@ -86,7 +91,6 @@ internal sealed class GlobalExceptionHandler(
     private static void EnrichProblemDetails(ProblemDetails problemDetails, Exception exception)
     {
         AddDomainExceptionMetadata(problemDetails, exception);
-
 
         AddValidationErrors(problemDetails, exception);
         problemDetails.Extensions["traceId"] = Activity.Current?.Id ?? Guid.NewGuid().ToString();

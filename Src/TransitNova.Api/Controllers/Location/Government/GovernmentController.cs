@@ -22,7 +22,7 @@ namespace TransitNova.Api.Controllers.Location.Government
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Government")]
+        [EndpointName("Get public Government")]
         [EndpointSummary("Get government details")]
         [EndpointDescription("Returns government details by government identifier.")]
         public async Task<IActionResult> GovernmentAsync(int governmentId, CancellationToken ct)
@@ -38,7 +38,7 @@ namespace TransitNova.Api.Controllers.Location.Government
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Governments")]
+        [EndpointName("Get public Governments")]
         [EndpointSummary("Get all governments")]
         [EndpointDescription("Returns all governments in the system.")]
         public async Task<IActionResult> GovernmentsAsync(CancellationToken ct)

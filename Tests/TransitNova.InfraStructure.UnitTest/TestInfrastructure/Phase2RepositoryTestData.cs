@@ -52,14 +52,49 @@ internal static class Phase2RepositoryTestData
         SqliteAppDbContextFixture fixture, string name = "Central Hub", Zone? zone = null)
     {
         await EnsureSqliteRowVersionDefaultAsync(fixture, "Warehouses");
+        var manager = await AddWarehouseManagerAsync(fixture);
         var warehouse = Warehouse.Create(
-            name, WarehouseType.MainWarehouse, 1_000m, 100m, 24, "Cairo", Guid.NewGuid(), Guid.NewGuid());
+            name, WarehouseType.MainWarehouse, 1_000m, 100m, 24, "Cairo", Guid.NewGuid(), manager.Id);
         typeof(Warehouse).GetProperty(nameof(Warehouse.RowVersion))!.SetValue(warehouse, new byte[] { 1 });
         if (zone is not null)
             warehouse.AddZone(zone);
         fixture.Context.Warehouses.Add(warehouse);
         await fixture.Context.SaveChangesAsync();
         return warehouse;
+    }
+
+    private static async Task<WarehouseManagerProfile> AddWarehouseManagerAsync(
+        SqliteAppDbContextFixture fixture)
+    {
+        var suffix = Guid.NewGuid().ToString("N")[..8];
+        var location = await AddLocationAsync(fixture, $"Manager {suffix}");
+        var appUser = new AppUser
+        {
+            Id = Guid.NewGuid(),
+            UserName = $"warehouse-manager-{suffix}",
+            NormalizedUserName = $"WAREHOUSE-MANAGER-{suffix}".ToUpperInvariant(),
+            Email = $"warehouse-manager-{suffix}@example.com",
+            NormalizedEmail = $"WAREHOUSE-MANAGER-{suffix}@EXAMPLE.COM".ToUpperInvariant(),
+            SecurityStamp = Guid.NewGuid().ToString(),
+            ConcurrencyStamp = Guid.NewGuid().ToString(),
+            UserType = UserType.WarehouseManager
+        };
+
+        fixture.Context.AppUsers.Add(appUser);
+        await fixture.Context.SaveChangesAsync();
+
+        var manager = WarehouseManagerProfile.Create(
+            appUser.Id,
+            "Warehouse",
+            $"Manager {suffix}",
+            appUser.Email!,
+            "01000000001",
+            "Cairo",
+            location.City.Id);
+
+        fixture.Context.WarehouseManagersProfiles.Add(manager);
+        await fixture.Context.SaveChangesAsync();
+        return manager;
     }
 
     internal static async Task<(AppUser AppUser, UserProfile Profile)> AddUserAsync(

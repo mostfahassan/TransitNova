@@ -34,6 +34,9 @@ namespace TransitNova.Api.Controllers.WarehouseManager.WarehouseManagerDashboard
             var response = await mediator.Send(new GetWarehouseManagerDashboardQuery(managerId), ct);
             return response.ToActionResult();
         }
+
+
+
         [Authorize(Policy = WarehouseManagerPermissions.Update)]
         [EnableRateLimiting("CommandsLimiter")]
         [HttpPut("update")]

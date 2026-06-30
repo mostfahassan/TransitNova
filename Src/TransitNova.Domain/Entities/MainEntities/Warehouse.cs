@@ -53,12 +53,12 @@ namespace TransitNova.Domain.Entities.MainEntities
         {
             Validate(name, capacity, currentUsage, operatingHours, address);
             EnsureNotSameManager(managerId);
-            Name = name ?? Name;
+            Name = name?.Trim() ?? Name;
             Type = type ?? Type;
             Capacity = capacity ?? Capacity;
             CurrentUsage = currentUsage ?? CurrentUsage;
             OperatingHours = operatingHours ?? OperatingHours;
-            Address = address ?? Address;
+            Address = address?.Trim() ?? Address;
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = updatedBy.ToString();
             ManagerId = managerId ?? ManagerId;

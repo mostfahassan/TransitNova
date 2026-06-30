@@ -14,7 +14,7 @@ namespace TransitNova.Api.Controllers.Admin.Location
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/admin/cities")]
     [Tags("Admin Cities")]
-    public sealed class CitiesController(IMediator mediator) : ControllerBase
+    public sealed class CityController(IMediator mediator) : ControllerBase
     {
         [EnableRateLimiting("CommandsLimiter")]
         [HttpPost]
@@ -83,7 +83,7 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get City")]
+        [EndpointName("Get Admin City")]
         [EndpointSummary("Get city details")]
         [EndpointDescription("Returns city details by city identifier.")]
         public async Task<IActionResult> CityAsync(int cityId, CancellationToken ct)
@@ -99,7 +99,7 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Cities")]
+        [EndpointName("Get Admin Cities")]
         [EndpointSummary("Get cities")]
         [EndpointDescription("Returns paginated cities using the provided filter criteria.")]
         public async Task<IActionResult> CitiesAsync([FromQuery] CityFilterDto filter, CancellationToken ct)

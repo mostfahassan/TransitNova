@@ -58,7 +58,7 @@ public sealed class CarrierRatingWorkflowPhase2Tests
             .Returns(Task.CompletedTask);
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
         captured!.CarrierId.Should().Be(fixture.Dto.CarrierId);
-        captured.ShipmentId.Should().Be(fixture.Command.shipmentId);
+        captured.ShipmentId.Should().Be(fixture.Command.ShipmentId);
         captured.CustomerId.Should().Be(fixture.Command.AppUserId);
     }
 
@@ -159,7 +159,7 @@ public sealed class CarrierRatingWorkflowPhase2Tests
             Dto = new RatingCarrierDto(Carrier.Id, "Careful handling", 5);
             Command = new RatePickupCarrierCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Dto);
             ShipmentRules.Setup(x => x.CanRatePickupCarrierAsync(
-                    Command.shipmentId, Carrier.Id, Command.AppUserId, It.IsAny<CancellationToken>()))
+                    Command.ShipmentId, Carrier.Id, Command.AppUserId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
             Carriers.Setup(x => x.GetCarrierAsync(
                     It.IsAny<Expression<Func<Carrier, bool>>>(), It.IsAny<CancellationToken>()))
@@ -188,7 +188,7 @@ public sealed class CarrierRatingWorkflowPhase2Tests
             Dto = new RatingCarrierDto(Carrier.Id, "Fast delivery", 4);
             Command = new RateDeliveryCarrierCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Dto);
             ShipmentRules.Setup(x => x.CanRateDeliveryCarrierAsync(
-                    Command.shipmentId, Carrier.Id, Command.AppUserId, It.IsAny<CancellationToken>()))
+                    Command.ShipmentId, Carrier.Id, Command.AppUserId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
             Carriers.Setup(x => x.GetCarrierAsync(
                     It.IsAny<Expression<Func<Carrier, bool>>>(), It.IsAny<CancellationToken>()))

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.Carriers.Queries.Carrier;
 using TransitNova.BusinessLayer.Features.Carriers.Queries.Shipment;
-using TransitNova.BusinessLayer.Features.OperationManagerService.Queries;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Carriers;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
@@ -16,7 +15,7 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.CarrierQueries
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/operation-managers/carriers")]
     [Tags("Operation Manager Carriers")]
-    public class OperationManagerCarrierController(IMediator mediator,IAuthorizationService authorizationService) : ControllerBase
+    public class OperationManagerCarrierController(IMediator mediator) : ControllerBase
     {
         
         [Authorize(Policy = OperationManagerPermissions.ViewCarriers)]
@@ -103,13 +102,10 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.CarrierQueries
 
         private async Task<bool> IsCarrierOwnerAsync(Guid carrierId)
         {
-            var authorizationResult =
-                await authorizationService.AuthorizeAsync(
-                    User,
-                    carrierId,
-                    CarrierPermissions.IsCarrierOwner);
-
+            var authorizationService = HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, carrierId, CarrierPermissions.IsCarrierOwner);
             return authorizationResult.Succeeded;
+
         }
     }
 }

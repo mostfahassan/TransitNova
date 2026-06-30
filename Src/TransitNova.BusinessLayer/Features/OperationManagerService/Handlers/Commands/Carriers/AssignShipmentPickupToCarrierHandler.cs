@@ -4,7 +4,7 @@ using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Commands.Carriers;
-using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
+using TransitNova.BusinessLayer.Common.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.ShipmentAssignmentServices;

@@ -1,7 +1,7 @@
 ﻿
 using MediatR;
+using TransitNova.BusinessLayer.Common.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Common.ResultPattern;
-using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.Domain.Contracts.Caching;
 namespace TransitNova.BusinessLayer.Common.Behaviors

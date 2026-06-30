@@ -1,6 +1,6 @@
 ﻿namespace TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork:IDisposable
 
     {   
        Task<int> SaveChangesAsync(CancellationToken ct);

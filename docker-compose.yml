@@ -18,6 +18,10 @@ services:
     networks:
       - transitnova
 
+
+
+
+
   transitnova_api:
     build:
       context: .
@@ -43,6 +47,10 @@ services:
     networks:
       - transitnova
 
+
+
+
+
   transitnova-payment:
     build:
       context: .
@@ -62,6 +70,10 @@ services:
         condition: service_healthy
     networks:
       - transitnova
+
+
+
+
 
   transitnova-ui:
     build:

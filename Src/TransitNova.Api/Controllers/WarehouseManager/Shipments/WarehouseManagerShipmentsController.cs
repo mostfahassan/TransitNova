@@ -54,8 +54,6 @@ namespace TransitNova.Api.Controllers.WarehouseManager.Shipments
         }
 
 
-
-
         private async Task<bool> IsWrehouseManagerAsync(Guid warehouseId)
         {
             var authorizationService = HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();

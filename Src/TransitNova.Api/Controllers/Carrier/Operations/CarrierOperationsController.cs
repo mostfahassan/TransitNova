@@ -6,7 +6,6 @@ using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.Carriers.Commands;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
-using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Api.Infrastructure.Idempotency;
 namespace TransitNova.Api.Controllers.Carrier.Operations
 {
@@ -16,7 +15,7 @@ namespace TransitNova.Api.Controllers.Carrier.Operations
     [ApiController]
     [ApiVersion("1.0")]
     [Tags("Carrier Operations")]
-    public class CarrierOperationsController(IMediator mediator,IAuthorizationService authorizationService) : ControllerBase
+    public class CarrierOperationsController(IMediator mediator) : ControllerBase
     {
         [Authorize(Policy = CarrierPermissions.CanUpdateStatus)]
         [EnableRateLimiting("CommandsLimiter")]
@@ -87,12 +86,8 @@ namespace TransitNova.Api.Controllers.Carrier.Operations
         }
         private async Task<bool> IsCarrierOwnerAsync(Guid carrierId)
         {
-            var authorizationResult =
-                await authorizationService.AuthorizeAsync(
-                    User,
-                    carrierId,
-                    CarrierPermissions.IsCarrierOwner);
-
+            var authorizationService = HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, carrierId, CarrierPermissions.IsCarrierOwner);
             return authorizationResult.Succeeded;
         }
     }

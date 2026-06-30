@@ -7,7 +7,7 @@ using TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.Comma
 using TransitNova.Domain.Contracts.Roles;
 namespace TransitNova.Api.Controllers.Account
 {
-    [Route("api/auth")]
+    [Route("api/v{version:apiVersion}/auth")]
     [ApiController]
     [Tags("Authentication")]
     public sealed class AuthenticationController(IMediator mediator) : ControllerBase
@@ -29,7 +29,6 @@ namespace TransitNova.Api.Controllers.Account
             return response.ToActionResult();
         }
 
-
         [EnableRateLimiting("CommandsLimiter")]
         [HttpPost("login")]
         [AllowAnonymous]
@@ -42,8 +41,6 @@ namespace TransitNova.Api.Controllers.Account
         [EndpointDescription("Authenticates a user using valid credentials and returns the authentication tokens and account information.")]
         public async Task<IActionResult> LoginAsync( LoginDto login, CancellationToken ct)
         {
-            
-
             var response = await mediator.Send(new LoginCommand(login), ct);
             return response.ToActionResult();
         }
@@ -78,8 +75,6 @@ namespace TransitNova.Api.Controllers.Account
         [EndpointDescription("Terminates the current authenticated session and invalidates the user's active authentication context.")]
         public async Task<IActionResult> SignOutAsync(CancellationToken ct)
         {
-          
-
             var response = await mediator.Send(new SignOutCommand(), ct);
             return response.ToActionResult();
         }

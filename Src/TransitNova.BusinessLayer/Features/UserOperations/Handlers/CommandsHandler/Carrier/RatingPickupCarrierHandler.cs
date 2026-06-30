@@ -23,7 +23,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
         public async Task<BaseResult> Handle(RatePickupCarrierCommand request, CancellationToken cancellationToken)
         {
             // ==== Check If Carrier Related To Sender And Carrier Picked Up The Shipment
-            var canRate = await shipmentRepo.CanRatePickupCarrierAsync(request.shipmentId, request.Dto.CarrierId, request.AppUserId, cancellationToken);
+            var canRate = await shipmentRepo.CanRatePickupCarrierAsync(request.ShipmentId, request.Dto.CarrierId, request.AppUserId, cancellationToken);
 
             if (!canRate)
             {
@@ -31,7 +31,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
                     "User {UserId} attempted to rate pickup carrier {CarrierId} for shipment {ShipmentId} but validation failed",
                     request.AppUserId,
                     request.Dto.CarrierId,
-                    request.shipmentId);
+                    request.ShipmentId);
 
                 return BaseResult.Failure(Errors.FailedOperation("User Cant Rate The Shipment"));
             }
@@ -45,7 +45,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
                     "Pickup carrier {CarrierId} was not found while user {UserId} attempted to submit a rating for shipment {ShipmentId}",
                     request.Dto.CarrierId,
                     request.AppUserId,
-                    request.shipmentId);
+                    request.ShipmentId);
 
                 return BaseResult.NotFound(Errors.CarrierNotFound("Rated Carrier Not Found"));
             }
@@ -56,7 +56,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             // ==== Create Rating Record
             var rating = CarrierRating.Create(
                 request.Dto.CarrierId,
-                request.shipmentId,
+                request.ShipmentId,
                 request.AppUserId,
                 request.Dto.Rating,
                 request.Dto.Comment);
@@ -71,7 +71,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
                 request.AppUserId,
                 request.Dto.CarrierId,
                 request.Dto.Rating,
-                request.shipmentId);
+                request.ShipmentId);
             CacheInvalidationContext.Set(
                 request,
                 CacheKeys.Carriers.Profile(request.Dto.CarrierId),

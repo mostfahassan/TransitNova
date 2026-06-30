@@ -87,7 +87,6 @@ namespace TransitNova.Api.Controllers.Admin.RolesManagement
         [EndpointDescription("Creates a new role in the system.")]
         public async Task<IActionResult> CreateRoleAsync([IdempotencyKey] Guid requestId, [FromBody] RoleNameDto dto, CancellationToken ct)
         {
-
             var response = await mediator.Send(new CreateRoleCommand(requestId, dto.RoleName), ct);
             return response.ToActionResult();
         }
@@ -109,7 +108,6 @@ namespace TransitNova.Api.Controllers.Admin.RolesManagement
         [EndpointDescription("Updates the name of an existing role.")]
         public async Task<IActionResult> UpdateRoleAsync([IdempotencyKey] Guid requestId, Guid roleId, [FromBody] RoleNameDto dto, CancellationToken ct)
         {
-
             var response = await mediator.Send(new UpdateRoleCommand(requestId, roleId, dto.RoleName), ct);
             return response.ToActionResult();
         }
@@ -151,8 +149,7 @@ namespace TransitNova.Api.Controllers.Admin.RolesManagement
         public async Task<IActionResult> UpdateRoleMembersAsync([IdempotencyKey] Guid requestId, Guid roleId, [FromBody] UpdateRoleMembersDto dto, CancellationToken ct)
         {
 
-            var response = await mediator.Send(
-                new UpdateRoleMembersCommand(requestId, roleId, dto.Users), ct);
+            var response = await mediator.Send(new UpdateRoleMembersCommand(requestId, roleId, dto.Users), ct);
             return response.ToActionResult();
         }
     }

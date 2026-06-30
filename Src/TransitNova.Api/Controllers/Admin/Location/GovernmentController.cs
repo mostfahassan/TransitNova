@@ -14,7 +14,7 @@ namespace TransitNova.Api.Controllers.Admin.Location
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/admin/governments")]
     [Tags("Admin Governments")]
-    public sealed class GovernmentsController(IMediator mediator) : ControllerBase
+    public sealed class GovernmentController(IMediator mediator) : ControllerBase
     {
         [EnableRateLimiting("CommandsLimiter")]
         [HttpPost]
@@ -85,7 +85,7 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Government")]
+        [EndpointName("Get Admin Government")]
         [EndpointSummary("Get government details")]
         [EndpointDescription("Returns government details by government identifier.")]
         public async Task<IActionResult> GovernmentAsync(int governmentId, CancellationToken ct)
@@ -101,7 +101,7 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Governments")]
+        [EndpointName("Get Admin Governments")]
         [EndpointSummary("Get all governments")]
         [EndpointDescription("Returns all governments in the system.")]
         public async Task<IActionResult> GovernmentsAsync(CancellationToken ct)

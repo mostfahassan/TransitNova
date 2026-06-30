@@ -4,8 +4,8 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Payment;
-using TransitNova.BusinessLayer.Interfaces.PaymentService;
 using TransitNova.BusinessLayer.Options;
+using TransitNova.BusinessLayer.Interfaces.Services.PaymentService;
 namespace TransitNova.BusinessLayer.Services.PaymentServices
 {
     internal class PaymentService(HttpClient client, ILogger<PaymentService> logger, IOptions<PaymentSettings> paymentOptions) : IPaymentService
@@ -79,7 +79,8 @@ namespace TransitNova.BusinessLayer.Services.PaymentServices
                 throw new InvalidOperationException(
                     "Payment service base URL is not configured.");
             }
-            HttpRequestMessage request = new(HttpMethod.Post, $"{settings.BaseUrl}/api/payments/pay");
+            var baseUrl = settings.BaseUrl.TrimEnd('/');
+            HttpRequestMessage request = new(HttpMethod.Post, $"{baseUrl}/api/v1/payments/pay");
             request.Content = JsonContent.Create(dto);
             request.Headers.Add("X-PaymentKey", settings.PublicKey);
 

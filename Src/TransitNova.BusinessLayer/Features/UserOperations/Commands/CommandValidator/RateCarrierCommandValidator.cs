@@ -13,7 +13,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Commands.CommandVali
                 .NotEmpty()
                 .WithErrorCode($"{ErrorCode.REQUIRED_FIELD}");
             
-            RuleFor(x => x.shipmentId)
+            RuleFor(x => x.ShipmentId)
                 .NotEmpty()
                 .WithErrorCode($"{ErrorCode.REQUIRED_FIELD}");
 

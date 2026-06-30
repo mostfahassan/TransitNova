@@ -16,7 +16,6 @@ namespace TransitNova.InfraStructure.Repository.TokenRepository
                 UserId = userId,
                 ExpiresAt = DateTime.UtcNow.AddDays(3)
             };
-     
             await context.RefreshTokens.AddAsync(refreshDto, ct);
         }
 
@@ -29,6 +28,10 @@ namespace TransitNova.InfraStructure.Repository.TokenRepository
                     UserId = rt.UserId,
                     User = rt.User != null ? new AppUserDto
                     {
+                        Id = rt.UserId,
+                        UserName = rt.User.UserName,
+                        Email = rt.User.Email,
+                        PhoneNumber  = rt.User.PhoneNumber,
                         UserType = rt.User.UserType,
                     } : null,
                     ExpiresOn = rt.ExpiresAt,
@@ -37,7 +40,7 @@ namespace TransitNova.InfraStructure.Repository.TokenRepository
                 }).FirstOrDefaultAsync(ct);
 
         public async Task<bool> UserOwnsRefreshTokenAsync(Guid userId, string token, CancellationToken cancellationToken)
-          => await context.RefreshTokens.AnyAsync(t => t.UserId == userId && t.Token == token);
+          => await context.RefreshTokens.AnyAsync(t => t.UserId == userId && t.Token == token,cancellationToken);
         public async Task<int> RevokeAllUserTokenAsync(Guid userId, CancellationToken ct)
             => await context.RefreshTokens.Where(rt => rt.UserId == userId)
              .ExecuteDeleteAsync(ct);
@@ -49,7 +52,5 @@ namespace TransitNova.InfraStructure.Repository.TokenRepository
                   .SetProperty(r => r.RevokedAt, DateTime.UtcNow)
                   .SetProperty(r => r.IsRevoked, true)
                   .SetProperty(r => r.ReplacedByToken, newToken), ct);
-
-
     }
 }

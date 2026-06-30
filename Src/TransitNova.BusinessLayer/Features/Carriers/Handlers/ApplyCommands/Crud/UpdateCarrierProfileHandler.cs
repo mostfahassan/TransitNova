@@ -4,7 +4,7 @@ using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.Carriers.Commands;
-using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
+using TransitNova.BusinessLayer.Common.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TransitNova.BusinessLayer.Interfaces.Repositories.NotificationRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.Notification;
-using TransitNova.InfraStructure.Common.NotificationService;
 using TransitNova.InfraStructure.Repository.Notifications;
+using TransitNova.InfraStructure.SignalR;
 namespace TransitNova.InfraStructure.ServiceRegistration.NotificationRegistration
 {
     public static class NotificationRepositoryRegistrationExtensions

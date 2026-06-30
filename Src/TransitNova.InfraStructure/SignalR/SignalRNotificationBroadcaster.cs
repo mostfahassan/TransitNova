@@ -1,8 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.SignalR;
 using TransitNova.BusinessLayer.Interfaces.Services.Notification;
-using TransitNova.InfraStructure.Common.NotificationService.NotificationHubService;
-namespace TransitNova.InfraStructure.Common.NotificationService
+using TransitNova.InfraStructure.SignalR.NotificationHubService;
+namespace TransitNova.InfraStructure.SignalR
 {
     internal class SignalRNotificationBroadcaster(
     IHubContext<NotificationHub> hubContext) : INotificationBroadcaster

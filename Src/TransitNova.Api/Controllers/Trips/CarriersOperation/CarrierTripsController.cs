@@ -13,7 +13,7 @@ namespace TransitNova.Api.Controllers.Trips.CarriersOperation
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/carriers")]
     [Tags("Operation Manager Trips")]
-    public class CarrierTripsController(IMediator mediator, IAuthorizationService authorizationService) : ControllerBase
+    public class CarrierTripsController(IMediator mediator) : ControllerBase
     {
 
         [EnableRateLimiting("DefaultRateLimiter")]
@@ -55,12 +55,8 @@ namespace TransitNova.Api.Controllers.Trips.CarriersOperation
         }
         private async Task<bool> IsCarrierOwnerAsync(Guid carrierId)
         {
-            var authorizationResult =
-                await authorizationService.AuthorizeAsync(
-                    User,
-                    carrierId,
-                    CarrierPermissions.IsCarrierOwner);
-
+            var authorizationService = HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, carrierId ,CarrierPermissions.IsCarrierOwner);
             return authorizationResult.Succeeded;
         }
     }

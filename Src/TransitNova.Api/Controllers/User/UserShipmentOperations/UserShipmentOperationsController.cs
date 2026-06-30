@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.DTOs.Shipment;
-using TransitNova.BusinessLayer.Features.UserOperations.Commands;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
 using TransitNova.BusinessLayer.Features.UserOperations.Queries;
 using TransitNova.Domain.Contracts.Permissions;
@@ -16,7 +15,7 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
     [ApiVersion("1.0")]
     [ApiController]
     [Tags("User Shipments Operations")]
-    public class UserShipmentOperationsController(IMediator mediator,IAuthorizationService authorizationService) : ControllerBase
+    public class UserShipmentOperationsController(IMediator mediator) : ControllerBase
     {     
         
         // PUT api/v1/shipments/{shipmentId}
@@ -149,12 +148,8 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
 
         private async Task<bool> UserOwnsShipmentAsync(Guid shipmentId)
         {
-            var authorizationResult =
-               await authorizationService.AuthorizeAsync(
-                   User,
-                   shipmentId,
-                   UserPermissions.ShipmentOwner);
-
+            var authorizationService = HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, shipmentId, UserPermissions.ShipmentOwner);
             return authorizationResult.Succeeded;
         }
 

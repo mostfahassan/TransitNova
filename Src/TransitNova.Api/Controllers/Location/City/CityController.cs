@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.DTOs.City;
 using TransitNova.BusinessLayer.Features.Location.Cities.Queries;
-using TransitNova.Domain.Contracts.Roles;
 
 namespace TransitNova.Api.Controllers.Location.City
 {
@@ -23,7 +22,7 @@ namespace TransitNova.Api.Controllers.Location.City
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get City")]
+        [EndpointName("Get Public City")]
         [EndpointSummary("Get city details")]
         [EndpointDescription("Returns city details by city identifier.")]
         public async Task<IActionResult> CityAsync(int cityId, CancellationToken ct)
@@ -39,8 +38,8 @@ namespace TransitNova.Api.Controllers.Location.City
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Cities")]
-        [EndpointSummary("Get cities")]
+        [EndpointName("Get Public Cities")]
+        [EndpointSummary("Get cities details")]
         [EndpointDescription("Returns paginated cities using the provided filter criteria.")]
         public async Task<IActionResult> CitiesAsync([FromQuery] CityFilterDto filter, CancellationToken ct)
         {

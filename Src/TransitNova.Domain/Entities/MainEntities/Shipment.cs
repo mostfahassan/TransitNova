@@ -299,7 +299,7 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         RaiseDomainEvent(new ShipmentDeliveredDomainEvent(Id, TrackingNumber));
 
     }
-    public void PickeUp(Guid carrierId)
+    public void PickedUp(Guid carrierId)
     {
         if (CurrentStatus != ShipmentStatuses.OutForPickup)
             throw new ShipmentNotAssignedException(Id, carrierId);
@@ -318,9 +318,7 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             throw new ShipmentNotAssignedException(Id, carrierId);
 
         PickupDate = DateTime.UtcNow;
-
         ChangeStatus(ShipmentStatuses.InWarehouse, carrierId);
-
         RaiseDomainEvent(new ShipmentDeliveredToWarehouseDomainEvent(Id, TrackingNumber));
     }
 
@@ -340,7 +338,6 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         RaiseDomainEvent(new ShipmentAssignedToCarrierDomainEvent(Id, TrackingNumber, newStatus));
 
     }
-
     private void EnsurePending()
     {
         if (CurrentStatus != ShipmentStatuses.Pending)

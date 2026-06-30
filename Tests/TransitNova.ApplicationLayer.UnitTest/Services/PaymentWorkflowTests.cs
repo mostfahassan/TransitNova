@@ -10,7 +10,7 @@ using TransitNova.BusinessLayer.DTOs.Payment;
 using TransitNova.BusinessLayer.Features.Payment.Command;
 using TransitNova.BusinessLayer.Features.Payment.Command.CommandValidator;
 using TransitNova.BusinessLayer.Features.Payment.Handler;
-using TransitNova.BusinessLayer.Interfaces.PaymentService;
+using TransitNova.BusinessLayer.Interfaces.Services.PaymentService;
 using TransitNova.BusinessLayer.Options;
 using TransitNova.BusinessLayer.Services.PaymentServices;
 using TransitNova.BusinessLayer.Validators.PaymentValidators;
@@ -58,7 +58,7 @@ public sealed class PaymentWorkflowTests
         result.Data.Status.Should().Be("Success");
         service.Handler.Requests.Should().ContainSingle();
         service.Handler.Requests[0].Headers.GetValues("X-PaymentKey").Should().ContainSingle("public-key");
-        service.Handler.Requests[0].RequestUri!.ToString().Should().Be("https://payments.test/api/payments/pay");
+        service.Handler.Requests[0].RequestUri!.ToString().Should().Be("https://payments.test/api/v1/payments/pay");
     }
 
     [Fact]

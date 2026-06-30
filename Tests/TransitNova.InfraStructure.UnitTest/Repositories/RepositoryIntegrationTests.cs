@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -22,6 +22,7 @@ public sealed class RepositoryIntegrationTests
         var before = DateTime.UtcNow;
 
         await repository.CreateRequestAsync(requestId, "CreateShipmentCommand", "response", CancellationToken.None);
+        await fixture.Context.SaveChangesAsync();
 
         var stored = await fixture.Context.IdempotentTableKey.AsNoTracking().SingleAsync();
         stored.RequestId.Should().Be(requestId);
@@ -38,6 +39,7 @@ public sealed class RepositoryIntegrationTests
         var repository = new IdempotentRepository(fixture.Context);
         var storedId = Guid.NewGuid();
         await repository.CreateRequestAsync(storedId, "Command", "response", CancellationToken.None);
+        await fixture.Context.SaveChangesAsync();
 
         var result = await repository.RequestExistsAsync(
             exists ? storedId : Guid.NewGuid(), CancellationToken.None);
@@ -52,25 +54,30 @@ public sealed class RepositoryIntegrationTests
         var repository = new IdempotentRepository(fixture.Context);
         var requestId = Guid.NewGuid();
         await repository.CreateRequestAsync(requestId, "FirstCommand", "response", CancellationToken.None);
+        await fixture.Context.SaveChangesAsync();
         fixture.Context.ChangeTracker.Clear();
 
-        var act = () => repository.CreateRequestAsync(requestId, "SecondCommand", "response", CancellationToken.None);
+        Func<Task> act = async () =>
+        {
+            await repository.CreateRequestAsync(requestId, "SecondCommand", "response", CancellationToken.None);
+            await fixture.Context.SaveChangesAsync();
+        };
 
         await act.Should().ThrowAsync<DbUpdateException>();
     }
 
     [Fact]
-    public async Task IdempotentRepository_CancelledToken_Should_ThrowWithoutPersistingAsync()
+    public async Task IdempotentRepository_CreateRequest_Should_TrackWithoutSavingImplicitlyAsync()
     {
         await using var fixture = await SqliteAppDbContextFixture.CreateAsync();
         var repository = new IdempotentRepository(fixture.Context);
-        using var cancellation = new CancellationTokenSource();
-        cancellation.Cancel();
 
-        var act = () => repository.CreateRequestAsync(
-            Guid.NewGuid(), "Command","response" ,cancellation.Token);
+        await repository.CreateRequestAsync(
+            Guid.NewGuid(), "Command", "response", CancellationToken.None);
 
-        await act.Should().ThrowAsync<OperationCanceledException>();
+        fixture.Context.ChangeTracker.Entries<IdempotentTable>()
+            .Should()
+            .ContainSingle(entry => entry.State == EntityState.Added);
         (await fixture.Context.IdempotentTableKey.AsNoTracking().CountAsync()).Should().Be(0);
     }
 

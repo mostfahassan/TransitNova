@@ -1,8 +1,6 @@
-using System;
-namespace TransitNova.Domain.DomainExceptions
-{
 
-    
+namespace TransitNova.Domain.DomainExceptions
+{  
     public class RefreshTokenNotFoundException : DomainException
     {
         public RefreshTokenNotFoundException()

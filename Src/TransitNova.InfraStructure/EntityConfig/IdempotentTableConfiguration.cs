@@ -13,6 +13,7 @@ namespace TransitNova.InfraStructure.EntityConfig
                 .IsRequired()
                 .HasMaxLength(30);
 
+            idempotent.HasIndex(i => i.RequestId).IsUnique();
             idempotent.HasIndex(p => p.InstanceName);
             idempotent.HasIndex(p => p.CreatedAt);
             idempotent.HasIndex(p => new { p.InstanceName, p.CreatedAt });

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Common.ResultPattern;
-using TransitNova.BusinessLayer.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 
 namespace TransitNova.BusinessLayer.Common.Behaviors

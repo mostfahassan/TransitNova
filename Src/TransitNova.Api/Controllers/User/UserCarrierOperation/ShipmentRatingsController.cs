@@ -14,7 +14,7 @@ namespace TransitNova.Api.Controllers.User.UserCarrierOperation
     [ApiController]
     [ApiVersion("1.0")]
     [Tags("User Shipment Ratings")]
-    public sealed class ShipmentRatingsController(IMediator mediator,IAuthorizationService authorizationService) : ControllerBase
+    public sealed class ShipmentRatingsController(IMediator mediator) : ControllerBase
     {
 
         [Authorize(Policy = UserPermissions.CanRatePickupCarrier)]
@@ -75,12 +75,8 @@ namespace TransitNova.Api.Controllers.User.UserCarrierOperation
 
         private async Task<bool> UserOwnsShipmentAsync(Guid shipmentId)
         {
-            var authorizationResult =
-               await authorizationService.AuthorizeAsync(
-                   User,
-                   shipmentId,
-                   UserPermissions.ShipmentOwner);
-
+            var authorizationService = HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, shipmentId, UserPermissions.ShipmentOwner);
             return authorizationResult.Succeeded;
         }
     }
