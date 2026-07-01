@@ -1,4 +1,5 @@
 using TransitNova.BusinessLayer.DTOs.Shipment;
+using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNovaUI.BusinessLayer.Common.CommonData;
 namespace TransitNovaUI.BusinessLayer.DTOs.Shipment;
@@ -13,9 +14,21 @@ public sealed record UiCreateShipmentDto(
     string DeliveryAddress,
     string PickupAddress,
     Guid? PackageBundleId,
-    Guid PaymentId
+    Guid PaymentId,
+    PaymentMethod PaymentMethod
     )
 {
-  
-
+    public static CreateShipmentDto ToDto(UiCreateShipmentDto source) =>
+        new(
+            UiCreateReceiverDto.ToDto(source.Receiver),
+            UiPackageSpecificationRequestDto.ToDto(source.PackageSpecification),
+            source.Currency,
+            source.PickUpDate,
+            source.TransportationMode,
+            source.ShipmentDeliveryType,
+            source.DeliveryAddress,
+            source.PickupAddress,
+            source.PackageBundleId,
+            source.PaymentId,
+            source.PaymentMethod);
 }

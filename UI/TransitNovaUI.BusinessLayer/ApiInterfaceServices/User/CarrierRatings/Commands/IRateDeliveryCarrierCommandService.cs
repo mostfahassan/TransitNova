@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.CarrierRatings.C
 
 public interface IRateDeliveryCarrierCommandService
 {
-    const string HttpMethod = "POST";
-    const string Route = "api/v{version:apiVersion}/shipments/{shipmentId:guid}/rate-delivery-carrier";
-
-    Task<ApiResponse> RateDeliveryCarrierAsync(Guid shipmentId, UiRatingCarrierDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> RateDeliveryCarrierAsync(Guid shipmentId, UiRatingCarrierDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

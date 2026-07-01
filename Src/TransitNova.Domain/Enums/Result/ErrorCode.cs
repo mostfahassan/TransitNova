@@ -31,6 +31,7 @@ namespace TransitNova.Domain.Enums.Result
         INVALID_CARRIER_STATUS,
         NO_CARRIER_WAREHOUSE_FOUND,
         REFRESH_TOKEN_NOT_FOUND,
+        VEHICLE_NOT_FOUND,
         REFRESH_TOKEN_NOT_VALID
     }
 }

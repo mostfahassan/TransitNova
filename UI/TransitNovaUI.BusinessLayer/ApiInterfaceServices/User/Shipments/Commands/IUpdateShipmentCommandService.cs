@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Comman
 
 public interface IUpdateShipmentCommandService
 {
-    const string HttpMethod = "PUT";
-    const string Route = "api/v{version:apiVersion}/shipments/{shipmentId:guid}";
-
-    Task<ApiResponse> UpdateShipmentAsync(Guid shipmentId, UiUpdateShipmentDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> UpdateShipmentAsync(Guid shipmentId, UiUpdateShipmentDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

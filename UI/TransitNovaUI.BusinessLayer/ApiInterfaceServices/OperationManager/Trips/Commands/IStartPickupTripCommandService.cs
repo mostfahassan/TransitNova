@@ -2,8 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Trip
 
 public interface IStartPickupTripCommandService
 {
-    const string HttpMethod = "PATCH";
-    const string Route = "api/v{version:apiVersion}/operation-managers/trips/{carrierId:guid}/start-pickup";
-
-    Task<ApiResponse> StartPickupTripAsync(Guid carrierId, CancellationToken cancellationToken = default);
+    Task<ApiResponse> StartPickupTripAsync(Guid carrierId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
+

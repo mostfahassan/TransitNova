@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Authentication.Comman
 
 public interface ILoginCommandService
 {
-    const string HttpMethod = "POST";
-    const string Route = "api/auth/login";
-
-    Task<ApiResponse<UiAuthResponseDto>> LoginAsync(UiLoginDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiAuthResponseDto>> LoginAsync(UiLoginDto model, CancellationToken cancellationToken = default);
 }
 

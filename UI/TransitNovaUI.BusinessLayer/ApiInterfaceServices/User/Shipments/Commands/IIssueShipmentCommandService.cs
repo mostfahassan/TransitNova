@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Comman
 
 public interface IIssueShipmentCommandService
 {
-    const string HttpMethod = "PATCH";
-    const string Route = "api/v{version:apiVersion}/shipments/{shipmentId:guid}/issue";
-
-    Task<ApiResponse> IssueShipmentAsync(Guid shipmentId, UiIssueShipmentReason request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> IssueShipmentAsync(Guid shipmentId, UiIssueShipmentReason model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

@@ -2,8 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Carriers.Comman
 
 public interface IDeleteCarrierCommandService
 {
-    const string HttpMethod = "DELETE";
-    const string Route = "api/v{version:apiVersion}/admin/carriers/{id:guid}";
-
-    Task<ApiResponse> DeleteCarrierAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<ApiResponse> DeleteCarrierAsync(Guid id, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
+

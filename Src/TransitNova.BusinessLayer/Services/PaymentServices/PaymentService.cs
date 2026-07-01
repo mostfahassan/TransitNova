@@ -83,7 +83,6 @@ namespace TransitNova.BusinessLayer.Services.PaymentServices
             HttpRequestMessage request = new(HttpMethod.Post, $"{baseUrl}/api/v1/payments/pay");
             request.Content = JsonContent.Create(dto);
             request.Headers.Add("X-PaymentKey", settings.PublicKey);
-
             return request;
         }
 

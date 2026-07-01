@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Bundles.Command
 
 public interface IUpdateBundleCommandService
 {
-    const string HttpMethod = "PUT";
-    const string Route = "api/v{version:apiVersion}/admin/bundles";
-
-    Task<ApiResponse> UpdateBundleAsync(UiUpdateBundleDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> UpdateBundleAsync(UiUpdateBundleDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

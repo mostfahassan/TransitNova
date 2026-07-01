@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Warehouses.Comm
 
 public interface IUpdateWarehouseCommandService
 {
-    const string HttpMethod = "PUT";
-    const string Route = "api/v{version:apiVersion}/admin/warehouses/{warehouseId:guid}";
-
-    Task<ApiResponse> UpdateWarehouseAsync(Guid warehouseId, UiUpdateWarehouseDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> UpdateWarehouseAsync(Guid warehouseId, UiUpdateWarehouseDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

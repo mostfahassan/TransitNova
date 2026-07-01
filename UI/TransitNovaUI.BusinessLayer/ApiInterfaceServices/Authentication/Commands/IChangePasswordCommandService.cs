@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Authentication.Comman
 
 public interface IChangePasswordCommandService
 {
-    const string HttpMethod = "PUT";
-    const string Route = "api/auth/change-password";
-
-    Task<ApiResponse> ChangePasswordAsync(UiChangePasswordDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> ChangePasswordAsync(UiChangePasswordDto model,string bearerToken, CancellationToken cancellationToken = default);
 }
 

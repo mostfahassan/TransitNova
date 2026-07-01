@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Governments.Com
 
 public interface IUpdateGovernmentCommandService
 {
-    const string HttpMethod = "PUT";
-    const string Route = "api/v{version:apiVersion}/admin/governments/{governmentId:int}";
-
-    Task<ApiResponse> UpdateGovernmentAsync(int governmentId, UiUpdateGovernmentDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> UpdateGovernmentAsync(int governmentId, UiUpdateGovernmentDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Profile.Queries;
 
 public interface IGetUserDashboardQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/user/dashboard";
-
-    Task<ApiResponse<UiProfileDashboardDto>> GetUserDashboardAsync(CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiProfileDashboardDto>> GetUserDashboardAsync(string bearerToken, CancellationToken cancellationToken = default);
 }
 

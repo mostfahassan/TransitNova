@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Shipments.Com
 
 public interface IUpdateCarrierStatusCommandService
 {
-    const string HttpMethod = "PATCH";
-    const string Route = "api/v{version:apiVersion}/carriers/{carrierId:guid}/status";
-
-    Task<ApiResponse> UpdateCarrierStatusAsync(Guid carrierId, UiChangeCarrierStatusDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> UpdateCarrierStatusAsync(Guid carrierId, UiChangeCarrierStatusDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

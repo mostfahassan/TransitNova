@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Vehicles.Comman
 
 public interface IDeleteVehicleCommandService
 {
-    const string HttpMethod = "DELETE";
-    const string Route = "api/v{version:apiVersion}/admin/vehicles/{vehicleId:guid}";
-
-    Task<ApiResponse> DeleteVehicleAsync(Guid vehicleId, CancellationToken cancellationToken = default);
+    Task<ApiResponse> DeleteVehicleAsync(Guid vehicleId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

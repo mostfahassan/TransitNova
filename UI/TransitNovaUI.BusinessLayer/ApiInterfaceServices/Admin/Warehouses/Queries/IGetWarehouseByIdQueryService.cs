@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Warehouses.Quer
 
 public interface IGetWarehouseByIdQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/admin/warehouses/{warehouseId:guid}";
-
-    Task<ApiResponse<UiWarehouseDto?>> GetWarehouseByIdAsync(Guid warehouseId, CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiWarehouseDto?>> GetWarehouseByIdAsync(Guid warehouseId, string bearerToken, CancellationToken cancellationToken = default);
 }
 

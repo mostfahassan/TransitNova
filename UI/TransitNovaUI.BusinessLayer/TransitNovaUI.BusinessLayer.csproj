@@ -5,7 +5,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ApiServices\**" />
+    <EmbeddedResource Remove="ApiServices\**" />
+    <None Remove="ApiServices\**" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\Src\TransitNova.BusinessLayer\TransitNova.BusinessLayer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ApiImplementation\Admin\Bundles\Query\" />
   </ItemGroup>
 
 </Project>

@@ -17,7 +17,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.Com
     {
         public async Task<BaseResult> Handle(CompleteShipmentCommand request, CancellationToken ct)
         {
-            var shipment = await completeShipmentService.CompleteShipmentAsync(request.ShipmentId, request.CarrierId, ct);
+            var shipment = await completeShipmentService.CompleteShipmentDeliveryAsync(request.ShipmentId, request.CarrierId, ct);
           
             //======= 4- Save Changes ==========
             await unitOfWork.SaveChangesAsync(ct);

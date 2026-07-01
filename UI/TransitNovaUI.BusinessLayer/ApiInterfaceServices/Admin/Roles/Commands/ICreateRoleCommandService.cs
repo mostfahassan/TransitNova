@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Roles.Commands;
 
 public interface ICreateRoleCommandService
 {
-    const string HttpMethod = "POST";
-    const string Route = "api/v{version:apiVersion}/admin/roles";
-
-    Task<ApiResponse> CreateRoleAsync(UiRoleNameDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> CreateRoleAsync(UiRoleNameDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

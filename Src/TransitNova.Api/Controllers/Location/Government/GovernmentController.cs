@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using TransitNova.BusinessLayer.Features.Location.Cities.Queries;
 using TransitNova.BusinessLayer.Features.Location.Governments.Queries;
 using TransitNova.Domain.Contracts.Roles;
 
@@ -44,6 +45,21 @@ namespace TransitNova.Api.Controllers.Location.Government
         public async Task<IActionResult> GovernmentsAsync(CancellationToken ct)
         {
             var response = await mediator.Send(new GetGovernmentsQuery(), ct);
+            return response.ToActionResult();
+        }
+
+        [EnableRateLimiting("DefaultRateLimiter")]
+        [HttpGet("{governmentId:int}/cities")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [EndpointName("Get Government Cities")]
+        [EndpointSummary("Get cities for a government")]
+        [EndpointDescription("Returns all cities that belong to the supplied government identifier.")]
+        public async Task<IActionResult> GovernmentCitiesAsync(int governmentId, CancellationToken ct)
+        {
+            var response = await mediator.Send(new GetCitiesByGovernmentQuery(governmentId), ct);
             return response.ToActionResult();
         }
     }

@@ -2,8 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Ship
 
 public interface IGetShipmentByIdQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}";
-
-    Task<ApiResponse<UiRetrieveShipmentDto>> GetShipmentByIdAsync(Guid shipmentId, CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiRetrieveShipmentDto>> GetShipmentByIdAsync(Guid shipmentId, string bearerToken, CancellationToken cancellationToken = default);
 }
+

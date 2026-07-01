@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Querie
 
 public interface ITrackShipmentQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/shipments/{trackingNumber:string}";
-
-    Task<ApiResponse<UiRetrieveShipmentSummaryDto>> TrackShipmentAsync(string trackingNumber, CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiRetrieveShipmentSummaryDto>> TrackShipmentAsync(string trackingNumber, string bearerToken, CancellationToken cancellationToken = default);
 }
 

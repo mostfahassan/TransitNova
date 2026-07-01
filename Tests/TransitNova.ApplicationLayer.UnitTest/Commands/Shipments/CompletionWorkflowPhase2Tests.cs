@@ -84,7 +84,7 @@ public sealed class CompletionWorkflowPhase2Tests
 
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
 
-        fixture.Service.Verify(x => x.CompleteShipmentAsync(
+        fixture.Service.Verify(x => x.CompleteShipmentDeliveryAsync(
             fixture.Command.ShipmentId, fixture.Command.CarrierId, CancellationToken.None), Times.Once);
     }
 
@@ -112,7 +112,7 @@ public sealed class CompletionWorkflowPhase2Tests
     public async Task CompleteShipmentCommandHandler_WhenServiceFails_ShouldPropagateWithoutSavingAsync()
     {
         var fixture = new DeliveryCompletionFixture();
-        fixture.Service.Setup(x => x.CompleteShipmentAsync(
+        fixture.Service.Setup(x => x.CompleteShipmentDeliveryAsync(
                 It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException("not assigned for delivery"));
 
@@ -156,7 +156,7 @@ public sealed class CompletionWorkflowPhase2Tests
         {
             if (hasTrip) Shipment.TripId = Guid.NewGuid();
             Command = new CompleteShipmentCommand(Guid.NewGuid(), Shipment.Id, Guid.NewGuid());
-            Service.Setup(x => x.CompleteShipmentAsync(
+            Service.Setup(x => x.CompleteShipmentDeliveryAsync(
                     Command.ShipmentId, Command.CarrierId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Shipment);
             UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);

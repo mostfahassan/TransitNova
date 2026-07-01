@@ -1,6 +1,5 @@
 using TransitNova.BusinessLayer.DTOs.Bundle;
 namespace TransitNovaUI.BusinessLayer.DTOs.Bundle;
-
 public sealed class UiCreateBundleDto
 {
     public string BundleName { get; set; } = string.Empty;

@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Dash
 
 public interface IGetOperationManagerDashboardQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/operation-manager/dashboard";
-
-    Task<ApiResponse<UiOperationManagerDashboardDto>> GetOperationManagerDashboardAsync(CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiOperationManagerDashboardDto>> GetOperationManagerDashboardAsync(string bearerToken, CancellationToken cancellationToken = default);
 }
 

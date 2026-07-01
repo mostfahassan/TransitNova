@@ -31,9 +31,7 @@ namespace TransitNova.Api.Controllers.Admin.Location
         [EndpointDescription("Creates a new government under a country.")]
         public async Task<IActionResult> CreateGovernmentAsync([IdempotencyKey] Guid requestId, [FromBody] CreateGovernmentDto dto, CancellationToken ct)
         {
-
-            var response = await mediator.Send(
-                new CreateGovernmentCommand(requestId, dto.Name, dto.CountryId), ct);
+            var response = await mediator.Send(new CreateGovernmentCommand(requestId, dto.Name, dto.CountryId), ct);
             return response.ToActionResult();
         }
 
@@ -54,8 +52,7 @@ namespace TransitNova.Api.Controllers.Admin.Location
         public async Task<IActionResult> UpdateGovernmentAsync([IdempotencyKey] Guid requestId, int governmentId, [FromBody] UpdateGovernmentDto dto, CancellationToken ct)
         {
 
-            var response = await mediator.Send(
-                new UpdateGovernmentCommand(requestId, governmentId, dto.Name, dto.CountryId), ct);
+            var response = await mediator.Send(new UpdateGovernmentCommand(requestId, governmentId, dto.Name, dto.CountryId), ct);
             return response.ToActionResult();
         }
 

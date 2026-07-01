@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Profile.Comma
 
 public interface IAddCarrierAdditionalInfoCommandService
 {
-    const string HttpMethod = "PUT";
-    const string Route = "api/v{version:apiVersion}/carriers/additional-info";
-
-    Task<ApiResponse> AddCarrierAdditionalInfoAsync(UiAdditionalInfoDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> AddCarrierAdditionalInfoAsync(UiAdditionalInfoDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

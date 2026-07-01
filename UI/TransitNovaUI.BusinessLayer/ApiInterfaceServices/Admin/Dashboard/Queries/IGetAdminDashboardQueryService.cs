@@ -2,8 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Dashboard.Queri
 
 public interface IGetAdminDashboardQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/admins/dashboard";
-
-    Task<ApiResponse<UiAdminDashboardDto>> GetAdminDashboardAsync(CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiAdminDashboardDto>> GetAdminDashboardAsync(string bearerToken, CancellationToken cancellationToken = default);
 }
+

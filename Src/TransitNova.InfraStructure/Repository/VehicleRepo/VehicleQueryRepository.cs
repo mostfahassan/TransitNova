@@ -19,12 +19,12 @@ namespace TransitNova.InfraStructure.Repository.VehicleRepo
                 .Where(v => v.IsActive)
                 .ProjectTo<VehicleDto>(mapperConfig)
                 .ToListAsync(ct);
-        public async Task<List<VehicleDto>> GetByCarrierIdAsync(Guid carrierId, CancellationToken ct)
+        public async Task<VehicleDto?> GetByCarrierIdAsync(Guid carrierId, CancellationToken ct)
             => await _vehicles
                 .AsNoTracking()
                 .Where(v => v.CarrierId == carrierId)
                 .ProjectTo<VehicleDto>(mapperConfig)
-                .ToListAsync(ct);
+                .FirstOrDefaultAsync(ct);
         public async Task<VehicleDto?> GetVehicleDetailsAsync(Guid id, CancellationToken ct)
             => await context.Vehicles.AsQueryable()
                 .AsNoTracking()

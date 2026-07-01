@@ -2,8 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Carr
 
 public interface IGetCarrierByIdQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/operation-managers/carriers/{carrierId:guid}";
-
-    Task<ApiResponse<UiCarrierProfileDto>> GetCarrierByIdAsync(Guid carrierId, CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiCarrierProfileDto>> GetCarrierByIdAsync(Guid carrierId, string bearerToken, CancellationToken cancellationToken = default);
 }
+

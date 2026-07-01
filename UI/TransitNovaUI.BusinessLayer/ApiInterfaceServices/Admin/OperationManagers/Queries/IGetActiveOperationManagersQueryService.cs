@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.OperationManage
 
 public interface IGetActiveOperationManagersQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/admin/operation-managers/active";
-
-    Task<ApiResponse<List<UiOperationManagerProfileDto>>> GetActiveOperationManagersAsync(CancellationToken cancellationToken = default);
+    Task<ApiResponse<List<UiOperationManagerProfileDto>>> GetActiveOperationManagersAsync(string bearerToken, CancellationToken cancellationToken = default);
 }
 

@@ -1,7 +1,4 @@
-﻿
-using MediatR;
-using Microsoft.Extensions.Logging;
-using TransitNova.BusinessLayer.Common.ResultPattern;
+﻿using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.CompleteShipments;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
@@ -17,10 +14,10 @@ namespace TransitNova.BusinessLayer.Services.CompleteShipmentService
     internal class CompleteShipmentService(
         ICarrierQueryRepository carrierQueryRepo,
         IShipmentQueryRepository shipmentQueryRepo,
-         ISystemLogCommands systemLogCommands,
+        ISystemLogCommands systemLogCommands,
         ILogger<CompleteShipmentToWarehouseHandler> logger) : ICompleteShipmentService
     {
-        public async Task<Shipment> CompleteShipmentAsync(Guid ShipmentId, Guid CarrierId, CancellationToken cancellationToken)
+        public async Task<Shipment> CompleteShipmentDeliveryAsync(Guid ShipmentId, Guid CarrierId, CancellationToken cancellationToken)
         {
             //===== 1- Retrieve Carrier  Attempts 
             var carrier = await carrierQueryRepo.GetCarrierAsync(c => c.Id == CarrierId, cancellationToken);
@@ -41,7 +38,7 @@ namespace TransitNova.BusinessLayer.Services.CompleteShipmentService
             carrier.CompleteShipment();
             shipment.Delivered(carrier.Id);
             if (shipment.Trip is { Status: TripStatus.Active } trip &&
-                trip.Shipments.All(s => s.CurrentStatus == ShipmentStatuses.InWarehouse))
+                trip.Shipments.All(s => s.CurrentStatus == ShipmentStatuses.Delivered))
             {
                 trip.Complete(carrier.Id);
             }
@@ -90,7 +87,7 @@ namespace TransitNova.BusinessLayer.Services.CompleteShipmentService
             carrier.CompleteShipment();
             shipment.DeliveredToWarehouse(carrier.Id);
             if (shipment.Trip is { Status: TripStatus.Active } trip &&
-                trip.Shipments.All(s => s.CurrentStatus == ShipmentStatuses.Delivered))
+                trip.Shipments.All(s => s.CurrentStatus == ShipmentStatuses.InWarehouse))
             {
                 trip.Complete(carrier.Id);
             }

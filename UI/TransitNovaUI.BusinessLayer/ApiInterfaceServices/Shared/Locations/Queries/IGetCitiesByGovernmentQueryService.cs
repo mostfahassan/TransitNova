@@ -2,8 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Shared.Locations.Quer
 
 public interface IGetCitiesByGovernmentQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/governments/{governmentId:int}/cities";
-
-    Task<ApiResponse<IEnumerable<UiCityDto>>> GetCitiesByGovernmentAsync(int governmentId, CancellationToken cancellationToken = default);
+    Task<ApiResponse<IEnumerable<UiCityDto>>> GetCitiesByGovernmentAsync(int governmentId, string bearerToken, CancellationToken cancellationToken = default);
 }
+

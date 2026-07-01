@@ -30,4 +30,5 @@ public static class Errors
     public static Error CarrierWithNoWarehouse() => new(ErrorCode.NO_CARRIER_WAREHOUSE_FOUND, "Carrier does not have a home warehouse.");
     public static Error RefreshTokenNotFound() => new(ErrorCode.REFRESH_TOKEN_NOT_FOUND, "Refresh token not found.");
     public static Error InvalidRefreshToken() => new(ErrorCode.REFRESH_TOKEN_NOT_VALID, "Refresh token is not valid.");
+    public static Error VehicleNotFound(string message) => new(ErrorCode.VEHICLE_NOT_FOUND, message);
 }

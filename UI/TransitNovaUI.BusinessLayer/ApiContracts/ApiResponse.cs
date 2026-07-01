@@ -1,5 +1,7 @@
 namespace TransitNovaUI.BusinessLayer.ApiContracts;
 
+public sealed record ApiErrorItem(string? Code, string Message);
+
 public record ApiResponse
 {
     public bool Success { get; init; }
@@ -10,7 +12,7 @@ public record ApiResponse
 
     public string? ErrorCode { get; init; }
 
-    public IReadOnlyDictionary<string, string[]>? Errors { get; init; }
+    public IReadOnlyList<ApiErrorItem>? Errors { get; init; }
 }
 
 public sealed record ApiResponse<T> : ApiResponse

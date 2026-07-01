@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Authentication.Comman
 
 public interface IRegisterCommandService
 {
-    const string HttpMethod = "POST";
-    const string Route = "api/auth/register";
-
-    Task<ApiResponse<UiAuthResponseDto>> RegisterAsync(UiRegisterDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiAuthResponseDto>> RegisterAsync(UiRegisterDto model, CancellationToken cancellationToken = default);
 }
 

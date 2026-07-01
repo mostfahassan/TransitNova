@@ -2,8 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Trip
 
 public interface IStartDeliveryTripCommandService
 {
-    const string HttpMethod = "PATCH";
-    const string Route = "api/v{version:apiVersion}/operation-managers/trips/{carrierId:guid}/start-delivery";
-
-    Task<ApiResponse> StartDeliveryTripAsync(Guid carrierId, CancellationToken cancellationToken = default);
+    Task<ApiResponse> StartDeliveryTripAsync(Guid carrierId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
+

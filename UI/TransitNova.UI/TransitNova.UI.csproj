@@ -36,6 +36,9 @@
     <Folder Include="Areas\CustomerArea\Data\" />
     <Folder Include="Areas\CustomerArea\Models\" />
     <Folder Include="Areas\CustomerArea\Views\" />
+    <Folder Include="Areas\LandingArea\Controllers\" />
+    <Folder Include="Areas\LandingArea\Data\" />
+    <Folder Include="Areas\LandingArea\Models\" />
     <Folder Include="Areas\OperationManagerArea\Controllers\Commands\" />
     <Folder Include="Areas\OperationManagerArea\Controllers\Queries\" />
     <Folder Include="Areas\OperationManagerArea\Data\" />

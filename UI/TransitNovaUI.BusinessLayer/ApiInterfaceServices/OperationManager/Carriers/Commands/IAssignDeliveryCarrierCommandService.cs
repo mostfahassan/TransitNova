@@ -2,8 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Carr
 
 public interface IAssignDeliveryCarrierCommandService
 {
-    const string HttpMethod = "PUT";
-    const string Route = "api/v{version:apiVersion}/operation-managers/carriers/{shipmentId:guid}/assign-delivery";
-
-    Task<ApiResponse> AssignDeliveryCarrierAsync(Guid shipmentId, UiAssignCarrierDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> AssignDeliveryCarrierAsync(Guid shipmentId, UiAssignCarrierDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
+

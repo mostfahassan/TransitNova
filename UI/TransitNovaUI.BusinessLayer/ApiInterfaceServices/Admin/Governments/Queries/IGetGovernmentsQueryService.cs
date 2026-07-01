@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Governments.Que
 
 public interface IGetGovernmentsQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/admin/governments";
-
-    Task<ApiResponse<List<UiGovernmentDto>>> GetGovernmentsAsync(CancellationToken cancellationToken = default);
+    Task<ApiResponse<List<UiGovernmentDto>>> GetGovernmentsAsync(string bearerToken, CancellationToken cancellationToken = default);
 }
 

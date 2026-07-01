@@ -2,8 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Subscriptions.Co
 
 public interface IUnsubscribeFromBundleCommandService
 {
-    const string HttpMethod = "DELETE";
-    const string Route = "api/v{version:apiVersion}/subscriptions/bundles/{bundleId:guid}/subscription";
-
-    Task<ApiResponse> UnsubscribeFromBundleAsync(int bundleId, CancellationToken cancellationToken = default);
+    Task<ApiResponse> UnsubscribeFromBundleAsync(int bundleId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
+

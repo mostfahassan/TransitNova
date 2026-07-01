@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Dashboard.Que
 
 public interface IGetCarrierDashboardQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/carriers/{carrierId:guid}/dashboard";
-
-    Task<ApiResponse<UiCarrierDashboardDto>> GetCarrierDashboardAsync(Guid carrierId, CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiCarrierDashboardDto>> GetCarrierDashboardAsync(Guid carrierId, string bearerToken, CancellationToken cancellationToken = default);
 }
 

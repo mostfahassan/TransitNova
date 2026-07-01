@@ -10,21 +10,21 @@ namespace TransitNova.BusinessLayer.Features.Vehicles.Handlers.ApplyQueries
     public sealed class GetVehiclesByCarrierIdHandler(
         IVehicleQueryRepository vehicleRepository,
         ILogger<GetVehiclesByCarrierIdHandler> logger)
-        : IQueryHandler<GetVehiclesByCarrierIdQuery, Result<List<VehicleDto>>>
+        : IQueryHandler<GetCarrierVehicleQuery, Result<VehicleDto?>>
     {
-        public async Task<Result<List<VehicleDto>>> Handle(GetVehiclesByCarrierIdQuery request, CancellationToken ct)
+        public async Task<Result<VehicleDto?>> Handle(GetCarrierVehicleQuery request, CancellationToken ct)
         {
             if (request.CarrierId == Guid.Empty)
-                return Result<List<VehicleDto>>.NotFound(Errors.CarrierNotFound("Carrier id is required."));
+                return Result<VehicleDto?>.NotFound(Errors.CarrierNotFound("Carrier id is required."));
 
-            var vehicles = await vehicleRepository.GetByCarrierIdAsync(request.CarrierId, ct);
-            if (vehicles.Count == 0)
+            var vehicle = await vehicleRepository.GetByCarrierIdAsync(request.CarrierId, ct);
+            if (vehicle == null)
             {
-                logger.LogInformation("No vehicles found for Carrier {UserId}", request.CarrierId);
-                return Result<List<VehicleDto>>.Success([]);
+                logger.LogInformation("No vehicle found for Carrier {UserId}", request.CarrierId);
+                return Result<VehicleDto?>.NotFound(Errors.VehicleNotFound("Vehicle not found.Or Carrier Has No Vehicles."));
             }
 
-            return Result<List<VehicleDto>>.Success(vehicles);
+            return Result<VehicleDto?>.Success(vehicle);
         }
     }
 }

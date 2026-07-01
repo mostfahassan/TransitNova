@@ -202,7 +202,7 @@ public sealed class VehicleHandlerTests
         var repository = new Mock<IVehicleQueryRepository>();
         var handler = new GetVehiclesByCarrierIdHandler(repository.Object, Mock.Of<ILogger<GetVehiclesByCarrierIdHandler>>());
 
-        var result = await handler.Handle(new GetVehiclesByCarrierIdQuery(Guid.Empty), CancellationToken.None);
+        var result = await handler.Handle(new GetCarrierVehicleQuery(Guid.Empty), CancellationToken.None);
 
         result.Status.Should().Be(ResultStatus.NotFound);
         repository.VerifyNoOtherCalls();
@@ -216,7 +216,7 @@ public sealed class VehicleHandlerTests
         repository.Setup(x => x.GetByCarrierIdAsync(carrierId, It.IsAny<CancellationToken>())).ReturnsAsync([]);
         var handler = new GetVehiclesByCarrierIdHandler(repository.Object, Mock.Of<ILogger<GetVehiclesByCarrierIdHandler>>());
 
-        var result = await handler.Handle(new GetVehiclesByCarrierIdQuery(carrierId), CancellationToken.None);
+        var result = await handler.Handle(new GetCarrierVehicleQuery(carrierId), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
         result.Data.Should().BeEmpty();

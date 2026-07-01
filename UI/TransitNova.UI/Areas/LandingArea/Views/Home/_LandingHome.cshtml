@@ -1,0 +1,277 @@
+@{
+    const string assetRoot = "https://demo.awaikenthemes.com/theme-aerologix/wp-content/uploads/2024/04";
+}
+
+<section class="hero-section" aria-labelledby="hero-title">
+    <div class="hero-media" aria-hidden="true">
+        <img src="@($"{assetRoot}/hero-slider.jpg")" alt="" />
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="landing-container hero-grid">
+        <div class="hero-copy" data-reveal>
+            <p class="eyebrow">Freight, warehouses, carriers</p>
+            <h1 id="hero-title">TransitNova logistics around every shipment.</h1>
+            <p class="hero-lede">
+                Plan shipments, assign carriers, manage trips, and keep customers updated from one operational workspace.
+            </p>
+            <div class="hero-actions">
+                <a class="button button-primary" href="#contact">Start shipping</a>
+                <a class="button button-secondary" href="#services">View services</a>
+            </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Live shipment summary" data-reveal>
+            <div class="panel-kicker">Live board</div>
+            <div class="shipment-card is-active">
+                <span>CAI-0428</span>
+                <strong>Pickup approved</strong>
+                <small>Carrier assigned in 8 min</small>
+            </div>
+            <div class="shipment-card">
+                <span>ALX-1173</span>
+                <strong>Warehouse check-in</strong>
+                <small>2 packages scanned</small>
+            </div>
+            <div class="shipment-card">
+                <span>GIZ-3091</span>
+                <strong>Out for delivery</strong>
+                <small>ETA 42 min</small>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<section class="cargo-strip" aria-label="Core freight categories">
+    <div class="landing-container cargo-grid">
+        <article class="cargo-card" data-reveal>
+            <img src="@($"{assetRoot}/icon-cargo-1.svg")" alt="" />
+            <h2>Ocean Freight</h2>
+            <p>Structured shipment requests, package specs, and clear route ownership.</p>
+        </article>
+        <article class="cargo-card cargo-card-dark" data-reveal>
+            <img src="@($"{assetRoot}/icon-cargo-2.svg")" alt="" />
+            <h2>Air Freight</h2>
+            <p>Fast approvals and operational visibility for urgent movement.</p>
+        </article>
+        <article class="cargo-card" data-reveal>
+            <img src="@($"{assetRoot}/icon-cargo-3.svg")" alt="" />
+            <h2>Cargo Freight</h2>
+            <p>Carrier pickup, delivery trips, warehouse handoff, and customer tracking.</p>
+        </article>
+    </div>
+</section>
+
+<section class="section-block split-section" id="platform">
+    <div class="landing-container split-grid">
+        <div class="section-copy" data-reveal>
+            <p class="eyebrow">Transportation coverage</p>
+            <h2>Providing the full range of shipment operations.</h2>
+            <p>
+                TransitNova is designed around your backend workflow: users create shipments, operation managers review and assign carriers,
+                carriers complete pickup and delivery, and admins monitor the whole system.
+            </p>
+            <dl class="mini-stats">
+                <div>
+                    <dt>4</dt>
+                    <dd>role workspaces</dd>
+                </div>
+                <div>
+                    <dt>119</dt>
+                    <dd>API endpoints mapped</dd>
+                </div>
+                <div>
+                    <dt>1</dt>
+                    <dd>shared logistics flow</dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="image-stack" data-reveal>
+            <img class="image-stack-main" src="@($"{assetRoot}/transportation-img-1.jpg")" alt="Cargo containers prepared for transit" />
+            <img class="image-stack-float" src="@($"{assetRoot}/transportation-img-2.jpg")" alt="Warehouse operator reviewing packages" />
+        </div>
+    </div>
+</section>
+
+<section class="section-block" id="services">
+    <div class="landing-container">
+        <div class="section-heading" data-reveal>
+            <p class="eyebrow">Explore services</p>
+            <h2>Every movement has a clear owner.</h2>
+            <p>Use these sections later as entry points for real UI flows: create shipment, carrier dashboard, warehouse movement, and admin oversight.</p>
+        </div>
+
+        <div class="service-grid">
+            <article class="service-card" data-reveal>
+                <img src="@($"{assetRoot}/service-1.jpg")" alt="Ocean freight containers being handled" />
+                <div>
+                    <span class="tag tag-blue">Shipment intake</span>
+                    <h3>Ocean Freight</h3>
+                    <p>Capture receiver details, package dimensions, origin, destination, and payment method in one clean request.</p>
+                </div>
+            </article>
+            <article class="service-card" data-reveal>
+                <img src="@($"{assetRoot}/service-2.jpg")" alt="Aircraft cargo handling" />
+                <div>
+                    <span class="tag tag-yellow">Carrier ops</span>
+                    <h3>Air Freight</h3>
+                    <p>Give carriers a focused queue for pickup, delivery, trip state, revenue, and rating performance.</p>
+                </div>
+            </article>
+            <article class="service-card" data-reveal>
+                <img src="@($"{assetRoot}/service-3.jpg")" alt="Truck freight parked for loading" />
+                <div>
+                    <span class="tag tag-green">Control room</span>
+                    <h3>Cargo Freight</h3>
+                    <p>Let operation managers review shipments, assign carriers, reject invalid requests, and monitor histories.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="contract-section">
+    <div class="landing-container contract-grid">
+        <div data-reveal>
+            <p class="eyebrow">Reliable provider</p>
+            <h2>Contract logistics with audit-ready checkpoints.</h2>
+        </div>
+        <p data-reveal>
+            The backend already models the important pieces: idempotent commands, mapped exceptions, authorization requirements,
+            refresh tokens, and endpoint consistency. This landing page now gives the product a polished front door.
+        </p>
+        <a class="button button-primary" href="#contact" data-reveal>Talk to operations</a>
+    </div>
+</section>
+
+<section class="section-block" id="projects">
+    <div class="landing-container">
+        <div class="section-heading compact" data-reveal>
+            <p class="eyebrow">Recent projects</p>
+            <h2>Logistics flows ready for UI screens.</h2>
+        </div>
+
+        <div class="project-grid">
+            <article class="project-card" data-reveal>
+                <img src="@($"{assetRoot}/project-1.jpg")" alt="Freight project with cargo vehicles" />
+                <div>
+                    <span>Customer shipping</span>
+                    <h3>Movemate Logistics</h3>
+                </div>
+            </article>
+            <article class="project-card" data-reveal>
+                <img src="@($"{assetRoot}/project-2.jpg")" alt="Warehouse project with delivery routes" />
+                <div>
+                    <span>Carrier assignment</span>
+                    <h3>WayWise Logistics</h3>
+                </div>
+            </article>
+            <article class="project-card" data-reveal>
+                <img src="@($"{assetRoot}/project-3.jpg")" alt="Highway freight movement" />
+                <div>
+                    <span>Delivery tracking</span>
+                    <h3>ExpressLane Solutions</h3>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="numbers-section" aria-labelledby="numbers-title">
+    <div class="landing-container">
+        <div class="section-heading compact" data-reveal>
+            <p class="eyebrow">Goals in numbers</p>
+            <h2 id="numbers-title">A product surface built for real operations.</h2>
+        </div>
+
+        <div class="numbers-grid">
+            <div class="number-card" data-reveal>
+                <strong>719</strong>
+                <span>green tests</span>
+            </div>
+            <div class="number-card" data-reveal>
+                <strong>119</strong>
+                <span>mapped API URLs</span>
+            </div>
+            <div class="number-card" data-reveal>
+                <strong>4</strong>
+                <span>main role journeys</span>
+            </div>
+            <div class="number-card" data-reveal>
+                <strong>24/7</strong>
+                <span>tracking mindset</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-block reliability-section">
+    <div class="landing-container reliability-grid">
+        <img src="@($"{assetRoot}/featured-content-img.jpg")" alt="Logistics operator checking cargo workflow" data-reveal />
+        <div class="section-copy" data-reveal>
+            <p class="eyebrow">Reliable services</p>
+            <h2>From request to final delivery, the workflow stays visible.</h2>
+            <div class="check-list">
+                <div>
+                    <span aria-hidden="true"></span>
+                    <p><strong>Shipment review</strong> keeps invalid requests from entering the operation queue.</p>
+                </div>
+                <div>
+                    <span aria-hidden="true"></span>
+                    <p><strong>Carrier assignment</strong> gives pickup and delivery ownership to the right team.</p>
+                </div>
+                <div>
+                    <span aria-hidden="true"></span>
+                    <p><strong>Status histories</strong> make the shipment timeline clear to managers and users.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-block" id="insights">
+    <div class="landing-container">
+        <div class="section-heading compact" data-reveal>
+            <p class="eyebrow">Latest insights</p>
+            <h2>Stories for the logistics product you are building.</h2>
+        </div>
+
+        <div class="article-grid">
+            <article class="article-card" data-reveal>
+                <img src="@($"{assetRoot}/post-5.jpg")" alt="Truckload transportation planning" />
+                <div>
+                    <span>Operations</span>
+                    <h3>What is the future of truckload transportation?</h3>
+                </div>
+            </article>
+            <article class="article-card" data-reveal>
+                <img src="@($"{assetRoot}/post-4.jpg")" alt="International shipping route planning" />
+                <div>
+                    <span>Shipping</span>
+                    <h3>Navigating international shipping</h3>
+                </div>
+            </article>
+            <article class="article-card" data-reveal>
+                <img src="@($"{assetRoot}/post-6.jpg")" alt="Transportation and logistics trend board" />
+                <div>
+                    <span>Trends</span>
+                    <h3>Top trends in transportation and logistics</h3>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="contact-section" id="contact">
+    <div class="landing-container contact-panel" data-reveal>
+        <div>
+            <p class="eyebrow">Need to move goods?</p>
+            <h2>Start with the shipment flow, then build each dashboard around it.</h2>
+        </div>
+        <div class="contact-actions">
+            <a class="button button-primary" href="mailto:info@transitnova.local">Request access</a>
+            <a class="button button-secondary" href="mailto:info@transitnova.local">Contact team</a>
+        </div>
+    </div>
+</section>

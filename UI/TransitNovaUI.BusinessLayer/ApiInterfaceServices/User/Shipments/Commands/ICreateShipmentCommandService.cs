@@ -2,10 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Comman
 
 public interface ICreateShipmentCommandService
 {
-    const string HttpMethod = "POST";
-    const string Route = "api/v{version:apiVersion}/shipments";
-
-    Task<ApiResponse<UiRetrieveShipmentDto>> CreateShipmentAsync(
-        UiCreateShipmentDto request,
-        CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiRetrieveShipmentDto>> CreateShipmentAsync(UiCreateShipmentDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
+

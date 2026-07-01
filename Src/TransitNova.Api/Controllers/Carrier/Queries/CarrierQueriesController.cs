@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.Carriers.Queries.Carrier;
 using TransitNova.BusinessLayer.Features.Carriers.Queries.Shipment;
+using TransitNova.BusinessLayer.Features.Vehicles.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
 using TransitNova.Domain.Entities.MainEntities;
@@ -142,6 +143,27 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
                 return Forbid();
 
             var result = await mediator.Send(new GetCarrierRevenueQuery(carrierId), ct);
+            return result.ToActionResult();
+        }
+
+        [Authorize(Policy = CarrierPermissions.CanViewRevenue)]
+        [EnableRateLimiting("DefaultRateLimiter")]
+        [HttpGet("{carrierId:guid}/vehicles")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [EndpointName("Get Carrier Profile")]
+        [EndpointSummary("Get the authenticated carrier profile")]
+        [EndpointDescription("Returns the profile information for the authenticated carrier.")]
+        public async Task<IActionResult> CarrierVehicle(Guid carrierId, CancellationToken ct)
+        {
+            if (!await IsCarrierOwnerAsync(carrierId))
+                return Forbid();
+
+            var result = await mediator.Send(new GetCarrierVehicleQuery(carrierId), ct);
             return result.ToActionResult();
         }
 

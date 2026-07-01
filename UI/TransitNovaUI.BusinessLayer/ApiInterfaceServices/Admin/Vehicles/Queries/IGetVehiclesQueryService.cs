@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Vehicles.Querie
 
 public interface IGetVehiclesQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/admin/vehicles";
-
-    Task<ApiResponse<List<UiVehicleDto>>> GetVehiclesAsync(CancellationToken cancellationToken = default);
+    Task<ApiResponse<List<UiVehicleDto>>> GetVehiclesAsync(string bearerToken, CancellationToken cancellationToken = default);
 }
 

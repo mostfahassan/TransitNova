@@ -2,8 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Carr
 
 public interface IAssignPickupCarrierCommandService
 {
-    const string HttpMethod = "PUT";
-    const string Route = "api/v{version:apiVersion}/operation-managers/carriers/{shipmentId:guid}/assign-pickup";
-
-    Task<ApiResponse> AssignPickupCarrierAsync(Guid shipmentId, UiAssignCarrierDto request, CancellationToken cancellationToken = default);
+    Task<ApiResponse> AssignPickupCarrierAsync(Guid shipmentId, UiAssignCarrierDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
+

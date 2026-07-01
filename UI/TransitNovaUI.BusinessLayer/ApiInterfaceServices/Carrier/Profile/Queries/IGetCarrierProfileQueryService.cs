@@ -2,9 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Profile.Queri
 
 public interface IGetCarrierProfileQueryService
 {
-    const string HttpMethod = "GET";
-    const string Route = "api/v{version:apiVersion}/carriers/{carrierId:guid}/profile";
-
-    Task<ApiResponse<UiCarrierProfileDto>> GetCarrierProfileAsync(Guid carrierId, CancellationToken cancellationToken = default);
+    Task<ApiResponse<UiCarrierProfileDto>> GetCarrierProfileAsync(Guid carrierId, string bearerToken, CancellationToken cancellationToken = default);
 }
 
