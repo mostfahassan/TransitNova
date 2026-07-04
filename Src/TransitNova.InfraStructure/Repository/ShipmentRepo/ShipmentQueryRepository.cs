@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.DTOs.ShipmentStatusDto;
@@ -11,13 +10,11 @@ using TransitNova.Domain.Enums.Shipment;
 using TransitNova.InfraStructure.Context;
 namespace TransitNova.InfraStructure.Repository.ShipmentRepo
 {
-    internal class ShipmentQueryRepository(AppDbContext context, IMapper mapper, ILogger<ShipmentQueryRepository> logger) : IShipmentQueryRepository
+    internal class ShipmentQueryRepository(AppDbContext context, IMapper mapper) : IShipmentQueryRepository
     {
         public async Task<PagedResult<RetrieveShipmentDto>> FilterAsync(ShipmentFilterDto filter, CancellationToken ct)
-
         {
-            logger.LogDebug("Building filter query with criteria: {@FilterCriteria}", filter);
-
+       
             IQueryable<Shipment> query = context.Shipments
                 .AsNoTracking();
 
@@ -32,13 +29,10 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
             // Pickup Date From
             if (filter.From.HasValue)
             {
-              
-
                 query = query.Where(sh =>
                     sh.PickupDate >= filter.From.Value);
             }
 
-            // Delivery Date To
             if (filter.To.HasValue)
             { 
                 query = query.Where(sh => sh.ActualDeliveryDate <= filter.To.Value);
@@ -70,10 +64,6 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
             var pageNumber = filter.PageNumber <= 0 ? 1 : filter.PageNumber;
             var pageSize = filter.PageSize <= 0 ? 10 : filter.PageSize;
 
-            logger.LogTrace(
-                "Applying pagination: PageNumber={PageNumber}, PageSize={PageSize}",
-                pageNumber,
-                pageSize);
 
             query = query
                 .OrderByDescending(sh => sh.CreatedAt)
@@ -84,11 +74,6 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
             var filteredShipments = await query
                 .ProjectTo<RetrieveShipmentDto>(mapper.ConfigurationProvider)
                 .ToListAsync(ct);
-
-            logger.LogInformation(
-                "Filter query returned {Count} shipments out of {TotalCount}",
-                filteredShipments.Count,
-                totalCount);
 
             return PagedResult<RetrieveShipmentDto>.From(filteredShipments, totalCount, pageNumber, pageSize);
         }
@@ -106,6 +91,8 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
                    CreatedAt = sh.CreatedAt,
                    SenderCity = sh.Sender.City.Name,
                    ReceiverCity = sh.Receiver.City.Name,
+                   ReceiverName = sh.Receiver.FullName,
+                   SenderName = sh.Sender.FullName,
                    Weight = sh.PackageSpecification.Weight
                 })
                 .FirstOrDefaultAsync(ct);

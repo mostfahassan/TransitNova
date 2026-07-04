@@ -3,45 +3,61 @@ using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Shared.Locations.Queries;
 
 namespace TransitNovaUI.BusinessLayer.ApiImplementation.Shared.Locations.Query
 {
-    public class SharedLocationsQuery(IHttpHandler httpHandler, HttpClient httpClient) : IGetCitiesByGovernmentQueryService, IGetCountriesQueryService, IGetCountryGovernmentsQueryService
+    public class SharedLocationsQuery(IHttpHandler httpHandler, HttpClient httpClient) : ApiServiceBase(httpHandler, httpClient), IGetCitiesByGovernmentQueryService, IGetCountriesQueryService, IGetCountryGovernmentsQueryService, IGetPublicCitiesQueryService, IGetPublicCityByIdQueryService, IGetPublicGovernmentByIdQueryService, IGetPublicGovernmentsQueryService
     {
-        public async Task<ApiResponse<IEnumerable<UiCityDto>>> GetCitiesByGovernmentAsync(int governmentId, string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<IEnumerable<UiCityDto>>> GetCitiesByGovernmentAsync(int governmentId, string bearerToken, CancellationToken cancellationToken = default)
         {
             object? content = null;
             string? idempotentKey = null;
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Locations.GetCitiesByGovernmentUrl, ("governmentId", governmentId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Get, content, url, bearerToken, cancellationToken, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadQueryResponseAsync<IEnumerable<UiCityDto>>(httpResponse, cancellationToken);
+            return SendQueryRequestAsync<IEnumerable<UiCityDto>>(HttpMethod.Get, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
-        public async Task<ApiResponse<IEnumerable<UiCountryDto>>> GetCountriesAsync(string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<IEnumerable<UiCountryDto>>> GetCountriesAsync(string bearerToken, CancellationToken cancellationToken = default)
         {
             object? content = null;
             string? idempotentKey = null;
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Locations.GetCountriesUrl));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Get, content, url, bearerToken, cancellationToken, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadQueryResponseAsync<IEnumerable<UiCountryDto>>(httpResponse, cancellationToken);
+            return SendQueryRequestAsync<IEnumerable<UiCountryDto>>(HttpMethod.Get, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
-        public async Task<ApiResponse<IEnumerable<UiGovernmentDto>>> GetCountryGovernmentsAsync(int countryId, string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<IEnumerable<UiGovernmentDto>>> GetCountryGovernmentsAsync(int countryId, string bearerToken, CancellationToken cancellationToken = default)
         {
             object? content = null;
             string? idempotentKey = null;
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Locations.GetCountryGovernmentsUrl, ("countryId", countryId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Get, content, url, bearerToken, cancellationToken, idempotentKey);
+            return SendQueryRequestAsync<IEnumerable<UiGovernmentDto>>(HttpMethod.Get, url, bearerToken, cancellationToken, content, idempotentKey);
+        }
 
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
+        public Task<ApiResponse<UiPagedResult<UiCityDto>>> GetPublicCitiesAsync(UiCityFilterDto filter, string? bearerToken = null, CancellationToken cancellationToken = default)
+        {
+            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Locations.GetCitiesUrl, ("GovernmentId", filter.GovernmentId), ("SearchTerm", filter.SearchTerm), ("PageNumber", filter.PageNumber), ("PageSize", filter.PageSize), ("SortDescending", filter.SortDescending)));
 
-            return await httpHandler.ReadQueryResponseAsync<IEnumerable<UiGovernmentDto>>(httpResponse, cancellationToken);
+            return SendQueryRequestAsync<UiPagedResult<UiCityDto>>(HttpMethod.Get, url, bearerToken, cancellationToken);
+        }
+
+        public Task<ApiResponse<UiCityDto?>> GetPublicCityByIdAsync(int cityId, string? bearerToken = null, CancellationToken cancellationToken = default)
+        {
+            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Locations.GetCityByIdUrl, ("cityId", cityId)));
+
+            return SendQueryRequestAsync<UiCityDto?>(HttpMethod.Get, url, bearerToken, cancellationToken);
+        }
+
+        public Task<ApiResponse<UiGovernmentDto?>> GetPublicGovernmentByIdAsync(int governmentId, string? bearerToken = null, CancellationToken cancellationToken = default)
+        {
+            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Locations.GetGovernmentByIdUrl, ("governmentId", governmentId)));
+
+            return SendQueryRequestAsync<UiGovernmentDto?>(HttpMethod.Get, url, bearerToken, cancellationToken);
+        }
+
+        public Task<ApiResponse<List<UiGovernmentDto>>> GetPublicGovernmentsAsync(string? bearerToken = null, CancellationToken cancellationToken = default)
+        {
+            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Locations.GetGovernmentsUrl));
+
+            return SendQueryRequestAsync<List<UiGovernmentDto>>(HttpMethod.Get, url, bearerToken, cancellationToken);
         }
 
     }

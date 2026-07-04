@@ -60,7 +60,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
                 CacheKeys.Users.AdminDetails(request.AppUserId),
                 CacheKeys.Users.Shipment(request.AppUserId, detailedShipment.Id),
                 CacheKeys.Shipments.ByTrackingNumber(detailedShipment.TrackingNumber),
-                CacheKeys.OperationManagers.Dashboard);
+                CacheKeys.OperationManagers.OperationManagersDashboard);
 
             //====== Return Created Result with detailed shipment data ======//
             return Result<RetrieveShipmentDto>.Created(detailedShipment);

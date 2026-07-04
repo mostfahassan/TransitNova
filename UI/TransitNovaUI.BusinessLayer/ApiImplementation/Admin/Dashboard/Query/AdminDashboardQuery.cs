@@ -1,19 +1,18 @@
 using TransitNovaUI.BusinessLayer.Common.APIHelper.Http;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Dashboard.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Dashboard.Segregation;
 namespace TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Dashboard.Query
 {
-    public class AdminDashboardQuery(IHttpHandler httpHandler, HttpClient httpClient) : IGetAdminDashboardQueryService
+    public class AdminDashboardQuery(IHttpHandler httpHandler, HttpClient httpClient) : ApiServiceBase(httpHandler, httpClient), IAdminDashboardQuery
     {
-        public async Task<ApiResponse<UiAdminDashboardDto>> GetAdminDashboardAsync(string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<UiAdminDashboardDto>> GetAdminDashboardAsync(string bearerToken, CancellationToken cancellationToken = default)
         {
         
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.AdminDashboard.GetAdminDashboardUrl));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Get, url, bearerToken, cancellationToken);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadQueryResponseAsync<UiAdminDashboardDto>(httpResponse, cancellationToken);
+            return SendQueryRequestAsync<UiAdminDashboardDto>(HttpMethod.Get, url, bearerToken, cancellationToken);
         }
     }
 }
+
+

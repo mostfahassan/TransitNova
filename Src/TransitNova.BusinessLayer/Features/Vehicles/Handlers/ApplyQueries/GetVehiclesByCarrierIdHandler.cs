@@ -4,7 +4,6 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Vehicle;
 using TransitNova.BusinessLayer.Features.Vehicles.Queries;
 using TransitNova.BusinessLayer.Interfaces.Repositories.VehicleRepository;
-using TransitNova.Domain.Enums.Result;
 namespace TransitNova.BusinessLayer.Features.Vehicles.Handlers.ApplyQueries
 {
     public sealed class GetVehiclesByCarrierIdHandler(

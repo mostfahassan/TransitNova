@@ -29,8 +29,8 @@ namespace TransitNova.InfraStructure.Repository.TokenRepository
                     User = rt.User != null ? new AppUserDto
                     {
                         Id = rt.UserId,
-                        UserName = rt.User.UserName,
-                        Email = rt.User.Email,
+                        UserName = rt.User.UserName!,
+                        Email = rt.User.Email!,
                         PhoneNumber  = rt.User.PhoneNumber,
                         UserType = rt.User.UserType,
                     } : null,

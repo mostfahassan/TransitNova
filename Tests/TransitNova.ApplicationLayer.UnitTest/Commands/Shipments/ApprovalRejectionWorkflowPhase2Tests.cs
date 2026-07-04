@@ -37,7 +37,7 @@ public sealed class ApprovalRejectionWorkflowPhase2Tests
 
         await fixture.Handler.Handle(fixture.Command, CancellationToken.None);
 
-        fixture.Shipment.HandledById.Should().Be(fixture.ManagerProfileId);
+        fixture.Shipment.HandlerId.Should().Be(fixture.ManagerProfileId);
     }
 
     [Fact]

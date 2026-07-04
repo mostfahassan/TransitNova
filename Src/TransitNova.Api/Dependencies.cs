@@ -105,7 +105,7 @@ namespace TransitNova.Api
         }
 
         
-        // --- Problem Details
+        // --- Problem ById
         public static IServiceCollection AddProblemDetailsService(this IServiceCollection service)
         {
             service.AddProblemDetails(config =>

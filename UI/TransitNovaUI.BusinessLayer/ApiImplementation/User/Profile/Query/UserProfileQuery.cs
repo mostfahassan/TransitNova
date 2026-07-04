@@ -2,30 +2,22 @@ using TransitNovaUI.BusinessLayer.Common.APIHelper.Http;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Profile.Segregation;
 namespace TransitNovaUI.BusinessLayer.ApiImplementation.User.Profile.Query
 {
-    public class UserProfileQuery(IHttpHandler httpHandler, HttpClient httpClient) : IUserProfileQuery
+    public class UserProfileQuery(IHttpHandler httpHandler, HttpClient httpClient) : ApiServiceBase(httpHandler, httpClient), IUserProfileQuery
     {
-        public async Task<ApiResponse<UiProfileDashboardDto>> GetUserDashboardAsync(string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<UiProfileDashboardDto>> GetUserDashboardAsync(string bearerToken, CancellationToken cancellationToken = default)
         {
         
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.UserProfile.GetUserDashboardUrl));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Get, url, bearerToken, cancellationToken);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadQueryResponseAsync<UiProfileDashboardDto>(httpResponse, cancellationToken);
+            return SendQueryRequestAsync<UiProfileDashboardDto>(HttpMethod.Get, url, bearerToken, cancellationToken);
         }
 
-        public async Task<ApiResponse<UiUserProfileDto>> GetUserProfileAsync(string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<UiUserProfileDto>> GetUserProfileAsync(string bearerToken, CancellationToken cancellationToken = default)
         {
             
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.UserProfile.GetUserProfileUrl));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Get, url, bearerToken, cancellationToken);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadQueryResponseAsync<UiUserProfileDto>(httpResponse, cancellationToken);
+            return SendQueryRequestAsync<UiUserProfileDto>(HttpMethod.Get, url, bearerToken, cancellationToken);
         }
 
     }

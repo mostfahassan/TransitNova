@@ -36,6 +36,10 @@ public static class ApiRoutes
     public static class AdminCarriers
     {
         public const string DeleteCarrierUrl = $"{Prefix}/admin/carriers/{{id}}";
+        public const string GetAdminCarrierByIdUrl = $"{Prefix}/admin/carriers/{{carrierId}}";
+        public const string GetAdminCarrierShipmentByIdUrl = $"{Prefix}/admin/carriers/{{carrierId}}/shipments/{{shipmentId}}";
+        public const string GetAdminCarrierShipmentsUrl = $"{Prefix}/admin/carriers/{{carrierId}}/shipments";
+        public const string GetAdminCarriersUrl = $"{Prefix}/admin/carriers";
     }
 
     public static class AdminDashboard
@@ -56,6 +60,12 @@ public static class ApiRoutes
     {
         public const string FilterUsersUrl = $"{Prefix}/admin/users";
         public const string GetUserDetailsUrl = $"{Prefix}/admin/users/{{userId}}";
+    }
+
+    public static class AdminWarehouseManagers
+    {
+        public const string GetWarehouseManagerByIdUrl = $"{Prefix}/admin/warehouse-managers/{{id}}";
+        public const string GetWarehouseManagersUrl = $"{Prefix}/admin/warehouse-managers";
     }
 
     public static class Authentication
@@ -95,6 +105,11 @@ public static class ApiRoutes
         public const string UpdateCarrierProfileUrl = $"{Prefix}/carriers/profile";
     }
 
+    public static class CarrierVehicles
+    {
+        public const string GetCarrierVehicleUrl = $"{Prefix}/carriers/{{carrierId}}/vehicles";
+    }
+
     public static class CarrierShipments
     {
         public const string CompleteDeliveryUrl = $"{Prefix}/carriers/{{carrierId}}/shipments/{{shipmentId}}/complete-delivery";
@@ -102,12 +117,6 @@ public static class ApiRoutes
         public const string GetCarrierShipmentByIdUrl = $"{Prefix}/carriers/{{carrierId}}/shipments/{{shipmentId}}";
         public const string GetCarrierShipmentsUrl = $"{Prefix}/carriers/{{carrierId}}/shipments";
         public const string UpdateCarrierStatusUrl = $"{Prefix}/carriers/{{carrierId}}/status";
-    }
-
-    public static class CarrierTrips
-    {
-        public const string GetCarrierTripByIdUrl = $"{Prefix}/carriers/{{carrierId}}/trips/{{tripId}}";
-        public const string GetCarrierTripsUrl = $"{Prefix}/carriers/{{carrierId}}/trips";
     }
 
     public static class Cities
@@ -131,8 +140,12 @@ public static class ApiRoutes
     public static class Locations
     {
         public const string GetCitiesByGovernmentUrl = $"{Prefix}/governments/{{governmentId}}/cities";
+        public const string GetCityByIdUrl = $"{Prefix}/cities/{{cityId}}";
+        public const string GetCitiesUrl = $"{Prefix}/cities";
         public const string GetCountriesUrl = $"{Prefix}/countries";
         public const string GetCountryGovernmentsUrl = $"{Prefix}/countries/{{countryId}}/governments";
+        public const string GetGovernmentByIdUrl = $"{Prefix}/governments/{{governmentId}}";
+        public const string GetGovernmentsUrl = $"{Prefix}/governments";
     }
 
     public static class OperationManagerCarriers
@@ -169,7 +182,7 @@ public static class ApiRoutes
         public const string ReviewShipmentUrl = $"{Prefix}/operation-managers/shipments/{{shipmentId}}/review";
     }
 
-    public static class OperationManagerTrips
+    public static class Trips
     {
         public const string GetCarrierTripByIdUrl = $"{Prefix}/carriers/{{carrierId}}/trips/{{tripId}}";
         public const string GetCarrierTripsUrl = $"{Prefix}/carriers/{{carrierId}}/trips";
@@ -194,6 +207,11 @@ public static class ApiRoutes
         public const string GetSubscriptionByIdUrl = $"{Prefix}/admin/subscriptions/{{subscriptionId}}";
     }
 
+    public static class Shipments
+    {
+        public const string RateCalculationUrl = $"{Prefix}/shipments/rate-calculation";
+    }
+
     public static class UserCarrierRatings
     {
         public const string RateDeliveryCarrierUrl = $"{Prefix}/shipments/{{shipmentId}}/rate-delivery-carrier";
@@ -208,7 +226,7 @@ public static class ApiRoutes
 
     public static class UserShipments
     {
-        public const string CancelShipmentUrl = $"{Prefix}/users/shipments/{{shipmentId}}";
+        public const string CancelShipmentUrl = $"{Prefix}/users/shipments/{{shipmentId}}/cancel";
         public const string CreateShipmentUrl = $"{Prefix}/users/shipments";
         public const string DeleteShipmentUrl = $"{Prefix}/users/shipments/{{shipmentId}}";
         public const string GetUserShipmentByIdUrl = $"{Prefix}/users/shipments/{{shipmentId}}";
@@ -240,6 +258,30 @@ public static class ApiRoutes
         public const string GetWarehouseByIdUrl = $"{Prefix}/admin/warehouses/{{warehouseId}}";
         public const string GetWarehousesUrl = $"{Prefix}/admin/warehouses";
         public const string UpdateWarehouseUrl = $"{Prefix}/admin/warehouses/{{warehouseId}}";
+    }
+
+    public static class WarehouseManagerCarriers
+    {
+        public const string GetCarrierByIdUrl = $"{Prefix}/warehouse-managers/carriers/{{carrierId}}/warehouse/{{warehouseId}}";
+        public const string GetCarriersUrl = $"{Prefix}/warehouse-managers/carriers/{{warehouseId}}";
+    }
+
+    public static class WarehouseManagerDashboard
+    {
+        public const string GetDashboardUrl = $"{Prefix}/warehouse-managers/dashboard";
+        public const string UpdateWarehouseManagerUrl = $"{Prefix}/warehouse-managers/update";
+    }
+
+    public static class WarehouseManagerShipments
+    {
+        public const string GetShipmentByIdUrl = $"{Prefix}/warehouse-managers/shipments/{{shipmentId}}/warehouse/{{warehouseId}}";
+        public const string GetShipmentsUrl = $"{Prefix}/warehouse-managers/shipments/{{warehouseId}}";
+    }
+
+    public static class WarehouseManagerTrips
+    {
+        public const string GetTripByIdUrl = $"{Prefix}/warehouse-managers/trips/{{tripId}}/warehouse/{{warehouseId}}";
+        public const string GetTripsUrl = $"{Prefix}/warehouse-managers/trips/{{warehouseId}}";
     }
 }
 

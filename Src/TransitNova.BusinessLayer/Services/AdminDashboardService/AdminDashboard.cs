@@ -6,8 +6,9 @@ using TransitNova.BusinessLayer.Interfaces.Services.AdminDashboard;
 using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.BusinessLayer.Services.AdminDashboardService
 {
-    internal class AdminDashboard(IAdminActivityQueryRepository adminActivity ,  
-             IAdminOperationalHealth adminOperations, IAdminStatisticsQueryRepository adminStatistics) : IAdminDashboard
+    internal class AdminDashboard(IAdminActivityQueryRepository adminActivity,IAdminOperationalHealth adminOperations, IAdminStatisticsQueryRepository adminStatistics) 
+        : IAdminDashboard
+
     {
         public async Task<AdminDashboardDto> BuildAsync(CancellationToken cancellationToken)
         {
@@ -32,7 +33,7 @@ namespace TransitNova.BusinessLayer.Services.AdminDashboardService
             var deliverySuccessRateTask = adminOperations.DeliverySuccessRateAsync(cancellationToken);
             var activeShipmentsTask = adminOperations.ActiveShipmentAsync(cancellationToken);
             var availableCarriersTask = adminOperations.AvailableCarriersAsync(cancellationToken);
-
+            var RevenueSummaryTask = adminActivity.GetRevenueSummaryAsync(cancellationToken);
 
             await Task.WhenAll(
                 recentActivityTask,
@@ -52,6 +53,7 @@ namespace TransitNova.BusinessLayer.Services.AdminDashboardService
                 activeCarriersTask,
                 activeShipmentsTask,
                 availableCarriersTask,
+                RevenueSummaryTask,
                 deliverySuccessRateTask);
 
             var recentActivity = recentActivityTask.Result;
@@ -66,6 +68,7 @@ namespace TransitNova.BusinessLayer.Services.AdminDashboardService
             var totalOperationManagers = totalOperationManagersTask.Result;
             var activeTrips = activeTripsTask.Result;
             var activeShipments = activeShipmentsTask.Result;
+            var revenueSummary = RevenueSummaryTask.Result;
 
 
 
@@ -104,7 +107,6 @@ namespace TransitNova.BusinessLayer.Services.AdminDashboardService
                 DeliverySuccessRate = deliverySuccessRate,
             };
 
-
             var dashboard = new AdminDashboardDto()
             {
 
@@ -115,6 +117,7 @@ namespace TransitNova.BusinessLayer.Services.AdminDashboardService
                 TopOperationManagers = topOperationManagers,
                 RecentActivities = recentActivity,
                 OperationalHealth = operationHealth,
+                RevenueSummary = revenueSummary
             };
 
             return dashboard;

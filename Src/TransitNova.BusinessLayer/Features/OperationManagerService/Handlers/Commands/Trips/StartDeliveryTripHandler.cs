@@ -60,7 +60,7 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
                 CacheKeys.Carriers.Trips(request.CarrierId),
                 CacheKeys.Carriers.TripDetails(request.CarrierId, trip.Id),
                 CacheKeys.Carriers.Dashboard(request.CarrierId),
-                CacheKeys.OperationManagers.Dashboard,
+                CacheKeys.OperationManagers.OperationManagersDashboard,
                 CacheKeys.Trips.Details(trip.Id));
             return BaseResult.Success();
         }

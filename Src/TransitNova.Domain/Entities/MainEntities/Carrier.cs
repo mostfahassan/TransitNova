@@ -64,7 +64,6 @@ namespace TransitNova.Domain.Entities.MainEntities
             PhoneNumber = phone;
             Address = address;
             CityId = cityId;
-         
             CreatedBy = appUserId.ToString();
             UserType = UserType.Carrier;
             Status = CarrierStatus.Available;

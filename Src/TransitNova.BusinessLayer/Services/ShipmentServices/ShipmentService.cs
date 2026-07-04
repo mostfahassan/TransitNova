@@ -62,7 +62,7 @@ namespace TransitNova.BusinessLayer.Services.ShipmentServices
                 deliveryDate = result.Item2;
             }
 
-            //=== Update Shipment Details 
+            //=== Update Shipment ById 
             shipment.UpdateShipmentDetails(shipmentCommand.ReceiverId, shipmentCommand.DeliveryAddress, shipmentCommand.PickupAddress, shipmentCommand.TransportationMode,
                 shipmentCommand.ShipmentType, shipmentCommand.PackageSpecification?.ToDomain(), cost, deliveryDate);
 

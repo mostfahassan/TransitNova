@@ -50,7 +50,7 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
             CacheInvalidationContext.Set(
                 request,
                 CacheKeys.Shipments.ByTrackingNumber(shipmentToReject.TrackingNumber),
-                CacheKeys.OperationManagers.Dashboard,
+                CacheKeys.OperationManagers.OperationManagersDashboard,
                 CacheKeys.OperationManagers.ShipmentHistories(request.ShipmentId));
             return BaseResult.Success();
         }

@@ -6,9 +6,9 @@ using TransitNova.Domain.Contracts.Caching;
 
 namespace TransitNova.BusinessLayer.Features.OperationManagerService.Queries.OperationManagerQueries
 {
-    public sealed record GetOperationManagerDashboardQuery : IQuery<Result<OperationManagerDashboardDto>>, ICachable
+    public sealed record GetOperationManagerDashboardQuery(Guid OperationManagerId) : IQuery<Result<OperationManagerDashboardDto>>, ICachable
     {
-        public string CacheKey => CacheKeys.OperationManagers.Dashboard;
+        public string CacheKey => CacheKeys.OperationManagers.Dashboard(OperationManagerId);
     }
    
 }

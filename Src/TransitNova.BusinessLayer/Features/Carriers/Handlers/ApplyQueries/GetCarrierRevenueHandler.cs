@@ -17,11 +17,11 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyQueries
 
             if (!revenue.HasValue)
             {
-                logger.LogInformation("No ratings found for Carrier {UserId}", request.CarrierId);
+                logger.LogInformation("No Deliveries for Carrier {UserId}", request.CarrierId);
                 return Result<decimal>.Success(default);
             }
 
-            logger.LogInformation("Carrier {UserId} rating: {Rating}", request.CarrierId, revenue.Value);
+            logger.LogInformation("Carrier {UserId} revenue: {Revenue}", request.CarrierId, revenue.Value);
             return Result<decimal>.Success(revenue.Value);
         }
     }

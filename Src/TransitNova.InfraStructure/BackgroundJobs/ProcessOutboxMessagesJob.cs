@@ -52,9 +52,9 @@ public sealed class ProcessOutboxMessagesJob(AppDbContext dbContext, IPublisher 
                 logger.LogError(ex, "Failed to process outbox message {MessageId}. Retry Count: {RetryCount}", message.Id, message.RetryCount);
             }
 
-            await dbContext.SaveChangesAsync(context.CancellationToken);
         }
 
+        await dbContext.SaveChangesAsync(context.CancellationToken);
         logger.LogInformation("Finished processing outbox messages batch.");
     }
 }

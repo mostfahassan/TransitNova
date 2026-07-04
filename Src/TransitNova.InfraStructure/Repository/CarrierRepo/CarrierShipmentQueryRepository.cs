@@ -32,23 +32,8 @@ public class CarrierShipmentQueryRepository(
         return shipment;
     }
 
-    public async Task<IEnumerable<RetrieveShipmentDto>> GetCarrierShipmentsAsync(Guid carrierId, CancellationToken ct = default)
-    {
-        logger.LogDebug("Fetching shipments for Carrier {UserId}", carrierId);
-
-        var shipments = await context.Shipments
-            .AsNoTracking()
-            .Where(sh => sh.ShipmentStates.Any(ss => ss.CarrierId == carrierId))
-            .ProjectTo<RetrieveShipmentDto>(mapper.ConfigurationProvider)
-            .ToListAsync(ct);
-
-        logger.LogInformation("Found {Count} shipments for Carrier {UserId}", shipments.Count, carrierId);
-        return shipments;
-    }
-
     public async Task<PagedResult<RetrieveShipmentDto>> GetCarrierShipmentsAsync(Guid carrierId, CarrierShipmentFilterDto filter, CancellationToken ct = default)
     {
-        logger.LogDebug("Fetching filtered shipments for Carrier {UserId} with {@Filter}", carrierId, filter);
 
         var query = context.Shipments
             .AsNoTracking()

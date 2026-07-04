@@ -1,9 +1,14 @@
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
+using TransitNova.Domain.Contracts.Caching;
 
 namespace TransitNova.BusinessLayer.Features.BundleSubscriptions.Queries
 {
     public sealed record GetBundleSubscribersQuery(Guid BundleId)
-        : IQuery<Result<List<UserProfileDto>>>;
+        : IQuery<Result<List<UserProfileDto>>>, ICachable
+    {
+        public string CacheKey => CacheKeys.Admins.Subscribers(BundleId);
+    }   
 }

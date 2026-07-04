@@ -18,6 +18,9 @@ namespace TransitNova.Domain.Contracts.Caching
         public const string UsersPrefix = "users";
         public const string VehiclesPrefix = "vehicles";
         public const string ZonesPrefix = "zones";
+        public const string RolesPrefix = "roles";
+        public const string WarehouseManagersPrefix = "warehouse-managers";
+        public const string WarehousesPrefix = "warehouses";
 
         public static class Bundles
         {
@@ -38,6 +41,7 @@ namespace TransitNova.Domain.Contracts.Caching
             public static string Filter(object filterCriteria) => $"{CarriersPrefix}:filter:{Serialize(filterCriteria)}";
             public static string ByStatus(object carrierStatus) => $"{CarriersPrefix}:status:{Serialize(carrierStatus)}";
             public static string ShipmentsByCarrier(Guid carrierId, Guid currentUser) => $"{CarriersPrefix}:shipments-by-carrier:carrier-id:{carrierId}:current-user:{currentUser}";
+            public static string Revenue(Guid carrierId) => $"{CarriersPrefix}:revenue:carrier-id:{carrierId}";
         }
 
         public static class Cities
@@ -58,7 +62,10 @@ namespace TransitNova.Domain.Contracts.Caching
 
         public static class OperationManagers
         {
-            public const string Dashboard = OperationManagersPrefix + ":dashboard";
+            public static string Dashboard(Guid operationManagerId) => $"{OperationManagersPrefix}:dashboard:id:{operationManagerId}";
+          
+            public const string OperationManagersDashboard = $"{OperationManagersPrefix}:dashboard";
+            public const string ActiveList = $"{OperationManagersPrefix}:active-list";
             public static string AssignedShipments(object filter) => $"{OperationManagersPrefix}:assigned-shipments:{Serialize(filter)}";
             public static string Details(Guid operationManagerId) => $"{OperationManagersPrefix}:id:{operationManagerId}";
             public static string HandledCarriers(Guid operationManagerId, int pageNumber, int pageSize) => $"{OperationManagersPrefix}:handled-carriers:operation-manager-id:{operationManagerId}:page-number:{pageNumber}:page-size:{pageSize}";
@@ -70,6 +77,14 @@ namespace TransitNova.Domain.Contracts.Caching
         public static class Admins
         {
             public const string Dashboard = AdminsPrefix + ":dashboard";
+            public const string Managers = AdminsPrefix + ":managers";
+            public static string Subscribers(Guid bundleId) => $"{AdminsPrefix}:subscribers:bundle-id:{bundleId}";
+        }
+        public static class Roles
+        {
+            public static string ById(Guid roleId) => $"{RolesPrefix}:id:{roleId}";
+            public const string List = RolesPrefix + ":list";
+            public const string MemberList = RolesPrefix + ":member-list";
         }
 
         public static class Shipments
@@ -87,6 +102,22 @@ namespace TransitNova.Domain.Contracts.Caching
         {
             public static string Filter(object filterCriteria) => $"{TripsPrefix}:filter:{Serialize(filterCriteria)}";
             public static string Details(Guid tripId) => $"{TripsPrefix}:id:{tripId}";
+        }
+        public static class WarehouseManagers
+        {
+            public static string Filter(object filterCriteria) => $"{WarehouseManagersPrefix}:filter:{Serialize(filterCriteria)}";
+
+            public static string Details(Guid warehouseManagerId) => $"{WarehouseManagersPrefix}:id:{warehouseManagerId}";
+            public static string Dashboard(Guid warehouseManagerId) => $"{WarehouseManagersPrefix}:dashboard:warehouse-manager-id:{warehouseManagerId}";
+         
+        }
+        public static class Warehouse
+        {
+            public static string Filter(object filterCriteria) => $"{WarehousesPrefix}:filter:{Serialize(filterCriteria)}";
+            public static string ById(Guid warehouseId) => $"{WarehousesPrefix}:id:{warehouseId}";
+            public static string Dashboard(Guid warehouseId) => $"{WarehousesPrefix}:dashboard:warehouse-id:{warehouseId}";
+            public const string List = WarehousesPrefix + ":list";
+
         }
 
         public static class Users
@@ -114,59 +145,6 @@ namespace TransitNova.Domain.Contracts.Caching
             public static string ByCity(int cityId, object filter) => $"{ZonesPrefix}:city-id:{cityId}:filter:{Serialize(filter)}";
             public static string Filter(object filter) => $"{ZonesPrefix}:filter:{Serialize(filter)}";
         }
-
-        public static string BundleList() => Bundles.List;
-        public static string BundleById(Guid id) => Bundles.ById(id);
-        public static string BundleSubscriptionDetails(Guid subscriptionId) => Bundles.SubscriptionDetails(subscriptionId);
-        public static string CarrierDashboard(Guid carrierId) => Carriers.Dashboard(carrierId);
-        public static string CarrierProfile(Guid carrierId) => Carriers.Profile(carrierId);
-        public static string CarrierRating(Guid carrierId) => Carriers.Rating(carrierId);
-        public static string CarrierShipmentDetails(Guid carrierId, Guid shipmentId) => Carriers.ShipmentDetails(carrierId, shipmentId);
-        public static string CarrierShipments(Guid carrierId, object filter) => Carriers.Shipments(carrierId, filter);
-        public static string CarrierTripDetails(Guid carrierId, Guid tripId) => Carriers.TripDetails(carrierId, tripId);
-        public static string CarrierTrips(Guid carrierId) => Carriers.Trips(carrierId);
-        public static string CarrierFilter(object filterCriteria) => Carriers.Filter(filterCriteria);
-        public static string CarriersByStatus(object carrierStatus) => Carriers.ByStatus(carrierStatus);
-        public static string CarrierShipmentsByCarrier(Guid carrierId, Guid currentUser) => Carriers.ShipmentsByCarrier(carrierId, currentUser);
-        public static string CityById(int id) => Cities.ById(id);
-        public static string CitiesByCountry(int countryId) => Cities.ByCountry(countryId);
-        public static string CitiesByGovernment(int governmentId) => Cities.ByGovernment(governmentId);
-        public static string CityFilter(object filter) => Cities.Filter(filter);
-        public static string CountryById(int id) => Countries.ById(id);
-        public static string CountryList() => Countries.List;
-        public static string CountryGovernments(int countryId) => Countries.Governments(countryId);
-        public static string CountryFilter(object filter) => Countries.Filter(filter);
-        public static string OperationManagerAssignedShipments(object filter) => OperationManagers.AssignedShipments(filter);
-        public static string OperationManagerDashboard() => OperationManagers.Dashboard;
-        public static string AdminDashboard() => Admins.Dashboard;
-        public static string OperationManagerDetails(Guid operationManagerId) => OperationManagers.Details(operationManagerId);
-        public static string OperationManagerHandledCarriers(Guid operationManagerId, int pageNumber, int pageSize) => OperationManagers.HandledCarriers(operationManagerId, pageNumber, pageSize);
-        public static string OperationManagerHandledShipments(Guid operationManagerId, int pageNumber, int pageSize) => OperationManagers.HandledShipments(operationManagerId, pageNumber, pageSize);
-        public static string OperationManagerShipmentHistories(Guid shipmentId) => OperationManagers.ShipmentHistories(shipmentId);
-        public static string OperationManagerFilterCarriers(object filterCriteria) => OperationManagers.FilterCarriers(filterCriteria);
-        public static string ShipmentById(Guid shipmentId) => Shipments.ById(shipmentId);
-        public static string ShipmentByTrackingNumber(string trackingNumber) => Shipments.ByTrackingNumber(trackingNumber);
-        public static string ShipmentFilter(object filterCriteria) => Shipments.Filter(filterCriteria);
-        public static string ShipmentHistories(string trackingNumber) => Shipments.Histories(trackingNumber);
-        public static string ShipmentStatistics() => Shipments.Statistics;
-        public static string UserShipmentByTrackingNumber(string trackingNumber) => Shipments.UserByTrackingNumber(trackingNumber);
-        public static string UserShipmentsInfo(Guid appUserId) => Shipments.UserShipmentsInfo(appUserId);
-        public static string TripFilter(object filterCriteria) => Trips.Filter(filterCriteria);
-        public static string TripDetails(Guid tripId) => Trips.Details(tripId);
-        public static string AdminUserDetails(Guid userId) => Users.AdminDetails(userId);
-        public static string UserDashboard(Guid appUserId) => Users.Dashboard(appUserId);
-        public static string UserId(Guid appUserId) => Users.ByAppUserId(appUserId);
-        public static string UserProfile(Guid appUserId) => Users.Profile(appUserId);
-        public static string UserFilter(object filterCriteria) => Users.Filter(filterCriteria);
-        public static string UserShipment(Guid appUserId, Guid shipmentId) => Users.Shipment(appUserId, shipmentId);
-        public static string ActiveVehicles() => Vehicles.Active;
-        public static string VehicleById(Guid id) => Vehicles.ById(id);
-        public static string VehicleByPlateNumber(string plateNumber) => Vehicles.ByPlateNumber(plateNumber);
-        public static string VehicleList() => Vehicles.List;
-        public static string VehiclesByCarrierId(Guid carrierId) => Vehicles.ByCarrierId(carrierId);
-        public static string ZoneById(Guid id) => Zones.ById(id);
-        public static string ZonesByCity(int cityId, object filter) => Zones.ByCity(cityId, filter);
-        public static string ZoneFilter(object filter) => Zones.Filter(filter);
 
         private static string Serialize(object? value)
             => Escape(JsonSerializer.Serialize(value));

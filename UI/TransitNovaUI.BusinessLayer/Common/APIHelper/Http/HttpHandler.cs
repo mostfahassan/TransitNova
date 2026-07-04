@@ -1,101 +1,37 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Reflection.Metadata;
 using System.Text.Json;
-
+using System.Text.Json.Serialization;
 namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
 {
     public class HttpHandler : IHttpHandler
     {
         private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
         {
-            Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
+            Converters = { new JsonStringEnumConverter() }
         };
-
         public async Task<ApiResponse<T>> ReadQueryResponseAsync<T>(HttpResponseMessage httpResponse, CancellationToken ct)
         {
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                var error = await httpResponse.Content.ReadAsStringAsync(ct);
-
-                return new ApiResponse<T>
-                {
-                    Success = false,
-                    StatusCode = (int)httpResponse.StatusCode,
-                    Message = $"API error ({(int)httpResponse.StatusCode}): {error}"
-                };
-            }
-
             var response = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<T>>(_jsonOptions, ct);
-            if (response is null)
-            {
-                return new ApiResponse<T>
-                {
-                    Success = false,
-                    StatusCode = (int)httpResponse.StatusCode,
-                    Message = "Empty response from API"
-                };
-            }
-            return response;
+            return response ?? ApiResponse<T>.FailedResponse(Errors.Failure("Failed to read Query response."));
         }
-
         public async Task<ApiResponse> ReadCommandResponseAsync(HttpResponseMessage httpResponse, CancellationToken ct)
         {
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                var error = await httpResponse.Content.ReadAsStringAsync(ct);
-
-                return new ApiResponse
-                {
-                    Success = false,
-                    StatusCode = (int)httpResponse.StatusCode,
-                    Message = $"API error ({(int)httpResponse.StatusCode}): {error}"
-                };
-            }
-
             var response = await httpResponse.Content.ReadFromJsonAsync<ApiResponse>(_jsonOptions, ct);
+            return response ?? ApiResponse.Failure(Errors.Failure("Failed to read command response."));
 
-            if (response is null)
-            {
-                return new ApiResponse
-                {
-                    Success = false,
-                    StatusCode = (int)httpResponse.StatusCode,
-                    Message = "Empty response from API"          
-                };
-            }
-            return response;
         }
-
         public async Task<ApiResponse<T>> ReadCommandResponseAsync<T>(HttpResponseMessage httpResponse, CancellationToken ct)
         {
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                var error = await httpResponse.Content.ReadAsStringAsync(ct);
-
-                return new ApiResponse<T>
-                {
-                    Success = false,
-                    StatusCode = (int)httpResponse.StatusCode,
-                    Message = $"API error ({(int)httpResponse.StatusCode}): {error}"
-                };
-            }
-
             var response = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<T>>(_jsonOptions, ct);
 
-            if (response is null)
-            {
-                return new ApiResponse<T>
-                {
-                    Success = false,
-                    StatusCode = (int)httpResponse.StatusCode,
-                    Message = "Empty response from API"
-                };
-            }
-            return response;
+            return response ?? ApiResponse<T>.FailedResponse(Errors.Failure("Failed to read command response."));
         }
 
-        public HttpRequestMessage RequestBuilder(HttpMethod httpMethod, string url, string? bearerToken, CancellationToken cancellationToken,object? content = null, string? idempotencyKey = null)
+        public HttpRequestMessage RequestBuilder(HttpMethod httpMethod, object? content, string url, string? bearerToken, CancellationToken cancellationToken, string? idempotencyKey = null) =>
+            RequestBuilder(httpMethod, url, bearerToken, cancellationToken, content, idempotencyKey);
+
+        public HttpRequestMessage RequestBuilder(HttpMethod httpMethod, string url, string? bearerToken, CancellationToken cancellationToken, object? content = null, string? idempotencyKey = null)
         {
             var request = new HttpRequestMessage(httpMethod, url);
 

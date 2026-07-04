@@ -110,7 +110,7 @@ namespace TransitNova.Api.Controllers.Admin.CarrierOperation
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Shipment Details For Admin")]
+        [EndpointName("Get Carrier Shipment ById For Admin")]
         [EndpointSummary("Get details of a specific carrier shipment")]
         [EndpointDescription("Returns the detailed information for a shipment that belongs to the authenticated carrier.")]
         public async Task<IActionResult> ShipmentAsync(Guid shipmentId, Guid carrierId, CancellationToken ct)
@@ -121,7 +121,6 @@ namespace TransitNova.Api.Controllers.Admin.CarrierOperation
             var result = await mediator.Send(new GetCarrierShipmentDetailsQuery(carrierId, shipmentId), ct);
             return result.ToActionResult();
         }
-
 
         private async Task<bool> IsCarrierOwnerAsync(Guid carrierId)
         {

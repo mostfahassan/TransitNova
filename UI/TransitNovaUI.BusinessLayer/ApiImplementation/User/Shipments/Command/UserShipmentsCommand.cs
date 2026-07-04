@@ -4,66 +4,46 @@ using TransitNovaUI.BusinessLayer.Common.APIHelper.Http;
 namespace TransitNovaUI.BusinessLayer.ApiImplementation.User.Shipments.Command
 {
     public class UserShipmentsCommand(IHttpHandler httpHandler, HttpClient httpClient) 
-        : IUserShipmentCommand
+        : ApiServiceBase(httpHandler, httpClient), IUserShipmentCommand
     {
-        public async Task<ApiResponse> CancelShipmentAsync(Guid shipmentId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> CancelShipmentAsync(Guid shipmentId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.UserShipments.CancelShipmentUrl, ("shipmentId", shipmentId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Patch, url, bearerToken, cancellationToken, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync(httpResponse, cancellationToken);
+            return SendRequestAsync(HttpMethod.Patch, url, bearerToken, cancellationToken,null, idempotentKey);
         }
 
-        public async Task<ApiResponse<UiRetrieveShipmentDto>> CreateShipmentAsync(UiCreateShipmentDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<UiRetrieveShipmentDto>> CreateShipmentAsync(UiCreateShipmentDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             var content = UiCreateShipmentDto.ToDto(model);
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.UserShipments.CreateShipmentUrl));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Post, url, bearerToken, cancellationToken, content, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync<UiRetrieveShipmentDto>(httpResponse, cancellationToken);
+            return SendRequestAsync<UiRetrieveShipmentDto>(HttpMethod.Post, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
-        public async Task<ApiResponse> DeleteShipmentAsync(Guid shipmentId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> DeleteShipmentAsync(Guid shipmentId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
       
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.UserShipments.DeleteShipmentUrl, ("shipmentId", shipmentId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Delete,url, bearerToken, cancellationToken, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync(httpResponse, cancellationToken);
+            return SendRequestAsync(HttpMethod.Delete, url, bearerToken, cancellationToken,null, idempotentKey);
         }
 
-        public async Task<ApiResponse> IssueShipmentAsync(Guid shipmentId, UiIssueShipmentReason model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> IssueShipmentAsync(Guid shipmentId, UiIssueShipmentReason model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             var content = UiIssueShipmentReason.ToDto(model);
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.UserShipments.IssueShipmentUrl, ("shipmentId", shipmentId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Patch,url, bearerToken, cancellationToken, content, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync(httpResponse, cancellationToken);
+            return SendRequestAsync(HttpMethod.Patch, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
-        public async Task<ApiResponse> UpdateShipmentAsync(Guid shipmentId, UiUpdateShipmentDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> UpdateShipmentAsync(Guid shipmentId, UiUpdateShipmentDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             var content = UiUpdateShipmentDto.ToDto(model);
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.UserShipments.UpdateShipmentUrl, ("shipmentId", shipmentId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Put, url, bearerToken, cancellationToken, content, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync(httpResponse, cancellationToken);
+            return SendRequestAsync(HttpMethod.Put, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
     }

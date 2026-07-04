@@ -74,13 +74,13 @@ public sealed class TripRepositoryPhase2Tests
         shipment.ApproveShipment(Guid.NewGuid());
         shipment.AssignToCarrier(ShipmentStatuses.AssignedToPickUpCarrier, carrier.Id, Guid.NewGuid());
         var trip = Trip.Plan(carrier.Id, warehouse.Id, TripType.Pickup, [shipment]);
-        typeof(Shipment).GetProperty(nameof(Shipment.HandledById))!.SetValue(shipment, null);
+        typeof(Shipment).GetProperty(nameof(Shipment.HandlerId))!.SetValue(shipment, null);
         foreach (var entry in fixture.Context.ChangeTracker
                      .Entries<ShipmentStatus>()
                      .Where(x => x.State == EntityState.Added)
                      .ToList())
             entry.State = EntityState.Detached;
-        await Phase2RepositoryTestData.PrepareTripAsync(fixture, trip);
+        await Phase2RepositoryTestData.PrepareTripAsync(fixture);
         if (persist)
         {
             fixture.Context.Trips.Add(trip);

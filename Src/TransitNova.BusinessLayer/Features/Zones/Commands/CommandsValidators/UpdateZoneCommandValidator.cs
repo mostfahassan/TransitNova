@@ -22,15 +22,7 @@ namespace TransitNova.BusinessLayer.Features.Zones.Commands.CommandsValidators
                 .MustAsync(zoneRepository.CityExistsAsync)
                 .WithMessage("City not found.");
 
-            RuleFor(x => x.Dto)
-                .MustAsync(async (dto, ct) =>
-                    !await zoneRepository.NameExistsInCityForAnotherAsync(dto.ZoneId, dto.CityId, dto.Name, ct))
-                .WithMessage("Zone name already exists in this city.");
-
-            RuleFor(x => x.Dto)
-                .MustAsync(async (dto, ct) =>
-                    !await zoneRepository.CodeExistsInCityForAnotherAsync(dto.ZoneId, dto.CityId, dto.Code, ct))
-                .WithMessage("Zone code already exists in this city.");
+        
         }
     }
 }

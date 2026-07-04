@@ -18,11 +18,7 @@ namespace TransitNova.BusinessLayer.Common.Caching
             AddCore(bag, cacheKeys);
         }
 
-        public static void Add(ICacheInvalidator invalidator, params string[] cacheKeys)
-        {
-            var bag = RegisteredKeys.GetOrCreateValue(invalidator);
-            AddCore(bag, cacheKeys);
-        }
+    
 
         internal static IReadOnlyList<string> GetRegisteredKeys(ICacheInvalidator invalidator)
             => RegisteredKeys.TryGetValue(invalidator, out var bag)

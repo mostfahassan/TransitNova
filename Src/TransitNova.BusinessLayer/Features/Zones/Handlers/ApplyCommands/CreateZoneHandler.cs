@@ -15,7 +15,7 @@ namespace TransitNova.BusinessLayer.Features.Zones.Handlers.ApplyCommands
         public async Task<Result<ZoneDto>> Handle(CreateZoneCommand request, CancellationToken ct)
         {
             
-            Zone zone = Zone.Create(request.Dto.Name.Trim(), request.Dto.Code.Trim(), request.Dto.CityId);
+            Zone zone = Zone.Create(request.Dto.Name.Trim(), request.Dto.CityId);
             await repository.AddAsync(zone, ct);
             await unitOfWork.SaveChangesAsync(ct);
 

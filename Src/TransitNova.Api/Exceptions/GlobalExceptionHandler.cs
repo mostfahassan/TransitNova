@@ -46,6 +46,7 @@ internal sealed class GlobalExceptionHandler(
 
             // --- Conflicts (409 Conflict) ---
             DuplicateShipmentInTripException => StatusCodes.Status409Conflict,
+            ConflictRequestException => StatusCodes.Status409Conflict,
             SameWarehouseManagerException => StatusCodes.Status409Conflict, 
             WarehouseAlreadyHasManagerException => StatusCodes.Status409Conflict, 
 
@@ -56,7 +57,8 @@ internal sealed class GlobalExceptionHandler(
             ReusedRefreshTokenException => StatusCodes.Status403Forbidden,
             InvalidRefreshTokenException => StatusCodes.Status401Unauthorized, 
             RefreshTokenNotFoundException => StatusCodes.Status401Unauthorized, 
-            RevokingRefreshTokenException => StatusCodes.Status400BadRequest, 
+            RevokingRefreshTokenException => StatusCodes.Status400BadRequest,
+          
 
 
             // --- Fallback ---

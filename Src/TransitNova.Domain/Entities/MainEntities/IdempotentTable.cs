@@ -6,6 +6,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         public Guid RequestId { get;init; }
         public string? InstanceName { get; init; }
         public string? ResponseJson { get;init; }
+        public string? hashedRequest { get; init; }
         public DateTime CreatedAt { get; init; }
     }
 }

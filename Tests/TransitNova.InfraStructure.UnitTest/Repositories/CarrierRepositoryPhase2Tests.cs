@@ -145,12 +145,7 @@ public sealed class CarrierRepositoryPhase2Tests
             Guid.NewGuid(), Guid.NewGuid())).Should().BeNull();
     }
 
-    [Fact]
-    public async Task GetCarrierShipmentsAsync_ShouldReturnEmptyList_WhenNoAssignmentsExistAsync()
-    {
-        await using var fixture = await SqliteAppDbContextFixture.CreateAsync();
-        (await CreateShipmentRepository(fixture).GetCarrierShipmentsAsync(Guid.NewGuid())).Should().BeEmpty();
-    }
+  
 
     [Fact]
     public async Task GetCarrierShipmentCountInStatus_ShouldReturnEmptyDictionary_WhenNoAssignmentsExistAsync()
@@ -161,7 +156,7 @@ public sealed class CarrierRepositoryPhase2Tests
     }
 
     private static CarrierQueryRepository CreateRepository(SqliteAppDbContextFixture fixture) =>
-        new(NullLogger<CarrierQueryRepository>.Instance, Phase2RepositoryTestData.CreateMapper(), fixture.Context);
+        new(Phase2RepositoryTestData.CreateMapper(), fixture.Context);
 
     private static CarrierShipmentQueryRepository CreateShipmentRepository(SqliteAppDbContextFixture fixture) =>
         new(fixture.Context, Phase2RepositoryTestData.CreateMapper(),

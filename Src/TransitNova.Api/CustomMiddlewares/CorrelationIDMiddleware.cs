@@ -10,7 +10,6 @@ namespace TransitNova.Api.CustomMiddlewares
             context.TraceIdentifier = correlationID;
             context.Response.Headers["X-Correlation-ID"] = correlationID;
             using (LogContext.PushProperty("CorrelationId", correlationID)) 
-
             await next(context);
         }
         

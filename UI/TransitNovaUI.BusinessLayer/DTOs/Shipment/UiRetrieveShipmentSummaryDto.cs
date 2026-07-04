@@ -23,7 +23,7 @@ public sealed class UiRetrieveShipmentSummaryDto
             TrackingNumber = source.TrackingNumber,
             ReceiverCity = source.ReceiverCity,
             SenderCity = source.SenderCity,
-            ShippinCost = source.ShippinCost,
+            ShippinCost = source.ShippingCost,
             Weight = source.Weight,
             CurrentStatus = source.CurrentStatus,
             ShipmentType = source.ShipmentType,

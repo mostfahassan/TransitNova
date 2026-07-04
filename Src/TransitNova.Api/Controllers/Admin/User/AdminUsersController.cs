@@ -42,7 +42,7 @@ namespace TransitNova.Api.Controllers.Admin.User
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get User Details")]
+        [EndpointName("Get User ById")]
         [EndpointSummary("Get user details")]
         [EndpointDescription("Returns full details for a specific user.")]
         public async Task<IActionResult> UserDetailsAsync(Guid userId, CancellationToken ct)

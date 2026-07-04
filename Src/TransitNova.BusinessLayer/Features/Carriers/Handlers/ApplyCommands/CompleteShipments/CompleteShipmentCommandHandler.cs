@@ -30,7 +30,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.Com
                 CacheKeys.Carriers.Trips(request.CarrierId),
                 shipment.TripId.HasValue ? CacheKeys.Carriers.TripDetails(request.CarrierId, shipment.TripId.Value) : string.Empty,
                 CacheKeys.Shipments.ByTrackingNumber(shipment.TrackingNumber),
-                CacheKeys.OperationManagers.Dashboard,
+                CacheKeys.OperationManagers.OperationManagersDashboard,
                 CacheKeys.OperationManagers.ShipmentHistories(request.ShipmentId));
             return BaseResult.Success();
           

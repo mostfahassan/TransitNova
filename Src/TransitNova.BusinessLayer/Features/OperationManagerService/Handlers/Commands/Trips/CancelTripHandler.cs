@@ -30,7 +30,7 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
                 CacheKeys.Carriers.TripDetails(trip.CarrierId, trip.Id),
                 CacheKeys.Carriers.Dashboard(trip.CarrierId),
                 CacheKeys.Trips.Filter(new FilterTripsDto()),
-                CacheKeys.OperationManagers.Dashboard,
+                CacheKeys.OperationManagers.OperationManagersDashboard,
                 CacheKeys.Trips.Details(trip.Id));
 
             logger.LogInformation("Trip cancelled successfully. TripId: {TripId}, OperationManagerId: {OperationManagerId}", trip.Id, request.OperationManagerId);

@@ -9,8 +9,6 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository
     {
         Task<RetrieveShipmentDto?> GetCarrierShipmentAsync(Guid carrierId, Guid shipmentId, CancellationToken ct = default);
 
-        Task<IEnumerable<RetrieveShipmentDto>> GetCarrierShipmentsAsync(Guid carrierId, CancellationToken ct = default);
-
         Task<PagedResult<RetrieveShipmentDto>> GetCarrierShipmentsAsync(Guid carrierId, CarrierShipmentFilterDto filter, CancellationToken ct = default);
 
         Task<Dictionary<ShipmentStatuses, int>> GetCarrierShipmentCountInStatusAsync(Guid carrierId, CancellationToken ct = default);

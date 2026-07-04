@@ -21,7 +21,7 @@ public sealed class RepositoryIntegrationTests
         var requestId = Guid.NewGuid();
         var before = DateTime.UtcNow;
 
-        await repository.CreateRequestAsync(requestId, "CreateShipmentCommand", "response", CancellationToken.None);
+        await repository.CreateRequestAsync(requestId, "CreateShipmentCommand", "response", "hash", CancellationToken.None);
         await fixture.Context.SaveChangesAsync();
 
         var stored = await fixture.Context.IdempotentTableKey.AsNoTracking().SingleAsync();
@@ -38,7 +38,7 @@ public sealed class RepositoryIntegrationTests
         await using var fixture = await SqliteAppDbContextFixture.CreateAsync();
         var repository = new IdempotentRepository(fixture.Context);
         var storedId = Guid.NewGuid();
-        await repository.CreateRequestAsync(storedId, "Command", "response", CancellationToken.None);
+        await repository.CreateRequestAsync(storedId, "Command", "response", "hash", CancellationToken.None);
         await fixture.Context.SaveChangesAsync();
 
         var result = await repository.RequestExistsAsync(
@@ -53,13 +53,13 @@ public sealed class RepositoryIntegrationTests
         await using var fixture = await SqliteAppDbContextFixture.CreateAsync();
         var repository = new IdempotentRepository(fixture.Context);
         var requestId = Guid.NewGuid();
-        await repository.CreateRequestAsync(requestId, "FirstCommand", "response", CancellationToken.None);
+        await repository.CreateRequestAsync(requestId, "FirstCommand", "response", "hash", CancellationToken.None);
         await fixture.Context.SaveChangesAsync();
         fixture.Context.ChangeTracker.Clear();
 
         Func<Task> act = async () =>
         {
-            await repository.CreateRequestAsync(requestId, "SecondCommand", "response", CancellationToken.None);
+            await repository.CreateRequestAsync(requestId, "SecondCommand", "response", "hash", CancellationToken.None);
             await fixture.Context.SaveChangesAsync();
         };
 
@@ -73,7 +73,7 @@ public sealed class RepositoryIntegrationTests
         var repository = new IdempotentRepository(fixture.Context);
 
         await repository.CreateRequestAsync(
-            Guid.NewGuid(), "Command", "response", CancellationToken.None);
+            Guid.NewGuid(), "Command", "response", "hash", CancellationToken.None);
 
         fixture.Context.ChangeTracker.Entries<IdempotentTable>()
             .Should()

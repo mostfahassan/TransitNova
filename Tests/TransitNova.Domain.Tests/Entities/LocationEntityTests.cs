@@ -76,10 +76,11 @@ public sealed class LocationEntityTests
     [Fact]
     public void CreateZone_Should_Create_ActiveZone_When_DataIsValid()
     {
-        var zone = Zone.Create("Downtown", " DT-1 ", 2);
+        var zone = Zone.Create("Downtown", 2);
 
         zone.Name.Should().Be("Downtown");
-        zone.Code.Should().Be(" DT-1 ");
+        zone.Code.Should().StartWith("DOW-");
+        zone.Code.Should().HaveLength(8);
         zone.CityId.Should().Be(2);
         zone.Id.Should().NotBeEmpty();
     }
@@ -87,7 +88,7 @@ public sealed class LocationEntityTests
     [Fact]
     public void UpdateZone_Should_TrimValuesAndUpdateTimestamp_When_Called()
     {
-        var zone = Zone.Create("Downtown", "DT-1", 2);
+        var zone = Zone.Create("Downtown", 2);
 
         zone.Update(" New Zone ", " NZ-2 ", 5);
 

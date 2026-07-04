@@ -27,7 +27,8 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.OperationManager
         [EndpointDescription("Returns the dashboard data for the authenticated operation manager, including the summary metrics required to monitor the system.")]
         public async Task<IActionResult> DashboardAsync(CancellationToken ct)
         {
-            var response = await mediator.Send(new GetOperationManagerDashboardQuery(), ct);
+            var operationManagerId = User.GetUserId();
+            var response = await mediator.Send(new GetOperationManagerDashboardQuery(operationManagerId), ct);
             return response.ToActionResult();
         }
     }

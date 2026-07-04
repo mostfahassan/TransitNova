@@ -42,7 +42,7 @@ internal static class Phase2RepositoryTestData
     internal static async Task<Zone> AddZoneAsync(
         SqliteAppDbContextFixture fixture, City city, string suffix = "One")
     {
-        var zone = Zone.Create($"Zone {suffix}", $"Z-{suffix}", city.Id);
+        var zone = Zone.Create($"Zone {suffix}", city.Id);
         fixture.Context.Zones.Add(zone);
         await fixture.Context.SaveChangesAsync();
         return zone;
@@ -178,7 +178,7 @@ internal static class Phase2RepositoryTestData
     }
 
     internal static async Task PrepareTripAsync(
-        SqliteAppDbContextFixture fixture, Trip trip)
+        SqliteAppDbContextFixture fixture)
     {
         await EnsureSqliteRowVersionDefaultAsync(fixture, "Trips");
     }

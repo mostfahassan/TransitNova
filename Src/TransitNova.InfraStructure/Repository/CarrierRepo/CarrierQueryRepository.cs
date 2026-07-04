@@ -12,7 +12,7 @@ using TransitNova.InfraStructure.Context;
 
 namespace TransitNova.InfraStructure.Repository.CarrierRepo
 {
-    internal class CarrierQueryRepository(ILogger<CarrierQueryRepository> logger , IMapper mapper, AppDbContext context) : ICarrierQueryRepository
+    internal class CarrierQueryRepository(IMapper mapper, AppDbContext context) : ICarrierQueryRepository
     {
         public async Task<PagedResult<TRetrieve>> FilterByCriteriaAsync<TRetrieve>(FilterCarrierDto filterCriteria, bool tracked = false, CancellationToken ct = default)
         {
@@ -138,35 +138,22 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
 
         public async Task<Carrier?> GetCarrierByAppUserIdAsync(Guid appUserId, bool tracked = false, CancellationToken ct = default)
         {
-            logger.LogTrace("Fetching Carrier by User Id: {UserId}", appUserId);
+           
             var carrierQuery = context.Carriers.AsQueryable();
             if (!tracked)
-
                 carrierQuery = carrierQuery.AsNoTracking();
                                
-            var carrier = await carrierQuery.FirstOrDefaultAsync(c => c.AppUserId == appUserId, ct);
-               
-            if (carrier == null)
-                logger.LogWarning("Carrier for User Id {UserId} not found", appUserId);
-
+            var carrier = await carrierQuery.FirstOrDefaultAsync(c => c.AppUserId == appUserId, ct);      
             return carrier;
             
         }
 
         public async Task<TRetrieve?> GetCarrierDetailsAsync<TRetrieve>(Guid carrierId,CancellationToken ct = default)
-        {
-            logger.LogTrace("Fetching Carrier info for Id: {UserId}", carrierId);
-            var carrierQuery = context.Carriers.AsQueryable().AsNoTracking();
-            var carrier = await carrierQuery
+           => await context.Carriers.AsQueryable().AsNoTracking()
                 .Where(c => c.Id == carrierId)
                 .ProjectTo<TRetrieve>(mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(ct);
 
-            if (carrier == null)
-                logger.LogWarning("Detailed Carrier info for Id {UserId} not found", carrierId);
-
-            return carrier;
-        }
 
       
 
@@ -188,17 +175,14 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
                 .FirstOrDefaultAsync(ct);
 
         public async Task<CarrierStatus> GetStatusAsync(Guid carrierId, CancellationToken ct = default)
-        {
-            logger.LogTrace("Fetching status for Carrier {UserId}", carrierId);
-
-            var status = await context.Carriers
+            => await context.Carriers
                 .AsNoTracking()
                 .Where(c => c.Id == carrierId)
                 .Select(c => c.Status)
                 .FirstOrDefaultAsync(ct);
           
-            return status;
-        }
+        
+        
 
         public async Task<Carrier?> GetCarrierForTripAsync(Expression<Func<Carrier, bool>> predicate, CancellationToken cancellationToken = default)
           => await context.Carriers.Where(predicate).Include(c =>c.Trips).FirstOrDefaultAsync(cancellationToken);

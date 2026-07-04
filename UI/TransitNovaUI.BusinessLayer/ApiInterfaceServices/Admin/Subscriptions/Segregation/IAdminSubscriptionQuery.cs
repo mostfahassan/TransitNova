@@ -1,8 +1,9 @@
-﻿using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Subscriptions.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Subscriptions.Queries;
 
 namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Subscriptions.Segregation
 {
-    internal interface IAdminSubscriptionQuery : IGetBundleSubscribersQueryService, IGetSubscriptionByIdQueryService
+    public interface IAdminSubscriptionQuery : IGetBundleSubscribersQueryService, IGetSubscriptionByIdQueryService
     {
     }
 }
+

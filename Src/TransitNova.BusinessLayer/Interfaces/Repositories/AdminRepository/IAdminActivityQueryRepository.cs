@@ -14,5 +14,6 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository
         Task<List<TopOperationManagerDto>> GetTopOperationManagersAsync(CancellationToken cancellationToken, int count = 10);
 
         Task<Dictionary<ShipmentStatuses, int>> GetShipmentCountInStatusAsync(CancellationToken cancellationToken);
+        Task<RevenueSummaryDto> GetRevenueSummaryAsync(CancellationToken cancellationToken);
     }
 }

@@ -15,7 +15,6 @@ namespace TransitNova.Api.Controllers.Trips.CarriersOperation
     [Tags("Operation Manager Trips")]
     public class CarrierTripsController(IMediator mediator) : ControllerBase
     {
-
         [EnableRateLimiting("DefaultRateLimiter")]
         [HttpGet("{carrierId:guid}/trips")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -43,7 +42,7 @@ namespace TransitNova.Api.Controllers.Trips.CarriersOperation
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Trip Details")]
+        [EndpointName("Get Carrier Trip ById")]
         [EndpointSummary("Get details of a specific carrier trip")]
         [EndpointDescription("Returns the detailed information for a trip that belongs to the authenticated carrier.")]
         public async Task<IActionResult> TripAsync(Guid tripId, Guid carrierId,  CancellationToken ct)

@@ -23,7 +23,7 @@ namespace TransitNova.Api.Controllers.Admin.Subscriptions
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Subscription Details")]
+        [EndpointName("Get Subscription ById")]
         [EndpointSummary("Get bundle subscription details")]
         [EndpointDescription("Returns details for a specific bundle subscription.")]
         public async Task<IActionResult> SubscriptionAsync(Guid subscriptionId, CancellationToken ct)

@@ -1,9 +1,13 @@
 using TransitNova.BusinessLayer.Common.CQRS;
+using TransitNova.BusinessLayer.Common.Interfaces.MarkerInterfaces;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.WarehouseManager;
-
+using TransitNova.Domain.Contracts.Caching;
 namespace TransitNova.BusinessLayer.Features.WarehouseManagers.Queries
 {
     public sealed record GetAllWarehouseManagersQuery(WarehouseManagerFilterDto Filter)
-        : IQuery<Result<PagedResult<WarehouseManagerListDto>>>;
+        : IQuery<Result<PagedResult<WarehouseManagerListDto>>>, ICachable
+    {
+        public string CacheKey => CacheKeys.WarehouseManagers.Filter(Filter);
+    }
 }

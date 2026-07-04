@@ -42,7 +42,7 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
                 oldCarrierId != trip.CarrierId ? CacheKeys.Carriers.Dashboard(trip.CarrierId) : string.Empty,
                 CacheKeys.Trips.Details(trip.Id),
                 CacheKeys.Trips.Filter(new FilterTripsDto()),
-                CacheKeys.OperationManagers.Dashboard);
+                CacheKeys.OperationManagers.OperationManagersDashboard);
 
             logger.LogInformation("Trip updated successfully. TripId: {TripId}, OperationManagerId: {OperationManagerId}", trip.Id, request.OperationManagerId);
             return BaseResult.Success();

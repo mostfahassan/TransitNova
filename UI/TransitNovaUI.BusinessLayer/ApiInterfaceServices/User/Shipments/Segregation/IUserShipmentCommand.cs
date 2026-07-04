@@ -1,8 +1,12 @@
-﻿using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Commands;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Commands;
 
 namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Segregation
 {
-    internal interface IUserShipmentCommand : ICancelShipmentCommandService, ICreateShipmentCommandService, IDeleteShipmentCommandService, IIssueShipmentCommandService, IUpdateShipmentCommandService
+    public interface IUserShipmentsCommand : ICancelShipmentCommandService, ICreateShipmentCommandService, IDeleteShipmentCommandService, IIssueShipmentCommandService, IUpdateShipmentCommandService
+    {
+    }
+
+    public interface IUserShipmentCommand : IUserShipmentsCommand
     {
     }
 }

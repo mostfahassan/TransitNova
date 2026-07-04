@@ -43,7 +43,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
                 CacheKeys.Users.AdminDetails(request.AppUserId),
                 CacheKeys.Users.Shipment(request.AppUserId, request.ShipmentId),
                 CacheKeys.Shipments.ByTrackingNumber(shipment.TrackingNumber),
-                CacheKeys.OperationManagers.Dashboard,
+                CacheKeys.OperationManagers.OperationManagersDashboard,
                 CacheKeys.OperationManagers.ShipmentHistories(request.ShipmentId));
             return BaseResult.Success();
         }

@@ -15,11 +15,9 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.QueriesHand
         async Task<Result<ProfileDashboardDto>> IRequestHandler<GetUserDashboardQuery, Result<ProfileDashboardDto>>.Handle(GetUserDashboardQuery request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Starting retrieving shipments for User {UserId}", request.AppUserId);
-
-
             var userShipments = await repo.GetUserShipmentsAsync(request.AppUserId, cancellationToken);
 
-            if (userShipments.Count() == 0)
+            if (!userShipments.Any())
             {
                 logger.LogWarning("No shipments found for User {UserId}", request.AppUserId);
 

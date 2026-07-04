@@ -209,17 +209,17 @@ public sealed class VehicleHandlerTests
     }
 
     [Fact]
-    public async Task GetVehiclesByCarrierIdHandler_Should_ReturnEmptySuccess_When_CarrierHasNoVehiclesAsync()
+    public async Task GetVehiclesByCarrierIdHandler_Should_ReturnNotFound_When_CarrierHasNoVehicleAsync()
     {
         var carrierId = Guid.NewGuid();
         var repository = new Mock<IVehicleQueryRepository>();
-        repository.Setup(x => x.GetByCarrierIdAsync(carrierId, It.IsAny<CancellationToken>())).ReturnsAsync([]);
+        repository.Setup(x => x.GetByCarrierIdAsync(carrierId, It.IsAny<CancellationToken>())).ReturnsAsync((VehicleDto?)null);
         var handler = new GetVehiclesByCarrierIdHandler(repository.Object, Mock.Of<ILogger<GetVehiclesByCarrierIdHandler>>());
 
         var result = await handler.Handle(new GetCarrierVehicleQuery(carrierId), CancellationToken.None);
 
-        result.IsSuccess.Should().BeTrue();
-        result.Data.Should().BeEmpty();
+        result.Status.Should().Be(ResultStatus.NotFound);
+        result.Data.Should().BeNull();
     }
 
     [Fact]

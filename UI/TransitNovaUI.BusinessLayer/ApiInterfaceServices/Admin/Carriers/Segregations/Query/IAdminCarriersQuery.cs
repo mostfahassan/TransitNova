@@ -1,0 +1,7 @@
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Carriers.Queries;
+
+namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Carriers.Segregations.Query;
+
+public interface IAdminCarriersQuery : IGetAdminCarrierByIdQueryService, IGetAdminCarrierShipmentByIdQueryService, IGetAdminCarrierShipmentsQueryService, IGetAdminCarriersQueryService
+{
+}

@@ -5,7 +5,7 @@ using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Bundles.Queries;
 
 namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Bundles.Segregations.Query
 {
-    internal interface IAdminBundlesQuery : IGetBundleByIdQueryService, IGetBundlesQueryService
+    public interface IAdminBundlesQuery : IGetBundleByIdQueryService, IGetBundlesQueryService
     {
     }
 }

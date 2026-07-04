@@ -1,8 +1,9 @@
-﻿using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Profile.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Profile.Queries;
 
 namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Profile.Segregation
 {
-    internal interface ICarrierProfileQuery :IGetCarrierProfileQueryService
+    public interface ICarrierProfileQuery :IGetCarrierProfileQueryService
     {
     }
 }
+

@@ -30,7 +30,7 @@ namespace TransitNova.InfraStructure.Common.CacheService
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.CarriersPrefix}:filter:", StringComparison.Ordinal) => 10,
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.CarriersPrefix}:shipments:carrier-id:", StringComparison.Ordinal) => 10,
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.CitiesPrefix}:filter:", StringComparison.Ordinal) => 10,
-                string cacheKey when cacheKey == CacheKeys.OperationManagers.Dashboard => 10,
+                string cacheKey when cacheKey == CacheKeys.OperationManagers.OperationManagersDashboard => 10,
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.OperationManagersPrefix}:id:", StringComparison.Ordinal) => 5,
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.OperationManagersPrefix}:handled-carriers:", StringComparison.Ordinal) => 10,
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.OperationManagersPrefix}:handled-shipments:", StringComparison.Ordinal) => 10,
@@ -43,7 +43,7 @@ namespace TransitNova.InfraStructure.Common.CacheService
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.UsersPrefix}:profile:", StringComparison.Ordinal) => 5,
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.UsersPrefix}:shipment:", StringComparison.Ordinal) => 5,
                 string cacheKey when cacheKey == CacheKeys.Vehicles.List => 5,
-                string cacheKey when cacheKey.StartsWith("warehouse-managers:dashboard:manager-id:", StringComparison.Ordinal) => 10,
+                string cacheKey when cacheKey.StartsWith($"{CacheKeys.WarehouseManagersPrefix}:dashboard:manager-id:", StringComparison.Ordinal) => 10,
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.ZonesPrefix}:filter:", StringComparison.Ordinal) => 10,
                 _ => 5
             };

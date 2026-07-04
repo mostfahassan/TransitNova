@@ -10,7 +10,7 @@ namespace TransitNova.BusinessLayer.Common.Events.CarrierEventsHandler
     {
         public async Task Handle(CarrierAdditionalInfoAddedDomainEvent notification, CancellationToken cancellationToken)
         {
-            var notificationCreated = Notification.Create(notification.Id, "Carrier Details Updated", $"Your license and daily shipment capacity have been saved successfully.");
+            var notificationCreated = Notification.Create(notification.Id, "Carrier ById Updated", $"Your license and daily shipment capacity have been saved successfully.");
             await notificationRepo.AddNotificationAsync(notificationCreated, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }

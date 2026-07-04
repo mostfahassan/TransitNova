@@ -84,5 +84,41 @@ namespace TransitNova.InfraStructure.Repository.Admin
                 .Take(count)
                 .ToListAsync(cancellationToken);
         }
+
+        public async Task<RevenueSummaryDto> GetRevenueSummaryAsync(CancellationToken cancellationToken)
+        {
+            await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
+
+            var now = DateTime.UtcNow;
+            var today = now.Date;
+            var weekStart = today.AddDays(-(int)today.DayOfWeek);
+            var monthStart = new DateTime(now.Year, now.Month, 1);
+
+            var revenue = await context.Shipments
+                .AsNoTracking()
+                .Where(s =>
+                    s.CurrentStatus == ShipmentStatuses.Delivered ||
+                    s.CurrentStatus == ShipmentStatuses.InWarehouse)
+                .GroupBy(_ => 1)
+                .Select(g => new RevenueSummaryDto
+                {
+                    TotalRevenue = g.Sum(x => x.ShipmentCost),
+
+                    MonthlyRevenue = g
+                        .Where(x => x.CreatedAt >= monthStart)
+                        .Sum(x => x.ShipmentCost),
+
+                    WeeklyRevenue = g
+                        .Where(x => x.CreatedAt >= weekStart)
+                        .Sum(x => x.ShipmentCost),
+
+                    DailyRevenue = g
+                        .Where(x => x.CreatedAt >= today)
+                        .Sum(x => x.ShipmentCost)
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return revenue ?? new RevenueSummaryDto();
+        }
     }
 }

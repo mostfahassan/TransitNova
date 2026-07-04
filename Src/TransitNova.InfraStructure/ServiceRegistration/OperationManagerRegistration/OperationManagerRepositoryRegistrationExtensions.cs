@@ -11,6 +11,7 @@ namespace TransitNova.InfraStructure.ServiceRegistration.OperationManagerRegistr
         {
             services.AddScoped<IOperationManagerQueryRepository, OperationManagerQueryRepository>()
                     .AddScoped<IOperationManagerRulesRepository, OperationManagerRulesRepository>()
+                    .AddScoped<IOperationManagerDashboardRepository, OperationManagerDashboardRepository>()
                     .AddScoped<IOperationManagerCommandsRepository, OperationManagerCommandsRepository>();
 
             return services;

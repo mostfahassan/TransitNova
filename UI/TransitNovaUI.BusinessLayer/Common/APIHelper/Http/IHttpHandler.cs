@@ -2,6 +2,7 @@
 {
     public interface IHttpHandler
     {
+        HttpRequestMessage RequestBuilder(HttpMethod httpMethod, object? content, string url, string? bearerToken, CancellationToken cancellationToken, string? idempotencyKey = null);
         HttpRequestMessage RequestBuilder(HttpMethod httpMethod, string url, string? bearerToken, CancellationToken cancellationToken, object? content = null, string? idempotencyKey = null);
         Task<ApiResponse<T>> ReadQueryResponseAsync<T>(HttpResponseMessage httpResponse, CancellationToken ct);
         Task<ApiResponse> ReadCommandResponseAsync(HttpResponseMessage httpResponse, CancellationToken ct);

@@ -14,6 +14,7 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Interfaces.Repositories.IdempotentRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.Domain.Entities.MainEntities;
 
 namespace TransitNova.ApplicationLayer.Tests.Behaviors;
 
@@ -235,19 +236,18 @@ public sealed class PipelineBehaviorTests
         result.IsFailure.Should().BeTrue();
         cache.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Never);
     }
-
-[Fact]
+    [Fact]
     public async Task IdempotencyBehavior_Should_ReturnStoredResponseAndSkipNext_When_RequestAlreadyExistsAsync()
     {
-        var requestId = Guid.NewGuid();
+        var command = new TestCommand(Guid.NewGuid(), "test");
         var repository = new Mock<IIdempotentRepository>();
-        repository.Setup(x => x.ReturnRequestIfExistsAsync(requestId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Serialize(BaseResult.Success()));
+        repository.Setup(x => x.ReturnRequestIfExistsAsync(command.RequestId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(CachedIdempotentResponse(command, Serialize(BaseResult.Success())));
         var behavior = CreateIdempotentBehavior(repository);
         var nextCalls = 0;
 
         var result = await behavior.Handle(
-            new TestCommand(requestId, "test"),
+            command,
             _ =>
             {
                 nextCalls++;
@@ -261,8 +261,10 @@ public sealed class PipelineBehaviorTests
             It.IsAny<Guid>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
+            It.IsAny<string>(),
             It.IsAny<CancellationToken>()), Times.Never);
     }
+
 
     [Fact]
     public async Task IdempotencyBehavior_Should_RecordAndExecute_When_RequestIsNewAsync()
@@ -284,6 +286,7 @@ public sealed class PipelineBehaviorTests
             requestId,
             nameof(TestCommand),
             It.Is<string>(json => JsonSerializer.Deserialize<BaseResult>(json, JsonOptions)!.IsSuccess),
+            It.IsAny<string>(),
             It.IsAny<CancellationToken>()), Times.Once);
         unitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
         unitOfWork.Verify(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()), Times.Never);
@@ -306,6 +309,7 @@ public sealed class PipelineBehaviorTests
         await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("handler failed");
         repository.Verify(x => x.CreateRequestAsync(
             It.IsAny<Guid>(),
+            It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<CancellationToken>()), Times.Never);
@@ -334,6 +338,7 @@ public sealed class PipelineBehaviorTests
             requestId,
             nameof(TestCommand),
             It.Is<string>(json => JsonSerializer.Deserialize<BaseResult>(json, JsonOptions)!.IsSuccess),
+            It.IsAny<string>(),
             cancellation.Token), Times.Once);
         handlerToken.Should().Be(cancellation.Token);
     }
@@ -344,7 +349,7 @@ public sealed class PipelineBehaviorTests
         var requestId = Guid.NewGuid();
         var repository = new Mock<IIdempotentRepository>();
         repository.Setup(x => x.ReturnRequestIfExistsAsync(requestId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync("not-json");
+            .ReturnsAsync(CachedIdempotentResponse(new TestCommand(requestId, "test"), "not-json"));
         var behavior = CreateIdempotentBehavior(repository);
 
         var act = () => behavior.Handle(
@@ -355,6 +360,7 @@ public sealed class PipelineBehaviorTests
         await act.Should().ThrowAsync<JsonException>();
         repository.Verify(x => x.CreateRequestAsync(
             It.IsAny<Guid>(),
+            It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
             It.IsAny<CancellationToken>()), Times.Never);
@@ -454,9 +460,25 @@ public sealed class PipelineBehaviorTests
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = false
     };
-
     private static string Serialize<T>(T value) => JsonSerializer.Serialize(value, JsonOptions);
-    private static IdempotentCommandPipelineBehavior<TestCommand, BaseResult> CreateIdempotentBehavior(
+
+    private static IdempotentTable CachedIdempotentResponse(TestCommand command, string responseJson) => new()
+    {
+        RequestId = command.RequestId,
+        InstanceName = nameof(TestCommand),
+        ResponseJson = responseJson,
+        hashedRequest = ComputeRequestHash(command),
+        CreatedAt = DateTime.UtcNow
+    };
+
+    private static string ComputeRequestHash<T>(T request)
+    {
+        var payload = JsonSerializer.Serialize(request, request!.GetType(), JsonOptions);
+        using var sha256 = System.Security.Cryptography.SHA256.Create();
+        var hashBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(payload));
+        return Convert.ToBase64String(hashBytes);
+    }
+private static IdempotentCommandPipelineBehavior<TestCommand, BaseResult> CreateIdempotentBehavior(
       Mock<IIdempotentRepository> repository,
       Mock<IUnitOfWork>? unitOfWork = null)
     {

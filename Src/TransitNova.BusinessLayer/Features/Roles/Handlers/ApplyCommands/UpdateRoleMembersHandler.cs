@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Logging;
+using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.Features.Roles.Commands;
 using TransitNova.BusinessLayer.Interfaces.Services.RolesService;
+using TransitNova.Domain.Contracts.Caching;
 
 namespace TransitNova.BusinessLayer.Features.Roles.Handlers.ApplyCommands
 {
@@ -25,7 +27,7 @@ namespace TransitNova.BusinessLayer.Features.Roles.Handlers.ApplyCommands
                 "Role members updated successfully. RoleId: {RoleId}, UsersCount: {UsersCount}",
                 request.RoleId,
                 request.Users.Count);
-
+            CacheInvalidationContext.Set(request, CacheKeys.Roles.List, CacheKeys.Roles.MemberList);
             return BaseResult.Success();
         }
 

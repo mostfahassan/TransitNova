@@ -68,7 +68,7 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Shipment Details")]
+        [EndpointName("Get Carrier Shipment ById")]
         [EndpointSummary("Get details of a specific carrier shipment")]
         [EndpointDescription("Returns the detailed information for a shipment that belongs to the authenticated carrier.")]
         public async Task<IActionResult> ShipmentAsync(Guid shipmentId,Guid carrierId, CancellationToken ct)
@@ -80,8 +80,6 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
             return result.ToActionResult();
         }
 
-
-
         [Authorize(Policy = CarrierPermissions.ViewProfile)]
         [EnableRateLimiting("DefaultRateLimiter")]
         [HttpGet("{carrierId:guid}/profile")]
@@ -91,9 +89,9 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Rating")]
-        [EndpointSummary("Get the authenticated carrier rating")]
-        [EndpointDescription("Returns the rating information for the authenticated carrier.")]
+        [EndpointName("Get Carrier Profile")]
+        [EndpointSummary("Get the authenticated carrier profile")]
+        [EndpointDescription("Returns the profile information for the authenticated carrier.")]
         public async Task<IActionResult> ProfileAsync(Guid carrierId,CancellationToken ct)
         {
             if (!await IsCarrierOwnerAsync(carrierId))
@@ -112,9 +110,9 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Revenue")]
-        [EndpointSummary("Get the authenticated carrier revenue")]
-        [EndpointDescription("Returns the revenue information for the authenticated carrier.")]
+        [EndpointName("Get Carrier Rating")]
+        [EndpointSummary("Get the authenticated carrier rating")]
+        [EndpointDescription("Returns the rating information for the authenticated carrier.")]
         public async Task<IActionResult> RatingAsync(Guid carrierId, CancellationToken ct)
         {
             if (!await IsCarrierOwnerAsync(carrierId))
@@ -134,9 +132,9 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Profile")]
-        [EndpointSummary("Get the authenticated carrier profile")]
-        [EndpointDescription("Returns the profile information for the authenticated carrier.")]
+        [EndpointName("Get Carrier Revenue")]
+        [EndpointSummary("Get the authenticated carrier revenue")]
+        [EndpointDescription("Returns the revenue information for the authenticated carrier.")]
         public async Task<IActionResult> RevenueAsync(Guid carrierId, CancellationToken ct)
         {
             if (!await IsCarrierOwnerAsync(carrierId))
@@ -155,9 +153,9 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Profile")]
-        [EndpointSummary("Get the authenticated carrier profile")]
-        [EndpointDescription("Returns the profile information for the authenticated carrier.")]
+        [EndpointName("Get Carrier Vehicle")]
+        [EndpointSummary("Get the authenticated carrier vehicle")]
+        [EndpointDescription("Returns the vehicle information for the authenticated carrier.")]
         public async Task<IActionResult> CarrierVehicle(Guid carrierId, CancellationToken ct)
         {
             if (!await IsCarrierOwnerAsync(carrierId))

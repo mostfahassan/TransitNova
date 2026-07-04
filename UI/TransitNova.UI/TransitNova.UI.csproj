@@ -7,9 +7,19 @@
 
   <ItemGroup>
    <ProjectReference Include="../TransitNovaUI.BusinessLayer/TransitNovaUI.BusinessLayer.csproj" />
+ 
+  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="16.1.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.16.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.16.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.16.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.16.0" />
   </ItemGroup>
 
-  <ItemGroup>
+		<ItemGroup>
     <Folder Include="Areas\AdminArea\Controllers\AdminDashboard\" />
     <Folder Include="Areas\AdminArea\Controllers\Bundles\" />
     <Folder Include="Areas\AdminArea\Controllers\Carriers\" />
@@ -24,7 +34,6 @@
     <Folder Include="Areas\AdminArea\Views\" />
     <Folder Include="Areas\AuthenticationArea\Controllers\Account\" />
     <Folder Include="Areas\AuthenticationArea\Data\" />
-    <Folder Include="Areas\AuthenticationArea\Models\" />
     <Folder Include="Areas\AuthenticationArea\Views\" />
     <Folder Include="Areas\CarrierArea\Controllers\Operations\" />
     <Folder Include="Areas\CarrierArea\Controllers\Queries\" />
@@ -34,15 +43,12 @@
     <Folder Include="Areas\CarrierArea\Views\" />
     <Folder Include="Areas\CustomerArea\Controllers\" />
     <Folder Include="Areas\CustomerArea\Data\" />
-    <Folder Include="Areas\CustomerArea\Models\" />
     <Folder Include="Areas\CustomerArea\Views\" />
     <Folder Include="Areas\LandingArea\Controllers\" />
     <Folder Include="Areas\LandingArea\Data\" />
-    <Folder Include="Areas\LandingArea\Models\" />
     <Folder Include="Areas\OperationManagerArea\Controllers\Commands\" />
     <Folder Include="Areas\OperationManagerArea\Controllers\Queries\" />
     <Folder Include="Areas\OperationManagerArea\Data\" />
-    <Folder Include="Areas\OperationManagerArea\Models\" />
     <Folder Include="Areas\OperationManagerArea\Views\" />
     <Folder Include="Areas\WarehouseManagerArea\Controllers\" />
     <Folder Include="Areas\WarehouseManagerArea\Data\" />
@@ -51,3 +57,4 @@
   </ItemGroup>
 
 </Project>
+

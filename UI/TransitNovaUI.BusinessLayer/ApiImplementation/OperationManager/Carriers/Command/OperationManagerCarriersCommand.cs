@@ -4,32 +4,25 @@ using TransitNovaUI.BusinessLayer.Common.APIHelper.Http;
 
 namespace TransitNovaUI.BusinessLayer.ApiImplementation.OperationManager.Carriers.Command
 {
-    public class OperationManagerCarriersCommand(IHttpHandler httpHandler, HttpClient httpClient) : IOperationManagerCarriersQuery
+    public class OperationManagerCarriersCommand(IHttpHandler httpHandler, HttpClient httpClient) : ApiServiceBase(httpHandler, httpClient), IOperationManagerCarriersCommand
 
     {
-        public async Task<ApiResponse> AssignDeliveryCarrierAsync(Guid shipmentId, UiAssignCarrierDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> AssignDeliveryCarrierAsync(Guid shipmentId, UiAssignCarrierDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             var content = UiAssignCarrierDto.ToDto(model);
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.OperationManagerCarriers.AssignDeliveryCarrierUrl, ("shipmentId", shipmentId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Put, url, bearerToken, cancellationToken, content, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync(httpResponse, cancellationToken);
+            return SendRequestAsync(HttpMethod.Put, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
-        public async Task<ApiResponse> AssignPickupCarrierAsync(Guid shipmentId, UiAssignCarrierDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> AssignPickupCarrierAsync(Guid shipmentId, UiAssignCarrierDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             var content = UiAssignCarrierDto.ToDto(model);
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.OperationManagerCarriers.AssignPickupCarrierUrl, ("shipmentId", shipmentId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Put,  url, bearerToken, cancellationToken, content, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync(httpResponse, cancellationToken);
+            return SendRequestAsync(HttpMethod.Put, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
     }
 }
+

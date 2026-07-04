@@ -25,7 +25,7 @@ public sealed class WarehouseHandlerTests
         var fixture = new Fixture();
         var zoneIds = new[] { Guid.NewGuid(), Guid.NewGuid() };
         fixture.Queries.Setup(x => x.GetZonesByIdsAsync(It.IsAny<IReadOnlyCollection<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync([Zone.Create("One", "ONE", 1)]);
+            .ReturnsAsync([Zone.Create("One", 1)]);
 
         var result = await fixture.CreateHandler.Handle(
             new CreateWarehouseCommand(Guid.NewGuid(), Guid.NewGuid(), CreateDto(zoneIds)),
@@ -42,7 +42,7 @@ public sealed class WarehouseHandlerTests
     {
         var fixture = new Fixture();
         var adminId = Guid.NewGuid();
-        var zone = Zone.Create("Downtown", "DT", 1);
+        var zone = Zone.Create("Downtown",1);
         fixture.Queries.Setup(x => x.GetZonesByIdsAsync(
                 It.Is<IReadOnlyCollection<Guid>>(ids => ids.Count == 1 && ids.Contains(zone.Id)),
                 It.IsAny<CancellationToken>()))
@@ -127,7 +127,7 @@ public sealed class WarehouseHandlerTests
         var adminId = Guid.NewGuid();
         var managerId = Guid.NewGuid();
         var warehouse = Warehouse.Create("Old", WarehouseType.MainWarehouse, 100, 20, 8, "Old Address", adminId, managerId);
-        var zone = Zone.Create("North", "N", 1);
+        var zone = Zone.Create("North", 1);
         fixture.Queries.Setup(x => x.GetWarehouseForUpdateAsync(warehouse.Id, It.IsAny<CancellationToken>())).ReturnsAsync(warehouse);
         fixture.Queries.Setup(x => x.GetZonesByIdsAsync(It.IsAny<IReadOnlyCollection<Guid>>(), It.IsAny<CancellationToken>())).ReturnsAsync([zone]);
         fixture.Admins.Setup(x => x.GetAdminNameAsync(adminId, It.IsAny<CancellationToken>())).ReturnsAsync("Admin Name");

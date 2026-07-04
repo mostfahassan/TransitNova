@@ -7,7 +7,9 @@ namespace TransitNova.BusinessLayer.DTOs.Shipment
         public string TrackingNumber { get; set; } = string.Empty;
         public string ReceiverCity { get; set; } = string.Empty;
         public string SenderCity { get; set; } = string.Empty;
-        public decimal ShippinCost { get; set; }
+        public string ReceiverName { get; set; } = string.Empty;
+        public string SenderName { get; set; } = string.Empty;
+        public decimal ShippingCost { get; set; }
         public decimal Weight { get; set; } = new();
         public ShipmentStatuses CurrentStatus { get; set; }
         public enShipmentType ShipmentType { get; set; }

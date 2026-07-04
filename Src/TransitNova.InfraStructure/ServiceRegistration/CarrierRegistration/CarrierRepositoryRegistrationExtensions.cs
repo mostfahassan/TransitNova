@@ -1,7 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
-using TransitNova.InfraStructure.Repository.CarrierRatings;
 using TransitNova.InfraStructure.Repository.CarrierRepo;
 namespace TransitNova.InfraStructure.ServiceRegistration.CarrierRegistration
 {
@@ -14,6 +12,7 @@ namespace TransitNova.InfraStructure.ServiceRegistration.CarrierRegistration
                     .AddScoped<ICarrierShipmentQueryRepository, CarrierShipmentQueryRepository>()
                     .AddScoped<ICarrierAnalyticsQueryRepository, CarrierAnalyticsQueryRepository>()
                     .AddScoped<ICarrierRulesRepository, CarrierRulesValidation>()
+                    .AddScoped<ICarrierDashboardRepository, CarrierDashboardRepository>()
                     .AddScoped<ICarrierCommandRepository, CarrierCommandRepository>();
 
             return services;

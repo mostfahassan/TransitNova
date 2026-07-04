@@ -16,3 +16,5 @@ global using TransitNovaUI.BusinessLayer.DTOs.UserProfile.Auth;
 global using TransitNovaUI.BusinessLayer.DTOs.UserProfile.OperationManager;
 global using TransitNovaUI.BusinessLayer.DTOs.Vehicle;
 global using TransitNovaUI.BusinessLayer.DTOs.Warehouse;
+global using TransitNovaUI.BusinessLayer.DTOs.Trips;
+global using TransitNovaUI.BusinessLayer.DTOs.WarehouseManager;

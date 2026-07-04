@@ -1,8 +1,12 @@
-﻿using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Shipments.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Shipments.Queries;
 
 namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Shipments.Segregation
 {
-    internal interface ICarrierShipmentQuery : IGetCarrierShipmentByIdQueryService, IGetCarrierShipmentsQueryService
+    public interface ICarrierShipmentsQuery : IGetCarrierShipmentByIdQueryService, IGetCarrierShipmentsQueryService
+    {
+    }
+
+    public interface ICarrierShipmentQuery : ICarrierShipmentsQuery
     {
     }
 }

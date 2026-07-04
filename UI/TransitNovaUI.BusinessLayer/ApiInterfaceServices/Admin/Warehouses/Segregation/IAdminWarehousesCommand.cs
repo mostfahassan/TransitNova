@@ -1,8 +1,9 @@
-﻿using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Warehouses.Commands;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Warehouses.Commands;
 
 namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Warehouses.Segregation
 {
-    internal interface IAdminWarehousesCommand : ICreateWarehouseCommandService, IDeleteWarehouseCommandService, IUpdateWarehouseCommandService
+    public interface IAdminWarehousesCommand : ICreateWarehouseCommandService, IDeleteWarehouseCommandService, IUpdateWarehouseCommandService
     {
     }
 }
+

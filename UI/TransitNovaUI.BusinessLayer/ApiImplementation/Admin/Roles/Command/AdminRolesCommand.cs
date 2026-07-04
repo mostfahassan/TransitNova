@@ -4,55 +4,39 @@ using TransitNovaUI.BusinessLayer.Common.APIHelper.Http;
 
 namespace TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Roles.Command
 {
-    public class AdminRolesCommand(IHttpHandler httpHandler, HttpClient httpClient): IAdminRolesCommand
+    public class AdminRolesCommand(IHttpHandler httpHandler, HttpClient httpClient): ApiServiceBase(httpHandler, httpClient), IAdminRolesCommand
 
     {
-        public async Task<ApiResponse> CreateRoleAsync(UiRoleNameDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> CreateRoleAsync(UiRoleNameDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             var content = UiRoleNameDto.ToDto(model);
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Roles.CreateRoleUrl));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Post, url, bearerToken, cancellationToken, content, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync(httpResponse, cancellationToken);
+            return SendRequestAsync(HttpMethod.Post, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
-        public async Task<ApiResponse> DeleteRoleAsync(Guid roleId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> DeleteRoleAsync(Guid roleId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Roles.DeleteRoleUrl, ("roleId", roleId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Delete, url, bearerToken, cancellationToken, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync(httpResponse, cancellationToken);
+            return SendRequestAsync(HttpMethod.Delete, url, bearerToken, cancellationToken, null, idempotentKey);
         }
 
-        public async Task<ApiResponse> UpdateRoleAsync(Guid roleId, UiRoleNameDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> UpdateRoleAsync(Guid roleId, UiRoleNameDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             var content = UiRoleNameDto.ToDto(model);
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Roles.UpdateRoleUrl, ("roleId", roleId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Put,url, bearerToken, cancellationToken, content, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync(httpResponse, cancellationToken);
+            return SendRequestAsync(HttpMethod.Put, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
-        public async Task<ApiResponse> UpdateRoleMembersAsync(Guid roleId, UiUpdateRoleMembersDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> UpdateRoleMembersAsync(Guid roleId, UiUpdateRoleMembersDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             var content = UiUpdateRoleMembersDto.ToDto(model);
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Roles.UpdateRoleMembersUrl, ("roleId", roleId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Put, url, bearerToken, cancellationToken, content, idempotentKey);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadCommandResponseAsync(httpResponse, cancellationToken);
+            return SendRequestAsync(HttpMethod.Put, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
     }

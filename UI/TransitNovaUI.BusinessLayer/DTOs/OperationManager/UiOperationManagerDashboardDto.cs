@@ -12,7 +12,7 @@ public sealed class UiOperationManagerDashboardDto
     public int ActiveShipments { get; set; }
     public IReadOnlyCollection<UiOperationManagerStatusStatDto> ShipmentStatistics { get; set; } = [];
     public IReadOnlyCollection<UiOperationManagerActivityDto> RecentActivity { get; set; } = [];
-    public IReadOnlyCollection<UiRetrieveShipmentDto> RecentShipments { get; set; } = [];
+    public IReadOnlyCollection<UiRetrieveShipmentSummaryDto> RecentShipments { get; set; } = [];
     public IReadOnlyCollection<UiRetrieveCarriersForOperationManagerDto> RecentCarriers { get; set; } = [];
 
     public static UiOperationManagerDashboardDto ToUiDto(OperationManagerDashboardDto source) =>
@@ -22,9 +22,9 @@ public sealed class UiOperationManagerDashboardDto
             PendingShipments = source.PendingShipments,
             DeliveredShipments = source.DeliveredShipments,
             ActiveShipments = source.ActiveShipments,
-            ShipmentStatistics = source.ShipmentStatistics.Select(UiOperationManagerStatusStatDto.ToUiDto).ToList(),
-            RecentActivity = source.RecentActivity.Select(UiOperationManagerActivityDto.ToUiDto).ToList(),
-            RecentShipments = source.RecentShipments.Select(UiRetrieveShipmentDto.ToUiDto).ToList(),
-            RecentCarriers = source.RecentCarriers.Select(UiRetrieveCarriersForOperationManagerDto.ToUiDto).ToList()
+            ShipmentStatistics =[.. source.ShipmentStatistics.Select(UiOperationManagerStatusStatDto.ToUiDto)],
+            RecentActivity = [.. source.RecentActivity.Select(UiOperationManagerActivityDto.ToUiDto)],
+            RecentShipments = [.. source.RecentShipments.Select(UiRetrieveShipmentSummaryDto.ToUiDto)],
+            RecentCarriers = [.. source.RecentCarriers.Select(UiRetrieveCarriersForOperationManagerDto.ToUiDto)]
         };
 }

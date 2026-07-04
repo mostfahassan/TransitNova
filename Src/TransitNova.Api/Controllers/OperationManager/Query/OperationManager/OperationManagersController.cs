@@ -24,7 +24,7 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.OperationManager
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Operation Manager Details")]
+        [EndpointName("Get Operation Manager ById")]
         [EndpointSummary("Get operation manager details")]
         [EndpointDescription("Returns operation manager details by operation manager identifier.")]
         public async Task<IActionResult> OperationManagerAsync(Guid operationManagerId, CancellationToken ct)

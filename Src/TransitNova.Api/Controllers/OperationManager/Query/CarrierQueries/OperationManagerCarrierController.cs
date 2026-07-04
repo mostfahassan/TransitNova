@@ -88,7 +88,7 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.CarrierQueries
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Shipment Details For Operation Manager")]
+        [EndpointName("Get Carrier Shipment ById For Operation Manager")]
         [EndpointSummary("Get details of a specific carrier shipment")]
         [EndpointDescription("Returns the detailed information for a shipment that belongs to the authenticated carrier.")]
         public async Task<IActionResult> ShipmentAsync(Guid shipmentId, Guid carrierId, CancellationToken ct)

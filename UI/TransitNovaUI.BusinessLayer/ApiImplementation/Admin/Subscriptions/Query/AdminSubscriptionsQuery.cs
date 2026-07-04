@@ -3,30 +3,22 @@ using TransitNovaUI.BusinessLayer.Common.APIHelper.Http;
 
 namespace TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Subscriptions.Query
 {
-    public class AdminSubscriptionsQuery(IHttpHandler httpHandler, HttpClient httpClient) : IAdminSubscriptionQuery
+    public class AdminSubscriptionsQuery(IHttpHandler httpHandler, HttpClient httpClient) : ApiServiceBase(httpHandler, httpClient), IAdminSubscriptionQuery
     {
-        public async Task<ApiResponse<List<UiUserProfileDto>>> GetBundleSubscribersAsync(int bundleId, string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<List<UiUserProfileDto>>> GetBundleSubscribersAsync(int bundleId, string bearerToken, CancellationToken cancellationToken = default)
         {
           
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Subscriptions.GetBundleSubscribersUrl, ("bundleId", bundleId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Get, url, bearerToken, cancellationToken);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadQueryResponseAsync<List<UiUserProfileDto>>(httpResponse, cancellationToken);
+            return SendQueryRequestAsync<List<UiUserProfileDto>>(HttpMethod.Get, url, bearerToken, cancellationToken);
         }
 
-        public async Task<ApiResponse<UiBundleSubscriptionDetailsDto>> GetSubscriptionByIdAsync(Guid subscriptionId, string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<UiBundleSubscriptionDetailsDto>> GetSubscriptionByIdAsync(Guid subscriptionId, string bearerToken, CancellationToken cancellationToken = default)
         {
             
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Subscriptions.GetSubscriptionByIdUrl, ("subscriptionId", subscriptionId)));
 
-            var request = httpHandler.RequestBuilder(HttpMethod.Get, url, bearerToken, cancellationToken);
-
-            var httpResponse = await httpClient.SendAsync(request, cancellationToken);
-
-            return await httpHandler.ReadQueryResponseAsync<UiBundleSubscriptionDetailsDto>(httpResponse, cancellationToken);
+            return SendQueryRequestAsync<UiBundleSubscriptionDetailsDto>(HttpMethod.Get, url, bearerToken, cancellationToken);
         }
 
     }

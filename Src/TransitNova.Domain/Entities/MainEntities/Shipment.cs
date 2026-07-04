@@ -51,7 +51,7 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
     public Guid SenderId { get; private set; }
     public virtual UserProfile Sender { get; private set; } = null!;
 
-    public Guid? HandledById { get; private set; }
+    public Guid? HandlerId { get; private set; }
     public virtual OperationManagerProfile? HandledBy { get; private set; }
 
     public Guid? PackageBundleId { get; private set; }
@@ -176,7 +176,7 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
 
         if (handledById.HasValue)
         {
-            HandledById = handledById;
+            HandlerId = handledById;
             UpdatedBy = handledById.Value.ToString();
         }
 

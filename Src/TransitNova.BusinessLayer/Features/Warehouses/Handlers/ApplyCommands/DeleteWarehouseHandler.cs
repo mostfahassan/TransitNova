@@ -10,6 +10,8 @@ using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.SystemLogs;
+using TransitNova.BusinessLayer.Common.Caching;
+using TransitNova.Domain.Contracts.Caching;
 
 namespace TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyCommands
 {
@@ -41,7 +43,10 @@ namespace TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyCommands
             await systemLogCommands.LogAsync(log, ct);
             await unitOfWork.SaveChangesAsync(ct);
             logger.LogInformation("Warehouse deleted successfully. WarehouseId: {WarehouseId}", request.WarehouseId);
-            return BaseResult.Success();
+
+            CacheInvalidationContext.Set(request,CacheKeys.Warehouse.List);
+
+            return BaseResult.NoContent();
         }
     }
 }

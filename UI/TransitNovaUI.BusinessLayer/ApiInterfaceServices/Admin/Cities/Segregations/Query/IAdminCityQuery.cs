@@ -1,6 +1,8 @@
-﻿namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Cities.Segregations.Query
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Cities.Queries;
+
+namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Cities.Segregations.Query
 {
-    internal interface IAdminCityQuery 
+    public interface IAdminCityQuery : IFilterCitiesQueryService, IGetCityByIdQueryService
     {
     }
 }

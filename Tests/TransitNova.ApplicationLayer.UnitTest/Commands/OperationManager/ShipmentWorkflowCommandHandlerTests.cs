@@ -61,7 +61,7 @@ public sealed class ShipmentWorkflowCommandHandlerTests
 
         result.IsSuccess.Should().BeTrue();
         shipment.CurrentStatus.Should().Be(ShipmentStatuses.Approved);
-        shipment.HandledById.Should().Be(managerProfileId);
+        shipment.HandlerId.Should().Be(managerProfileId);
         captured!.Action.Should().Be(ActivityAction.Approved);
         captured.PerformedByName.Should().Be("Omar Manager");
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);

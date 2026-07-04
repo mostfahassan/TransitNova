@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-
 namespace TransitNova.Api.Infrastructure.Idempotency
 {
     [AttributeUsage(AttributeTargets.Parameter)]

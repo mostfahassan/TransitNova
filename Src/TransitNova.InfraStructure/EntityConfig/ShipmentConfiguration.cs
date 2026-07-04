@@ -14,7 +14,7 @@ namespace TransitNova.InfraStructure.EntityConfig
                 .IsRowVersion();
             shipment.HasOne(s => s.HandledBy)
                     .WithMany(op => op.HandledShipments)
-                    .HasForeignKey(s => s.HandledById)
+                    .HasForeignKey(s => s.HandlerId)
                     .OnDelete(DeleteBehavior.SetNull);
 
             shipment.Property(s => s.ShipmentCost)
@@ -38,7 +38,7 @@ namespace TransitNova.InfraStructure.EntityConfig
             shipment.HasIndex(s => s.TripId);
             shipment.HasIndex(s => new { s.CurrentStatus, s.PickupDate });
             shipment.HasIndex(s => new { s.SenderId, s.CurrentStatus });
-            shipment.HasIndex(s => s.HandledById);
+            shipment.HasIndex(s => s.HandlerId);
             shipment.HasIndex(s => s.ActualDeliveryDate);
             shipment.HasIndex(s => s.CreatedAt);
             shipment.HasIndex(s => s.UpdatedAt);

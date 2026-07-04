@@ -56,25 +56,25 @@ namespace TransitNova.Api.Controllers
 
         private static object BuildSuccess(BaseResult result, object? data = null) => new
         {
-            success = true,
-            message = result.Message,
-            result.StatusCode,
-            data
+            IsSuccess = true,
+            Message = result.Message,
+            StatusCode = result.StatusCode,
+            Data = data
         };
 
         private static object BuildError(BaseResult result) => new
         {
-            success = false,
-            result.StatusCode,
-            errorCode = result.Error?.Code.ToString(),
-            message = result.Error?.Message
+            IsSuccess = false,
+            StatusCode = result.StatusCode,
+            ErrorCode = result.Error?.Code.ToString(),
+            Message = result.Error?.Message
         };
 
         private static object BuildValidation(BaseResult result) => new
         {
-            success = false,
-            result.StatusCode,
-            errors = result.Errors.Select(e => new
+            IsSuccess = false,
+            StatusCode = result.StatusCode,
+            Errors = result.Errors.Select(e => new
             {
                 code = e.Code.ToString(),
                 message = e.Message

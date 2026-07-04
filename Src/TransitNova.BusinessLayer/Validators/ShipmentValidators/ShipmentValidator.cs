@@ -72,10 +72,10 @@ public class ShipmentValidator : AbstractValidator<Shipment>
             .When(x => x.IsDeleted)
             .WithMessage("DeletedOn is required when shipment is deleted.");
 
-        RuleFor(x => x.HandledById)
+        RuleFor(x => x.HandlerId)
             .NotEmpty()
-            .When(x => x.HandledById.HasValue)
-            .WithMessage("HandledById is invalid.");
+            .When(x => x.HandlerId.HasValue)
+            .WithMessage("HandlerId is invalid.");
 
         RuleFor(x => x.CurrentStatus)
             .IsInEnum().WithMessage("CurrentStatus is invalid.");

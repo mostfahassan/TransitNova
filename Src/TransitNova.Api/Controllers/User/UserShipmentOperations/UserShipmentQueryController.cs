@@ -26,7 +26,7 @@ namespace TransitNova.Api.Controllers.User.UserShipmentOperations
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Shipment Details")]
+        [EndpointName("Get Shipment ById")]
         [EndpointSummary("Retrieve an existing shipment for the authenticated user.")]
         [EndpointDescription("Allows an authenticated user to retrieve an existing shipment by its identifier. The user must have the 'User.UserCanViewShipmentDetails' permission.")]
         public async Task<IActionResult> GetUserShipmentDetailsAsync(Guid shipmentId, CancellationToken ct)

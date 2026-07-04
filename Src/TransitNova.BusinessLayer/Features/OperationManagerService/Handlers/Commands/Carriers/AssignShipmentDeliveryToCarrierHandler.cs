@@ -45,7 +45,7 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
                 CacheKeys.Carriers.Dashboard(request.CarrierId),
                 CacheKeys.Carriers.Trips(request.CarrierId),
                 CacheKeys.Shipments.ByTrackingNumber(assignedShipmentTrackingNumber),
-                CacheKeys.OperationManagers.Dashboard,
+                CacheKeys.OperationManagers.OperationManagersDashboard,
                 CacheKeys.OperationManagers.ShipmentHistories(request.ShipmentId));
             return BaseResult.Success();
         }

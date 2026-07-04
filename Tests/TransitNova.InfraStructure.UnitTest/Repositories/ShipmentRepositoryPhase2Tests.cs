@@ -186,7 +186,7 @@ public sealed class ShipmentRepositoryPhase2Tests
     }
 
     private static ShipmentQueryRepository CreateQueryRepository(SqliteAppDbContextFixture fixture) =>
-        new(fixture.Context, Phase2RepositoryTestData.CreateMapper(), NullLogger<ShipmentQueryRepository>.Instance);
+        new(fixture.Context, Phase2RepositoryTestData.CreateMapper());
 
     private static async Task<(TransitNova.Domain.Entities.MainEntities.Shipment Shipment,
         (TransitNova.Domain.Entities.MainEntities.Country Country,

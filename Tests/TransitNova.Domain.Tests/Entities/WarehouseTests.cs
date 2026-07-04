@@ -86,7 +86,7 @@ public sealed class WarehouseTests
     public void AddZone_Should_AddOnlyOnce_When_SameZoneIsAddedTwice()
     {
         var warehouse = CreateWarehouse();
-        var zone = Zone.Create("Zone", "Z1", 1);
+        var zone = Zone.Create("Zone",1);
 
         warehouse.AddZone(zone);
         warehouse.AddZone(zone);
@@ -108,7 +108,7 @@ public sealed class WarehouseTests
     public void RemoveZone_Should_RemoveExistingZone_When_ZoneExists()
     {
         var warehouse = CreateWarehouse();
-        var zone = Zone.Create("Zone", "Z1", 1);
+        var zone = Zone.Create("Zone",1);
         warehouse.AddZone(zone);
 
         warehouse.RemoveZone(zone);
@@ -120,8 +120,8 @@ public sealed class WarehouseTests
     public void ReplaceZones_Should_DeduplicateAndUpdateAuditFields_When_ZonesProvided()
     {
         var warehouse = CreateWarehouse();
-        var first = Zone.Create("One", "Z1", 1);
-        var second = Zone.Create("Two", "Z2", 1);
+        var first = Zone.Create("One", 1);
+        var second = Zone.Create("Two", 1);
         var userId = Guid.NewGuid();
 
         warehouse.ReplaceZones([first, first, second], userId);

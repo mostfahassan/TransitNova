@@ -71,7 +71,7 @@ public sealed class ShipmentTests
         shipment.ApproveShipment(handlerId);
 
         shipment.CurrentStatus.Should().Be(ShipmentStatuses.Approved);
-        shipment.HandledById.Should().Be(handlerId);
+        shipment.HandlerId.Should().Be(handlerId);
         shipment.ShipmentStates.Should().HaveCount(2);
         shipment.ShipmentStates.Should().ContainSingle(s => s.CurrentState && s.StatusType == ShipmentStatuses.Approved);
         shipment.GetDomainEvents().Should().Contain(e => e is ShipmentApprovedDomainEvent);
@@ -99,7 +99,7 @@ public sealed class ShipmentTests
         shipment.IsRejected.Should().BeTrue();
         shipment.RejectionReason.Should().Be("Unsupported contents");
         shipment.RejectedAt.Should().NotBeNull();
-        shipment.HandledById.Should().Be(handlerId);
+        shipment.HandlerId.Should().Be(handlerId);
         shipment.CurrentStatus.Should().Be(ShipmentStatuses.Rejected);
         shipment.GetDomainEvents().Should().Contain(e => e is ShipmentRejectedDomainEvent);
     }
@@ -150,7 +150,7 @@ public sealed class ShipmentTests
         shipment.AssignToCarrier(status, carrierId, handlerId);
 
         shipment.CurrentStatus.Should().Be(status);
-        shipment.HandledById.Should().Be(handlerId);
+        shipment.HandlerId.Should().Be(handlerId);
         shipment.ShipmentStates.Should().ContainSingle(s => s.CurrentState && s.CarrierId == carrierId && s.StatusType == status);
         shipment.GetDomainEvents().Should().Contain(e => e is ShipmentAssignedToCarrierDomainEvent);
     }

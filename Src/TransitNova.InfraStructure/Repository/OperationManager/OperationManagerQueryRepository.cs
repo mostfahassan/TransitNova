@@ -23,7 +23,7 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
                              .ToListAsync(cancellationToken);
 
         public async Task<OperationManagerProfileDto?> GetOperationManagerProfileAsync(Guid id, CancellationToken cancellationToken)
-            => await ProjectToProfileDto(context.OperationManagerProfiles.AsNoTracking().Where(op => op.Id == id))
+            => await ProjectToProfileDto(context.OperationManagerProfiles.AsNoTracking().Where(op => op.Id == id || op.AppUserId == id))
                            .FirstOrDefaultAsync(cancellationToken);
 
 
@@ -36,7 +36,7 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
         {
             var query = context.Shipments
                         .AsNoTracking()
-                        .Where(sh => sh.HandledById == operationManagerId &&
+                        .Where(sh => sh.HandlerId == operationManagerId &&
                                      sh.UpdatedBy == operationManagerId.ToString());
 
             var totalCount = await query.CountAsync(cancellationToken);
@@ -52,7 +52,7 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
                              ReceiverCity = sh.Receiver.City.Name,
                              ShipmentType = sh.ShipmentType,
                              CurrentStatus = sh.CurrentStatus,
-                             ShippinCost = sh.ShipmentCost,
+                             ShippingCost = sh.ShipmentCost,
                              TrackingNumber = sh.TrackingNumber,
                              EstimatedDeliveryDate =
                                  sh.CurrentStatus != ShipmentStatuses.Delivered

@@ -292,7 +292,7 @@ public sealed class LocationHandlerCoverageTests
 
         result.Status.Should().Be(ResultStatus.Created);
         result.Data!.Name.Should().Be("Downtown");
-        repository.Verify(x => x.AddAsync(It.Is<Zone>(z => z.Name == "Downtown" && z.Code == "DT"), CancellationToken.None), Times.Once);
+        repository.Verify(x => x.AddAsync(It.Is<Zone>(z => z.Name == "Downtown" && z.Code.StartsWith("DOW-") && z.CityId == 1), CancellationToken.None), Times.Once);
     }
 
     [Fact]
@@ -331,7 +331,7 @@ public sealed class LocationHandlerCoverageTests
     [Fact]
     public async Task UpdateZoneHandler_Should_UpdateAndCommit_When_ZoneExistsAsync()
     {
-        var zone = Zone.Create("Old", "O", 1);
+        var zone = Zone.Create("Old", 1);
         var repository = new Mock<IZoneRepository>();
         var unitOfWork = SuccessfulUnitOfWork();
         repository.Setup(x => x.GetByIdAsync<Zone>(zone.Id, It.IsAny<CancellationToken>())).ReturnsAsync(zone);
