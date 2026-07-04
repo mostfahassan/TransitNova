@@ -1,0 +1,8 @@
+﻿@model (string title, string icon, string controller, string action)
+
+<a asp-area="AdminArea" asp-controller="@Model.controller" asp-action="@Model.action"
+   class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
+    hover:bg-gray-50 text-on-surface-variant hover:text-primary">
+    <span class="material-symbols-outlined transition-transform group-hover:scale-110">@Model.icon</span>
+    <span>@Model.title</span>
+</a>

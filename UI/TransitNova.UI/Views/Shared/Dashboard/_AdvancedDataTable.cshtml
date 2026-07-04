@@ -1,0 +1,62 @@
+@model DashboardTableViewModel?
+@{
+    var table = Model ?? new DashboardTableViewModel(
+        "Recent logistics activity",
+        "Latest shipment movements across role workspaces.",
+        new[]
+        {
+            new DashboardTableRowViewModel("SHP-CAI-1042", "Cairo Hub", "Alexandria Port", "In Transit", "12 min ago", "Open"),
+            new DashboardTableRowViewModel("SHP-GIZ-8841", "Giza Depot", "Mansoura DC", "Delivered", "31 min ago", "View"),
+            new DashboardTableRowViewModel("SHP-ALX-3108", "Alexandria Port", "Cairo Hub", "Pending", "46 min ago", "Assign"),
+            new DashboardTableRowViewModel("SHP-TNT-7750", "Tanta Warehouse", "Suez Gate", "Delayed", "1 hr ago", "Review")
+        });
+}
+
+<section class="dashboard-table-wrap dashboard-reveal" data-dashboard-reveal>
+    <div class="flex flex-col gap-3 border-b border-slate-200 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h2 class="text-base font-black tracking-tight text-slate-950">@table.Title</h2>
+            <p class="mt-1 text-sm leading-6 text-slate-500">@table.Subtitle</p>
+        </div>
+        <button class="inline-flex min-h-10 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-extrabold text-slate-700 transition-colors duration-200 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashboard-primary" type="button">View all</button>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th scope="col">Shipment ID</th>
+                    <th scope="col">Origin</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Updated</th>
+                    <th scope="col" class="text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in table.Rows.Select((value, index) => new { value, index }))
+                {
+                    <tr style="--row-index:@row.index">
+                        <td class="font-mono text-xs font-extrabold tracking-wide text-slate-950">@row.value.ShipmentId</td>
+                        <td>@row.value.Origin</td>
+                        <td>@row.value.Destination</td>
+                        <td><span class="dashboard-status-badge @StatusClass(row.value.Status)">@row.value.Status</span></td>
+                        <td class="text-slate-500">@row.value.UpdatedAt</td>
+                        <td class="text-right"><a href="@row.value.ActionUrl" class="font-bold text-dashboard-primary transition-colors duration-200 hover:text-dashboard-primaryDark">@row.value.ActionLabel</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+@functions {
+    private static string StatusClass(string status) => status.Trim().ToLowerInvariant() switch
+    {
+        "delivered" => "dashboard-status-delivered",
+        "pending" => "dashboard-status-pending",
+        "delayed" => "dashboard-status-delayed",
+        "cancelled" => "dashboard-status-cancelled",
+        _ => "dashboard-status-in-transit"
+    };
+}

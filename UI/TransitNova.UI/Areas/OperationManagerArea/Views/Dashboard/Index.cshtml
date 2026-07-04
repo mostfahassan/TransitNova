@@ -1,2 +1,52 @@
-@{ Layout = null; }
-<div></div>
+@using TransitNova.UI.ViewModels
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Operation Manager Dashboard";
+    ViewData["DashboardRole"] = "Operation Manager";
+    ViewData["DashboardSubtitle"] = "Review shipment queues, assignment pressure, carrier activity, and exceptions before they slow delivery.";
+    ViewData["DashboardUserName"] = "Operation Preview";
+    ViewData["DashboardNavItems"] = new[]
+    {
+        new DashboardNavItemViewModel("Dashboard", "/OperationManagerArea/Dashboard/Index", "grid", true),
+        new DashboardNavItemViewModel("Shipments", "/OperationManagerArea/Shipments/Index", "truck"),
+        new DashboardNavItemViewModel("Assigned", "/OperationManagerArea/Shipments/Assigned", "route"),
+        new DashboardNavItemViewModel("Review queue", "/OperationManagerArea/Shipments/ReviewQueue", "settings", false, "9"),
+        new DashboardNavItemViewModel("Carriers", "/OperationManagerArea/Carriers/Index", "users"),
+        new DashboardNavItemViewModel("Trips", "/OperationManagerArea/Trips/StartPickup", "route")
+    };
+
+    var kpis = new[]
+    {
+        new DashboardKpiCardViewModel("Review queue", 9, "9", "settings", "+3", false, "Shipments waiting for approve or reject decisions."),
+        new DashboardKpiCardViewModel("Assigned today", 34, "34", "truck", "+11%", true, "Shipments assigned to carriers today."),
+        new DashboardKpiCardViewModel("Carrier availability", 62, "62", "users", "+5%", true, "Available carrier pool for new work."),
+        new DashboardKpiCardViewModel("Exceptions", 4, "4", "chart", "-2", true, "Operational issues currently under review.")
+    };
+
+    var rows = new DashboardTableViewModel(
+        "Shipment review queue",
+        "Representative rows for approval, rejection, and assignment flows.",
+        new[]
+        {
+            new DashboardTableRowViewModel("SHP-OPS-4412", "Cairo Hub", "Alexandria Port", "Pending", "4 min ago", "Review", "/OperationManagerArea/Shipments/Review"),
+            new DashboardTableRowViewModel("SHP-OPS-4388", "Giza Depot", "Mansoura DC", "In Transit", "22 min ago", "Details", "/OperationManagerArea/Shipments/Details"),
+            new DashboardTableRowViewModel("SHP-OPS-4310", "Suez Gate", "Tanta Warehouse", "Delayed", "48 min ago", "Assign", "/OperationManagerArea/Carriers/AssignDelivery"),
+            new DashboardTableRowViewModel("SHP-OPS-4264", "Alexandria Port", "Cairo Hub", "Delivered", "1 hr ago", "History", "/OperationManagerArea/Shipments/Histories")
+        });
+}
+
+<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    @foreach (var kpi in kpis)
+    {
+        @await Html.PartialAsync("Dashboard/_KpiCard", kpi)
+    }
+</section>
+
+<section class="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Review throughput", "Approve, reject, and assignment movement across the operations queue.", "operationReviewChart", "Today"))
+    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Carrier load", "Carrier assignment pressure by warehouse and route.", "operationCarrierChart", "This week"))
+</section>
+
+<section class="mt-6">
+    @await Html.PartialAsync("Dashboard/_AdvancedDataTable", rows)
+</section>

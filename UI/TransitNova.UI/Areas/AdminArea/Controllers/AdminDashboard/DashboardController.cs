@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
 using TransitNova.UI.Infrastructure.Mvc;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Dashboard.Segregation;
-
 namespace TransitNova.UI.Areas.AdminArea.Controllers.AdminDashboard;
 
-[Authorize(Roles = Role.Admin)]
+[AllowAnonymous]
 [Area("AdminArea")]
 [Route("[area]/[controller]/[action]")]
 public sealed class DashboardController(

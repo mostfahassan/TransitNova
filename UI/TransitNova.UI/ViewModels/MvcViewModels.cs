@@ -61,7 +61,17 @@ public sealed class RegisterViewModel
     public UserType UserType { get; set; } = UserType.User;
 
     [Range(1, int.MaxValue)]
+    public int CountryId { get; set; }
+
+    [Range(1, int.MaxValue)]
+    public int GovernmentId { get; set; }
+
+    [Range(1, int.MaxValue)]
     public int CityId { get; set; }
+
+    public IReadOnlyCollection<LocationOptionViewModel> Countries { get; set; } = [];
+    public IReadOnlyCollection<LocationOptionViewModel> Governments { get; set; } = [];
+    public IReadOnlyCollection<LocationOptionViewModel> Cities { get; set; } = [];
 
     public UiRegisterDto ToDto() => new()
     {
@@ -77,6 +87,8 @@ public sealed class RegisterViewModel
         CityId = CityId
     };
 }
+
+public sealed record LocationOptionViewModel(int Id, string Name);
 
 public sealed class ChangePasswordViewModel
 {
@@ -666,3 +678,4 @@ public sealed class CarrierStatusFormViewModel
 
     public UiChangeCarrierStatusDto ToDto() => new(Status);
 }
+

@@ -31,7 +31,8 @@ public sealed class ShipmentsController(
         if (senderId is null)
             return Challenge();
 
-        var response = await apiInvoker.ExecuteAsync((token, ct) => userShipmentsCommand.CreateShipmentAsync(model.ToDto(senderId.Value), token!, idempotencyKeyFactory.Create(), ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) 
+            => userShipmentsCommand.CreateShipmentAsync(model.ToDto(senderId.Value), token!, idempotencyKeyFactory.Create(), ct), cancellationToken: cancellationToken);
 
         if (response.IsFailure || response.Data is null)
         {

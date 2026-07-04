@@ -1,2 +1,52 @@
-@{ Layout = null; }
-<div></div>
+@using TransitNova.UI.ViewModels
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Customer Dashboard";
+    ViewData["DashboardRole"] = "Customer";
+    ViewData["DashboardSubtitle"] = "Track shipments, subscription state, delivery progress, and open issues from one customer workspace.";
+    ViewData["DashboardUserName"] = "Customer Preview";
+    ViewData["DashboardNavItems"] = new[]
+    {
+        new DashboardNavItemViewModel("Dashboard", "/UserArea/Dashboard/Index", "grid", true),
+        new DashboardNavItemViewModel("Create shipment", "/UserArea/Shipments/Create", "truck"),
+        new DashboardNavItemViewModel("My shipments", "/UserArea/Shipments/Track", "route"),
+        new DashboardNavItemViewModel("Pricing", "/UserArea/Pricing/RateCalculator", "chart"),
+        new DashboardNavItemViewModel("Profile", "/UserArea/Profile/Index", "users"),
+        new DashboardNavItemViewModel("Subscriptions", "/UserArea/Subscriptions/Subscribe", "settings")
+    };
+
+    var kpis = new[]
+    {
+        new DashboardKpiCardViewModel("Active shipments", 12, "12", "truck", "+4%", true, "Shipments currently moving or awaiting delivery."),
+        new DashboardKpiCardViewModel("Delivered this month", 28, "28", "route", "+16%", true, "Completed deliveries across your account."),
+        new DashboardKpiCardViewModel("Open issues", 2, "2", "chart", "-1", true, "Claims or customer service cases still open."),
+        new DashboardKpiCardViewModel("Estimated spend", 1840, "1,840", "currency", "+9%", true, "Preview cost total for current month.")
+    };
+
+    var rows = new DashboardTableViewModel(
+        "Recent customer shipments",
+        "Representative customer-facing tracking rows.",
+        new[]
+        {
+            new DashboardTableRowViewModel("SHP-USR-2041", "Cairo", "Alexandria", "In Transit", "8 min ago", "Track", "/UserArea/Shipments/Track"),
+            new DashboardTableRowViewModel("SHP-USR-1988", "Giza", "Mansoura", "Delivered", "42 min ago", "Details", "/UserArea/Shipments/Details"),
+            new DashboardTableRowViewModel("SHP-USR-1904", "Nasr City", "Suez", "Pending", "1 hr ago", "Edit", "/UserArea/Shipments/Edit"),
+            new DashboardTableRowViewModel("SHP-USR-1830", "Maadi", "Tanta", "Delayed", "2 hr ago", "Issue", "/UserArea/Shipments/Issue")
+        });
+}
+
+<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    @foreach (var kpi in kpis)
+    {
+        @await Html.PartialAsync("Dashboard/_KpiCard", kpi)
+    }
+</section>
+
+<section class="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Shipment tracking", "Created, picked up, in transit, and delivered movement for your account.", "customerShipmentChart", "Last 30 days"))
+    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Spend forecast", "Estimated shipment cost distribution by delivery type.", "customerSpendChart", "This month"))
+</section>
+
+<section class="mt-6">
+    @await Html.PartialAsync("Dashboard/_AdvancedDataTable", rows)
+</section>

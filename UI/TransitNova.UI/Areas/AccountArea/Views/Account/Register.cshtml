@@ -1,2 +1,177 @@
-@{ Layout = null; }
-<div></div>
+@model RegisterViewModel
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register | TransitNova</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="~/Tailwind/tailwind.config.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/css/Account/account.css" asp-append-version="true" />
+    <script src="~/js/Account/account.js" asp-append-version="true" defer></script>
+</head>
+<body class="account-page register-page">
+    <main class="account-shell min-h-screen px-5 py-6 lg:px-8">
+        <header class="mx-auto flex max-w-7xl items-center justify-between pb-8">
+            <a asp-area="LandingArea" asp-controller="Home" asp-action="Index" class="inline-flex items-center gap-3 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-account-primary">
+                <span class="account-brand-mark">TN</span>
+                <span class="grid leading-none">
+                    <span class="text-sm font-black tracking-tight text-slate-950">TransitNova</span>
+                    <span class="mt-1 hidden font-mono text-[10px] font-bold uppercase tracking-wideTech text-slate-500 sm:block">Create access</span>
+                </span>
+            </a>
+            <a asp-area="AccountArea" asp-controller="Account" asp-action="Login" class="account-secondary-link">Sign in</a>
+        </header>
+
+        <section class="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+            <aside class="account-side-panel account-reveal lg:sticky lg:top-8">
+                <span class="account-kicker">Registration</span>
+                <h1 class="mt-6 max-w-xl text-5xl font-black leading-[0.98] tracking-tight text-slate-950 xl:text-6xl">Start with clean identity and location data.</h1>
+                <p class="mt-5 max-w-lg text-base leading-7 text-slate-600">The selected city is the only location value sent to the backend DTO. Country and government exist here to make that choice accurate.</p>
+                <div class="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+                    <div class="account-side-stat"><span>Step 01</span><strong>Country</strong></div>
+                    <div class="account-side-stat"><span>Step 02</span><strong>Gov</strong></div>
+                    <div class="account-side-stat"><span>Step 03</span><strong>City</strong></div>
+                </div>
+                <p class="cascade-note mt-6">Validation runs before submit. Invalid input is shown immediately so the request is not sent until the form is ready.</p>
+            </aside>
+
+            <section class="register-card w-full account-card account-reveal p-5 sm:p-8 lg:ml-auto">
+                <div class="flex flex-col gap-3 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <span class="account-kicker">New account</span>
+                        <h2 class="mt-5 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Create your workspace access.</h2>
+                    </div>
+                    <p class="max-w-xs text-sm leading-6 text-slate-600">Customer and carrier registration are available from this entry point.</p>
+                </div>
+
+                @if (TempData["ErrorMessage"] is string errorMessage)
+                {
+                    <div class="account-alert account-alert-error mt-6">@errorMessage</div>
+                }
+
+                <form asp-area="AccountArea" asp-controller="Account" asp-action="Register" method="post" class="mt-7 register-grid" data-account-form data-ajax-form data-register-form data-governments-url="@Url.Action("Governments", "Account", new { area = "AccountArea" })" data-cities-url="@Url.Action("Cities", "Account", new { area = "AccountArea" })" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div class="account-alert account-alert-error span-2" data-form-alert hidden></div>
+                    <div asp-validation-summary="ModelOnly" class="account-alert account-alert-error span-2"></div>
+
+                    <div class="account-field">
+                        <label asp-for="FirstName" class="account-label">First name</label>
+                        <input asp-for="FirstName" class="account-input" autocomplete="given-name" placeholder="Mostafa" required />
+                        <span asp-validation-for="FirstName" class="account-error-message" data-account-error-for="FirstName"></span>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="LastName" class="account-label">Last name</label>
+                        <input asp-for="LastName" class="account-input" autocomplete="family-name" placeholder="Mahmoud" required />
+                        <span asp-validation-for="LastName" class="account-error-message" data-account-error-for="LastName"></span>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="UserName" class="account-label">Username</label>
+                        <input asp-for="UserName" class="account-input" autocomplete="username" placeholder="mostafa.ops" required />
+                        <span asp-validation-for="UserName" class="account-error-message" data-account-error-for="UserName"></span>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="PhoneNumber" class="account-label">Phone number</label>
+                        <input asp-for="PhoneNumber" class="account-input" autocomplete="tel" placeholder="+20 100 000 0000" required />
+                        <span asp-validation-for="PhoneNumber" class="account-error-message" data-account-error-for="PhoneNumber"></span>
+                    </div>
+
+                    <div class="account-field span-2">
+                        <label asp-for="Email" class="account-label">Email address</label>
+                        <input asp-for="Email" type="email" class="account-input" autocomplete="email" placeholder="name@company.com" required />
+                        <span asp-validation-for="Email" class="account-error-message" data-account-error-for="Email"></span>
+                    </div>
+
+                    <div class="account-field span-2">
+                        <label asp-for="Address" class="account-label">Address</label>
+                        <input asp-for="Address" class="account-input" autocomplete="street-address" placeholder="Building, street, and operational address" required />
+                        <span asp-validation-for="Address" class="account-error-message" data-account-error-for="Address"></span>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="UserType" class="account-label">Account type</label>
+                        <select asp-for="UserType" class="account-select" required>
+                            @foreach (var userType in Enum.GetValues<UserType>().Except(new[] { UserType.Receiver }))
+                            {
+                                <option value="@userType" selected="@(userType == Model.UserType)">@FormatUserType(userType)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="UserType" class="account-error-message" data-account-error-for="UserType"></span>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="CountryId" class="account-label">Country</label>
+                        <select asp-for="CountryId" class="account-select" required data-country-select>
+                            <option value="">Choose country</option>
+                            @foreach (var country in Model.Countries)
+                            {
+                                <option value="@country.Id" selected="@(country.Id == Model.CountryId)">@country.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CountryId" class="account-error-message" data-account-error-for="CountryId"></span>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="GovernmentId" class="account-label">Government</label>
+                        <select asp-for="GovernmentId" class="account-select" required data-government-select disabled="@(Model.Governments.Count == 0)">
+                            <option value="">Choose government</option>
+                            @foreach (var government in Model.Governments)
+                            {
+                                <option value="@government.Id" selected="@(government.Id == Model.GovernmentId)">@government.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="GovernmentId" class="account-error-message" data-account-error-for="GovernmentId"></span>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="CityId" class="account-label">City</label>
+                        <select asp-for="CityId" class="account-select" required data-city-select disabled="@(Model.Cities.Count == 0)">
+                            <option value="">Choose city</option>
+                            @foreach (var city in Model.Cities)
+                            {
+                                <option value="@city.Id" selected="@(city.Id == Model.CityId)">@city.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CityId" class="account-error-message" data-account-error-for="CityId"></span>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="Password" class="account-label">Password</label>
+                        <input asp-for="Password" id="Password" type="password" class="account-input" autocomplete="new-password" placeholder="At least 6 characters" required data-min-length="6" data-revalidates="#ConfirmPassword" />
+                        <span asp-validation-for="Password" class="account-error-message" data-account-error-for="Password"></span>
+                    </div>
+
+                    <div class="account-field">
+                        <label asp-for="ConfirmPassword" class="account-label">Confirm password</label>
+                        <input asp-for="ConfirmPassword" id="ConfirmPassword" type="password" class="account-input" autocomplete="new-password" placeholder="Repeat password" required data-match="#Password" />
+                        <span asp-validation-for="ConfirmPassword" class="account-error-message" data-account-error-for="ConfirmPassword"></span>
+                    </div>
+
+                    <div class="span-2 pt-2">
+                        <button type="submit" class="account-button" data-submit-button data-loading-text="Creating account...">Create account</button>
+                    </div>
+                </form>
+            </section>
+        </section>
+    </main>
+</body>
+</html>
+@functions {
+    private static string FormatUserType(UserType userType) =>
+        userType switch
+        {
+            UserType.OperationManager => "Operation Manager",
+            UserType.WarehouseManager => "Warehouse Manager",
+            _ => userType.ToString()
+        };
+}

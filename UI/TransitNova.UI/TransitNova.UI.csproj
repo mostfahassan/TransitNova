@@ -4,6 +4,28 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Areas\CarrierArea\Data\**" />
+    <Compile Remove="Areas\CarrierArea\Models\**" />
+    <Compile Remove="Areas\LandingArea\Data\**" />
+    <Compile Remove="Areas\OperationManagerArea\Data\**" />
+    <Compile Remove="Areas\WarehouseManagerArea\Data\**" />
+    <Content Remove="Areas\CarrierArea\Data\**" />
+    <Content Remove="Areas\CarrierArea\Models\**" />
+    <Content Remove="Areas\LandingArea\Data\**" />
+    <Content Remove="Areas\OperationManagerArea\Data\**" />
+    <Content Remove="Areas\WarehouseManagerArea\Data\**" />
+    <EmbeddedResource Remove="Areas\CarrierArea\Data\**" />
+    <EmbeddedResource Remove="Areas\CarrierArea\Models\**" />
+    <EmbeddedResource Remove="Areas\LandingArea\Data\**" />
+    <EmbeddedResource Remove="Areas\OperationManagerArea\Data\**" />
+    <EmbeddedResource Remove="Areas\WarehouseManagerArea\Data\**" />
+    <None Remove="Areas\CarrierArea\Data\**" />
+    <None Remove="Areas\CarrierArea\Models\**" />
+    <None Remove="Areas\LandingArea\Data\**" />
+    <None Remove="Areas\OperationManagerArea\Data\**" />
+    <None Remove="Areas\WarehouseManagerArea\Data\**" />
+  </ItemGroup>
 
   <ItemGroup>
    <ProjectReference Include="../TransitNovaUI.BusinessLayer/TransitNovaUI.BusinessLayer.csproj" />
@@ -20,39 +42,10 @@
   </ItemGroup>
 
 		<ItemGroup>
-    <Folder Include="Areas\AdminArea\Controllers\AdminDashboard\" />
-    <Folder Include="Areas\AdminArea\Controllers\Bundles\" />
-    <Folder Include="Areas\AdminArea\Controllers\Carriers\" />
-    <Folder Include="Areas\AdminArea\Controllers\Location\" />
-    <Folder Include="Areas\AdminArea\Controllers\OperationManagers\" />
-    <Folder Include="Areas\AdminArea\Controllers\Roles\" />
-    <Folder Include="Areas\AdminArea\Controllers\Subscriptions\" />
-    <Folder Include="Areas\AdminArea\Controllers\Users\" />
-    <Folder Include="Areas\AdminArea\Controllers\Vehicles\" />
-    <Folder Include="Areas\AdminArea\Controllers\WarehouseManagers\" />
-    <Folder Include="Areas\AdminArea\Controllers\Warehouses\" />
-    <Folder Include="Areas\AdminArea\Views\" />
-    <Folder Include="Areas\AuthenticationArea\Controllers\Account\" />
-    <Folder Include="Areas\AuthenticationArea\Data\" />
-    <Folder Include="Areas\AuthenticationArea\Views\" />
-    <Folder Include="Areas\CarrierArea\Controllers\Operations\" />
-    <Folder Include="Areas\CarrierArea\Controllers\Queries\" />
-    <Folder Include="Areas\CarrierArea\Data\" />
-    <Folder Include="Areas\CarrierArea\Models\" />
-    <Folder Include="Areas\CarrierArea\Controllers\Commands\" />
     <Folder Include="Areas\CarrierArea\Views\" />
-    <Folder Include="Areas\CustomerArea\Controllers\" />
-    <Folder Include="Areas\CustomerArea\Data\" />
-    <Folder Include="Areas\CustomerArea\Views\" />
     <Folder Include="Areas\LandingArea\Controllers\" />
-    <Folder Include="Areas\LandingArea\Data\" />
-    <Folder Include="Areas\OperationManagerArea\Controllers\Commands\" />
-    <Folder Include="Areas\OperationManagerArea\Controllers\Queries\" />
-    <Folder Include="Areas\OperationManagerArea\Data\" />
     <Folder Include="Areas\OperationManagerArea\Views\" />
     <Folder Include="Areas\WarehouseManagerArea\Controllers\" />
-    <Folder Include="Areas\WarehouseManagerArea\Data\" />
-    <Folder Include="Areas\WarehouseManagerArea\Models\" />
     <Folder Include="Areas\WarehouseManagerArea\Views\" />
   </ItemGroup>
 

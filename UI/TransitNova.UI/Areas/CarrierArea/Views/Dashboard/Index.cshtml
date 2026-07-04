@@ -1,2 +1,53 @@
-@{ Layout = null; }
-<div></div>
+@using TransitNova.UI.ViewModels
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Carrier Dashboard";
+    ViewData["DashboardRole"] = "Carrier";
+    ViewData["DashboardSubtitle"] = "Monitor assigned shipments, active pickup and delivery trips, revenue, rating, and vehicle readiness.";
+    ViewData["DashboardUserName"] = "Carrier Preview";
+    ViewData["DashboardNavItems"] = new[]
+    {
+        new DashboardNavItemViewModel("Dashboard", "/CarrierArea/Dashboard/Index", "grid", true),
+        new DashboardNavItemViewModel("Shipments", "/CarrierArea/Shipments/Index", "truck"),
+        new DashboardNavItemViewModel("Trips", "/CarrierArea/Trips/Index", "route"),
+        new DashboardNavItemViewModel("Vehicles", "/CarrierArea/Vehicles/Index", "truck"),
+        new DashboardNavItemViewModel("Profile", "/CarrierArea/Profile/Index", "users"),
+        new DashboardNavItemViewModel("Revenue", "/CarrierArea/Analytics/Revenue", "currency"),
+        new DashboardNavItemViewModel("Rating", "/CarrierArea/Analytics/Rating", "chart")
+    };
+
+    var kpis = new[]
+    {
+        new DashboardKpiCardViewModel("Assigned shipments", 18, "18", "truck", "+7%", true, "Shipments currently assigned to this carrier."),
+        new DashboardKpiCardViewModel("Active trips", 6, "6", "route", "+2", true, "Pickup and delivery trips in progress."),
+        new DashboardKpiCardViewModel("Carrier rating", 4.8m, "4.8", "chart", "+0.2", true, "Average service rating from completed trips."),
+        new DashboardKpiCardViewModel("Revenue", 12650, "12,650", "currency", "+14%", true, "Preview revenue across recent deliveries.")
+    };
+
+    var rows = new DashboardTableViewModel(
+        "Carrier work queue",
+        "Representative assignments waiting for carrier action.",
+        new[]
+        {
+            new DashboardTableRowViewModel("SHP-CAR-7712", "Cairo Hub", "Giza Depot", "In Transit", "5 min ago", "Open", "/CarrierArea/Shipments/Details"),
+            new DashboardTableRowViewModel("SHP-CAR-7644", "Nasr City", "Mansoura", "Pending", "19 min ago", "Start", "/CarrierArea/Trips/Index"),
+            new DashboardTableRowViewModel("SHP-CAR-7529", "Alexandria", "Cairo Hub", "Delivered", "1 hr ago", "View", "/CarrierArea/Shipments/Details"),
+            new DashboardTableRowViewModel("SHP-CAR-7492", "Tanta", "Suez", "Delayed", "2 hr ago", "Review", "/CarrierArea/Shipments/Status")
+        });
+}
+
+<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    @foreach (var kpi in kpis)
+    {
+        @await Html.PartialAsync("Dashboard/_KpiCard", kpi)
+    }
+</section>
+
+<section class="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Trip completion", "Pickup and delivery completion trend by day.", "carrierTripChart", "Last 14 days"))
+    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Revenue movement", "Revenue and cost-per-kg trend placeholder.", "carrierRevenueChart", "This quarter"))
+</section>
+
+<section class="mt-6">
+    @await Html.PartialAsync("Dashboard/_AdvancedDataTable", rows)
+</section>

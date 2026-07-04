@@ -1,2 +1,54 @@
-@{ Layout = null; }
-<div></div>
+@using TransitNova.UI.ViewModels
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Admin Dashboard";
+    ViewData["DashboardRole"] = "Admin";
+    ViewData["DashboardSubtitle"] = "Preview the admin control surface without authentication while the MVC screens are being connected.";
+    ViewData["DashboardUserName"] = "Admin Preview";
+    ViewData["DashboardNavItems"] = new[]
+    {
+        new DashboardNavItemViewModel("Dashboard", "/AdminArea/Dashboard/Index", "grid", true),
+        new DashboardNavItemViewModel("Users", "/AdminArea/Users/Index", "users"),
+        new DashboardNavItemViewModel("Roles", "/AdminArea/Roles/Index", "settings"),
+        new DashboardNavItemViewModel("Shipments", "/AdminArea/OperationManagers/Index", "truck"),
+        new DashboardNavItemViewModel("Bundles", "/AdminArea/Bundles/Index", "grid"),
+        new DashboardNavItemViewModel("Warehouses", "/AdminArea/Warehouses/Index", "warehouse"),
+        new DashboardNavItemViewModel("Carriers", "/AdminArea/Carriers/Index", "truck"),
+        new DashboardNavItemViewModel("Cities", "/AdminArea/Cities/Index", "route")
+    };
+
+    var kpis = new[]
+    {
+        new DashboardKpiCardViewModel("Active shipments", 128, "128", "truck", "+12%", true, "Across pickup, warehouse, and delivery states."),
+        new DashboardKpiCardViewModel("Carrier capacity", 38, "38", "route", "+8%", true, "Available carriers ready for assignment."),
+        new DashboardKpiCardViewModel("Warehouse usage", 74, "74", "warehouse", "-3%", false, "Current operational storage load."),
+        new DashboardKpiCardViewModel("Monthly revenue", 42100, "42,100", "currency", "+18%", true, "Preview figure for dashboard wiring.")
+    };
+
+    var activityRows = new DashboardTableViewModel(
+        "Recent admin activity",
+        "Representative logistics rows for the reusable table component.",
+        new[]
+        {
+            new DashboardTableRowViewModel("SHP-CAI-1042", "Cairo Hub", "Alexandria Port", "In Transit", "12 min ago", "Open"),
+            new DashboardTableRowViewModel("SHP-GIZ-8841", "Giza Depot", "Mansoura DC", "Delivered", "31 min ago", "View"),
+            new DashboardTableRowViewModel("SHP-ALX-3108", "Alexandria Port", "Cairo Hub", "Pending", "46 min ago", "Assign"),
+            new DashboardTableRowViewModel("SHP-SUZ-7750", "Suez Gate", "Tanta Warehouse", "Delayed", "1 hr ago", "Review")
+        });
+}
+
+<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    @foreach (var kpi in kpis)
+    {
+        @await Html.PartialAsync("Dashboard/_KpiCard", kpi)
+    }
+</section>
+
+<section class="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Shipment volume", "Daily created, approved, assigned, and delivered shipment movement.", "adminShipmentChart", "Last 30 days"))
+    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Carrier performance", "Assignment rate, completion rate, and rating trend placeholder.", "adminCarrierChart", "This quarter"))
+</section>
+
+<section class="mt-6">
+    @await Html.PartialAsync("Dashboard/_AdvancedDataTable", activityRows)
+</section>

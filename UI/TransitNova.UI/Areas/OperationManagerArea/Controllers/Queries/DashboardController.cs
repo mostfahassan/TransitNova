@@ -1,24 +1,17 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TransitNova.Domain.Contracts.Roles;
-using TransitNova.UI.Infrastructure.Mvc;
-using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Dashboard.Segregation;
 
 namespace TransitNova.UI.Areas.OperationManagerArea.Controllers.Queries;
 
-[Authorize(Roles = Role.OperationManager)]
+[AllowAnonymous]
 [Area("OperationManagerArea")]
 [Route("[area]/[controller]/[action]")]
-public sealed class DashboardController(
-    IBackendApiInvoker apiInvoker,
-    IOperationManagerDashboardQuery operationManagerDashboardQuery)
-    : AppControllerBase
+public sealed class DashboardController : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> Index(CancellationToken cancellationToken)
+    public IActionResult Index()
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerDashboardQuery.GetOperationManagerDashboardAsync(token!, ct), cancellationToken: cancellationToken);
-
-        return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
+        ViewData["Title"] = "Operation Manager Dashboard";
+        return View();
     }
 }

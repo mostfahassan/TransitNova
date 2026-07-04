@@ -1,2 +1,51 @@
-@{ Layout = null; }
-<div></div>
+@using TransitNova.UI.ViewModels
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Warehouse Manager Dashboard";
+    ViewData["DashboardRole"] = "Warehouse Manager";
+    ViewData["DashboardSubtitle"] = "Track warehouse capacity, inbound shipments, outbound handoffs, carriers, and trip readiness.";
+    ViewData["DashboardUserName"] = "Warehouse Preview";
+    ViewData["DashboardNavItems"] = new[]
+    {
+        new DashboardNavItemViewModel("Dashboard", "/WarehouseManagerArea/Dashboard/Index", "grid", true),
+        new DashboardNavItemViewModel("Shipments", "/WarehouseManagerArea/Shipments/Index", "truck"),
+        new DashboardNavItemViewModel("Carriers", "/WarehouseManagerArea/Carriers/Index", "users"),
+        new DashboardNavItemViewModel("Trips", "/WarehouseManagerArea/Trips/Index", "route"),
+        new DashboardNavItemViewModel("Profile", "/WarehouseManagerArea/Profile/Edit", "settings")
+    };
+
+    var kpis = new[]
+    {
+        new DashboardKpiCardViewModel("Inbound shipments", 44, "44", "truck", "+10%", true, "Shipments expected to enter warehouse flow."),
+        new DashboardKpiCardViewModel("Outbound handoffs", 31, "31", "route", "+6%", true, "Shipments released to delivery carriers."),
+        new DashboardKpiCardViewModel("Capacity usage", 78, "78", "warehouse", "+4%", false, "Current usage across assigned warehouse zones."),
+        new DashboardKpiCardViewModel("Available carriers", 17, "17", "users", "+2", true, "Carrier options available near this warehouse.")
+    };
+
+    var rows = new DashboardTableViewModel(
+        "Warehouse movement board",
+        "Representative warehouse shipment and handoff activity.",
+        new[]
+        {
+            new DashboardTableRowViewModel("SHP-WHM-5901", "Inbound Dock A", "Cairo Hub", "Pending", "9 min ago", "Details", "/WarehouseManagerArea/Shipments/Details"),
+            new DashboardTableRowViewModel("SHP-WHM-5866", "Zone 4", "Alexandria Port", "In Transit", "24 min ago", "Trip", "/WarehouseManagerArea/Trips/Details"),
+            new DashboardTableRowViewModel("SHP-WHM-5819", "Cold Storage", "Mansoura DC", "Delayed", "56 min ago", "Carrier", "/WarehouseManagerArea/Carriers/Details"),
+            new DashboardTableRowViewModel("SHP-WHM-5750", "Outbound Dock C", "Giza Depot", "Delivered", "1 hr ago", "View", "/WarehouseManagerArea/Shipments/Details")
+        });
+}
+
+<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    @foreach (var kpi in kpis)
+    {
+        @await Html.PartialAsync("Dashboard/_KpiCard", kpi)
+    }
+</section>
+
+<section class="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Warehouse throughput", "Inbound, scanned, stored, and outbound shipment trend.", "warehouseThroughputChart", "Last 7 days"))
+    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Capacity pressure", "Warehouse usage and carrier handoff readiness placeholder.", "warehouseCapacityChart", "This week"))
+</section>
+
+<section class="mt-6">
+    @await Html.PartialAsync("Dashboard/_AdvancedDataTable", rows)
+</section>

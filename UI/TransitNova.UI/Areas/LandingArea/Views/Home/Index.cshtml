@@ -1,5 +1,259 @@
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Manage Logistics with Intelligence";
 }
 
-@await Html.PartialAsync("_LandingHome")
+<section id="product" class="relative overflow-hidden pt-32 sm:pt-36 lg:pt-40">
+    <div class="absolute inset-x-0 top-0 h-[760px] tn-grid-bg" aria-hidden="true"></div>
+    <div class="relative mx-auto grid max-w-7xl gap-12 px-5 pb-20 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,0.85fr)] lg:px-8 lg:pb-28">
+        <div class="flex flex-col justify-center" data-reveal>
+            <div class="inline-flex w-fit items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-bold uppercase tracking-wideTech text-slate-600 shadow-[0_1px_0_rgba(15,23,42,0.05)]">
+                <span class="h-2 w-2 rounded-sm bg-brand-blue" aria-hidden="true"></span>
+                Logistics OS / Rev 1.0
+            </div>
+
+            <h1 class="mt-8 max-w-5xl text-balance text-5xl font-black leading-[0.95] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl xl:text-8xl">Manage Logistics with Intelligence</h1>
+            <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">TransitNova brings shipment creation, carrier assignment, warehouse handoff, and tracking into one fast, transparent, scalable workflow.</p>
+
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a class="inline-flex min-h-12 items-center justify-center rounded-md bg-brand-blue px-6 text-sm font-bold text-white transition duration-200 ease-smooth hover:-translate-y-0.5 hover:bg-brand-blueDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue" asp-area="AccountArea" asp-controller="Account" asp-action="Register">Get Started</a>
+                <a class="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-6 text-sm font-bold text-slate-950 transition duration-200 ease-smooth hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue" href="#demo">
+                    <span class="grid h-5 w-5 place-items-center rounded-sm bg-slate-950 text-white" aria-hidden="true">
+                        <svg class="h-3 w-3" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.25 2.75L8.25 6L4.25 9.25V2.75Z" fill="currentColor" />
+                        </svg>
+                    </span>
+                    Watch Demo
+                </a>
+            </div>
+
+            <dl class="mt-10 grid max-w-xl grid-cols-3 divide-x divide-slate-200 border-y border-slate-200 bg-white/60 py-5 backdrop-blur-sm">
+                <div class="px-4 first:pl-0">
+                    <dt class="text-[11px] font-bold uppercase tracking-wideTech text-slate-500">Shipments</dt>
+                    <dd class="mt-1 text-2xl font-black text-slate-950" data-counter="119">119</dd>
+                </div>
+                <div class="px-4">
+                    <dt class="text-[11px] font-bold uppercase tracking-wideTech text-slate-500">Roles</dt>
+                    <dd class="mt-1 text-2xl font-black text-slate-950" data-counter="5">5</dd>
+                </div>
+                <div class="px-4">
+                    <dt class="text-[11px] font-bold uppercase tracking-wideTech text-slate-500">Retry</dt>
+                    <dd class="mt-1 text-2xl font-black text-slate-950">1x</dd>
+                </div>
+            </dl>
+        </div>
+
+        <div id="demo" class="relative lg:pt-12" data-reveal>
+            <div class="absolute -left-4 top-20 hidden h-24 w-px bg-slate-300 lg:block" aria-hidden="true"></div>
+            <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-precise">
+                <div class="flex items-center justify-between border-b border-slate-200 bg-slate-950 px-4 py-3 text-white">
+                    <div class="flex items-center gap-2">
+                        <span class="h-2.5 w-2.5 rounded-sm bg-white/40" aria-hidden="true"></span>
+                        <span class="h-2.5 w-2.5 rounded-sm bg-white/40" aria-hidden="true"></span>
+                        <span class="h-2.5 w-2.5 rounded-sm bg-brand-blue" aria-hidden="true"></span>
+                    </div>
+                    <span class="font-mono text-[11px] font-bold uppercase tracking-wideTech text-white/70">Control Board</span>
+                </div>
+
+                <div class="grid gap-px bg-slate-200 lg:grid-cols-[0.75fr_1.15fr]">
+                    <aside class="bg-slate-50 p-4">
+                        <div class="mb-5 flex items-center justify-between">
+                            <span class="font-mono text-[11px] font-bold uppercase tracking-wideTech text-slate-500">Active queue</span>
+                            <span class="rounded-sm bg-brand-blue px-2 py-1 text-xs font-bold text-white">Live</span>
+                        </div>
+                        <div class="grid gap-2">
+                            <div class="shipment-row is-active">
+                                <span>CAI-0428</span>
+                                <strong>Pickup approved</strong>
+                                <small>Carrier assigned in 8 min</small>
+                            </div>
+                            <div class="shipment-row">
+                                <span>ALX-1173</span>
+                                <strong>Warehouse check-in</strong>
+                                <small>2 packages scanned</small>
+                            </div>
+                            <div class="shipment-row">
+                                <span>GIZ-3091</span>
+                                <strong>Out for delivery</strong>
+                                <small>ETA 42 min</small>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <div class="bg-white p-5">
+                        <div class="grid gap-3 sm:grid-cols-3">
+                            <div class="metric-tile">
+                                <span>On-time</span>
+                                <strong>94%</strong>
+                            </div>
+                            <div class="metric-tile">
+                                <span>Fleet</span>
+                                <strong>38</strong>
+                            </div>
+                            <div class="metric-tile">
+                                <span>Issues</span>
+                                <strong>03</strong>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 rounded-md border border-slate-200 p-4">
+                            <div class="mb-4 flex items-center justify-between">
+                                <h2 class="text-sm font-black text-slate-950">Shipment timeline</h2>
+                                <span class="font-mono text-[11px] font-bold uppercase tracking-wideTech text-slate-500">TN-Route-08</span>
+                            </div>
+                            <ol class="relative grid gap-4 border-l border-slate-200 pl-5">
+                                <li class="timeline-item is-done">
+                                    <strong>Created</strong>
+                                    <span>Customer submitted receiver and package details.</span>
+                                </li>
+                                <li class="timeline-item is-done">
+                                    <strong>Reviewed</strong>
+                                    <span>Operation manager approved the shipment.</span>
+                                </li>
+                                <li class="timeline-item is-current">
+                                    <strong>Assigned</strong>
+                                    <span>Carrier pickup route is now active.</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section aria-label="Trusted by logistics teams" class="border-y border-slate-200 bg-white">
+    <div class="mx-auto max-w-7xl px-5 py-8 lg:px-8" data-reveal>
+        <p class="text-center text-xs font-bold uppercase tracking-wideTech text-slate-500">Built for logistics teams that need clean operational control</p>
+        <div class="mt-6 grid grid-cols-2 gap-3 text-center sm:grid-cols-3 lg:grid-cols-5">
+            <span class="client-logo">Nile Freight</span>
+            <span class="client-logo">DeltaCold</span>
+            <span class="client-logo">Atlas Haulage</span>
+            <span class="client-logo">PortLink</span>
+            <span class="client-logo">CairoPack</span>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="bg-brand-canvas py-20 sm:py-24 lg:py-28">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+        <div class="max-w-3xl" data-reveal>
+            <span class="section-kicker">Core features</span>
+            <h2 class="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Three control points for every shipment.</h2>
+            <p class="mt-5 text-lg leading-8 text-slate-600">The product stays simple on purpose: track movement, manage fleet work, and read the numbers that decide the next action.</p>
+        </div>
+
+        <div class="mt-12 grid gap-4 md:grid-cols-3">
+            <article class="feature-card" data-reveal>
+                <div class="feature-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 7.5H20M6 7.5V18H18V7.5M8.5 12H15.5M8.5 15H13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <h3>Real-time tracking</h3>
+                <p>Follow shipment status from request to delivery with clean timeline states and visible ownership.</p>
+            </article>
+
+            <article class="feature-card" data-reveal>
+                <div class="feature-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.5 15.5H5.25M18.75 15.5H20.5M7.25 17.5C8.35457 17.5 9.25 16.6046 9.25 15.5C9.25 14.3954 8.35457 13.5 7.25 13.5C6.14543 13.5 5.25 14.3954 5.25 15.5C5.25 16.6046 6.14543 17.5 7.25 17.5ZM16.75 17.5C17.8546 17.5 18.75 16.6046 18.75 15.5C18.75 14.3954 17.8546 13.5 16.75 13.5C15.6454 13.5 14.75 14.3954 14.75 15.5C14.75 16.6046 15.6454 17.5 16.75 17.5ZM4.5 15.5V10.25C4.5 9.42157 5.17157 8.75 6 8.75H13.25V15.5M13.25 10.25H16.8L19.5 12.8V15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <h3>Fleet management</h3>
+                <p>Assign pickup and delivery work to carriers while keeping trip state, rating, and vehicle data close.</p>
+            </article>
+
+            <article class="feature-card" data-reveal>
+                <div class="feature-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 19V10.5M12 19V5M19 19V13M4 19H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <h3>Analytics</h3>
+                <p>See operational counters, carrier performance, dashboard numbers, and shipment queues without noise.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section id="workflow" class="bg-white py-20 sm:py-24 lg:py-28">
+    <div class="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-[0.88fr_1.12fr] lg:px-8">
+        <div data-reveal>
+            <span class="section-kicker">Problem / Solution</span>
+            <h2 class="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Shipping gets hard when every handoff lives in a different place.</h2>
+            <p class="mt-5 text-lg leading-8 text-slate-600">TransitNova reduces the messy parts: duplicate requests, hidden carrier state, late warehouse updates, and unclear responsibility.</p>
+        </div>
+
+        <div class="grid gap-4" data-reveal>
+            <div class="comparison-panel border-slate-200 bg-slate-50">
+                <div class="comparison-label text-slate-500">Before TransitNova</div>
+                <ul class="mt-5 grid gap-3 text-sm leading-6 text-slate-600">
+                    <li>Shipment requests move through chats and manual approvals.</li>
+                    <li>Carrier assignment is difficult to audit after the trip starts.</li>
+                    <li>Warehouse managers wait for updates from different screens.</li>
+                    <li>Customers need a clear tracking result, not internal noise.</li>
+                </ul>
+            </div>
+            <div class="comparison-panel border-brand-blue bg-brand-blue text-white">
+                <div class="comparison-label text-blue-100">With TransitNova</div>
+                <ul class="mt-5 grid gap-3 text-sm leading-6 text-blue-50">
+                    <li>One shipment flow from create, review, assign, pickup, delivery, and history.</li>
+                    <li>Role-based dashboards keep admin, user, carrier, warehouse, and operation work separate.</li>
+                    <li>Idempotent commands protect write operations from accidental duplicate submissions.</li>
+                    <li>Analytics expose the operational picture without requiring another reporting tool.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="security" class="border-y border-slate-200 bg-slate-950 py-20 text-white sm:py-24 lg:py-28">
+    <div class="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
+        <div data-reveal>
+            <span class="font-mono text-xs font-bold uppercase tracking-wideTech text-blue-200">Operational backbone</span>
+            <h2 class="mt-4 text-4xl font-black tracking-tight sm:text-5xl">A backend-aware landing page for a real SaaS product.</h2>
+            <p class="mt-5 text-lg leading-8 text-slate-300">The UI message now matches the architecture you built: mapped endpoints, refresh-token flow, authorization requirements, exception mapping, and clear role boundaries.</p>
+        </div>
+
+        <div class="grid gap-px overflow-hidden rounded-lg border border-white/10 bg-white/10 sm:grid-cols-2" data-reveal>
+            <div class="operation-cell">
+                <span>01</span>
+                <strong>Auth flow</strong>
+                <p>Access and refresh behavior are ready to connect to MVC screens.</p>
+            </div>
+            <div class="operation-cell">
+                <span>02</span>
+                <strong>Endpoint map</strong>
+                <p>UI services follow backend routes and typed responses.</p>
+            </div>
+            <div class="operation-cell">
+                <span>03</span>
+                <strong>Role control</strong>
+                <p>Admin, user, carrier, warehouse manager, and operation manager flows stay isolated.</p>
+            </div>
+            <div class="operation-cell">
+                <span>04</span>
+                <strong>Command safety</strong>
+                <p>Write actions can use idempotent keys without changing the visual layer.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-brand-canvas py-20 sm:py-24 lg:py-28">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+        <div class="relative overflow-hidden rounded-lg border border-slate-200 bg-white p-8 shadow-soft sm:p-10 lg:p-12" data-reveal>
+            <div class="absolute right-0 top-0 hidden h-full w-1/3 tn-line-stack lg:block" aria-hidden="true"></div>
+            <div class="relative max-w-3xl">
+                <span class="section-kicker">Ready for the next screen</span>
+                <h2 class="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Start from a clear front door, then connect the MVC controllers.</h2>
+                <p class="mt-5 text-lg leading-8 text-slate-600">The landing page now speaks like the product: calm, direct, and built around logistics work instead of decorative marketing noise.</p>
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <a class="inline-flex min-h-12 items-center justify-center rounded-md bg-slate-950 px-6 text-sm font-bold text-white transition duration-200 ease-smooth hover:-translate-y-0.5 hover:bg-brand-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue" asp-area="AccountArea" asp-controller="Account" asp-action="Register">Create workspace</a>
+                    <a class="inline-flex min-h-12 items-center justify-center rounded-md border border-slate-300 bg-white px-6 text-sm font-bold text-slate-950 transition duration-200 ease-smooth hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue" asp-area="AccountArea" asp-controller="Account" asp-action="Login">Log in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

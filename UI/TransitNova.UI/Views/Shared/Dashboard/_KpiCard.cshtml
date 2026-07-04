@@ -1,0 +1,44 @@
+@model DashboardKpiCardViewModel
+@{
+    var trendClass = Model.IsPositiveTrend ? "is-positive" : "is-negative";
+    var trendIconClass = Model.IsPositiveTrend ? string.Empty : "rotate-180";
+    var countDecimals = decimal.Truncate(Model.Value) == Model.Value ? 0 : 1;
+    var countValue = Model.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+}
+
+<article class="dashboard-kpi-card dashboard-reveal" data-dashboard-reveal>
+    <div class="flex items-start justify-between gap-4">
+        <div class="dashboard-kpi-icon" aria-hidden="true">
+            @Html.Raw(Icon(Model.Icon))
+        </div>
+        <span class="dashboard-trend @trendClass">
+            <svg class="@trendIconClass" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M4 10L8 6L12 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            @Model.TrendLabel
+        </span>
+    </div>
+
+    <div class="mt-6">
+        <p class="text-sm font-bold text-slate-500">@Model.Title</p>
+        <p class="mt-2 text-3xl font-black tracking-tight text-slate-950">
+            <span data-dashboard-count="@countValue" data-count-decimals="@countDecimals">@Model.DisplayValue</span>
+        </p>
+        @if (!string.IsNullOrWhiteSpace(Model.SupportingText))
+        {
+            <p class="mt-2 text-sm leading-6 text-slate-500">@Model.SupportingText</p>
+        }
+    </div>
+</article>
+
+@functions {
+    private static string Icon(string icon) => icon switch
+    {
+        "truck" => "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M3.5 15.5H5.5M18.5 15.5H20.5M7.5 17.5A2 2 0 1 0 7.5 13.5A2 2 0 0 0 7.5 17.5ZM16.5 17.5A2 2 0 1 0 16.5 13.5A2 2 0 0 0 16.5 17.5ZM4.5 15.5V9.5C4.5 8.7 5.2 8 6 8H13.5V15.5M13.5 10.5H16.8L19.5 13V15.5\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" /></svg>",
+        "route" => "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 7C4.8 8.7 4.7 11.1 6.7 12.2C8.9 13.4 12.4 10.4 14.8 11.9C17.2 13.4 16.4 16 14.5 17.5M6.5 9A2.5 2.5 0 1 0 6.5 4A2.5 2.5 0 0 0 6.5 9ZM17.5 20A2.5 2.5 0 1 0 17.5 15A2.5 2.5 0 0 0 17.5 20Z\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" /></svg>",
+        "warehouse" => "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4 10L12 5L20 10V19H4V10ZM7 19V12H17V19M9 14H15M9 16.5H15\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" /></svg>",
+        "currency" => "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 3V21M16.5 7H10.5A3 3 0 0 0 10.5 13H13.5A3 3 0 0 1 13.5 19H7\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" /></svg>",
+        _ => "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M5 19V10M12 19V5M19 19V13M4 19H20\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" /></svg>"
+    };
+}
+

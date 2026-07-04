@@ -21,6 +21,12 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
+    name: "landing-root",
+    pattern: "",
+    defaults: new { area = "LandingArea", controller = "Home", action = "Index" })
+    .WithStaticAssets();
+
+app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();

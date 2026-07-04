@@ -1,99 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="TransitNova is a logistics platform for shipment booking, carrier assignment, warehouse coordination, and delivery tracking." />
+    <meta name="description" content="TransitNova is a logistics SaaS platform for shipment creation, carrier coordination, warehouse movement, real-time tracking, and operational analytics." />
+    <meta name="theme-color" content="#F7F6F3" />
     <title>@ViewData["Title"] - TransitNova</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/LandingPage/Landing.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="~/Tailwind/tailwind.config.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/css/LandingPage/landingpage.css" asp-append-version="true" />
 </head>
-<body class="landing-shell">
+<body class="min-h-screen bg-brand-canvas font-sans text-brand-ink antialiased selection:bg-brand-blue selection:text-white">
     <a class="skip-link" href="#main-content">Skip to content</a>
 
-    <header class="site-header" data-landing-header>
-        <nav class="landing-nav" aria-label="Primary navigation">
-            <a class="brand-mark" asp-area="" asp-controller="Home" asp-action="Index" aria-label="TransitNova home">
-                <span class="brand-symbol" aria-hidden="true"><img class"LogoImg" src="~/Images/Logo.png" /></span>
-                <span class="brand-copy">
-                    <span class="brand-name">TransitNova</span>
-                    <span class="brand-note">Logistics OS</span>
+    <header class="fixed inset-x-0 top-0 z-50 px-4 pt-4 transition-all duration-300 ease-smooth" data-landing-header>
+        <nav class="mx-auto flex max-w-7xl items-center justify-between rounded-lg border border-slate-200/80 bg-white/90 px-3 py-3 shadow-[0_1px_0_rgba(15,23,42,0.06)] backdrop-blur-xl transition-all duration-300 ease-smooth lg:px-4" aria-label="Primary navigation">
+            <a class="group inline-flex items-center gap-3 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-blue" asp-area="LandingArea" asp-controller="Home" asp-action="Index" aria-label="TransitNova home">
+                <span class="grid h-10 w-10 place-items-center rounded-md bg-slate-950 text-sm font-black tracking-wide text-white transition-transform duration-200 ease-smooth group-hover:-translate-y-0.5">TN</span>
+                <span class="grid leading-none">
+                    <span class="text-sm font-extrabold tracking-tight text-slate-950">TransitNova</span>
+                    <span class="mt-1 text-[11px] font-medium uppercase tracking-wideTech text-slate-500">Logistics SaaS</span>
                 </span>
             </a>
 
-            <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="landing-menu">
-                <span class="nav-toggle-line" aria-hidden="true"></span>
-                <span class="nav-toggle-line" aria-hidden="true"></span>
-                <span class="sr-only">Toggle navigation</span>
-            </button>
-
-            <div class="nav-menu" id="landing-menu" data-nav-menu>
-                <a href="#services">Services</a>
-                <a href="#platform">Platform</a>
-                <a href="#projects">Projects</a>
-                <a href="#insights">Insights</a>
-                <a class="nav-action" href="#contact">Contact us</a>
+            <div class="hidden items-center gap-1 md:flex">
+                <a class="nav-link" href="#product">Product</a>
+                <a class="nav-link" href="#features">Features</a>
+                <a class="nav-link" href="#workflow">Workflow</a>
+                <a class="nav-link" href="#security">Security</a>
             </div>
+
+            <div class="hidden items-center gap-2 md:flex">
+                <a class="rounded-md px-4 py-2 text-sm font-semibold text-slate-700 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue" asp-area="AccountArea" asp-controller="Account" asp-action="Login">Log in</a>
+                <a class="inline-flex items-center justify-center rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition duration-200 ease-smooth hover:-translate-y-0.5 hover:bg-brand-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue" asp-area="AccountArea" asp-controller="Account" asp-action="Register">Get Started</a>
+            </div>
+
+            <button class="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-950 transition-colors duration-200 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue md:hidden" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="landing-mobile-menu" data-mobile-nav-toggle>
+                <span class="mobile-toggle-line"></span>
+                <span class="mobile-toggle-line"></span>
+            </button>
         </nav>
+
+        <div id="landing-mobile-menu" class="mx-auto mt-2 hidden max-w-7xl rounded-lg border border-slate-200 bg-white p-2 shadow-soft md:hidden" data-mobile-nav>
+            <a class="mobile-nav-link" href="#product">Product</a>
+            <a class="mobile-nav-link" href="#features">Features</a>
+            <a class="mobile-nav-link" href="#workflow">Workflow</a>
+            <a class="mobile-nav-link" href="#security">Security</a>
+            <div class="mt-2 grid grid-cols-2 gap-2 border-t border-slate-100 pt-2">
+                <a class="mobile-nav-link justify-center" asp-area="AccountArea" asp-controller="Account" asp-action="Login">Log in</a>
+                <a class="inline-flex min-h-11 items-center justify-center rounded-md bg-slate-950 px-4 text-sm font-semibold text-white transition-colors duration-200 hover:bg-brand-blue" asp-area="AccountArea" asp-controller="Account" asp-action="Register">Get Started</a>
+            </div>
+        </div>
     </header>
 
     <main id="main-content" role="main">
         @RenderBody()
     </main>
 
-    <footer class="landing-footer">
-        <div class="footer-grid">
+    <footer class="border-t border-slate-200 bg-white">
+        <div class="mx-auto grid max-w-7xl gap-8 px-5 py-10 md:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
             <div>
-                <a class="brand-mark footer-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <span class="brand-symbol" aria-hidden="true"><img src="~/Images/Logo.png" alt="Logo" class="Logo"></span>
-                    <span class="brand-copy">
-                        <span class="brand-name">TransitNova</span>
-                        <span class="brand-note">Shipment management without drift</span>
-                    </span>
+                <a class="inline-flex items-center gap-3 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-blue" asp-area="LandingArea" asp-controller="Home" asp-action="Index">
+                    <span class="grid h-9 w-9 place-items-center rounded-md bg-slate-950 text-xs font-black tracking-wide text-white">TN</span>
+                    <span class="font-extrabold tracking-tight text-slate-950">TransitNova</span>
                 </a>
-                <p>Built for teams that need clear shipment intake, carrier operations, warehouse movement, and customer tracking in one place.</p>
+                <p class="mt-4 max-w-md text-sm leading-6 text-slate-600">A clean operating layer for teams that need shipment intake, carrier assignment, warehouse coordination, and delivery visibility in one place.</p>
             </div>
-
             <div>
-                <h2>Quick Links</h2>
-                <ul>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#platform">Platform</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                <h2 class="text-sm font-bold text-slate-950">Product</h2>
+                <ul class="mt-4 grid gap-2 text-sm text-slate-600">
+                    <li><a class="footer-link" href="#features">Features</a></li>
+                    <li><a class="footer-link" href="#workflow">Workflow</a></li>
+                    <li><a class="footer-link" href="#security">Security</a></li>
                 </ul>
             </div>
-
             <div>
-                <h2>Contact</h2>
-                <ul>
-                    <li><a href="mailto:info@transitnova.local">info@transitnova.local</a></li>
-                    <li><a href="tel:+201000000000">+20 100 000 0000</a></li>
-                    <li>Cairo logistics desk</li>
+                <h2 class="text-sm font-bold text-slate-950">Access</h2>
+                <ul class="mt-4 grid gap-2 text-sm text-slate-600">
+                    <li><a class="footer-link" asp-area="AccountArea" asp-controller="Account" asp-action="Login">Log in</a></li>
+                    <li><a class="footer-link" asp-area="AccountArea" asp-controller="Account" asp-action="Register">Create account</a></li>
+                    <li><a class="footer-link" asp-area="LandingArea" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
                 </ul>
             </div>
-
-            <form class="newsletter-form" aria-label="Newsletter signup">
-                <label for="footer-email">Newsletter</label>
-                <div class="newsletter-row">
-                    <input id="footer-email" name="email" type="email" autocomplete="email" placeholder="Email address" />
-                    <button type="submit" aria-label="Submit email">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M4 12h14M13 6l6 6-6 6" />
-                        </svg>
-                    </button>
-                </div>
-            </form>
         </div>
-
-        <div class="footer-bottom">
-            <span>&copy; 2026 TransitNova. All rights reserved.</span>
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+        <div class="border-t border-slate-200 px-5 py-5 text-center text-xs font-medium uppercase tracking-wideTech text-slate-500 lg:px-8">
+            &copy; 2026 TransitNova. Built for practical logistics operations.
         </div>
     </footer>
 
-    <script src="~/js/LandingPage/Landing.js" asp-append-version="true"></script>
+    <script src="~/js/LandingPage/landing.js" asp-append-version="true" defer></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
