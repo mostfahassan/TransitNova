@@ -1,0 +1,23 @@
+@model AdminPageHeaderViewModel
+
+<div class="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+    <div class="max-w-3xl">
+        <div class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#787774]">@Model.Eyebrow</div>
+        <h2 class="mt-3 text-3xl font-extrabold tracking-tight text-[#111111] sm:text-4xl">@Model.Title</h2>
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-[#2F3437]">@Model.Description</p>
+        }
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+        @if (!string.IsNullOrWhiteSpace(Model.SecondaryLabel) && !string.IsNullOrWhiteSpace(Model.SecondaryAction))
+        {
+            <a asp-area="AdminArea" asp-controller="@Model.SecondaryController" asp-action="@Model.SecondaryAction" class="admin-button-secondary">@Model.SecondaryLabel</a>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.PrimaryLabel) && !string.IsNullOrWhiteSpace(Model.PrimaryAction))
+        {
+            <a asp-area="AdminArea" asp-controller="@Model.PrimaryController" asp-action="@Model.PrimaryAction" class="admin-button">@Model.PrimaryLabel</a>
+        }
+    </div>
+</div>

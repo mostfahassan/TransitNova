@@ -1,2 +1,36 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Bundle subscribers";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Bundle subscribers",
+        Description = "Review users subscribed to a selected logistics bundle.",
+        PrimaryLabel = null,
+        PrimaryController = "Subscriptions",
+        PrimaryAction = null
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Subscriber ledger",
+        Subtitle = "Customers and subscription status for the selected bundle.",
+        Source = Model,
+        Controller = "Subscriptions",
+        RouteIdName = "subscriptionId",
+        IdPropertyPath = "Id|SubscriptionId|UserId",
+        ShowDetails = true,
+        ShowEdit = false,
+        ShowDelete = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Subscriber", "FullName|UserName|Email"),
+            new("Email", "Email"),
+            new("Bundle", "BundleName"),
+            new("Status", "Status|IsActive", "badge"),
+            new("Started", "CreatedAt|StartDate"),
+            new("Expires", "ExpiresAt|EndDate")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

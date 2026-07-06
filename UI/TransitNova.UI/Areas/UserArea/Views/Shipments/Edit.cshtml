@@ -1,2 +1,81 @@
-@{ Layout = null; }
-<div></div>
+@model UpdateShipmentViewModel
+@{
+    ViewData["Title"] = "Edit Shipment";
+    Model.PackageSpecification ??= new PackageSpecificationViewModel();
+    var shipmentId = Convert.ToString(ViewContext.RouteData.Values["shipmentId"]) ?? string.Empty;
+}
+
+<section class="customer-fade-up">
+    <div class="mx-auto max-w-3xl text-center">
+        <div class="customer-badge customer-badge-warning justify-center">Edit shipment</div>
+        <h1 class="mt-5 text-4xl font-black leading-[1.03] tracking-[-0.04em] text-[#111111] md:text-6xl">Adjust the shipment before approval.</h1>
+        <p class="mt-5 text-base leading-7 text-[#666666]">Keep this lightweight: only update the fields that need refinement.</p>
+    </div>
+
+    <form asp-area="UserArea" asp-controller="Shipments" asp-action="Edit" asp-route-shipmentId="@shipmentId" method="post" class="mx-auto mt-10 max-w-4xl space-y-6" data-loading-form data-loading-text="Saving...">
+        @Html.AntiForgeryToken()
+        <section class="customer-card p-6 md:p-8">
+            <div class="grid gap-5 md:grid-cols-2">
+                <div class="md:col-span-2">
+                    <label class="customer-label" asp-for="PickupAddress">Pickup address</label>
+                    <textarea class="customer-textarea" asp-for="PickupAddress" placeholder="Updated pickup address"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="customer-label" asp-for="DeliveryAddress">Delivery address</label>
+                    <textarea class="customer-textarea" asp-for="DeliveryAddress" placeholder="Updated delivery address"></textarea>
+                </div>
+                <div>
+                    <label class="customer-label" asp-for="ShipmentType">Shipment type</label>
+                    <select class="customer-select" asp-for="ShipmentType">
+                        <option value="">Keep current</option>
+                        <option value="Standard">Standard</option>
+                        <option value="Express">Express</option>
+                        <option value="Fragile">Fragile</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="customer-label" asp-for="TransportationMode">Transport mode</label>
+                    <select class="customer-select" asp-for="TransportationMode">
+                        <option value="">Keep current</option>
+                        <option value="Land">Land</option>
+                        <option value="Air">Air</option>
+                        <option value="Sea">Sea</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="customer-card p-6 md:p-8">
+            <div class="mb-5">
+                <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Package dimensions</div>
+                <h2 class="mt-2 text-2xl font-black tracking-[-0.03em] text-[#111111]">Optional package changes</h2>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-4">
+                <div>
+                    <label class="customer-label" asp-for="PackageSpecification.Weight">Weight kg</label>
+                    <input class="customer-input" asp-for="PackageSpecification.Weight" type="number" step="0.01" min="0.01" />
+                </div>
+                <div>
+                    <label class="customer-label" asp-for="PackageSpecification.Width">Width cm</label>
+                    <input class="customer-input" asp-for="PackageSpecification.Width" type="number" step="0.01" min="0.01" />
+                </div>
+                <div>
+                    <label class="customer-label" asp-for="PackageSpecification.Height">Height cm</label>
+                    <input class="customer-input" asp-for="PackageSpecification.Height" type="number" step="0.01" min="0.01" />
+                </div>
+                <div>
+                    <label class="customer-label" asp-for="PackageSpecification.Length">Length cm</label>
+                    <input class="customer-input" asp-for="PackageSpecification.Length" type="number" step="0.01" min="0.01" />
+                </div>
+            </div>
+        </section>
+
+        <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <a asp-area="UserArea" asp-controller="Dashboard" asp-action="Index" class="customer-button-secondary">Cancel</a>
+            <button type="submit" class="customer-button min-h-[48px]">
+                <span class="customer-spinner hidden" data-button-spinner></span>
+                <span data-button-text>Save changes</span>
+            </button>
+        </div>
+    </form>
+</section>

@@ -1,0 +1,109 @@
+@model object?
+@{
+    ViewData["Title"] = "Dispatch Command Center";
+    var carriers = AdminDisplay.Rows(Model).Count > 0
+        ? AdminDisplay.Rows(Model)
+        : new object[]
+        {
+            new { Id = Guid.Parse("41000000-0000-0000-0000-000000000001"), FullName = "Ahmed Mostafa", Status = "Available", City = "Cairo", CurrentLoad = "2 / 8", VehicleType = "Box Truck" },
+            new { Id = Guid.Parse("41000000-0000-0000-0000-000000000002"), FullName = "Mona Adel", Status = "Available", City = "Alexandria", CurrentLoad = "1 / 6", VehicleType = "Van" },
+            new { Id = Guid.Parse("41000000-0000-0000-0000-000000000003"), FullName = "Karim Hany", Status = "Idle", City = "Giza", CurrentLoad = "0 / 4", VehicleType = "Refrigerated" }
+        };
+    var shipments = new[]
+    {
+        new { Id = Guid.Parse("43000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-4091", PickupCity = "Cairo", DeliveryCity = "Alexandria", Status = "Approved", Priority = "High", Window = "10:30 - 12:00" },
+        new { Id = Guid.Parse("43000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-7710", PickupCity = "Giza", DeliveryCity = "Mansoura", Status = "Approved", Priority = "Normal", Window = "12:00 - 14:00" },
+        new { Id = Guid.Parse("43000000-0000-0000-0000-000000000003"), TrackingNumber = "TN-8450", PickupCity = "Cairo", DeliveryCity = "Suez", Status = "InWarehouse", Priority = "Delivery", Window = "15:00 - 17:30" }
+    };
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Dispatch",
+        Title = "Assignment command center",
+        Description = "Match approved shipments with available carriers by service city, load, and pickup window.",
+        PrimaryLabel = "Review queue",
+        PrimaryController = "Shipments",
+        PrimaryAction = "ReviewQueue",
+        SecondaryLabel = "Carrier roster",
+        SecondaryController = "Carriers",
+        SecondaryAction = "Index"
+    };
+}
+
+<partial name="_OpsPageHeader" model="header" />
+
+<section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
+    <div class="ops-card overflow-hidden">
+        <div class="border-b border-[#EAEAEA] p-6">
+            <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Unassigned shipments</div>
+            <h2 class="mt-2 text-2xl font-black tracking-tight text-[#111111]">Ready for carrier assignment</h2>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-[#787774]">Approved pickups and warehouse-ready deliveries appear here before a carrier is selected.</p>
+        </div>
+        <div class="max-h-[660px] space-y-3 overflow-y-auto p-4 ops-stagger">
+            @for (var index = 0; index < shipments.Length; index++)
+            {
+                var shipment = shipments[index];
+                var isDelivery = shipment.Status.Contains("Warehouse", StringComparison.OrdinalIgnoreCase);
+                var assignmentAction = isDelivery ? "AssignDelivery" : "AssignPickup";
+                var assignmentCity = isDelivery ? shipment.DeliveryCity : shipment.PickupCity;
+                var statusClass = isDelivery ? "ops-badge ops-badge-info" : "ops-badge ops-badge-success";
+                <article class="ops-dispatch-card" style="--item-index:@index" data-dispatch-shipment="@shipment.Id">
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#111111]">@shipment.TrackingNumber</span>
+                                <span class="@statusClass">@shipment.Status</span>
+                                <span class="ops-badge ops-badge-warning">@shipment.Priority</span>
+                            </div>
+                            <p class="mt-3 text-sm font-semibold text-[#2F3437]">@shipment.PickupCity to @shipment.DeliveryCity</p>
+                            <p class="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#787774]">Window @shipment.Window</p>
+                        </div>
+                        <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="@assignmentAction" asp-route-shipmentId="@shipment.Id" asp-route-city="@assignmentCity" class="ops-button-secondary shrink-0">Assign</a>
+                    </div>
+                </article>
+            }
+        </div>
+    </div>
+
+    <aside class="ops-card overflow-hidden">
+        <div class="border-b border-[#EAEAEA] p-6">
+            <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Available carriers</div>
+            <h2 class="mt-2 text-2xl font-black tracking-tight text-[#111111]">Live capacity</h2>
+            <p class="mt-2 text-sm leading-6 text-[#787774]">Drop-ready carrier lane for AJAX assignment workflow.</p>
+        </div>
+        <div class="max-h-[660px] space-y-3 overflow-y-auto p-4 ops-stagger">
+            @for (var index = 0; index < carriers.Count; index++)
+            {
+                var carrier = carriers[index];
+                var carrierId = AdminDisplay.RouteValue(carrier, "Id|CarrierId");
+                var carrierName = AdminDisplay.Text(carrier, "FullName|Name|CarrierName");
+                var carrierVehicle = AdminDisplay.Text(carrier, "Vehicle.VehicleType|VehicleType");
+                var carrierCity = AdminDisplay.Text(carrier, "City|Address");
+                var carrierStatus = AdminDisplay.Text(carrier, "Status|CarrierStatus");
+                var carrierStatusClass = BadgeClass(carrierStatus);
+                <article class="ops-carrier-chip" style="--item-index:@index" data-dispatch-carrier="@carrierId">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-black text-[#111111]">@carrierName</p>
+                            <p class="mt-1 text-xs font-semibold text-[#787774]">@carrierVehicle / @carrierCity</p>
+                        </div>
+                        <span class="@carrierStatusClass">@carrierStatus</span>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-2 text-xs font-bold text-[#2F3437]">
+                        <span class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-2">Load @AdminDisplay.Text(carrier, "CurrentLoad|AssignedShipmentsCount")</span>
+                        <span class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-2">Rating @AdminDisplay.Text(carrier, "AverageRating|Rating")</span>
+                    </div>
+                </article>
+            }
+        </div>
+    </aside>
+</section>
+
+@section Scripts {
+    <script>
+        // Assignment AJAX placeholder: attach selected shipment + carrier, POST to AssignPickup/AssignDelivery, then refresh the dispatch lanes without reloading.
+    </script>
+}
+
+@functions {
+    private static string BadgeClass(string value) => AdminDisplay.BadgeClass(value).Replace("admin-badge", "ops-badge", StringComparison.Ordinal);
+}

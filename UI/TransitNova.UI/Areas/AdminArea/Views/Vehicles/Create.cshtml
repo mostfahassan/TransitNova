@@ -1,2 +1,27 @@
-@{ Layout = null; }
-<div></div>
+@model VehicleFormViewModel
+@using TransitNova.Domain.Enums.Carrier
+@{
+    ViewData["Title"] = ViewContext.RouteData.Values["action"]?.ToString() == "Edit" ? "Create Vehicle" : "Create Vehicle";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = ViewData["Title"]?.ToString() ?? "Create Vehicle",
+        Description = "Attach carrier fleet capacity to the operating system for assignments and availability tracking.",
+        SecondaryLabel = "Back to vehicles",
+        SecondaryController = "Vehicles",
+        SecondaryAction = "Index"
+    };
+}
+<partial name="_AdminPageHeader" model="header" />
+<form method="post" class="admin-card p-6">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="mb-5 rounded-xl border border-[#F5D4D4] bg-[#FDEBEC] p-4 text-sm text-[#9F2F2D]"></div>
+    <div class="grid gap-5 lg:grid-cols-2">
+        <div><label asp-for="VehicleType" class="admin-label"></label><select asp-for="VehicleType" asp-items="Html.GetEnumSelectList<VehicleType>()" class="admin-select"></select><span asp-validation-for="VehicleType" class="admin-validation"></span></div>
+        <div><label asp-for="PlateNumber" class="admin-label"></label><input asp-for="PlateNumber" class="admin-input" placeholder="C-7428" /><span asp-validation-for="PlateNumber" class="admin-validation"></span></div>
+        <div><label asp-for="CapacityWeight" class="admin-label"></label><input asp-for="CapacityWeight" class="admin-input" placeholder="2500" /><span asp-validation-for="CapacityWeight" class="admin-validation"></span></div>
+        <div><label asp-for="CapacityVolume" class="admin-label"></label><input asp-for="CapacityVolume" class="admin-input" placeholder="32" /><span asp-validation-for="CapacityVolume" class="admin-validation"></span></div>
+        <div><label asp-for="CarrierId" class="admin-label"></label><input asp-for="CarrierId" class="admin-input" placeholder="Carrier database id" /><span asp-validation-for="CarrierId" class="admin-validation"></span></div>
+        <div class="flex items-center gap-3 rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4"><input asp-for="IsRefrigerated" class="h-4 w-4 rounded border-[#EAEAEA] text-[#111111] focus:ring-[#111111]/10" /><label asp-for="IsRefrigerated" class="text-sm font-semibold text-[#2F3437]"></label></div>
+    </div>
+    <div class="mt-6 flex justify-end gap-3"><a asp-action="Index" class="admin-button-secondary">Cancel</a><button type="submit" class="admin-button">Save vehicle</button></div>
+</form>

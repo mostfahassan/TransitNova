@@ -63,6 +63,28 @@ namespace TransitNova.Api.Controllers.Carrier.Operations
         }
 
 
+        [Authorize(Policy = CarrierPermissions.MarkShipmentPickedUp)]
+        [EnableRateLimiting("CommandsLimiter")]
+        [HttpPatch("{carrierId:guid}/shipments/{shipmentId:guid}/picked-up")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [EndpointName("Mark Shipment Picked Up")]
+        [EndpointSummary("Mark a shipment as picked up")]
+        [EndpointDescription("Allows the authenticated carrier to confirm that the assigned pickup shipment has been collected before warehouse arrival is completed.")]
+        public async Task<IActionResult> MarkShipmentPickedUpAsync([IdempotencyKey] Guid requestId, Guid carrierId, Guid shipmentId, CancellationToken ct)
+        {
+            if (!await IsCarrierOwnerAsync(carrierId))
+                return Forbid();
+
+            var response = await mediator.Send(new PickedUpShipmentCommand(requestId, shipmentId, carrierId), ct);
+            return response.ToActionResult();
+        }
+
         [Authorize(Policy = CarrierPermissions.CanCompletePickupShipment)]
         [EnableRateLimiting("CommandsLimiter")]
         [HttpPatch("{carrierId:guid}/shipments/{shipmentId:guid}/complete-pickup")]

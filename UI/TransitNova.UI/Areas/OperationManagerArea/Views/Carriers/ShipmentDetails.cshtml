@@ -1,2 +1,35 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Carrier Shipment Details";
+    var source = Model ?? new { Id = Guid.Parse("42000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-4091", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Port", CurrentStatus = "OutForPickup", TransportationMode = "Land", ShipmentType = "Express", EstimatedDeliveryDate = DateTime.Now.AddHours(6) };
+    var detail = new OpsDetailViewModel
+    {
+        Title = "Carrier shipment detail",
+        Subtitle = "Tracking / " + AdminDisplay.Text(source, "TrackingNumber", "id"),
+        Source = source,
+        Controller = "Carriers",
+        IndexAction = "Index",
+        Fields = new List<OpsTableColumnViewModel>
+        {
+            new("Tracking", "TrackingNumber", "id"),
+            new("Status", "CurrentStatus|Status", "badge"),
+            new("Pickup", "PickupAddress|SenderCity"),
+            new("Delivery", "DeliveryAddress|ReceiverCity"),
+            new("Mode", "TransportationMode"),
+            new("Type", "ShipmentType"),
+            new("Estimated delivery", "EstimatedDeliveryDate")
+        }
+    };
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Carrier shipment",
+        Title = AdminDisplay.Text(source, "TrackingNumber", "id"),
+        Description = "Operational shipment detail as seen from a carrier assignment context.",
+        SecondaryLabel = "Back to fleet",
+        SecondaryController = "Carriers",
+        SecondaryAction = "Index"
+    };
+}
+
+<partial name="_OpsPageHeader" model="header" />
+<partial name="_OpsDetail" model="detail" />

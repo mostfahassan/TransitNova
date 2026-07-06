@@ -1,2 +1,32 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Roles";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Roles",
+        Description = "Control the authorization surface used by MVC and API policies.",
+        PrimaryLabel = "Create role",
+        PrimaryController = "Roles",
+        PrimaryAction = "Create"
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Role registry",
+        Subtitle = "Application roles available to the identity system.",
+        Source = Model,
+        Controller = "Roles",
+        RouteIdName = "roleId",
+        IdPropertyPath = "RoleId|Id",
+        ShowDetails = true,
+        ShowEdit = true,
+        ShowDelete = true,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Role", "RoleName|Name"),
+            new("Role ID", "RoleId|Id", "id")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

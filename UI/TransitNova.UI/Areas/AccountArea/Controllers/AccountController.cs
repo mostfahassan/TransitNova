@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using TransitNova.UI.Infrastructure.Mvc;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiContracts;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Authentication.Segregation;
@@ -72,7 +71,15 @@ public sealed class AccountController(
             return View(model);
         }
 
-        var response = await apiInvoker.ExecuteAsync((_, ct) => authenticationCommand.RegisterAsync(model.ToDto(), ct), requiresAuthentication: false, cancellationToken);
+        ApiResponse<TransitNovaUI.BusinessLayer.DTOs.UserProfile.Auth.UiAuthResponseDto> response;
+        try
+        {
+            response = await apiInvoker.ExecuteAsync((_, ct) => authenticationCommand.RegisterAsync(model.ToDto(), ct), requiresAuthentication: false, cancellationToken);
+        }
+        catch (HttpRequestException ex)
+        {
+            return BackendUnavailable(ex);
+        }
 
         if (response.IsFailure || response.Data is null)
         {
@@ -235,7 +242,7 @@ public sealed class AccountController(
         return StatusCode(response.StatusCode, new { isSuccess = false, message = ApiMessage(response), errors = new Dictionary<string, string[]> { [string.Empty] = errors } });
     }
 
-    private IActionResult AjaxRedirect(string redirectUrl, string? message = null) =>
+    private JsonResult AjaxRedirect(string redirectUrl, string? message = null) =>
         Json(new { isSuccess = true, redirectUrl, message });
 
     private IActionResult LocationFailure(ApiResponse response) =>
@@ -243,6 +250,16 @@ public sealed class AccountController(
 
     private IActionResult LocationUnavailable() =>
         StatusCode(StatusCodes.Status503ServiceUnavailable, new { message = "Location service is unavailable.", items = Array.Empty<LocationOptionViewModel>() });
+
+    private IActionResult BackendUnavailable(HttpRequestException exception)
+    {
+        var message = $"Backend API is unavailable. {exception.Message}";
+        if (IsAjaxRequest())
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, new { isSuccess = false, message, errors = new Dictionary<string, string[]> { [string.Empty] = [message] } });
+
+        Error(message);
+        return View("Register", new RegisterViewModel());
+    }
 
     private Dictionary<string, string[]> ModelStateErrors() =>
         ModelState
@@ -266,4 +283,5 @@ public sealed class AccountController(
     private static IReadOnlyCollection<LocationOptionViewModel> ToLocationOptions(IEnumerable<UiCityDto>? cities) =>
         cities?.Select(city => new LocationOptionViewModel(city.Id, city.Name)).ToArray() ?? [];
 }
+
 

@@ -2,7 +2,7 @@ using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Shipments.Command
 
 namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Shipments.Segregation
 {
-    public interface ICarrierShipmentsCommand : ICompleteDeliveryCommandService, ICompletePickupCommandService, IUpdateCarrierStatusCommandService
+    public interface ICarrierShipmentsCommand : ICompleteDeliveryCommandService, ICompletePickupCommandService, IMarkShipmentPickedUpCommandService, IUpdateCarrierStatusCommandService
     {
     }
 

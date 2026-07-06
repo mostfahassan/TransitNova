@@ -1,2 +1,36 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Handled shipments";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Handled shipments",
+        Description = "Shipments currently reviewed or handled by the selected operation manager.",
+        PrimaryLabel = null,
+        PrimaryController = "OperationManagers",
+        PrimaryAction = null
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Handled shipment ledger",
+        Subtitle = "Paginated shipment workload returned by the backend.",
+        Source = Model,
+        Controller = "OperationManagers",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id|ShipmentId",
+        ShowDetails = false,
+        ShowEdit = false,
+        ShowDelete = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Shipment", "TrackingNumber", "id"),
+            new("Pickup", "PickupAddress"),
+            new("Delivery", "DeliveryAddress"),
+            new("Status", "CurrentStatus|Status", "badge"),
+            new("Mode", "TransportationMode", "badge"),
+            new("Created", "CreatedAt")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

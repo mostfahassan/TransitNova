@@ -1,2 +1,38 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Warehouse details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Warehouse details",
+        Description = "Inspect capacity, usage, zones, and operational timestamps.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Warehouses",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Warehouse record",
+        Subtitle = "Full warehouse data returned by the API.",
+        Source = Model,
+        Controller = "Warehouses",
+        RouteIdName = "warehouseId",
+        IdPropertyPath = "Id|WarehouseId",
+        EditAction = "Edit",
+        DeleteAction = "Delete",
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Warehouse", "Name"),
+            new("Type", "Type", "badge"),
+            new("Address", "Address"),
+            new("Capacity", "Capacity"),
+            new("Current usage", "CurrentUsage"),
+            new("Operating hours", "OperatingHours"),
+            new("Zones", "ZoneNames"),
+            new("Created", "CreatedAt"),
+            new("Updated", "UpdatedAt")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

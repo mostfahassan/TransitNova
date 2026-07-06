@@ -1,2 +1,43 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "User details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "User details",
+        Description = "Inspect identity, profile, address, and account state.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Users",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "User record",
+        Subtitle = "Complete administrative user profile returned by the API.",
+        Source = Model,
+        Controller = "Users",
+        RouteIdName = "userId",
+        IdPropertyPath = "UserId|Id",
+        EditAction = null,
+        DeleteAction = null,
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Full name", "FullName"),
+            new("Username", "UserName"),
+            new("Email", "Email"),
+            new("Phone", "PhoneNumber"),
+            new("Type", "UserType", "badge"),
+            new("Active", "IsActive", "badge"),
+            new("Locked out", "IsLockedOut", "badge"),
+            new("Address", "Address"),
+            new("City", "CityName"),
+            new("Government", "GovernmentName"),
+            new("Country", "CountryName"),
+            new("Shipments sent", "TotalShipmentsSent"),
+            new("Bundle", "BundleName"),
+            new("Created", "CreatedAt")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

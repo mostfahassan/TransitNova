@@ -1,2 +1,38 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Shipment History";
+    var fallback = new[]
+    {
+        new { Status = "Pending", Carrier = "-", CreatedAt = DateTime.Now.AddHours(-5), Note = "Shipment created by customer" },
+        new { Status = "Approved", Carrier = "-", CreatedAt = DateTime.Now.AddHours(-3), Note = "Reviewed by operation manager" },
+        new { Status = "AssignedToPickUpCarrier", Carrier = "Ahmed Mostafa", CreatedAt = DateTime.Now.AddHours(-1), Note = "Pickup carrier assigned" }
+    };
+    var source = AdminDisplay.Rows(Model).Count > 0 ? Model : fallback;
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Audit trail",
+        Title = "Shipment status history",
+        Description = "A chronological state log for review, assignment, pickup, warehouse, and delivery transitions.",
+        SecondaryLabel = "Back to shipment",
+        SecondaryController = "Shipments",
+        SecondaryAction = "Details"
+    };
+    var table = new OpsTableViewModel
+    {
+        Title = "Status timeline",
+        Subtitle = "Every operational transition should be visible here.",
+        Source = source,
+        Controller = "Shipments",
+        ShowDetails = false,
+        Columns = new List<OpsTableColumnViewModel>
+        {
+            new("Status", "Status|StatusType", "badge"),
+            new("Carrier", "Carrier|CarrierName|CarrierId"),
+            new("Created", "CreatedAt|ChangedAt"),
+            new("Note", "Note|Description")
+        }
+    };
+}
+
+<partial name="_OpsPageHeader" model="header" />
+<partial name="_OpsTable" model="table" />

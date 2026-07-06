@@ -1,4 +1,4 @@
-﻿using NUlid;
+using NUlid;
 using TransitNova.Domain.Contracts.DomainEvents.Events.ShipmentEvents;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.Common;
@@ -308,16 +308,16 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
 
         ChangeStatus(ShipmentStatuses.PickedUp, carrierId);
 
-        RaiseDomainEvent(new ShipmentDeliveredDomainEvent(Id, TrackingNumber));
+        RaiseDomainEvent(new ShipmentPickedUpDomainEvent(Id, TrackingNumber));
 
     }
 
     public void DeliveredToWarehouse(Guid carrierId)
     {
-        if (CurrentStatus != ShipmentStatuses.OutForPickup)
+        if (CurrentStatus is not (ShipmentStatuses.OutForPickup or ShipmentStatuses.PickedUp))
             throw new ShipmentNotAssignedException(Id, carrierId);
 
-        PickupDate = DateTime.UtcNow;
+        PickupDate ??= DateTime.UtcNow;
         ChangeStatus(ShipmentStatuses.InWarehouse, carrierId);
         RaiseDomainEvent(new ShipmentDeliveredToWarehouseDomainEvent(Id, TrackingNumber));
     }

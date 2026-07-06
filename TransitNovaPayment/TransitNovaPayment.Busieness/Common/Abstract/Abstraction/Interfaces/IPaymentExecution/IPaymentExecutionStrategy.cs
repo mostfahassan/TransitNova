@@ -2,7 +2,7 @@ namespace TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IP
 {
     public interface IPaymentExecutionStrategy
     {
-        Task<PaymentExecutionResult> ExecuteAsync(CancellationToken cancellationToken);
+     Task<PaymentExecutionResult> ExecuteAsync(CancellationToken cancellationToken);
     }
 
     public sealed record PaymentExecutionResult(bool IsSuccess, string? FailureReason = null);

@@ -1,0 +1,18 @@
+@{
+    var success = TempData["SuccessMessage"] as string;
+    var error = TempData["ErrorMessage"] as string;
+}
+
+@if (!string.IsNullOrWhiteSpace(success) || !string.IsNullOrWhiteSpace(error))
+{
+    <div class="mb-6 grid gap-3">
+        @if (!string.IsNullOrWhiteSpace(success))
+        {
+            <div class="rounded-xl border border-[#DDEBDD] bg-[#EDF3EC] px-4 py-3 text-sm font-medium text-[#346538]">@success</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(error))
+        {
+            <div class="rounded-xl border border-[#F5D4D4] bg-[#FDEBEC] px-4 py-3 text-sm font-medium text-[#9F2F2D]">@error</div>
+        }
+    </div>
+}

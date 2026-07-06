@@ -1,2 +1,30 @@
-@{ Layout = null; }
-<div></div>
+@model ReasonViewModel
+@{
+    ViewData["Title"] = "Report Shipment Issue";
+    var shipmentId = Convert.ToString(ViewContext.RouteData.Values["shipmentId"]) ?? string.Empty;
+}
+
+<section class="customer-fade-up mx-auto max-w-3xl">
+    <div class="customer-card overflow-hidden">
+        <div class="border-b border-[#EAEAEA] bg-[#FBFBFA] p-8">
+            <div class="customer-badge customer-badge-danger">Support case</div>
+            <h1 class="mt-5 text-4xl font-black leading-[1.03] tracking-[-0.04em] text-[#111111]">Tell operations what happened.</h1>
+            <p class="mt-4 text-sm leading-6 text-[#666666]">Add a focused note so the operations team can review the shipment without extra back-and-forth.</p>
+        </div>
+
+        <form asp-area="UserArea" asp-controller="Shipments" asp-action="Issue" asp-route-shipmentId="@shipmentId" method="post" class="p-8" data-loading-form data-loading-text="Submitting...">
+            @Html.AntiForgeryToken()
+            <label class="customer-label" asp-for="Reason">Issue details</label>
+            <textarea class="customer-textarea min-h-[180px]" asp-for="Reason" placeholder="Example: Receiver phone is unreachable, delivery location needs clarification, or package arrived damaged."></textarea>
+            <span asp-validation-for="Reason" class="customer-field-error is-visible"></span>
+
+            <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <a asp-area="UserArea" asp-controller="Shipments" asp-action="Details" asp-route-shipmentId="@shipmentId" class="customer-button-secondary">Back</a>
+                <button type="submit" class="customer-button min-h-[48px]">
+                    <span class="customer-spinner hidden" data-button-spinner></span>
+                    <span data-button-text>Submit issue</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>

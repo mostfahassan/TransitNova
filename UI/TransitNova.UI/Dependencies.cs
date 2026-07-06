@@ -4,7 +4,6 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using System.Text.Json.Serialization;
-using TransitNova.UI.Infrastructure.Mvc;
 using TransitNovaUI.BusinessLayer;
 
 namespace TransitNova.UI
@@ -20,7 +19,7 @@ namespace TransitNova.UI
             {
                 options.Cookie.Name = "TransitNova.Session";
                 options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.Cookie.SameSite = SameSiteMode.Lax;
                 options.IdleTimeout = TimeSpan.FromHours(8);
             });
@@ -47,7 +46,7 @@ namespace TransitNova.UI
 
                  options.Cookie.Name = "TransitNovaAuthCookie";
                  options.Cookie.HttpOnly = true;
-                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                 options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                  options.Cookie.SameSite = SameSiteMode.Lax;
 
                  options.ExpireTimeSpan = TimeSpan.FromDays(10);

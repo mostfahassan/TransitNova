@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
-using TransitNova.UI.Infrastructure.Mvc;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.WarehouseManager.Trips.Segregations.Query;
-
 namespace TransitNova.UI.Areas.WarehouseManagerArea.Controllers;
 
 [Authorize(Roles = Role.WarehouseManager)]

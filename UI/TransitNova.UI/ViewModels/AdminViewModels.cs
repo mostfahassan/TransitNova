@@ -1,0 +1,55 @@
+namespace TransitNova.UI.ViewModels;
+
+public sealed class AdminPageHeaderViewModel
+{
+    public string Eyebrow { get; set; } = "Admin Console";
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string? PrimaryLabel { get; set; }
+    public string? PrimaryController { get; set; }
+    public string? PrimaryAction { get; set; }
+    public string? SecondaryLabel { get; set; }
+    public string? SecondaryController { get; set; }
+    public string? SecondaryAction { get; set; }
+}
+
+public sealed record AdminSidebarItemViewModel(string Label, string Controller, string Action, string Icon, string? Badge = null);
+
+public sealed record AdminKpiTileViewModel(string Label, string Value, string Meta, string Icon, string Tone = "neutral");
+
+public sealed record AdminTableColumnViewModel(string Header, string PropertyPath, string Kind = "text");
+
+public sealed record AdminRowActionViewModel(string Label, string Action, string Style = "secondary");
+
+public sealed class AdminTableViewModel
+{
+    public string Title { get; set; } = string.Empty;
+    public string Subtitle { get; set; } = string.Empty;
+    public object? Source { get; set; }
+    public IReadOnlyCollection<AdminTableColumnViewModel> Columns { get; set; } = [];
+    public string Controller { get; set; } = string.Empty;
+    public string DetailsAction { get; set; } = "Details";
+    public string EditAction { get; set; } = "Edit";
+    public string DeleteAction { get; set; } = "Delete";
+    public string RouteIdName { get; set; } = "id";
+    public string IdPropertyPath { get; set; } = "Id";
+    public bool ShowDetails { get; set; } = true;
+    public bool ShowEdit { get; set; }
+    public bool ShowDelete { get; set; }
+    public string EmptyTitle { get; set; } = "No records found";
+    public string EmptyDescription { get; set; } = "Once data is available from the API it will appear here.";
+}
+
+public sealed class AdminDetailViewModel
+{
+    public string Title { get; set; } = string.Empty;
+    public string Subtitle { get; set; } = string.Empty;
+    public object? Source { get; set; }
+    public IReadOnlyCollection<AdminTableColumnViewModel> Fields { get; set; } = [];
+    public string Controller { get; set; } = string.Empty;
+    public string IndexAction { get; set; } = "Index";
+    public string? EditAction { get; set; }
+    public string? DeleteAction { get; set; }
+    public string RouteIdName { get; set; } = "id";
+    public string IdPropertyPath { get; set; } = "Id";
+}

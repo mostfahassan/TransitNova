@@ -1,2 +1,33 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Governments";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Governments",
+        Description = "Maintain regional government data for country and city relationships.",
+        PrimaryLabel = "Create government",
+        PrimaryController = "Governments",
+        PrimaryAction = "Create"
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Government registry",
+        Subtitle = "Administrative regions available for city mapping.",
+        Source = Model,
+        Controller = "Governments",
+        RouteIdName = "governmentId",
+        IdPropertyPath = "Id|GovernmentId",
+        ShowDetails = true,
+        ShowEdit = true,
+        ShowDelete = true,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Government", "Name"),
+            new("Country", "CountryName"),
+            new("Country ID", "CountryId", "id")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

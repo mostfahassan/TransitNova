@@ -1,2 +1,35 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Vehicle by plate";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Vehicle by plate",
+        Description = "Lookup result for a fleet unit by plate number.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Vehicles",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Vehicle record",
+        Subtitle = "Fleet metadata matched by plate number.",
+        Source = Model,
+        Controller = "Vehicles",
+        RouteIdName = "vehicleId",
+        IdPropertyPath = "Id|VehicleId",
+        EditAction = null,
+        DeleteAction = "Delete",
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Plate", "PlateNumber", "id"),
+            new("Type", "VehicleType", "badge"),
+            new("Carrier", "CarrierName"),
+            new("Capacity weight", "CapacityWeight"),
+            new("Capacity volume", "CapacityVolume"),
+            new("Active", "IsActive", "badge")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

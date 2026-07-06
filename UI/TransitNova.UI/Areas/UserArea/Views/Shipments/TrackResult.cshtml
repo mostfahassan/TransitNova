@@ -1,2 +1,122 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Tracking Result";
+    var tracking = AdminDisplay.Text(Model, "TrackingNumber|Code|Id");
+    if (tracking == "-")
+    {
+        tracking = Convert.ToString(ViewContext.RouteData.Values["trackingNumber"]) ?? "TN-4091";
+    }
+
+    var status = AdminDisplay.Text(Model, "Status|CurrentStatus", "text");
+    if (status == "-")
+    {
+        status = "In Transit";
+    }
+
+    var steps = new[]
+    {
+        new { Title = "Shipment created", Detail = "Request accepted by TransitNova", Time = "Today, 08:10", State = "past" },
+        new { Title = "Pickup assigned", Detail = "Ahmed Mostafa confirmed pickup", Time = "Today, 09:05", State = "past" },
+        new { Title = "In transit", Detail = "Package is moving toward the sorting hub", Time = "Live now", State = "current" },
+        new { Title = "Warehouse scan", Detail = "Quality check and route consolidation", Time = "Expected 14:30", State = "future" },
+        new { Title = "Final delivery", Detail = "Delivered to New Cairo City", Time = "Expected tomorrow", State = "future" }
+    };
+}
+
+<section class="customer-fade-up">
+    <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div>
+            <div class="customer-badge customer-badge-info">Tracking result</div>
+            <h1 class="mt-5 text-4xl font-black leading-[1.02] tracking-[-0.04em] text-[#111111] md:text-6xl">@tracking</h1>
+            <p class="mt-4 max-w-2xl text-base leading-7 text-[#666666]">A clean delivery timeline for your package, updated as each operational checkpoint is completed.</p>
+        </div>
+        <a asp-area="UserArea" asp-controller="Shipments" asp-action="Track" class="customer-button-secondary">Track another</a>
+    </div>
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_380px]">
+        <section class="customer-card p-6 md:p-8">
+            <div class="mb-8 flex items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-black tracking-[-0.03em] text-[#111111]">Delivery timeline</h2>
+                    <p class="mt-1 text-sm leading-6 text-[#666666]">Past steps, current checkpoint, and future milestones.</p>
+                </div>
+                <span class="@BadgeClass(status)">@status</span>
+            </div>
+
+            <ol class="space-y-1">
+                @for (var index = 0; index < steps.Length; index++)
+                {
+                    var step = steps[index];
+                    var isPast = step.State == "past";
+                    var isCurrent = step.State == "current";
+                    <li class="relative grid grid-cols-[40px_1fr] gap-4 pb-9 last:pb-0 customer-fade-up" style="--item-index:@index">
+                        @if (index < steps.Length - 1)
+                        {
+                            <span class="absolute left-[19px] top-10 h-[calc(100%-40px)] w-px bg-[#EAEAEA]"></span>
+                        }
+                        <span class="relative z-10 grid h-10 w-10 place-items-center rounded-full @(isPast ? "bg-[#111111] text-white" : isCurrent ? "bg-white text-[#111111] ring-4 ring-black/10 shadow-[0_0_0_1px_#111111]" : "bg-[#F1F1EF] text-[#A8A29E]") @(isCurrent ? "animate-pulse" : string.Empty)">
+                            @if (isPast)
+                            {
+                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 12 4 4 8-8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            }
+                            else
+                            {
+                                <span class="h-2.5 w-2.5 rounded-full bg-current"></span>
+                            }
+                        </span>
+                        <div class="rounded-[16px] border border-[#EAEAEA] bg-[#FBFBFA] p-5">
+                            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                <h3 class="text-base font-black tracking-[-0.02em] text-[#111111]">@step.Title</h3>
+                                <span class="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#787774]">@step.Time</span>
+                            </div>
+                            <p class="mt-2 text-sm leading-6 text-[#666666]">@step.Detail</p>
+                        </div>
+                    </li>
+                }
+            </ol>
+        </section>
+
+        <aside class="space-y-5">
+            <section class="customer-card p-6">
+                <div class="customer-badge customer-badge-success">Package details</div>
+                <h2 class="mt-5 text-2xl font-black tracking-[-0.03em] text-[#111111]">@AdminDisplay.Text(Model, "Product|ShipmentType|PackageSpecification", "text")</h2>
+                <dl class="mt-6 space-y-4 text-sm">
+                    <div class="flex items-center justify-between gap-5">
+                        <dt class="font-bold text-[#666666]">Route</dt>
+                        <dd class="text-right font-black text-[#111111]">@AdminDisplay.Text(Model, "Route|PickupAddress|DeliveryAddress|ReceiverCity")</dd>
+                    </div>
+                    <div class="flex items-center justify-between gap-5">
+                        <dt class="font-bold text-[#666666]">Carrier</dt>
+                        <dd class="text-right font-black text-[#111111]">@AdminDisplay.Text(Model, "CarrierName|Carrier.FullName", "text")</dd>
+                    </div>
+                    <div class="flex items-center justify-between gap-5">
+                        <dt class="font-bold text-[#666666]">ETA</dt>
+                        <dd class="text-right font-black text-[#111111]">@AdminDisplay.Text(Model, "Eta|ExpectedDeliveryDate|DeliveryDate")</dd>
+                    </div>
+                    <div class="flex items-center justify-between gap-5">
+                        <dt class="font-bold text-[#666666]">Last update</dt>
+                        <dd class="text-right font-black text-[#111111]">@AdminDisplay.Text(Model, "UpdatedAt|CreatedAt")</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section class="customer-card-flat p-6">
+                <h3 class="text-lg font-black tracking-[-0.02em] text-[#111111]">Need help?</h3>
+                <p class="mt-2 text-sm leading-6 text-[#666666]">If a delivery looks delayed, open the shipment details and report an issue to operations.</p>
+                <a asp-area="UserArea" asp-controller="Dashboard" asp-action="Index" class="customer-button mt-5 w-full">Back to dashboard</a>
+            </section>
+        </aside>
+    </div>
+</section>
+
+@functions {
+    private static string BadgeClass(string value)
+    {
+        var text = value.ToLowerInvariant();
+        if (text.Contains("deliver")) return "customer-badge customer-badge-success";
+        if (text.Contains("transit") || text.Contains("pickup") || text.Contains("warehouse")) return "customer-badge customer-badge-info";
+        if (text.Contains("pending") || text.Contains("review") || text.Contains("assigned")) return "customer-badge customer-badge-warning";
+        if (text.Contains("issue") || text.Contains("cancel") || text.Contains("reject")) return "customer-badge customer-badge-danger";
+        return "customer-badge customer-badge-neutral";
+    }
+}

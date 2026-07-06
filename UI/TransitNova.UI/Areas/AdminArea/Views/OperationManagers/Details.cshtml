@@ -1,2 +1,37 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Operation manager details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Operation manager details",
+        Description = "Inspect manager contact data and workload signals.",
+        SecondaryLabel = "Back",
+        SecondaryController = "OperationManagers",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Operation manager record",
+        Subtitle = "Profile and performance details for the selected operation manager.",
+        Source = Model,
+        Controller = "OperationManagers",
+        RouteIdName = "operationManagerId",
+        IdPropertyPath = "Id|OperationManagerId|UserId",
+        EditAction = null,
+        DeleteAction = null,
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Manager", "FullName|Name"),
+            new("Email", "Email"),
+            new("Phone", "PhoneNumber"),
+            new("Active", "IsActive", "badge"),
+            new("City", "CityName"),
+            new("Address", "Address"),
+            new("Handled carriers", "HandledCarriersCount"),
+            new("Handled shipments", "HandledShipmentsCount")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
@@ -67,7 +67,11 @@ namespace TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.H
                 UserType.OperationManager => ActivityEntityType.OperationManager,
                 _ => ActivityEntityType.User
             };
-            var performedByName = createdUser.FullName!;
+
+
+            var performedByName = string.IsNullOrWhiteSpace(createdUser.FullName)
+                ? $"{request.Dto.FirstName} {request.Dto.LastName}".Trim()
+                : createdUser.FullName;
             var log = SystemActivityLog.AddLog(
                 ActivityAction.Created,
                 activityEntityType,

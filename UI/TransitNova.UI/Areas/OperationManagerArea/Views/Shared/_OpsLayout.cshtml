@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" class="ops-root h-full">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TransitNova Operations</title>
+    <script src="~/Tailwind/tailwind.config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/OperationManager/operationmanager.css" asp-append-version="true" />
+</head>
+<body class="ops-body">
+    <div class="ops-shell">
+        <partial name="_OpsSidebar" />
+
+        <main class="ops-main">
+            <header class="sticky top-0 z-20 border-b border-[#EAEAEA] bg-[#FBFBFA]/90 backdrop-blur-xl">
+                <div class="flex h-16 items-center justify-between gap-4 px-6 lg:px-8">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">
+                            <span>Operation Manager</span>
+                            <span class="text-[#D0D0CD]">/</span>
+                            <span>@(Context.Request.RouteValues["controller"]?.ToString() ?? "Console")</span>
+                            <span class="text-[#D0D0CD]">/</span>
+                            <span>@(Context.Request.RouteValues["action"]?.ToString() ?? "Index")</span>
+                        </div>
+                        <h1 class="mt-1 truncate text-sm font-semibold text-[#111111]">@(ViewData["Title"] ?? "TransitNova Operations")</h1>
+                    </div>
+
+                    <div class="hidden min-w-[300px] max-w-md flex-1 items-center rounded-xl border border-[#EAEAEA] bg-white px-3 py-2 lg:flex">
+                        <svg class="h-4 w-4 text-[#787774]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="m21 21-4.35-4.35M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                        </svg>
+                        <input class="ml-2 w-full bg-transparent text-sm text-[#111111] outline-none placeholder:text-[#787774]" placeholder="Search shipments, routes, carriers" aria-label="Search operations records" />
+                    </div>
+
+                    <div class="relative flex items-center gap-3">
+                        <button type="button" class="ops-button-secondary !h-10 !w-10 !p-0" aria-label="Operations alerts">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 8v5m0 3h.01M10.3 4.9 3.8 16.3c-.7 1.2.2 2.7 1.6 2.7h13.2c1.4 0 2.3-1.5 1.6-2.7L13.7 4.9c-.7-1.2-2.7-1.2-3.4 0Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <button type="button" data-ops-profile-button class="flex items-center gap-2 rounded-xl border border-[#EAEAEA] bg-white py-1.5 pl-1.5 pr-3 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-black/15 active:scale-95">
+                            <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#111111] text-xs font-bold text-white">OM</span>
+                            <span class="hidden text-sm font-semibold text-[#111111] sm:inline">Operations</span>
+                        </button>
+                        <div data-ops-profile-menu class="ops-card absolute right-0 top-12 hidden w-56 p-2">
+                            <a asp-area="AccountArea" asp-controller="Account" asp-action="ChangePassword" class="block rounded-lg px-3 py-2 text-sm text-[#2F3437] transition-colors hover:bg-black/5">Change password</a>
+                            <form asp-area="AccountArea" asp-controller="Account" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="block w-full rounded-lg px-3 py-2 text-left text-sm text-[#9F2F2D] transition-colors hover:bg-[#FDEBEC]">Sign out</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="ops-content">
+                <div class="ops-surface ops-fade-up">
+                    <partial name="_OpsFlash" />
+                    @RenderBody()
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="~/js/OperationManager/operationmanager.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

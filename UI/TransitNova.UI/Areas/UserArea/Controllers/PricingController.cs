@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
-using TransitNova.UI.Infrastructure.Mvc;
+ 
+ 
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Pricing.Segregation;
 
@@ -33,6 +34,7 @@ public sealed class PricingController(
             return View(model);
         }
 
-        return View(response.Data);
+        ViewData["CalculatedRate"] = response.Data;
+        return View(model);
     }
 }

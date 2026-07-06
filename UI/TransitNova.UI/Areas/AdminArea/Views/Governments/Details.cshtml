@@ -1,2 +1,33 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Government details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Government details",
+        Description = "Inspect government data and country linkage.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Governments",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Government record",
+        Subtitle = "Regional metadata used by location workflows.",
+        Source = Model,
+        Controller = "Governments",
+        RouteIdName = "governmentId",
+        IdPropertyPath = "Id|GovernmentId",
+        EditAction = "Edit",
+        DeleteAction = "Delete",
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Government", "Name"),
+            new("Country", "CountryName"),
+            new("Country ID", "CountryId", "id"),
+            new("Government ID", "Id", "id")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

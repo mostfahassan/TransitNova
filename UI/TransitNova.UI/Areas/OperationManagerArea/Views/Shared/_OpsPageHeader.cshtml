@@ -1,0 +1,27 @@
+@model OpsPageHeaderViewModel
+
+<section class="mb-6 ops-fade-up">
+    <div class="ops-card overflow-hidden">
+        <div class="grid gap-6 p-6 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+                <div class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#787774]">@Model.Eyebrow</div>
+                <h2 class="mt-3 max-w-4xl text-3xl font-black tracking-tight text-[#111111] sm:text-4xl">@Model.Title</h2>
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <p class="mt-3 max-w-3xl text-sm leading-6 text-[#787774]">@Model.Description</p>
+                }
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+                @if (!string.IsNullOrWhiteSpace(Model.SecondaryLabel) && !string.IsNullOrWhiteSpace(Model.SecondaryController) && !string.IsNullOrWhiteSpace(Model.SecondaryAction))
+                {
+                    <a class="ops-button-secondary" asp-area="OperationManagerArea" asp-controller="@Model.SecondaryController" asp-action="@Model.SecondaryAction" asp-all-route-data="@(Model.SecondaryRouteValues as IDictionary<string, string>)">@Model.SecondaryLabel</a>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.PrimaryLabel) && !string.IsNullOrWhiteSpace(Model.PrimaryController) && !string.IsNullOrWhiteSpace(Model.PrimaryAction))
+                {
+                    <a class="ops-button" asp-area="OperationManagerArea" asp-controller="@Model.PrimaryController" asp-action="@Model.PrimaryAction" asp-all-route-data="@(Model.PrimaryRouteValues as IDictionary<string, string>)">@Model.PrimaryLabel</a>
+                }
+            </div>
+        </div>
+    </div>
+</section>

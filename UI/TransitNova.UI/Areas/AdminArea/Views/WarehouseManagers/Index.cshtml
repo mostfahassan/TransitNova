@@ -1,2 +1,36 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Warehouse managers";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Warehouse managers",
+        Description = "Review managers attached to warehouses and regional fulfillment workflows.",
+        PrimaryLabel = null,
+        PrimaryController = "WarehouseManagers",
+        PrimaryAction = null
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Warehouse manager directory",
+        Subtitle = "Managers returned by warehouse-manager filters.",
+        Source = Model,
+        Controller = "WarehouseManagers",
+        RouteIdName = "id",
+        IdPropertyPath = "Id|UserId|WarehouseManagerId",
+        ShowDetails = true,
+        ShowEdit = false,
+        ShowDelete = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Manager", "FullName|Name|Email"),
+            new("Email", "Email"),
+            new("Phone", "PhoneNumber"),
+            new("Warehouse", "WarehouseName|WarehouseId"),
+            new("City", "CityName"),
+            new("Active", "IsActive", "badge")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

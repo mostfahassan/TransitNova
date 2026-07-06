@@ -1,0 +1,95 @@
+@model OpsTableViewModel
+@{
+    var rows = AdminDisplay.Rows(Model.Source);
+}
+
+<section class="ops-card overflow-hidden">
+    <div class="flex flex-col gap-3 border-b border-[#EAEAEA] p-6 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <h3 class="text-lg font-extrabold text-[#111111]">@Model.Title</h3>
+            @if (!string.IsNullOrWhiteSpace(Model.Subtitle))
+            {
+                <p class="mt-1 text-sm leading-6 text-[#787774]">@Model.Subtitle</p>
+            }
+        </div>
+        <div class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">@rows.Count records</div>
+    </div>
+
+    @if (rows.Count == 0)
+    {
+        <div class="p-12 text-center">
+            <div class="mx-auto grid h-14 w-14 place-items-center rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] text-xs font-black text-[#787774]">OPS</div>
+            <h4 class="mt-5 text-lg font-bold text-[#111111]">@Model.EmptyTitle</h4>
+            <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-[#787774]">@Model.EmptyDescription</p>
+        </div>
+    }
+    else
+    {
+        <div class="overflow-x-auto">
+            <table class="ops-table">
+                <thead>
+                    <tr>
+                        @foreach (var column in Model.Columns)
+                        {
+                            <th>@column.Header</th>
+                        }
+                        @if (Model.ShowDetails || !string.IsNullOrWhiteSpace(Model.PrimaryRowLabel))
+                        {
+                            <th class="text-right">Action</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var index = 0; index < rows.Count; index++)
+                    {
+                        var row = rows[index];
+                        var detailsId = AdminDisplay.RouteValue(row, Model.IdPropertyPath);
+                        var primaryId = AdminDisplay.RouteValue(row, Model.PrimaryRowIdPropertyPath);
+                        <tr style="--row-index:@index">
+                            @foreach (var column in Model.Columns)
+                            {
+                                var text = AdminDisplay.Text(row, column.PropertyPath, column.Kind);
+                                <td>
+                                    @if (column.Kind == "badge")
+                                    {
+                                        <span class="@BadgeClass(text)">@text</span>
+                                    }
+                                    else if (column.Kind == "id")
+                                    {
+                                        <span class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-[#111111]">@text</span>
+                                    }
+                                    else
+                                    {
+                                        @text
+                                    }
+                                </td>
+                            }
+                            @if (Model.ShowDetails || !string.IsNullOrWhiteSpace(Model.PrimaryRowLabel))
+                            {
+                                <td class="whitespace-nowrap text-right">
+                                    <div class="inline-flex items-center gap-2">
+                                        @if (!string.IsNullOrWhiteSpace(Model.PrimaryRowLabel) && !string.IsNullOrWhiteSpace(Model.PrimaryRowAction))
+                                        {
+                                            var primaryRoute = new RouteValueDictionary { [Model.PrimaryRowRouteIdName] = primaryId };
+                                            <a class="ops-button-secondary !px-3 !py-2" href="@Url.Action(Model.PrimaryRowAction, Model.PrimaryRowController ?? Model.Controller, primaryRoute)">@Model.PrimaryRowLabel</a>
+                                        }
+                                        @if (Model.ShowDetails)
+                                        {
+                                            var detailsRoute = new RouteValueDictionary { [Model.RouteIdName] = detailsId };
+                                            <a class="ops-button !px-3 !py-2" href="@Url.Action(Model.DetailsAction, Model.Controller, detailsRoute)">Details</a>
+                                        }
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>
+
+@functions {
+    private static string BadgeClass(string value) =>
+        AdminDisplay.BadgeClass(value).Replace("admin-badge", "ops-badge", StringComparison.Ordinal);
+}

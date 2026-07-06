@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
-using TransitNova.UI.Infrastructure.Mvc;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.OperationManagers.Segregation;
 
 namespace TransitNova.UI.Areas.AdminArea.Controllers.OperationManagers;

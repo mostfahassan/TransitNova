@@ -1,2 +1,36 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Subscription details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Subscription details",
+        Description = "Inspect a bundle subscription and related customer state.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Subscriptions",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Subscription record",
+        Subtitle = "Subscription data returned by the backend.",
+        Source = Model,
+        Controller = "Subscriptions",
+        RouteIdName = "subscriptionId",
+        IdPropertyPath = "Id|SubscriptionId",
+        EditAction = null,
+        DeleteAction = null,
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Subscription", "Id|SubscriptionId", "id"),
+            new("Bundle", "BundleName|BundleId"),
+            new("User", "FullName|UserName|Email"),
+            new("Status", "Status|IsActive", "badge"),
+            new("Price", "BundlePrice|Price", "currency"),
+            new("Created", "CreatedAt"),
+            new("Expires", "ExpiresAt|EndDate")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

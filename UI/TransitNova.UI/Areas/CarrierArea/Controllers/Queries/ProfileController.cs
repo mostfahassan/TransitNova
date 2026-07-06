@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
-using TransitNova.UI.Infrastructure.Mvc;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Profile.Segregation;
-
 namespace TransitNova.UI.Areas.CarrierArea.Controllers.Queries;
 
 [Authorize(Roles = Role.Carrier)]

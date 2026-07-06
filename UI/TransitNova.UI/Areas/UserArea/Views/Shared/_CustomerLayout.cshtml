@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" class="customer-root h-full">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TransitNova Customer</title>
+    <script src="~/Tailwind/tailwind.config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/User/customer.css" asp-append-version="true" />
+</head>
+<body class="customer-body min-h-full">
+    <div class="customer-shell">
+        <header class="customer-nav-wrap">
+            <nav class="customer-nav" aria-label="Customer navigation">
+                <a asp-area="UserArea" asp-controller="Dashboard" asp-action="Index" class="customer-brand" aria-label="TransitNova customer home">
+                    <span class="customer-brand-mark">TN</span>
+                    <span>
+                        <span class="block text-sm font-black tracking-tight text-[#111111]">TransitNova</span>
+                        <span class="block font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Customer workspace</span>
+                    </span>
+                </a>
+
+                <div class="hidden items-center gap-1 md:flex">
+                    @NavLink("Dashboard", "Dashboard", "Index")
+                    @NavLink("Shipments", "Shipments", "Create")
+                    @NavLink("Track", "Shipments", "Track")
+                    @NavLink("Calculator", "Pricing", "RateCalculator")
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <a asp-area="UserArea" asp-controller="Shipments" asp-action="Create" class="customer-button hidden sm:inline-flex">New Shipment</a>
+                    <button type="button" class="customer-profile-button" data-customer-profile-button aria-label="Open profile menu">
+                        <span class="grid h-9 w-9 place-items-center rounded-[10px] bg-[#111111] text-xs font-black text-white">CU</span>
+                        <span class="hidden text-sm font-bold text-[#111111] lg:inline">Customer</span>
+                    </button>
+                    <div class="customer-profile-menu hidden" data-customer-profile-menu>
+                        <a asp-area="UserArea" asp-controller="Profile" asp-action="Index" class="customer-menu-link">Profile</a>
+                        <a asp-area="AccountArea" asp-controller="Account" asp-action="ChangePassword" class="customer-menu-link">Change password</a>
+                        <form asp-area="AccountArea" asp-controller="Account" asp-action="Logout" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="customer-menu-link w-full text-left text-[#9F2F2D]">Sign out</button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="customer-main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/js/User/customer.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+@functions {
+    private IHtmlContent NavLink(string label, string controller, string action)
+    {
+        var currentController = Context.Request.RouteValues["controller"]?.ToString();
+        var currentAction = Context.Request.RouteValues["action"]?.ToString();
+        var isActive = string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase)
+            && (string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase)
+                || controller == "Shipments" && currentController == "Shipments" && label == "Shipments" && currentAction is "Create" or "Details" or "Edit" or "Issue");
+        var activeClass = isActive ? " is-active" : string.Empty;
+        var href = Url.Action(action, controller, new { area = "UserArea" }) ?? "#";
+        return new HtmlString($"<a class=\"customer-nav-link{activeClass}\" href=\"{href}\">{label}</a>");
+    }
+}

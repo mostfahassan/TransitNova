@@ -1,2 +1,36 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Users";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Users",
+        Description = "Search and review customer accounts, profile health, activity, and lockout state.",
+        PrimaryLabel = null,
+        PrimaryController = "Users",
+        PrimaryAction = null
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "User directory",
+        Subtitle = "Users returned from the backend filtering endpoint.",
+        Source = Model,
+        Controller = "Users",
+        RouteIdName = "userId",
+        IdPropertyPath = "UserId|Id",
+        ShowDetails = true,
+        ShowEdit = false,
+        ShowDelete = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("User", "FullName|UserName|Email"),
+            new("Email", "Email"),
+            new("Type", "UserType", "badge"),
+            new("City", "CityName"),
+            new("Active", "IsActive", "badge"),
+            new("Created", "CreatedAt")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

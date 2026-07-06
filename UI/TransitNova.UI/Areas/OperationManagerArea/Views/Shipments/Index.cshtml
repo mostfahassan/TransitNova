@@ -1,2 +1,124 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Shipments";
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Live tracking",
+        Title = "Shipment control queue",
+        Description = "Track approved, assigned, warehouse, and delivery-ready shipments from one operational table.",
+        PrimaryLabel = "Review queue",
+        PrimaryController = "Shipments",
+        PrimaryAction = "ReviewQueue",
+        SecondaryLabel = "Dispatch",
+        SecondaryController = "Carriers",
+        SecondaryAction = "Dispatch"
+    };
+    var fallback = new[]
+    {
+        new { Id = Guid.Parse("30000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-4091", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Customs", SenderCity = "Cairo", ReceiverCity = "Alexandria", CurrentStatus = "Approved", ShipmentType = "Express", ShippingCost = 1450, CreatedAt = DateTime.Now.AddMinutes(-28) },
+        new { Id = Guid.Parse("30000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-5107", PickupAddress = "Giza Depot", DeliveryAddress = "Mansoura DC", SenderCity = "Giza", ReceiverCity = "Mansoura", CurrentStatus = "InWarehouse", ShipmentType = "Standard", ShippingCost = 920, CreatedAt = DateTime.Now.AddMinutes(-47) },
+        new { Id = Guid.Parse("30000000-0000-0000-0000-000000000003"), TrackingNumber = "TN-7120", PickupAddress = "Suez Gate", DeliveryAddress = "Tanta Warehouse", SenderCity = "Suez", ReceiverCity = "Tanta", CurrentStatus = "Pending", ShipmentType = "Fragile", ShippingCost = 1280, CreatedAt = DateTime.Now.AddHours(-2) }
+    };
+    var source = AdminDisplay.Rows(Model).Count > 0 ? Model : fallback;
+    var rows = AdminDisplay.Rows(source);
+}
+
+<partial name="_OpsPageHeader" model="header" />
+
+<section class="ops-card mb-6 p-5">
+    <form method="get" class="grid gap-4 lg:grid-cols-[1fr_180px_180px_180px_auto] lg:items-end">
+        <div>
+            <label class="ops-label" for="SearchTerm">Search shipment</label>
+            <input id="SearchTerm" name="SearchTerm" class="ops-input" placeholder="Tracking number, city, address" />
+        </div>
+        <div>
+            <label class="ops-label" for="Status">Status</label>
+            <select id="Status" name="Status" class="ops-select">
+                <option value="">Any status</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="AssignedToPickUpCarrier">Pickup assigned</option>
+                <option value="PickedUp">Picked up</option>
+                <option value="InWarehouse">In warehouse</option>
+                <option value="AssignedToDeliveryCarrier">Delivery assigned</option>
+            </select>
+        </div>
+        <div>
+            <label class="ops-label" for="From">From</label>
+            <input id="From" name="From" type="date" class="ops-input" />
+        </div>
+        <div>
+            <label class="ops-label" for="To">To</label>
+            <input id="To" name="To" type="date" class="ops-input" />
+        </div>
+        <button type="submit" class="ops-button h-[46px]">Filter</button>
+    </form>
+</section>
+
+<section class="ops-card overflow-hidden">
+    <div class="flex flex-col gap-3 border-b border-[#EAEAEA] p-6 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <h3 class="text-lg font-extrabold text-[#111111]">Master shipments list</h3>
+            <p class="mt-1 text-sm leading-6 text-[#787774]">Status-aware actions are shown only when the shipment can move to the next operational step.</p>
+        </div>
+        <div class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">@rows.Count records</div>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="ops-table">
+            <thead>
+                <tr>
+                    <th>Shipment</th>
+                    <th>Pickup</th>
+                    <th>Delivery</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Created</th>
+                    <th class="text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var index = 0; index < rows.Count; index++)
+                {
+                    var row = rows[index];
+                    var shipmentId = AdminDisplay.RouteValue(row, "Id|ShipmentId");
+                    var status = AdminDisplay.Text(row, "CurrentStatus|Status");
+                    var statusClass = BadgeClass(status);
+                    var pickupCity = AdminDisplay.Text(row, "SenderCity|PickupCity|PickupAddress");
+                    var deliveryCity = AdminDisplay.Text(row, "ReceiverCity|DeliveryCity|DeliveryAddress");
+                    <tr style="--row-index:@index">
+                        <td><span class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-[#111111]">@AdminDisplay.Text(row, "TrackingNumber", "id")</span></td>
+                        <td>@pickupCity</td>
+                        <td>@deliveryCity</td>
+                        <td><span class="@statusClass">@status</span></td>
+                        <td>@AdminDisplay.Text(row, "ShipmentType|TransportationMode")</td>
+                        <td>@AdminDisplay.Text(row, "CreatedAt")</td>
+                        <td class="whitespace-nowrap text-right">
+                            <div class="inline-flex items-center gap-2">
+                                @if (IsPending(status))
+                                {
+                                    <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Review" asp-route-shipmentId="@shipmentId" class="ops-button-secondary !px-3 !py-2">Review</a>
+                                }
+                                @if (IsApproved(status))
+                                {
+                                    <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="AssignPickup" asp-route-shipmentId="@shipmentId" asp-route-city="@pickupCity" class="ops-button-secondary !px-3 !py-2">Assign Pickup</a>
+                                }
+                                @if (IsInWarehouse(status))
+                                {
+                                    <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="AssignDelivery" asp-route-shipmentId="@shipmentId" asp-route-city="@deliveryCity" class="ops-button-secondary !px-3 !py-2">Assign Delivery</a>
+                                }
+                                <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Details" asp-route-shipmentId="@shipmentId" class="ops-button !px-3 !py-2">Details</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+@functions {
+    private static string BadgeClass(string value) => AdminDisplay.BadgeClass(value).Replace("admin-badge", "ops-badge", StringComparison.Ordinal);
+    private static bool IsPending(string value) => value.Contains("Pending", StringComparison.OrdinalIgnoreCase);
+    private static bool IsApproved(string value) => value.Contains("Approved", StringComparison.OrdinalIgnoreCase);
+    private static bool IsInWarehouse(string value) => value.Contains("Warehouse", StringComparison.OrdinalIgnoreCase);
+}

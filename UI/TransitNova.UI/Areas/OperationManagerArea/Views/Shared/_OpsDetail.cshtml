@@ -1,0 +1,52 @@
+@model OpsDetailViewModel
+@{
+    var source = Model.Source;
+    var id = AdminDisplay.RouteValue(source, Model.IdPropertyPath);
+}
+
+<section class="ops-card overflow-hidden">
+    <div class="flex flex-col gap-4 border-b border-[#EAEAEA] p-6 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <div class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#787774]">@Model.Subtitle</div>
+            <h3 class="mt-2 text-2xl font-extrabold tracking-tight text-[#111111]">@AdminDisplay.PrimaryLabel(source)</h3>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <a class="ops-button-secondary" asp-area="OperationManagerArea" asp-controller="@Model.Controller" asp-action="@Model.IndexAction">Back</a>
+            @if (!string.IsNullOrWhiteSpace(Model.SecondaryLabel) && !string.IsNullOrWhiteSpace(Model.SecondaryAction))
+            {
+                var route = new RouteValueDictionary { [Model.RouteIdName] = id };
+                <a class="ops-button-secondary" href="@Url.Action(Model.SecondaryAction, Model.Controller, route)">@Model.SecondaryLabel</a>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.PrimaryLabel) && !string.IsNullOrWhiteSpace(Model.PrimaryAction))
+            {
+                var route = new RouteValueDictionary { [Model.RouteIdName] = id };
+                <a class="ops-button" href="@Url.Action(Model.PrimaryAction, Model.Controller, route)">@Model.PrimaryLabel</a>
+            }
+        </div>
+    </div>
+
+    <div class="grid gap-px bg-[#EAEAEA] sm:grid-cols-2 xl:grid-cols-3">
+        @foreach (var field in Model.Fields)
+        {
+            var text = AdminDisplay.Text(source, field.PropertyPath, field.Kind);
+            <div class="bg-white p-5">
+                <div class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">@field.Header</div>
+                <div class="mt-2 text-sm font-semibold text-[#2F3437]">
+                    @if (field.Kind == "badge")
+                    {
+                        <span class="@BadgeClass(text)">@text</span>
+                    }
+                    else
+                    {
+                        @text
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@functions {
+    private static string BadgeClass(string value) =>
+        AdminDisplay.BadgeClass(value).Replace("admin-badge", "ops-badge", StringComparison.Ordinal);
+}

@@ -1,2 +1,27 @@
-@{ Layout = null; }
-<div></div>
+@model BundleFormViewModel
+@{
+    ViewData["Title"] = ViewContext.RouteData.Values["action"]?.ToString() == "Edit" ? "Edit Bundle" : "Create Bundle";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = ViewData["Title"]?.ToString() ?? "Create Bundle",
+        Description = "Define pricing, shipment capacity, distance, and operational weight limits for customer subscription bundles.",
+        SecondaryLabel = "Back to bundles",
+        SecondaryController = "Bundles",
+        SecondaryAction = "Index"
+    };
+}
+<partial name="_AdminPageHeader" model="header" />
+<form method="post" class="admin-card p-6">
+    @Html.AntiForgeryToken()
+    <input asp-for="BundleId" type="hidden" />
+    <div asp-validation-summary="ModelOnly" class="mb-5 rounded-xl border border-[#F5D4D4] bg-[#FDEBEC] p-4 text-sm text-[#9F2F2D]"></div>
+    <div class="grid gap-5 lg:grid-cols-2">
+        <div><label asp-for="BundleName" class="admin-label"></label><input asp-for="BundleName" class="admin-input" placeholder="Express Cairo-Alex bundle" /><span asp-validation-for="BundleName" class="admin-validation"></span></div>
+        <div><label asp-for="BundlePrice" class="admin-label"></label><input asp-for="BundlePrice" class="admin-input" placeholder="1250" /><span asp-validation-for="BundlePrice" class="admin-validation"></span></div>
+        <div><label asp-for="TotalWeight" class="admin-label"></label><input asp-for="TotalWeight" class="admin-input" placeholder="250" /><span asp-validation-for="TotalWeight" class="admin-validation"></span></div>
+        <div><label asp-for="TotalDistance" class="admin-label"></label><input asp-for="TotalDistance" class="admin-input" placeholder="420" /><span asp-validation-for="TotalDistance" class="admin-validation"></span></div>
+        <div><label asp-for="TotalShipments" class="admin-label"></label><input asp-for="TotalShipments" class="admin-input" placeholder="25" /><span asp-validation-for="TotalShipments" class="admin-validation"></span></div>
+        <div class="lg:col-span-2"><label asp-for="BundleDescription" class="admin-label"></label><textarea asp-for="BundleDescription" class="admin-textarea" placeholder="Designed for predictable regional shipments between main hubs."></textarea><span asp-validation-for="BundleDescription" class="admin-validation"></span></div>
+    </div>
+    <div class="mt-6 flex justify-end gap-3"><a asp-action="Index" class="admin-button-secondary">Cancel</a><button type="submit" class="admin-button">Save bundle</button></div>
+</form>

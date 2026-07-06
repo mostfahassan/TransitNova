@@ -3,6 +3,10 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>e18968bd-7e34-44f0-ae44-21767ac920ba</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Areas\CarrierArea\Data\**" />
@@ -10,21 +14,25 @@
     <Compile Remove="Areas\LandingArea\Data\**" />
     <Compile Remove="Areas\OperationManagerArea\Data\**" />
     <Compile Remove="Areas\WarehouseManagerArea\Data\**" />
+    <Compile Remove="Areas\WarehouseManagerArea\Views\**" />
     <Content Remove="Areas\CarrierArea\Data\**" />
     <Content Remove="Areas\CarrierArea\Models\**" />
     <Content Remove="Areas\LandingArea\Data\**" />
     <Content Remove="Areas\OperationManagerArea\Data\**" />
     <Content Remove="Areas\WarehouseManagerArea\Data\**" />
+    <Content Remove="Areas\WarehouseManagerArea\Views\**" />
     <EmbeddedResource Remove="Areas\CarrierArea\Data\**" />
     <EmbeddedResource Remove="Areas\CarrierArea\Models\**" />
     <EmbeddedResource Remove="Areas\LandingArea\Data\**" />
     <EmbeddedResource Remove="Areas\OperationManagerArea\Data\**" />
     <EmbeddedResource Remove="Areas\WarehouseManagerArea\Data\**" />
+    <EmbeddedResource Remove="Areas\WarehouseManagerArea\Views\**" />
     <None Remove="Areas\CarrierArea\Data\**" />
     <None Remove="Areas\CarrierArea\Models\**" />
     <None Remove="Areas\LandingArea\Data\**" />
     <None Remove="Areas\OperationManagerArea\Data\**" />
     <None Remove="Areas\WarehouseManagerArea\Data\**" />
+    <None Remove="Areas\WarehouseManagerArea\Views\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +43,7 @@
 		<PackageReference Include="AutoMapper" Version="16.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
 		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.16.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
 		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.16.0" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.16.0" />
@@ -45,8 +54,6 @@
     <Folder Include="Areas\CarrierArea\Views\" />
     <Folder Include="Areas\LandingArea\Controllers\" />
     <Folder Include="Areas\OperationManagerArea\Views\" />
-    <Folder Include="Areas\WarehouseManagerArea\Controllers\" />
-    <Folder Include="Areas\WarehouseManagerArea\Views\" />
   </ItemGroup>
 
 </Project>

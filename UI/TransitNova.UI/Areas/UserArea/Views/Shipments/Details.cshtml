@@ -1,2 +1,90 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Shipment Details";
+    var shipmentId = Convert.ToString(AdminDisplay.Value(Model, "Id|ShipmentId")) ?? string.Empty;
+    var tracking = AdminDisplay.Text(Model, "TrackingNumber|Code|Id");
+    var status = AdminDisplay.Text(Model, "Status|CurrentStatus");
+}
+
+<section class="customer-fade-up">
+    <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div>
+            <div class="@BadgeClass(status)">@status</div>
+            <h1 class="mt-5 text-4xl font-black leading-[1.02] tracking-[-0.04em] text-[#111111]">@tracking</h1>
+            <p class="mt-4 max-w-2xl text-base leading-7 text-[#666666]">Shipment details, route, receiver, package summary, and customer actions in one focused page.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <a asp-area="UserArea" asp-controller="Shipments" asp-action="TrackResult" asp-route-trackingNumber="@tracking" class="customer-button-secondary">Track</a>
+            <a asp-area="UserArea" asp-controller="Shipments" asp-action="Edit" asp-route-shipmentId="@shipmentId" class="customer-button">Edit shipment</a>
+        </div>
+    </div>
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_360px]">
+        <section class="customer-card overflow-hidden">
+            <div class="border-b border-[#EAEAEA] p-6 md:p-8">
+                <h2 class="text-2xl font-black tracking-[-0.03em] text-[#111111]">Route overview</h2>
+                <p class="mt-2 text-sm leading-6 text-[#666666]">A quick read of pickup, delivery, and receiver information.</p>
+            </div>
+            <div class="grid gap-0 md:grid-cols-2">
+                <div class="border-b border-[#EAEAEA] p-6 md:border-r">
+                    <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Pickup</div>
+                    <p class="mt-3 text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "PickupAddress|Origin|SenderAddress")</p>
+                    <p class="mt-2 text-sm leading-6 text-[#666666]">@AdminDisplay.Text(Model, "PickUpDate|PickupDate|CreatedAt")</p>
+                </div>
+                <div class="border-b border-[#EAEAEA] p-6">
+                    <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Delivery</div>
+                    <p class="mt-3 text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "DeliveryAddress|Destination|Receiver.Address")</p>
+                    <p class="mt-2 text-sm leading-6 text-[#666666]">@AdminDisplay.Text(Model, "ReceiverCity|Receiver.City|City")</p>
+                </div>
+                <div class="p-6 md:border-r">
+                    <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Receiver</div>
+                    <p class="mt-3 text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "ReceiverFullName|Receiver.Name|Receiver.FirstName|ReceiverEmail")</p>
+                    <p class="mt-2 text-sm leading-6 text-[#666666]">@AdminDisplay.Text(Model, "ReceiverPhone|Receiver.PhoneNumber|Receiver.Email")</p>
+                </div>
+                <div class="p-6">
+                    <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Package</div>
+                    <p class="mt-3 text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "ShipmentType|PackageSpecification|Product")</p>
+                    <p class="mt-2 text-sm leading-6 text-[#666666]">@AdminDisplay.Text(Model, "TransportationMode|Mode")</p>
+                </div>
+            </div>
+        </section>
+
+        <aside class="space-y-5">
+            <section class="customer-card p-6">
+                <h2 class="text-xl font-black tracking-[-0.02em] text-[#111111]">Actions</h2>
+                <p class="mt-2 text-sm leading-6 text-[#666666]">Use destructive actions carefully. Every write operation uses PRG through the controller.</p>
+                <div class="mt-5 space-y-3">
+                    <a asp-area="UserArea" asp-controller="Shipments" asp-action="Issue" asp-route-shipmentId="@shipmentId" class="customer-button-secondary w-full">Report issue</a>
+                    <form asp-area="UserArea" asp-controller="Shipments" asp-action="Cancel" asp-route-shipmentId="@shipmentId" method="post" data-loading-form data-loading-text="Cancelling...">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="customer-button-danger w-full">
+                            <span class="customer-spinner hidden" data-button-spinner></span>
+                            <span data-button-text>Cancel shipment</span>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <section class="customer-card-flat p-6">
+                <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Reference</div>
+                <dl class="mt-4 space-y-3 text-sm">
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Shipment ID</dt><dd class="text-right font-black text-[#111111]">@shipmentId</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Payment</dt><dd class="text-right font-black text-[#111111]">@AdminDisplay.Text(Model, "PaymentStatus|PaymentMethod|PaymentId")</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Created</dt><dd class="text-right font-black text-[#111111]">@AdminDisplay.Text(Model, "CreatedAt")</dd></div>
+                </dl>
+            </section>
+        </aside>
+    </div>
+</section>
+
+@functions {
+    private static string BadgeClass(string value)
+    {
+        var text = value.ToLowerInvariant();
+        if (text.Contains("deliver") || text.Contains("approved")) return "customer-badge customer-badge-success";
+        if (text.Contains("transit") || text.Contains("pickup") || text.Contains("warehouse")) return "customer-badge customer-badge-info";
+        if (text.Contains("pending") || text.Contains("review") || text.Contains("assigned")) return "customer-badge customer-badge-warning";
+        if (text.Contains("issue") || text.Contains("cancel") || text.Contains("reject")) return "customer-badge customer-badge-danger";
+        return "customer-badge customer-badge-neutral";
+    }
+}

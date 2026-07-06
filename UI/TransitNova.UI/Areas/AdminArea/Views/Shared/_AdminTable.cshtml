@@ -1,0 +1,99 @@
+@model AdminTableViewModel
+@{
+    var rows = AdminDisplay.Rows(Model.Source);
+    var totalCount = AdminDisplay.TotalCount(Model.Source);
+    var pageNumber = AdminDisplay.PageNumber(Model.Source);
+    var totalPages = AdminDisplay.TotalPages(Model.Source);
+}
+
+<section class="admin-card overflow-hidden">
+    <div class="flex flex-col gap-4 border-b border-[#EAEAEA] p-5 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <h3 class="text-lg font-extrabold tracking-tight text-[#111111]">@Model.Title</h3>
+            <p class="mt-1 text-sm text-[#787774]">@Model.Subtitle</p>
+        </div>
+        <div class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">
+            @totalCount records / page @pageNumber of @totalPages
+        </div>
+    </div>
+
+    @if (rows.Count == 0)
+    {
+        <div class="p-12 text-center">
+            <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl border border-[#EAEAEA] bg-[#FBFBFA] text-[#787774]">TN</div>
+            <h4 class="mt-5 text-lg font-bold text-[#111111]">@Model.EmptyTitle</h4>
+            <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-[#787774]">@Model.EmptyDescription</p>
+        </div>
+    }
+    else
+    {
+        <div class="overflow-x-auto">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        @foreach (var column in Model.Columns)
+                        {
+                            <th>@column.Header</th>
+                        }
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var index = 0; index < rows.Count; index++)
+                    {
+                        var row = rows[index];
+                        var id = AdminDisplay.RouteValue(row, Model.IdPropertyPath);
+                        var routeValues = new RouteValueDictionary();
+                        if (id is not null)
+                        {
+                            routeValues[Model.RouteIdName] = id;
+                        }
+                        var detailsUrl = id is null ? null : Url.Action(Model.DetailsAction, Model.Controller, routeValues);
+                        var editUrl = id is null ? null : Url.Action(Model.EditAction, Model.Controller, routeValues);
+                        var deleteUrl = id is null ? null : Url.Action(Model.DeleteAction, Model.Controller, routeValues);
+
+                        <tr style="--row-index:@index">
+                            @foreach (var column in Model.Columns)
+                            {
+                                var text = AdminDisplay.Text(row, column.PropertyPath, column.Kind);
+                                <td>
+                                    @if (column.Kind == "badge")
+                                    {
+                                        <span class="@AdminDisplay.BadgeClass(text)">@text</span>
+                                    }
+                                    else if (column.Kind == "id")
+                                    {
+                                        <span class="font-mono text-xs font-bold uppercase tracking-[0.12em] text-[#55524D]">@text</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@text</span>
+                                    }
+                                </td>
+                            }
+                            <td>
+                                <div class="flex items-center justify-end gap-2">
+                                    @if (Model.ShowDetails && !string.IsNullOrWhiteSpace(detailsUrl))
+                                    {
+                                        <a href="@detailsUrl" class="admin-button-secondary !px-3 !py-2">View</a>
+                                    }
+                                    @if (Model.ShowEdit && !string.IsNullOrWhiteSpace(editUrl))
+                                    {
+                                        <a href="@editUrl" class="admin-button-secondary !px-3 !py-2">Edit</a>
+                                    }
+                                    @if (Model.ShowDelete && !string.IsNullOrWhiteSpace(deleteUrl))
+                                    {
+                                        <form method="post" action="@deleteUrl" data-confirm="Delete this record? This action cannot be undone.">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="admin-button-danger !px-3 !py-2">Delete</button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

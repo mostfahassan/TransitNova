@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Commands.Carriers;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
@@ -46,7 +46,7 @@ namespace TransitNova.BusinessLayer.Services.ShipmentAssignmentServices
         public async Task<string> AssignPickupAsync(Guid ShipmentId, Guid OperationManagerId, Guid CarrierId, CancellationToken cancellationToken)
         {
             //==== Check Existence Of The Shipment =========
-            var shipmentToPickUp = await shipment.GetShipmentInStatusAsync(ShipmentId, ShipmentStatuses.AssignedToPickUpCarrier, cancellationToken, true);
+            var shipmentToPickUp = await shipment.GetShipmentInStatusAsync(ShipmentId, ShipmentStatuses.Approved, cancellationToken, true);
             if (shipmentToPickUp == null)
             {
                 logger.LogError("Shipment with {shipmentId} not found", ShipmentId);

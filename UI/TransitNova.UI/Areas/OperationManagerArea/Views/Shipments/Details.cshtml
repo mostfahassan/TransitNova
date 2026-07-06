@@ -1,2 +1,95 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Shipment Details";
+    var source = Model ?? new { Id = Guid.Parse("33000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-4091", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Customs", SenderCity = "Cairo", ReceiverCity = "Alexandria", CurrentStatus = "Approved", TransportationMode = "Land", ShipmentType = "Express", ShippingCost = 1450, EstimatedDeliveryDate = DateTime.Now.AddHours(7), CreatedAt = DateTime.Now.AddMinutes(-42), RejectionReason = "-" };
+    var shipmentId = AdminDisplay.RouteValue(source, "Id|ShipmentId");
+    var status = AdminDisplay.Text(source, "CurrentStatus|Status");
+    var pickupCity = AdminDisplay.Text(source, "SenderCity|PickupCity|PickupAddress");
+    var deliveryCity = AdminDisplay.Text(source, "ReceiverCity|DeliveryCity|DeliveryAddress");
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Shipment record",
+        Title = AdminDisplay.Text(source, "TrackingNumber", "id"),
+        Description = "Operational details for routing, assignment, approval, and exception handling.",
+        SecondaryLabel = "History",
+        SecondaryController = "Shipments",
+        SecondaryAction = "Histories",
+        SecondaryRouteValues = new Dictionary<string, string> { ["shipmentId"] = Convert.ToString(shipmentId) ?? string.Empty }
+    };
+    var detail = new OpsDetailViewModel
+    {
+        Title = "Shipment details",
+        Subtitle = "Shipment / " + AdminDisplay.Text(source, "TrackingNumber", "id"),
+        Source = source,
+        Controller = "Shipments",
+        IndexAction = "Index",
+        SecondaryLabel = "History",
+        SecondaryAction = "Histories",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id|ShipmentId",
+        Fields = new List<OpsTableColumnViewModel>
+        {
+            new("Tracking", "TrackingNumber", "id"),
+            new("Status", "CurrentStatus|Status", "badge"),
+            new("Pickup", "PickupAddress|SenderCity"),
+            new("Delivery", "DeliveryAddress|ReceiverCity"),
+            new("Mode", "TransportationMode"),
+            new("Type", "ShipmentType"),
+            new("Cost", "ShippingCost|ShippinCost|ShipmentCost", "currency"),
+            new("Estimated delivery", "EstimatedDeliveryDate"),
+            new("Created", "CreatedAt")
+        }
+    };
+}
+
+<partial name="_OpsPageHeader" model="header" />
+<partial name="_OpsDetail" model="detail" />
+
+<section class="mt-6 grid gap-4 md:grid-cols-3">
+    @if (IsPending(status))
+    {
+        <form asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Approve" asp-route-shipmentId="@shipmentId" method="post" data-confirm="Approve this shipment?" data-ops-ajax-form="true" class="ops-card p-5">
+            @Html.AntiForgeryToken()
+            <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Decision</div>
+            <h3 class="mt-2 text-lg font-extrabold text-[#111111]">Approve shipment</h3>
+            <p class="mt-2 text-sm leading-6 text-[#787774]">Move this shipment from review queue into dispatch readiness.</p>
+            <button type="submit" class="ops-button mt-5 w-full">Approve</button>
+        </form>
+        <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Reject" asp-route-shipmentId="@shipmentId" class="ops-card ops-lift p-5">
+            <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Decision</div>
+            <h3 class="mt-2 text-lg font-extrabold text-[#111111]">Reject shipment</h3>
+            <p class="mt-2 text-sm leading-6 text-[#787774]">Capture the issue and stop this shipment from dispatch.</p>
+            <span class="ops-button-danger mt-5 w-full">Reject</span>
+        </a>
+    }
+    @if (IsApproved(status))
+    {
+        <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="AssignPickup" asp-route-shipmentId="@shipmentId" asp-route-city="@pickupCity" class="ops-card ops-lift p-5">
+            <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Dispatch</div>
+            <h3 class="mt-2 text-lg font-extrabold text-[#111111]">Assign pickup</h3>
+            <p class="mt-2 text-sm leading-6 text-[#787774]">Filter carriers by pickup city and confirm first-mile ownership.</p>
+            <span class="ops-button-secondary mt-5 w-full">Open pickup panel</span>
+        </a>
+    }
+    @if (IsInWarehouse(status))
+    {
+        <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="AssignDelivery" asp-route-shipmentId="@shipmentId" asp-route-city="@deliveryCity" class="ops-card ops-lift p-5">
+            <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Dispatch</div>
+            <h3 class="mt-2 text-lg font-extrabold text-[#111111]">Assign delivery</h3>
+            <p class="mt-2 text-sm leading-6 text-[#787774]">Choose a destination-zone carrier for final-mile delivery.</p>
+            <span class="ops-button-secondary mt-5 w-full">Open delivery panel</span>
+        </a>
+    }
+    <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Histories" asp-route-shipmentId="@shipmentId" class="ops-card ops-lift p-5">
+        <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Timeline</div>
+        <h3 class="mt-2 text-lg font-extrabold text-[#111111]">View history</h3>
+        <p class="mt-2 text-sm leading-6 text-[#787774]">Audit each state transition and assigned carrier handoff.</p>
+        <span class="ops-button-secondary mt-5 w-full">Open history</span>
+    </a>
+</section>
+
+@functions {
+    private static bool IsPending(string value) => value.Contains("Pending", StringComparison.OrdinalIgnoreCase);
+    private static bool IsApproved(string value) => value.Contains("Approved", StringComparison.OrdinalIgnoreCase);
+    private static bool IsInWarehouse(string value) => value.Contains("Warehouse", StringComparison.OrdinalIgnoreCase);
+}

@@ -1,2 +1,37 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Carrier details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Carrier details",
+        Description = "Inspect carrier operational state, zones, load, and rating.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Carriers",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Carrier record",
+        Subtitle = "Carrier profile and summary details from the API.",
+        Source = Model,
+        Controller = "Carriers",
+        RouteIdName = "carrierId",
+        IdPropertyPath = "Id|CarrierId",
+        EditAction = null,
+        DeleteAction = "Delete",
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Carrier", "FullName|Name"),
+            new("Code", "Code", "id"),
+            new("Phone", "PhoneNumber"),
+            new("Status", "Status", "badge"),
+            new("Rating", "Rating"),
+            new("Served cities", "ServedCities"),
+            new("Assigned shipments", "AssignedShipmentsCount"),
+            new("Active trips", "ActiveTripsCount")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

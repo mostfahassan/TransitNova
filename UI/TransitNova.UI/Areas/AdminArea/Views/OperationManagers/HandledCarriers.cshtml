@@ -1,2 +1,36 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Handled carriers";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Handled carriers",
+        Description = "Carriers currently handled by the selected operation manager.",
+        PrimaryLabel = null,
+        PrimaryController = "OperationManagers",
+        PrimaryAction = null
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Handled carrier ledger",
+        Subtitle = "Paginated carrier assignments returned by the backend.",
+        Source = Model,
+        Controller = "OperationManagers",
+        RouteIdName = "carrierId",
+        IdPropertyPath = "Id|CarrierId",
+        ShowDetails = false,
+        ShowEdit = false,
+        ShowDelete = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Carrier", "FullName|Name"),
+            new("Code", "Code", "id"),
+            new("Status", "Status", "badge"),
+            new("Rating", "Rating"),
+            new("Assigned", "AssignedShipmentsCount"),
+            new("Trips", "ActiveTripsCount")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

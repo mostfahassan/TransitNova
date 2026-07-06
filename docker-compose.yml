@@ -1,3 +1,6 @@
+
+name: transitnova
+
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -22,7 +25,8 @@ services:
 
 
 
-  transitnova_api:
+  transitnova.api:
+    image: transitnova-api:latest
     build:
       context: .
       dockerfile: Src/Dockerfile
@@ -50,8 +54,8 @@ services:
 
 
 
-
   transitnova-payment:
+    image: transitnova-payment:latest
     build:
       context: .
       dockerfile: TransitNovaPayment/Dockerfile
@@ -72,21 +76,20 @@ services:
       - transitnova
 
 
-
-
-
   transitnova-ui:
+    image: transitnova-ui:latest
     build:
       context: .
-      dockerfile: Ui/Dockerfile
+      dockerfile: UI/Dockerfile
     container_name: transitnova-ui
     ports:
       - "5169:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
+      TransitNovaApi__BaseUrl: http://transitnova-api:80
     depends_on:
-      - transitnova_api
+      - transitnova.api
     networks:
       - transitnova
 
@@ -96,6 +99,8 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SEQ_FIRSTRUN_NOAUTHENTICATION=True
+      - OTEL_EXPORTER_OTLP_ENDPOINT:http://transitnova-seq:5341/ingest/otlp/v1/traces
+      - OTEL_EXPORTER_OTLP_PROTOCOL:http/protobuf
     volumes:
       - seq-data:/data
     networks:
@@ -111,3 +116,4 @@ networks:
 volumes:
   sqlserver-data:
   seq-data:
+

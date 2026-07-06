@@ -1,4 +1,4 @@
-﻿
+
 using TransitNova.Domain.Contracts.DomainEvents.Events.UsersEvent;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Users;
@@ -17,7 +17,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             PhoneNumber = phoneNumber;
             Address = address;
             AppUserId = appUserId;
-            UserType = UserType.OperationManager;
+            UserType = UserType.WarehouseManager;
             CurrentState = true;
             CityId = cityId;
         }

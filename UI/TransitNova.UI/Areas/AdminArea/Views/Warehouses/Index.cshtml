@@ -1,2 +1,36 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Warehouses";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Warehouses",
+        Description = "Track storage hubs, capacity, usage, zones, and route support.",
+        PrimaryLabel = "Create warehouse",
+        PrimaryController = "Warehouses",
+        PrimaryAction = "Create"
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Warehouse network",
+        Subtitle = "Fulfillment hubs connected to carriers and trips.",
+        Source = Model,
+        Controller = "Warehouses",
+        RouteIdName = "warehouseId",
+        IdPropertyPath = "Id|WarehouseId",
+        ShowDetails = true,
+        ShowEdit = true,
+        ShowDelete = true,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Warehouse", "Name"),
+            new("Type", "Type", "badge"),
+            new("Capacity", "Capacity"),
+            new("Usage", "CurrentUsage"),
+            new("Carriers", "CarrierCount"),
+            new("Active trips", "ActiveTripsCount")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

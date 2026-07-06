@@ -1,2 +1,27 @@
-@{ Layout = null; }
-<div></div>
+@model WarehouseFormViewModel
+@using TransitNova.Domain.Enums.Warehouse
+@{
+    ViewData["Title"] = ViewContext.RouteData.Values["action"]?.ToString() == "Edit" ? "Edit Warehouse" : "Create Warehouse";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = ViewData["Title"]?.ToString() ?? "Create Warehouse",
+        Description = "Register hub capacity, operating hours, and location data for route planning.",
+        SecondaryLabel = "Back to warehouses",
+        SecondaryController = "Warehouses",
+        SecondaryAction = "Index"
+    };
+}
+<partial name="_AdminPageHeader" model="header" />
+<form method="post" class="admin-card p-6">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="mb-5 rounded-xl border border-[#F5D4D4] bg-[#FDEBEC] p-4 text-sm text-[#9F2F2D]"></div>
+    <div class="grid gap-5 lg:grid-cols-2">
+        <div><label asp-for="Name" class="admin-label"></label><input asp-for="Name" class="admin-input" placeholder="Cairo Fulfillment Hub" /><span asp-validation-for="Name" class="admin-validation"></span></div>
+        <div><label asp-for="Type" class="admin-label"></label><select asp-for="Type" asp-items="Html.GetEnumSelectList<WarehouseType>()" class="admin-select"></select><span asp-validation-for="Type" class="admin-validation"></span></div>
+        <div class="lg:col-span-2"><label asp-for="Address" class="admin-label"></label><input asp-for="Address" class="admin-input" placeholder="Ring Road, Cairo" /><span asp-validation-for="Address" class="admin-validation"></span></div>
+        <div><label asp-for="Capacity" class="admin-label"></label><input asp-for="Capacity" class="admin-input" placeholder="50000" /><span asp-validation-for="Capacity" class="admin-validation"></span></div>
+        <div><label asp-for="CurrentUsage" class="admin-label"></label><input asp-for="CurrentUsage" class="admin-input" placeholder="18400" /><span asp-validation-for="CurrentUsage" class="admin-validation"></span></div>
+        <div><label asp-for="OperatingHours" class="admin-label"></label><input asp-for="OperatingHours" class="admin-input" placeholder="24" /><span asp-validation-for="OperatingHours" class="admin-validation"></span></div>
+    </div>
+    <div class="mt-6 flex justify-end gap-3"><a asp-action="Index" class="admin-button-secondary">Cancel</a><button type="submit" class="admin-button">Save warehouse</button></div>
+</form>

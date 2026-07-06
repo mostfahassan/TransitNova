@@ -1,54 +1,115 @@
-@using TransitNova.UI.ViewModels
+@model object?
 @{
-    Layout = "_DashboardLayout";
     ViewData["Title"] = "Admin Dashboard";
-    ViewData["DashboardRole"] = "Admin";
-    ViewData["DashboardSubtitle"] = "Preview the admin control surface without authentication while the MVC screens are being connected.";
-    ViewData["DashboardUserName"] = "Admin Preview";
-    ViewData["DashboardNavItems"] = new[]
+    var currentDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
+    string Metric(string path, string fallback) => AdminDisplay.Text(Model, path) == "-" ? fallback : AdminDisplay.Text(Model, path);
+    var header = new AdminPageHeaderViewModel
     {
-        new DashboardNavItemViewModel("Dashboard", "/AdminArea/Dashboard/Index", "grid", true),
-        new DashboardNavItemViewModel("Users", "/AdminArea/Users/Index", "users"),
-        new DashboardNavItemViewModel("Roles", "/AdminArea/Roles/Index", "settings"),
-        new DashboardNavItemViewModel("Shipments", "/AdminArea/OperationManagers/Index", "truck"),
-        new DashboardNavItemViewModel("Bundles", "/AdminArea/Bundles/Index", "grid"),
-        new DashboardNavItemViewModel("Warehouses", "/AdminArea/Warehouses/Index", "warehouse"),
-        new DashboardNavItemViewModel("Carriers", "/AdminArea/Carriers/Index", "truck"),
-        new DashboardNavItemViewModel("Cities", "/AdminArea/Cities/Index", "route")
+        Eyebrow = currentDate,
+        Title = "TransitNova command center",
+        Description = "A clean operating surface for monitoring logistics, fleet capacity, customer activity, and system health.",
+        PrimaryLabel = "Create bundle",
+        PrimaryController = "Bundles",
+        PrimaryAction = "Create",
+        SecondaryLabel = "View users",
+        SecondaryController = "Users",
+        SecondaryAction = "Index"
     };
-
-    var kpis = new[]
-    {
-        new DashboardKpiCardViewModel("Active shipments", 128, "128", "truck", "+12%", true, "Across pickup, warehouse, and delivery states."),
-        new DashboardKpiCardViewModel("Carrier capacity", 38, "38", "route", "+8%", true, "Available carriers ready for assignment."),
-        new DashboardKpiCardViewModel("Warehouse usage", 74, "74", "warehouse", "-3%", false, "Current operational storage load."),
-        new DashboardKpiCardViewModel("Monthly revenue", 42100, "42,100", "currency", "+18%", true, "Preview figure for dashboard wiring.")
-    };
-
-    var activityRows = new DashboardTableViewModel(
-        "Recent admin activity",
-        "Representative logistics rows for the reusable table component.",
-        new[]
+    var recentShipments = AdminDisplay.Value(Model, "RecentShipments");
+    var recentShipmentRows = AdminDisplay.Rows(recentShipments).Count > 0
+        ? recentShipments
+        : new[]
         {
-            new DashboardTableRowViewModel("SHP-CAI-1042", "Cairo Hub", "Alexandria Port", "In Transit", "12 min ago", "Open"),
-            new DashboardTableRowViewModel("SHP-GIZ-8841", "Giza Depot", "Mansoura DC", "Delivered", "31 min ago", "View"),
-            new DashboardTableRowViewModel("SHP-ALX-3108", "Alexandria Port", "Cairo Hub", "Pending", "46 min ago", "Assign"),
-            new DashboardTableRowViewModel("SHP-SUZ-7750", "Suez Gate", "Tanta Warehouse", "Delayed", "1 hr ago", "Review")
-        });
+            new { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), TrackingNumber = "TN-8921", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Port", CurrentStatus = "In Transit", ShippingCost = 1840, CreatedAt = DateTime.Now.AddMinutes(-12) },
+            new { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), TrackingNumber = "TN-7740", PickupAddress = "Giza Depot", DeliveryAddress = "Mansoura DC", CurrentStatus = "Delivered", ShippingCost = 960, CreatedAt = DateTime.Now.AddMinutes(-38) },
+            new { Id = Guid.Parse("33333333-3333-3333-3333-333333333333"), TrackingNumber = "TN-6103", PickupAddress = "Suez Gate", DeliveryAddress = "Tanta Warehouse", CurrentStatus = "Pending Review", ShippingCost = 1320, CreatedAt = DateTime.Now.AddHours(-1) },
+            new { Id = Guid.Parse("44444444-4444-4444-4444-444444444444"), TrackingNumber = "TN-4588", PickupAddress = "Alexandria Port", DeliveryAddress = "Cairo Hub", CurrentStatus = "Assigned", ShippingCost = 2210, CreatedAt = DateTime.Now.AddHours(-2) }
+        };
+    var kpiTiles = new List<AdminKpiTileViewModel>
+    {
+        new("Total shipments", Metric("Kpis.TotalShipments", "12,840"), "All shipments created in the platform.", "SHP"),
+        new("Active fleets", Metric("Kpis.TotalCarriers", "384"), "Carrier capacity currently registered.", "FLT"),
+        new("Revenue", Metric("RevenueSummary.MonthlyRevenue", "$84K"), "Recognized logistics revenue this month.", "REV"),
+        new("Pending issues", Metric("Kpis.PendingShipments", "42"), "Shipments waiting for operational review.", "ISS")
+    };
+    var shipmentTable = new AdminTableViewModel
+    {
+        Title = "Latest shipments",
+        Subtitle = "Live operational movement across hubs, carriers, and warehouse checkpoints.",
+        Source = recentShipmentRows,
+        Controller = "OperationManagers",
+        RouteIdName = "operationManagerId",
+        IdPropertyPath = "Id",
+        ShowDetails = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Shipment", "TrackingNumber", "id"),
+            new("Origin", "PickupAddress"),
+            new("Destination", "DeliveryAddress"),
+            new("Status", "CurrentStatus", "badge"),
+            new("Revenue", "ShippingCost", "currency"),
+            new("Created", "CreatedAt")
+        }
+    };
 }
 
-<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-    @foreach (var kpi in kpis)
+<partial name="_AdminPageHeader" model="header" />
+
+<section class="admin-stagger grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    @for (var index = 0; index < kpiTiles.Count; index++)
     {
-        @await Html.PartialAsync("Dashboard/_KpiCard", kpi)
+        <div style="--item-index:@index">
+            <partial name="_AdminKpiTile" model="kpiTiles[index]" />
+        </div>
     }
 </section>
 
-<section class="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Shipment volume", "Daily created, approved, assigned, and delivered shipment movement.", "adminShipmentChart", "Last 30 days"))
-    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Carrier performance", "Assignment rate, completion rate, and rating trend placeholder.", "adminCarrierChart", "This quarter"))
+<section class="mt-6 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+    <div class="admin-card p-6">
+        <div class="flex items-center justify-between border-b border-[#EAEAEA] pb-4">
+            <div>
+                <h3 class="text-lg font-extrabold text-[#111111]">Operational health</h3>
+                <p class="mt-1 text-sm text-[#787774]">Warehouse, carrier, and delivery quality signals.</p>
+            </div>
+            <span class="admin-badge admin-badge-success">Stable</span>
+        </div>
+        <div class="mt-6 grid gap-4 sm:grid-cols-3">
+            <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
+                <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">Available carriers</div>
+                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric("OperationalHealth.AvailableCarriers", "118")</div>
+            </div>
+            <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
+                <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">Success rate</div>
+                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric("OperationalHealth.DeliverySuccessRate", "96.4")%</div>
+            </div>
+            <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
+                <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">Carrier rating</div>
+                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric("OperationalHealth.AverageCarrierRating", "4.8")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-card p-6">
+        <div class="flex items-center justify-between border-b border-[#EAEAEA] pb-4">
+            <div>
+                <h3 class="text-lg font-extrabold text-[#111111]">Activity stream</h3>
+                <p class="mt-1 text-sm text-[#787774]">Recent administrative actions.</p>
+            </div>
+        </div>
+        <div class="mt-5 space-y-4">
+            @foreach (var activity in AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentActivities")).DefaultIfEmpty(new { Title = "Shipment TN-8921 assigned", Description = "Operation manager assigned Cairo to Alex route.", PerformedBy = "TransitNova Admin", OccurredAt = DateTime.Now.AddMinutes(-8) }))
+            {
+                <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
+                    <div class="text-sm font-bold text-[#111111]">@AdminDisplay.Text(activity, "Title")</div>
+                    <div class="mt-1 text-sm leading-6 text-[#787774]">@AdminDisplay.Text(activity, "Description")</div>
+                    <div class="mt-3 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">@AdminDisplay.Text(activity, "PerformedBy") / @AdminDisplay.Text(activity, "OccurredAt")</div>
+                </div>
+            }
+        </div>
+    </div>
 </section>
 
 <section class="mt-6">
-    @await Html.PartialAsync("Dashboard/_AdvancedDataTable", activityRows)
+    <partial name="_AdminTable" model="shipmentTable" />
 </section>
+

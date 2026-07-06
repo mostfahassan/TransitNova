@@ -1,17 +1,23 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TransitNova.Domain.Contracts.Roles;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Profile.Segregation;
 
 namespace TransitNova.UI.Areas.UserArea.Controllers;
 
-[AllowAnonymous]
+[Authorize(Roles = Role.User)]
 [Area("UserArea")]
 [Route("[area]/[controller]/[action]")]
-public sealed class DashboardController : Controller
+public sealed class DashboardController(
+    IBackendApiInvoker apiInvoker,
+    IUserProfileQuery userProfileQuery)
+    : AppControllerBase
 {
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        ViewData["Title"] = "Customer Dashboard";
-        return View();
+        var response = await apiInvoker.ExecuteAsync((token, ct) => userProfileQuery.GetUserDashboardAsync(token!, ct), cancellationToken: cancellationToken);
+
+        return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
 }

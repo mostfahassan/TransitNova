@@ -1,2 +1,33 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Cities";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Cities",
+        Description = "Review and maintain city-level routing data used by address capture and carrier zones.",
+        PrimaryLabel = "Create city",
+        PrimaryController = "Cities",
+        PrimaryAction = "Create"
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "City registry",
+        Subtitle = "Cities returned from the backend filter endpoint.",
+        Source = Model,
+        Controller = "Cities",
+        RouteIdName = "cityId",
+        IdPropertyPath = "Id|CityId",
+        ShowDetails = true,
+        ShowEdit = true,
+        ShowDelete = true,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("City", "Name"),
+            new("Government", "GovernmentName"),
+            new("Government ID", "GovernmentId", "id")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

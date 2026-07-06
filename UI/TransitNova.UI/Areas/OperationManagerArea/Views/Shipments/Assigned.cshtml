@@ -1,2 +1,43 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Assigned Shipments";
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Dispatch",
+        Title = "Assigned shipment workload",
+        Description = "Shipments already mapped to carriers and ready for trip execution tracking.",
+        PrimaryLabel = "Fleet status",
+        PrimaryController = "Carriers",
+        PrimaryAction = "Index",
+        SecondaryLabel = "All shipments",
+        SecondaryController = "Shipments",
+        SecondaryAction = "Index"
+    };
+    var fallback = new[]
+    {
+        new { Id = Guid.Parse("31000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-621", PickupAddress = "Nasr City", DeliveryAddress = "Alexandria Port", CurrentStatus = "Assigned", TransportationMode = "Land", CreatedAt = DateTime.Now.AddMinutes(-11) },
+        new { Id = Guid.Parse("31000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-734", PickupAddress = "6th October", DeliveryAddress = "Damietta", CurrentStatus = "InTransit", TransportationMode = "Land", CreatedAt = DateTime.Now.AddMinutes(-42) }
+    };
+    var source = AdminDisplay.Rows(Model).Count > 0 ? Model : fallback;
+    var table = new OpsTableViewModel
+    {
+        Title = "Assigned queue",
+        Subtitle = "Carrier-linked shipments currently owned by the operation team.",
+        Source = source,
+        Controller = "Shipments",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id",
+        Columns = new List<OpsTableColumnViewModel>
+        {
+            new("Shipment", "TrackingNumber", "id"),
+            new("Pickup", "PickupAddress|SenderCity"),
+            new("Delivery", "DeliveryAddress|ReceiverCity"),
+            new("Status", "CurrentStatus|Status", "badge"),
+            new("Mode", "TransportationMode|ShipmentType"),
+            new("Created", "CreatedAt")
+        }
+    };
+}
+
+<partial name="_OpsPageHeader" model="header" />
+<partial name="_OpsTable" model="table" />

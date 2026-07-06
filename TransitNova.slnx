@@ -1,7 +1,8 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
-    <File Path="docker-compose.yml" />
+    <File Path=".env" />
+    <File Path="docker-compose.dcproj" />
   </Folder>
   <Folder Name="/src/">
     <File Path="Src/Dockerfile" />
@@ -28,4 +29,7 @@
     <Project Path="Tests/TransitNova.MappingTests/TransitNova.MappingTests.csproj" />
     <Project Path="Tests/TransitNova.Payment.Tests/TransitNova.Payment.Tests.csproj" />
   </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>

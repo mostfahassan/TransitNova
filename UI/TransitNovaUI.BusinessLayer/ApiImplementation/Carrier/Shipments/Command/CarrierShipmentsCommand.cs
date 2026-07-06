@@ -1,4 +1,3 @@
-using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Shipments.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Shipments.Segregation;
 using TransitNovaUI.BusinessLayer.Common.APIHelper.Http;
 
@@ -22,6 +21,12 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.Carrier.Shipments.Comman
             return SendRequestAsync(HttpMethod.Patch, url, bearerToken, cancellationToken,null, idempotentKey);
         }
 
+        public Task<ApiResponse> MarkShipmentPickedUpAsync(Guid carrierId, Guid shipmentId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        {
+            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.CarrierShipments.MarkShipmentPickedUpUrl, ("carrierId", carrierId), ("shipmentId", shipmentId)));
+
+            return SendRequestAsync(HttpMethod.Patch, url, bearerToken, cancellationToken, null, idempotentKey);
+        }
         public Task<ApiResponse> UpdateCarrierStatusAsync(Guid carrierId, UiChangeCarrierStatusDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             var content = UiChangeCarrierStatusDto.ToDto(model);

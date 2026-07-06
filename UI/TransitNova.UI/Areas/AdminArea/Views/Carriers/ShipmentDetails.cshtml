@@ -1,2 +1,40 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Carrier shipment details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Carrier shipment details",
+        Description = "Inspect a carrier shipment, package data, status history, and route data.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Carriers",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Shipment record",
+        Subtitle = "Shipment details returned inside the carrier administration surface.",
+        Source = Model,
+        Controller = "Carriers",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id|ShipmentId",
+        EditAction = null,
+        DeleteAction = null,
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Tracking", "TrackingNumber", "id"),
+            new("Pickup", "PickupAddress"),
+            new("Delivery", "DeliveryAddress"),
+            new("Status", "CurrentStatus|Status", "badge"),
+            new("Mode", "TransportationMode", "badge"),
+            new("Type", "ShipmentType", "badge"),
+            new("Cost", "ShippingCost", "currency"),
+            new("Estimated delivery", "EstimatedDeliveryDate"),
+            new("Created", "CreatedAt"),
+            new("Receiver", "Receiver.FullName|Receiver.Email"),
+            new("Sender", "Sender.FullName|Sender.Email")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

@@ -1,2 +1,35 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Bundles";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Bundles",
+        Description = "Manage customer-facing shipment bundles, pricing, weight limits, and distance rules.",
+        PrimaryLabel = "Create bundle",
+        PrimaryController = "Bundles",
+        PrimaryAction = "Create"
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Bundle catalog",
+        Subtitle = "Operational products available to users and subscriptions.",
+        Source = Model,
+        Controller = "Bundles",
+        RouteIdName = "bundleId",
+        IdPropertyPath = "Id|BundleId",
+        ShowDetails = true,
+        ShowEdit = true,
+        ShowDelete = true,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Name", "BundleName"),
+            new("Price", "BundlePrice", "currency"),
+            new("Weight", "TotalWeight"),
+            new("Distance", "TotalDistance"),
+            new("Shipments", "TotalShipments")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

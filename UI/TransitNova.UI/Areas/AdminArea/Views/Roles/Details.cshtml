@@ -1,2 +1,31 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Role details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Role details",
+        Description = "Inspect role identity data before managing its members.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Roles",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Role record",
+        Subtitle = "Authorization role information from the backend.",
+        Source = Model,
+        Controller = "Roles",
+        RouteIdName = "roleId",
+        IdPropertyPath = "RoleId|Id",
+        EditAction = "Edit",
+        DeleteAction = "Delete",
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Role", "RoleName|Name"),
+            new("Role ID", "RoleId|Id", "id")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

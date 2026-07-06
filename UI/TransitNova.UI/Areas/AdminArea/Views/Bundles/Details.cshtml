@@ -1,2 +1,35 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Bundle details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Bundle details",
+        Description = "Inspect bundle pricing and operational limits.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Bundles",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Bundle record",
+        Subtitle = "Full bundle configuration returned by the backend.",
+        Source = Model,
+        Controller = "Bundles",
+        RouteIdName = "bundleId",
+        IdPropertyPath = "Id|BundleId",
+        EditAction = null,
+        DeleteAction = null,
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Name", "BundleName"),
+            new("Price", "BundlePrice", "currency"),
+            new("Weight", "TotalWeight"),
+            new("Distance", "TotalDistance"),
+            new("Shipments", "TotalShipments"),
+            new("Description", "BundleDescription")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

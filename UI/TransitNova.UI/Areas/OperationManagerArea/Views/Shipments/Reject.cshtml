@@ -1,2 +1,32 @@
-@{ Layout = null; }
-<div></div>
+@model ReasonViewModel
+@{
+    ViewData["Title"] = "Reject Shipment";
+    var shipmentId = Context.Request.RouteValues["shipmentId"]?.ToString();
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Shipment review",
+        Title = "Reject shipment",
+        Description = "Record a clear rejection reason before returning the shipment to the customer flow.",
+        SecondaryLabel = "Back to review",
+        SecondaryController = "Shipments",
+        SecondaryAction = "Review",
+        SecondaryRouteValues = new Dictionary<string, string> { ["shipmentId"] = shipmentId ?? string.Empty }
+    };
+}
+
+<partial name="_OpsPageHeader" model="header" />
+
+<section class="ops-card mx-auto max-w-2xl p-6">
+    <form method="post" class="space-y-5">
+        @Html.AntiForgeryToken()
+        <div>
+            <label class="ops-label" asp-for="Reason">Rejection reason</label>
+            <textarea class="ops-textarea" asp-for="Reason" placeholder="Example: Pickup address is incomplete or package weight does not match declared data."></textarea>
+            <span class="ops-validation" asp-validation-for="Reason"></span>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Review" asp-route-shipmentId="@shipmentId" class="ops-button-secondary">Cancel</a>
+            <button type="submit" class="ops-button-danger">Reject Shipment</button>
+        </div>
+    </form>
+</section>

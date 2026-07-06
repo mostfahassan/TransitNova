@@ -1,2 +1,37 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Carrier shipments";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Carrier shipments",
+        Description = "Review shipments currently associated with the selected carrier.",
+        PrimaryLabel = null,
+        PrimaryController = "Carriers",
+        PrimaryAction = null
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Carrier shipment ledger",
+        Subtitle = "Shipment rows filtered through the carrier administration endpoint.",
+        Source = Model,
+        Controller = "Carriers",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id|ShipmentId",
+        ShowDetails = false,
+        ShowEdit = false,
+        ShowDelete = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Shipment", "TrackingNumber", "id"),
+            new("Pickup", "PickupAddress"),
+            new("Delivery", "DeliveryAddress"),
+            new("Status", "CurrentStatus|Status", "badge"),
+            new("Mode", "TransportationMode", "badge"),
+            new("Cost", "ShippingCost", "currency"),
+            new("Created", "CreatedAt")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

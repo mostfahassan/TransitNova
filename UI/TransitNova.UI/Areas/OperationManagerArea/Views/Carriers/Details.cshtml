@@ -1,2 +1,45 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Carrier Details";
+    var source = Model ?? new { Id = Guid.Parse("41000000-0000-0000-0000-000000000001"), FullName = "Ahmed Mostafa", VehicleType = "Box Truck", Status = "Available", CurrentLoad = "2 / 8", City = "Cairo", AverageRating = 4.8m, PhoneNumber = "+20 101 445 1200", Email = "ahmed.carrier@transitnova.local" };
+    var carrierId = AdminDisplay.RouteValue(source, "Id|CarrierId");
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Carrier record",
+        Title = AdminDisplay.Text(source, "FullName|Name|CarrierName"),
+        Description = "Carrier readiness, contact details, and current operation assignment data.",
+        PrimaryLabel = "Carrier shipments",
+        PrimaryController = "Carriers",
+        PrimaryAction = "Shipments",
+        PrimaryRouteValues = new Dictionary<string, string> { ["carrierId"] = Convert.ToString(carrierId) ?? string.Empty },
+        SecondaryLabel = "Back to fleet",
+        SecondaryController = "Carriers",
+        SecondaryAction = "Index"
+    };
+    var detail = new OpsDetailViewModel
+    {
+        Title = "Carrier profile",
+        Subtitle = "Operational readiness summary",
+        Source = source,
+        Controller = "Carriers",
+        IndexAction = "Index",
+        PrimaryLabel = "Shipments",
+        PrimaryAction = "Shipments",
+        RouteIdName = "carrierId",
+        IdPropertyPath = "Id|CarrierId",
+        Fields = new List<OpsTableColumnViewModel>
+        {
+            new("Carrier", "FullName|Name|CarrierName"),
+            new("Status", "Status|CarrierStatus", "badge"),
+            new("Vehicle", "Vehicle.VehicleType|VehicleType"),
+            new("Current load", "CurrentLoad|AssignedShipmentsCount"),
+            new("City", "City|Address"),
+            new("Rating", "AverageRating|Rating"),
+            new("Phone", "PhoneNumber"),
+            new("Email", "Email")
+        }
+    };
+}
+
+<partial name="_OpsPageHeader" model="header" />
+<partial name="_OpsDetail" model="detail" />

@@ -6,11 +6,5 @@ namespace TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Repositories.
     {
         Task CreatePaymentAsync(Payment payment, CancellationToken cancellationToken);
     }
-    public interface ICommandQueryRepository
-    {
-
-
-
-
-    }
+    
 }

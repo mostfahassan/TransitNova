@@ -116,6 +116,7 @@ public static class ApiRoutes
         public const string CompletePickupUrl = $"{Prefix}/carriers/{{carrierId}}/shipments/{{shipmentId}}/complete-pickup";
         public const string GetCarrierShipmentByIdUrl = $"{Prefix}/carriers/{{carrierId}}/shipments/{{shipmentId}}";
         public const string GetCarrierShipmentsUrl = $"{Prefix}/carriers/{{carrierId}}/shipments";
+        public const string MarkShipmentPickedUpUrl = $"{Prefix}/carriers/{{carrierId}}/shipments/{{shipmentId}}/picked-up";
         public const string UpdateCarrierStatusUrl = $"{Prefix}/carriers/{{carrierId}}/status";
     }
 

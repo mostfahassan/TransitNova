@@ -1,52 +1,139 @@
-@using TransitNova.UI.ViewModels
+@model object?
 @{
-    Layout = "_DashboardLayout";
-    ViewData["Title"] = "Operation Manager Dashboard";
-    ViewData["DashboardRole"] = "Operation Manager";
-    ViewData["DashboardSubtitle"] = "Review shipment queues, assignment pressure, carrier activity, and exceptions before they slow delivery.";
-    ViewData["DashboardUserName"] = "Operation Preview";
-    ViewData["DashboardNavItems"] = new[]
+    ViewData["Title"] = "Operations Dashboard";
+    string Metric(string path, string fallback) => AdminDisplay.Text(Model, path) == "-" ? fallback : AdminDisplay.Text(Model, path);
+
+    var header = new OpsPageHeaderViewModel
     {
-        new DashboardNavItemViewModel("Dashboard", "/OperationManagerArea/Dashboard/Index", "grid", true),
-        new DashboardNavItemViewModel("Shipments", "/OperationManagerArea/Shipments/Index", "truck"),
-        new DashboardNavItemViewModel("Assigned", "/OperationManagerArea/Shipments/Assigned", "route"),
-        new DashboardNavItemViewModel("Review queue", "/OperationManagerArea/Shipments/ReviewQueue", "settings", false, "9"),
-        new DashboardNavItemViewModel("Carriers", "/OperationManagerArea/Carriers/Index", "users"),
-        new DashboardNavItemViewModel("Trips", "/OperationManagerArea/Trips/StartPickup", "route")
+        Eyebrow = DateTime.Now.ToString("dddd, MMMM dd, yyyy"),
+        Title = "Operations command floor",
+        Description = "Monitor live shipment pressure, dispatch queues, carrier availability, and exceptions before they slow daily delivery.",
+        PrimaryLabel = "Review queue",
+        PrimaryController = "Shipments",
+        PrimaryAction = "ReviewQueue",
+        SecondaryLabel = "Fleet status",
+        SecondaryController = "Carriers",
+        SecondaryAction = "Index"
     };
 
-    var kpis = new[]
-    {
-        new DashboardKpiCardViewModel("Review queue", 9, "9", "settings", "+3", false, "Shipments waiting for approve or reject decisions."),
-        new DashboardKpiCardViewModel("Assigned today", 34, "34", "truck", "+11%", true, "Shipments assigned to carriers today."),
-        new DashboardKpiCardViewModel("Carrier availability", 62, "62", "users", "+5%", true, "Available carrier pool for new work."),
-        new DashboardKpiCardViewModel("Exceptions", 4, "4", "chart", "-2", true, "Operational issues currently under review.")
-    };
-
-    var rows = new DashboardTableViewModel(
-        "Shipment review queue",
-        "Representative rows for approval, rejection, and assignment flows.",
-        new[]
+    var alerts = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentActivity")).Count > 0
+        ? AdminDisplay.Value(Model, "RecentActivity")
+        : new[]
         {
-            new DashboardTableRowViewModel("SHP-OPS-4412", "Cairo Hub", "Alexandria Port", "Pending", "4 min ago", "Review", "/OperationManagerArea/Shipments/Review"),
-            new DashboardTableRowViewModel("SHP-OPS-4388", "Giza Depot", "Mansoura DC", "In Transit", "22 min ago", "Details", "/OperationManagerArea/Shipments/Details"),
-            new DashboardTableRowViewModel("SHP-OPS-4310", "Suez Gate", "Tanta Warehouse", "Delayed", "48 min ago", "Assign", "/OperationManagerArea/Carriers/AssignDelivery"),
-            new DashboardTableRowViewModel("SHP-OPS-4264", "Alexandria Port", "Cairo Hub", "Delivered", "1 hr ago", "History", "/OperationManagerArea/Shipments/Histories")
-        });
+            new { Title = "Shipment #TN-409 stuck at customs", Description = "Alexandria port clearance is 42 minutes past SLA.", Status = "Delayed", OccurredAt = DateTime.Now.AddMinutes(-9) },
+            new { Title = "Pickup capacity tight in Cairo", Description = "Three requests are waiting for available pickup carriers.", Status = "Pending Dispatch", OccurredAt = DateTime.Now.AddMinutes(-18) }
+        };
+
+    var recentShipments = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentShipments")).Count > 0
+        ? AdminDisplay.Value(Model, "RecentShipments")
+        : new[]
+        {
+            new { Id = Guid.Parse("10000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-409", SenderCity = "Cairo", ReceiverCity = "Alexandria", CurrentStatus = "Delayed", ShipmentType = "Express", ShippinCost = 1450, CreatedAt = DateTime.Now.AddMinutes(-24) },
+            new { Id = Guid.Parse("10000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-883", SenderCity = "Giza", ReceiverCity = "Mansoura", CurrentStatus = "InTransit", ShipmentType = "Standard", ShippinCost = 910, CreatedAt = DateTime.Now.AddMinutes(-38) },
+            new { Id = Guid.Parse("10000000-0000-0000-0000-000000000003"), TrackingNumber = "TN-774", SenderCity = "Suez", ReceiverCity = "Tanta", CurrentStatus = "Pending", ShipmentType = "Fragile", ShippinCost = 1280, CreatedAt = DateTime.Now.AddHours(-1) }
+        };
+
+    var fleetRows = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentCarriers")).Count > 0
+        ? AdminDisplay.Value(Model, "RecentCarriers")
+        : new[]
+        {
+            new { Id = Guid.Parse("20000000-0000-0000-0000-000000000001"), FullName = "Ahmed Hassan", Status = "Available", ServedCities = new[] { "Cairo", "Alex" }, AssignedShipmentsCount = 3, ActiveTripsCount = 1, Rating = 4.8m },
+            new { Id = Guid.Parse("20000000-0000-0000-0000-000000000002"), FullName = "Mona Adel", Status = "Busy", ServedCities = new[] { "Giza", "Mansoura" }, AssignedShipmentsCount = 5, ActiveTripsCount = 2, Rating = 4.6m },
+            new { Id = Guid.Parse("20000000-0000-0000-0000-000000000003"), FullName = "Youssef Nabil", Status = "Available", ServedCities = new[] { "Suez", "Tanta" }, AssignedShipmentsCount = 2, ActiveTripsCount = 1, Rating = 4.9m }
+        };
+
+    var kpis = new List<OpsKpiTileViewModel>
+    {
+        new("Active shipments", Metric("ActiveShipments", "128"), "Shipments currently moving across routes.", "tracking", "info"),
+        new("Available drivers", AdminDisplay.Rows(fleetRows).Count.ToString(), "Carrier pool ready for dispatch.", "driver", "success"),
+        new("Pending dispatches", Metric("PendingShipments", "14"), "Shipments waiting for assignment or review.", "dispatch", "warning")
+    };
+
+    var shipmentTable = new OpsTableViewModel
+    {
+        Title = "Live shipment movement",
+        Subtitle = "Latest operational rows from the active control queue.",
+        Source = recentShipments,
+        Controller = "Shipments",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id",
+        Columns = new List<OpsTableColumnViewModel>
+        {
+            new("Shipment", "TrackingNumber", "id"),
+            new("Origin", "SenderCity|PickupAddress"),
+            new("Destination", "ReceiverCity|DeliveryAddress"),
+            new("Status", "CurrentStatus|Status", "badge"),
+            new("Type", "ShipmentType"),
+            new("Cost", "ShippinCost|ShippingCost", "currency")
+        }
+    };
 }
 
-<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-    @foreach (var kpi in kpis)
+<partial name="_OpsPageHeader" model="header" />
+
+<section class="mb-6 ops-card overflow-hidden border-[#F5D4D4] bg-[#FFFDFD]">
+    <div class="border-b border-[#F5D4D4] bg-[#FDEBEC] px-6 py-4">
+        <div class="flex items-center justify-between gap-4">
+            <div>
+                <div class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#9F2F2D]">Urgent alerts</div>
+                <h3 class="mt-1 text-lg font-black text-[#111111]">Exceptions requiring dispatch attention</h3>
+            </div>
+            <a class="ops-button-danger" asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="ReviewQueue">Open queue</a>
+        </div>
+    </div>
+    <div class="ops-stagger grid gap-px bg-[#F5D4D4] md:grid-cols-2">
+        @foreach (var alert in AdminDisplay.Rows(alerts).Take(2).Select((value, index) => new { value, index }))
+        {
+            <article class="bg-white p-5" style="--item-index:@alert.index">
+                <span class="@BadgeClass(AdminDisplay.Text(alert.value, "Status|CurrentStatus"))">@AdminDisplay.Text(alert.value, "Status|CurrentStatus")</span>
+                <h4 class="mt-3 text-base font-extrabold text-[#111111]">@AdminDisplay.Text(alert.value, "Title|TrackingNumber")</h4>
+                <p class="mt-2 text-sm leading-6 text-[#787774]">@AdminDisplay.Text(alert.value, "Description|Route|DeliveryAddress")</p>
+                <div class="mt-4 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#787774]">@AdminDisplay.Text(alert.value, "OccurredAt|CreatedAt")</div>
+            </article>
+        }
+    </div>
+</section>
+
+<section class="ops-stagger grid gap-4 md:grid-cols-3">
+    @for (var index = 0; index < kpis.Count; index++)
     {
-        @await Html.PartialAsync("Dashboard/_KpiCard", kpi)
+        <div style="--item-index:@index">
+            <partial name="_OpsKpiTile" model="kpis[index]" />
+        </div>
     }
 </section>
 
-<section class="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Review throughput", "Approve, reject, and assignment movement across the operations queue.", "operationReviewChart", "Today"))
-    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Carrier load", "Carrier assignment pressure by warehouse and route.", "operationCarrierChart", "This week"))
+<section class="mt-6 grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+    <section class="ops-card overflow-hidden">
+        <div class="border-b border-[#EAEAEA] p-6">
+            <h3 class="text-lg font-extrabold text-[#111111]">Live fleet status</h3>
+            <p class="mt-1 text-sm leading-6 text-[#787774]">Driver availability, served zones, and current load.</p>
+        </div>
+        <div class="ops-stagger divide-y divide-[#EAEAEA]">
+            @foreach (var carrier in AdminDisplay.Rows(fleetRows).Take(5).Select((value, index) => new { value, index }))
+            {
+                <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="Details" asp-route-carrierId="@AdminDisplay.RouteValue(carrier.value, "Id")" class="block p-5 transition-colors hover:bg-black/[0.035]" style="--item-index:@carrier.index">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="min-w-0">
+                            <div class="truncate text-sm font-extrabold text-[#111111]">@AdminDisplay.Text(carrier.value, "FullName|Name")</div>
+                            <div class="mt-1 text-sm text-[#787774]">@AdminDisplay.Text(carrier.value, "ServedCities|CurrentLocation|City")</div>
+                        </div>
+                        <span class="@BadgeClass(AdminDisplay.Text(carrier.value, "Status"))">@AdminDisplay.Text(carrier.value, "Status")</span>
+                    </div>
+                    <div class="mt-4 grid grid-cols-3 gap-3 text-center">
+                        <div class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] p-3"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#787774]">Load</div><div class="mt-1 font-black text-[#111111]">@AdminDisplay.Text(carrier.value, "AssignedShipmentsCount")</div></div>
+                        <div class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] p-3"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#787774]">Trips</div><div class="mt-1 font-black text-[#111111]">@AdminDisplay.Text(carrier.value, "ActiveTripsCount")</div></div>
+                        <div class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] p-3"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#787774]">Rating</div><div class="mt-1 font-black text-[#111111]">@AdminDisplay.Text(carrier.value, "Rating")</div></div>
+                    </div>
+                </a>
+            }
+        </div>
+    </section>
+
+    <partial name="_OpsTable" model="shipmentTable" />
 </section>
 
-<section class="mt-6">
-    @await Html.PartialAsync("Dashboard/_AdvancedDataTable", rows)
-</section>
+@functions {
+    private static string BadgeClass(string value) =>
+        AdminDisplay.BadgeClass(value).Replace("admin-badge", "ops-badge", StringComparison.Ordinal);
+}

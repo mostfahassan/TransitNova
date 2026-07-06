@@ -53,6 +53,7 @@ public static class CarrierApiClientRegistrationExtensions
         services.AddScoped<ICarrierShipmentCommand, CarrierShipmentsCommand>();
         services.AddScoped<ICompleteDeliveryCommandService, CarrierShipmentsCommand>();
         services.AddScoped<ICompletePickupCommandService, CarrierShipmentsCommand>();
+        services.AddScoped<IMarkShipmentPickedUpCommandService, CarrierShipmentsCommand>();
         services.AddScoped<IUpdateCarrierStatusCommandService, CarrierShipmentsCommand>();
 
         services.AddScoped<CarrierShipmentsQuery>();

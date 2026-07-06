@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using TransitNova.BusinessLayer.DTOs.AppUser;
 using TransitNova.BusinessLayer.DTOs.UserProfile.Auth;
 namespace TransitNova.InfraStructure.Common.Special
@@ -27,7 +27,7 @@ namespace TransitNova.InfraStructure.Common.Special
                 .ForMember(dest => dest.PhoneNumber,
                     opt => opt.MapFrom(src => src.PhoneNumber))
                 .ForMember(dest => dest.FullName,
-                    opt => opt.Ignore());
+                    opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()));
 
 
             CreateMap<AppUserDto, AppUser>(MemberList.None)

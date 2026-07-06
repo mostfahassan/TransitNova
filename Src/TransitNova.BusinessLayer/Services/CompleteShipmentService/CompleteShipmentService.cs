@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.CompleteShipments;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
@@ -17,6 +17,37 @@ namespace TransitNova.BusinessLayer.Services.CompleteShipmentService
         ISystemLogCommands systemLogCommands,
         ILogger<CompleteShipmentToWarehouseHandler> logger) : ICompleteShipmentService
     {
+        public async Task<Shipment> PickedUpShipmentAsync(Guid ShipmentId, Guid CarrierId, CancellationToken cancellationToken)
+        {
+            //===== 1- Retrieve Carrier Attempts
+            var carrier = await carrierQueryRepo.GetCarrierAsync(c => c.Id == CarrierId, cancellationToken);
+            if (carrier == null)
+            {
+                logger.LogError("carrier with {UserId} not found or not available.", CarrierId);
+                throw new EntityNotFoundException($"carrier with {CarrierId} not found or not available.", "CARRIER_NOT_FOUND", nameof(Carrier));
+            }
+
+            //===== 2- Retrieve Shipment Attempts
+            var shipment = await shipmentQueryRepo.GetEntityAsync(ShipmentId, cancellationToken);
+            if (shipment == null)
+            {
+                logger.LogError("Shipment with {shipmentId} not found", ShipmentId);
+                throw new EntityNotFoundException($"Shipment with {ShipmentId} not found", "SHIPMENT_NOT_FOUND", nameof(Shipment));
+            }
+
+            shipment.PickedUp(carrier.Id);
+
+            var performedByName = (await carrierQueryRepo.GetCarrierNameAsync(CarrierId, cancellationToken))!;
+            var log = SystemActivityLog.AddLog(
+                ActivityAction.Updated,
+                ActivityEntityType.Shipment,
+                $"Shipment {ShipmentId} with tracking number {shipment.TrackingNumber} was picked up by carrier {CarrierId}.",
+                CarrierId,
+                performedByName);
+
+            await systemLogCommands.LogAsync(log, cancellationToken);
+            return shipment;
+        }
         public async Task<Shipment> CompleteShipmentDeliveryAsync(Guid ShipmentId, Guid CarrierId, CancellationToken cancellationToken)
         {
             //===== 1- Retrieve Carrier  Attempts 

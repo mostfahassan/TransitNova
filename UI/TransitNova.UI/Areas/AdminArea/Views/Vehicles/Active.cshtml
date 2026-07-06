@@ -1,2 +1,36 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "Active vehicles";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Active vehicles",
+        Description = "Operational fleet units currently available in the system.",
+        PrimaryLabel = null,
+        PrimaryController = "Vehicles",
+        PrimaryAction = null
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Active fleet",
+        Subtitle = "Vehicles that can participate in current assignment flows.",
+        Source = Model,
+        Controller = "Vehicles",
+        RouteIdName = "vehicleId",
+        IdPropertyPath = "Id|VehicleId",
+        ShowDetails = true,
+        ShowEdit = false,
+        ShowDelete = true,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Plate", "PlateNumber", "id"),
+            new("Type", "VehicleType", "badge"),
+            new("Carrier", "CarrierName|CarrierCode"),
+            new("Rating", "CarrierRating"),
+            new("Refrigerated", "IsRefrigerated", "badge"),
+            new("Status", "CarrierStatus", "badge")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

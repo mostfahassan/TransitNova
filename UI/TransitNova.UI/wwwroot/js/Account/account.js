@@ -162,7 +162,18 @@
             });
 
             const contentType = response.headers.get("content-type") || "";
-            const payload = contentType.includes("application/json") ? await response.json() : {};
+            let payload = {};
+
+            if (contentType.includes("application/json")) {
+                payload = await response.json();
+            } else if (!response.ok) {
+                const responseText = await response.text();
+                const preview = responseText.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 220);
+                payload = {
+                    isSuccess: false,
+                    message: preview ? `Request failed (HTTP ${response.status}). ${preview}` : `Request failed (HTTP ${response.status}).`
+                };
+            }
 
             if (!response.ok || payload.isSuccess === false) {
                 applyServerErrors(form, payload);

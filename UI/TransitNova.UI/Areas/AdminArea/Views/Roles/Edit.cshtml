@@ -1,2 +1,24 @@
-@{ Layout = null; }
-<div></div>
+@model RoleFormViewModel
+
+@{
+    ViewData["Title"] = ViewContext.RouteData.Values["action"]?.ToString() == "Edit" ? "Edit Role" : "Create Role";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = ViewData["Title"]?.ToString() ?? "Create Role",
+        Description = "Manage the permissions surface exposed to authentication and authorization policies.",
+        SecondaryLabel = "Back to roles",
+        SecondaryController = "Roles",
+        SecondaryAction = "Index"
+    };
+}
+<partial name="_AdminPageHeader" model="header" />
+<form method="post" class="admin-card p-6">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="mb-5 rounded-xl border border-[#F5D4D4] bg-[#FDEBEC] p-4 text-sm text-[#9F2F2D]"></div>
+    <div class="max-w-xl">
+        <label asp-for="RoleName" class="admin-label"></label>
+        <input asp-for="RoleName" class="admin-input" placeholder="OperationManager" />
+        <span asp-validation-for="RoleName" class="admin-validation"></span>
+    </div>
+    <div class="mt-6 flex justify-end gap-3"><a asp-action="Index" class="admin-button-secondary">Cancel</a><button type="submit" class="admin-button">Save role</button></div>
+</form>

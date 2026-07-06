@@ -1,52 +1,115 @@
-@using TransitNova.UI.ViewModels
+@model object?
 @{
-    Layout = "_DashboardLayout";
-    ViewData["Title"] = "Customer Dashboard";
-    ViewData["DashboardRole"] = "Customer";
-    ViewData["DashboardSubtitle"] = "Track shipments, subscription state, delivery progress, and open issues from one customer workspace.";
-    ViewData["DashboardUserName"] = "Customer Preview";
-    ViewData["DashboardNavItems"] = new[]
-    {
-        new DashboardNavItemViewModel("Dashboard", "/UserArea/Dashboard/Index", "grid", true),
-        new DashboardNavItemViewModel("Create shipment", "/UserArea/Shipments/Create", "truck"),
-        new DashboardNavItemViewModel("My shipments", "/UserArea/Shipments/Track", "route"),
-        new DashboardNavItemViewModel("Pricing", "/UserArea/Pricing/RateCalculator", "chart"),
-        new DashboardNavItemViewModel("Profile", "/UserArea/Profile/Index", "users"),
-        new DashboardNavItemViewModel("Subscriptions", "/UserArea/Subscriptions/Subscribe", "settings")
-    };
-
-    var kpis = new[]
-    {
-        new DashboardKpiCardViewModel("Active shipments", 12, "12", "truck", "+4%", true, "Shipments currently moving or awaiting delivery."),
-        new DashboardKpiCardViewModel("Delivered this month", 28, "28", "route", "+16%", true, "Completed deliveries across your account."),
-        new DashboardKpiCardViewModel("Open issues", 2, "2", "chart", "-1", true, "Claims or customer service cases still open."),
-        new DashboardKpiCardViewModel("Estimated spend", 1840, "1,840", "currency", "+9%", true, "Preview cost total for current month.")
-    };
-
-    var rows = new DashboardTableViewModel(
-        "Recent customer shipments",
-        "Representative customer-facing tracking rows.",
-        new[]
+    ViewData["Title"] = "Dashboard";
+    var rows = AdminDisplay.Rows(Model).Count > 0
+        ? AdminDisplay.Rows(Model)
+        : new object[]
         {
-            new DashboardTableRowViewModel("SHP-USR-2041", "Cairo", "Alexandria", "In Transit", "8 min ago", "Track", "/UserArea/Shipments/Track"),
-            new DashboardTableRowViewModel("SHP-USR-1988", "Giza", "Mansoura", "Delivered", "42 min ago", "Details", "/UserArea/Shipments/Details"),
-            new DashboardTableRowViewModel("SHP-USR-1904", "Nasr City", "Suez", "Pending", "1 hr ago", "Edit", "/UserArea/Shipments/Edit"),
-            new DashboardTableRowViewModel("SHP-USR-1830", "Maadi", "Tanta", "Delayed", "2 hr ago", "Issue", "/UserArea/Shipments/Issue")
-        });
+            new { Id = Guid.Parse("51000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-9051", Product = "MacBook Pro 16-inch", Route = "New Cairo to Alexandria", Status = "In Transit", Updated = "12 min ago" },
+            new { Id = Guid.Parse("51000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-8814", Product = "Architectural samples", Route = "Giza to Mansoura", Status = "Delivered", Updated = "Today, 09:42" },
+            new { Id = Guid.Parse("51000000-0000-0000-0000-000000000003"), TrackingNumber = "TN-7630", Product = "Camera equipment", Route = "Nasr City to Suez", Status = "Pending", Updated = "1 hr ago" }
+        };
 }
 
-<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-    @foreach (var kpi in kpis)
+<section class="customer-fade-up grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
+    <div class="customer-card p-8 md:p-10">
+        <div class="customer-badge customer-badge-info">Customer workspace</div>
+        <h1 class="mt-6 max-w-3xl text-4xl font-black leading-[1.02] tracking-[-0.04em] text-[#111111] md:text-6xl">Ship, track, and resolve deliveries without friction.</h1>
+        <p class="mt-5 max-w-2xl text-base leading-7 text-[#666666]">Create shipments, check live progress, estimate pricing, and keep every delivery decision in one clean customer space.</p>
+
+        <form asp-area="UserArea" asp-controller="Shipments" asp-action="TrackSubmit" method="post" class="mt-8 flex flex-col gap-3 rounded-[18px] border border-[#EAEAEA] bg-[#FBFBFA] p-3 sm:flex-row" data-loading-form data-loading-text="Tracking...">
+            @Html.AntiForgeryToken()
+            <input name="trackingNumber" class="customer-input min-h-[56px] flex-1 !border-transparent !bg-white text-lg font-bold tracking-[-0.01em]" placeholder="Enter tracking number, e.g. TN-9051" aria-label="Tracking number" />
+            <button type="submit" class="customer-button min-h-[56px] px-6">
+                <span class="customer-spinner hidden" data-button-spinner></span>
+                <span data-button-text>Quick Track</span>
+            </button>
+        </form>
+    </div>
+
+    <a asp-area="UserArea" asp-controller="Shipments" asp-action="Create" class="customer-card customer-lift relative overflow-hidden p-8 md:p-10">
+        <div class="absolute right-8 top-8 grid h-14 w-14 place-items-center rounded-[16px] border border-[#EAEAEA] bg-[#FBFBFA]">
+            <svg class="h-6 w-6 text-[#111111]" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 8.5 12 4l7 4.5v7L12 20l-7-4.5v-7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m5.5 9 6.5 4 6.5-4M12 13v6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="customer-badge customer-badge-success">Fast action</div>
+        <h2 class="mt-16 text-3xl font-black tracking-[-0.03em] text-[#111111]">Create new shipment</h2>
+        <p class="mt-4 text-sm leading-6 text-[#666666]">A guided, one-page flow for receiver details, package dimensions, and delivery preferences.</p>
+        <span class="customer-button mt-8 w-full">Start shipment</span>
+    </a>
+</section>
+
+<section class="customer-stagger mt-8 grid gap-4 md:grid-cols-3">
+    <div class="customer-card-flat p-6" style="--item-index:0">
+        <div class="text-sm font-bold text-[#666666]">In Transit</div>
+        <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">08</div>
+        <p class="mt-2 text-sm leading-6 text-[#787774]">Shipments moving through pickup, warehouse, or final-mile delivery.</p>
+    </div>
+    <div class="customer-card-flat p-6" style="--item-index:1">
+        <div class="text-sm font-bold text-[#666666]">Delivered</div>
+        <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">24</div>
+        <p class="mt-2 text-sm leading-6 text-[#787774]">Completed deliveries this month across your account.</p>
+    </div>
+    <div class="customer-card-flat p-6" style="--item-index:2">
+        <div class="text-sm font-bold text-[#666666]">Open Issues</div>
+        <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">01</div>
+        <p class="mt-2 text-sm leading-6 text-[#787774]">Support case waiting for carrier response.</p>
+    </div>
+</section>
+
+<section class="customer-card mt-8 overflow-hidden">
+    <div class="flex flex-col gap-3 border-b border-[#EAEAEA] p-6 md:flex-row md:items-center md:justify-between">
+        <div>
+            <h2 class="text-xl font-black tracking-[-0.02em] text-[#111111]">Recent shipments</h2>
+            <p class="mt-1 text-sm leading-6 text-[#666666]">High-signal shipment rows with customer-facing status.</p>
+        </div>
+        <a asp-area="UserArea" asp-controller="Shipments" asp-action="Track" class="customer-button-secondary">Open tracker</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="customer-table">
+            <thead>
+                <tr>
+                    <th>Tracking</th>
+                    <th>Package</th>
+                    <th>Route</th>
+                    <th>Status</th>
+                    <th>Updated</th>
+                    <th class="text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var index = 0; index < rows.Count; index++)
+                {
+                    var row = rows[index];
+                    var tracking = AdminDisplay.Text(row, "TrackingNumber|Code", "id");
+                    var status = AdminDisplay.Text(row, "Status|CurrentStatus");
+                    <tr style="--row-index:@index">
+                        <td><span class="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#111111]">@tracking</span></td>
+                        <td>@AdminDisplay.Text(row, "Product|ShipmentType|PackageSpecification")</td>
+                        <td>@AdminDisplay.Text(row, "Route|DeliveryAddress|ReceiverCity")</td>
+                        <td><span class="@BadgeClass(status)">@status</span></td>
+                        <td>@AdminDisplay.Text(row, "Updated|UpdatedAt|CreatedAt")</td>
+                        <td class="text-right"><a asp-area="UserArea" asp-controller="Shipments" asp-action="TrackResult" asp-route-trackingNumber="@tracking" class="customer-button-secondary !px-3 !py-2">Track</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="mt-8 grid gap-4 md:grid-cols-3">
+    <div class="customer-skeleton h-28"></div>
+    <div class="customer-skeleton h-28"></div>
+    <div class="customer-skeleton h-28"></div>
+</section>
+
+@functions {
+    private static string BadgeClass(string value)
     {
-        @await Html.PartialAsync("Dashboard/_KpiCard", kpi)
+        var text = value.ToLowerInvariant();
+        if (text.Contains("deliver")) return "customer-badge customer-badge-success";
+        if (text.Contains("transit") || text.Contains("pickup") || text.Contains("warehouse")) return "customer-badge customer-badge-info";
+        if (text.Contains("pending") || text.Contains("review")) return "customer-badge customer-badge-warning";
+        if (text.Contains("issue") || text.Contains("cancel") || text.Contains("reject")) return "customer-badge customer-badge-danger";
+        return "customer-badge customer-badge-neutral";
     }
-</section>
-
-<section class="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Shipment tracking", "Created, picked up, in transit, and delivered movement for your account.", "customerShipmentChart", "Last 30 days"))
-    @await Html.PartialAsync("Dashboard/_ChartWidget", new DashboardChartWidgetViewModel("Spend forecast", "Estimated shipment cost distribution by delivery type.", "customerSpendChart", "This month"))
-</section>
-
-<section class="mt-6">
-    @await Html.PartialAsync("Dashboard/_AdvancedDataTable", rows)
-</section>
+}

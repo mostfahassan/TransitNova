@@ -1,2 +1,33 @@
-@{ Layout = null; }
-<div></div>
+@model object?
+@{
+    ViewData["Title"] = "City details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "City details",
+        Description = "Inspect the city record and its government mapping.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Cities",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "City record",
+        Subtitle = "Location metadata used across shipment addresses.",
+        Source = Model,
+        Controller = "Cities",
+        RouteIdName = "cityId",
+        IdPropertyPath = "Id|CityId",
+        EditAction = "Edit",
+        DeleteAction = "Delete",
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("City", "Name"),
+            new("Government", "GovernmentName"),
+            new("Government ID", "GovernmentId", "id"),
+            new("City ID", "Id", "id")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

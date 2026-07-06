@@ -1,0 +1,375 @@
+/* =========================================================
+   TransitNova Operation Manager Shell
+   ========================================================= */
+:root {
+    --ops-bg: #F7F6F3;
+    --ops-paper: #FBFBFA;
+    --ops-card: #FFFFFF;
+    --ops-ink: #111111;
+    --ops-muted: #2F3437;
+    --ops-soft: #787774;
+    --ops-line: #EAEAEA;
+    --ops-amber: #956400;
+    --ops-green: #346538;
+    --ops-rose: #9F2F2D;
+    --ops-blue: #1F6C9F;
+    --ops-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.ops-root,
+.ops-body {
+    min-height: 100%;
+    background: var(--ops-bg);
+    color: var(--ops-ink);
+    font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.ops-body {
+    overflow: hidden;
+}
+
+.ops-shell {
+    display: grid;
+    grid-template-columns: 288px minmax(0, 1fr);
+    min-height: 100dvh;
+}
+
+.ops-main {
+    min-width: 0;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.ops-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+}
+
+.ops-surface {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+/* =========================================================
+   Operation Sidebar
+   ========================================================= */
+.ops-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    background: rgba(251, 251, 250, 0.94);
+    border-right: 1px solid var(--ops-line);
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(18px);
+}
+
+.ops-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #55524d;
+    font-size: 0.875rem;
+    font-weight: 650;
+    transition: color 200ms var(--ops-ease), background-color 200ms var(--ops-ease), transform 200ms var(--ops-ease);
+}
+
+.ops-sidebar-link:hover,
+.ops-sidebar-link.is-active {
+    background: #FFFFFF;
+    color: var(--ops-ink);
+    transform: translateX(2px);
+}
+
+.ops-sidebar-link:active {
+    transform: scale(0.97);
+}
+
+.ops-sidebar-link svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+}
+
+/* =========================================================
+   Cards, Buttons, Forms
+   ========================================================= */
+.ops-card {
+    background: var(--ops-card);
+    border: 1px solid var(--ops-line);
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(17, 17, 17, 0.03), 0 18px 50px rgba(17, 17, 17, 0.035);
+}
+
+.ops-lift {
+    transition: transform 260ms var(--ops-ease), box-shadow 260ms var(--ops-ease), border-color 260ms var(--ops-ease);
+}
+
+.ops-lift:hover {
+    transform: translateY(-2px);
+    border-color: rgba(17, 17, 17, 0.14);
+    box-shadow: 0 1px 0 rgba(17, 17, 17, 0.04), 0 22px 62px rgba(17, 17, 17, 0.06);
+}
+
+.ops-button,
+.ops-button-secondary,
+.ops-button-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    font-weight: 750;
+    line-height: 1;
+    transition: transform 160ms var(--ops-ease), color 180ms var(--ops-ease), background-color 180ms var(--ops-ease), border-color 180ms var(--ops-ease);
+}
+
+.ops-button:active,
+.ops-button-secondary:active,
+.ops-button-danger:active {
+    transform: scale(0.95);
+}
+
+.ops-button {
+    background: var(--ops-ink);
+    color: #FFFFFF;
+}
+
+.ops-button:hover {
+    background: #2F3437;
+}
+
+.ops-button-secondary {
+    background: #FFFFFF;
+    color: var(--ops-ink);
+    border: 1px solid var(--ops-line);
+}
+
+.ops-button-secondary:hover {
+    background: #FBFBFA;
+    border-color: rgba(17, 17, 17, 0.18);
+}
+
+.ops-button-danger {
+    background: #FFF5F5;
+    color: var(--ops-rose);
+    border: 1px solid #F5D4D4;
+}
+
+.ops-button-danger:hover {
+    background: #FDEBEC;
+}
+
+.ops-input,
+.ops-select,
+.ops-textarea {
+    width: 100%;
+    border: 1px solid var(--ops-line);
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: var(--ops-ink);
+    padding: 11px 12px;
+    font-size: 0.925rem;
+    outline: none;
+    transition: border-color 180ms var(--ops-ease), box-shadow 180ms var(--ops-ease);
+}
+
+.ops-textarea {
+    min-height: 132px;
+    resize: vertical;
+}
+
+.ops-input:focus,
+.ops-select:focus,
+.ops-textarea:focus {
+    border-color: rgba(17, 17, 17, 0.24);
+    box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.08);
+}
+
+.ops-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ops-muted);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.ops-validation {
+    margin-top: 6px;
+    color: var(--ops-rose);
+    font-size: 0.8125rem;
+}
+
+/* =========================================================
+   Tables and Badges
+   ========================================================= */
+.ops-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.ops-table th {
+    padding: 14px 18px;
+    color: var(--ops-soft);
+    font-size: 0.72rem;
+    font-weight: 850;
+    letter-spacing: 0.12em;
+    text-align: left;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--ops-line);
+}
+
+.ops-table td {
+    padding: 16px 18px;
+    color: var(--ops-muted);
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--ops-line);
+    vertical-align: middle;
+}
+
+.ops-table tbody tr,
+.ops-stagger > * {
+    animation: opsFadeUp 640ms var(--ops-ease) both;
+    animation-delay: calc(var(--row-index, var(--item-index, 0)) * 72ms);
+}
+
+.ops-table tbody tr {
+    transition: background-color 160ms var(--ops-ease);
+}
+
+.ops-table tbody tr:hover {
+    background: rgba(17, 17, 17, 0.045);
+}
+
+.ops-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.ops-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: currentColor;
+}
+
+.ops-badge-success { background: #EDF3EC; color: var(--ops-green); }
+.ops-badge-warning { background: #FBF3DB; color: var(--ops-amber); }
+.ops-badge-danger { background: #FDEBEC; color: var(--ops-rose); }
+.ops-badge-neutral { background: #F1F1EF; color: #55524D; }
+.ops-badge-info { background: #E1F3FE; color: var(--ops-blue); }
+
+/* =========================================================
+   Motion
+   ========================================================= */
+.ops-fade-up {
+    animation: opsFadeUp 720ms var(--ops-ease) both;
+}
+
+@keyframes opsFadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ops-fade-up,
+    .ops-stagger > *,
+    .ops-table tbody tr {
+        animation: none;
+    }
+
+    .ops-lift,
+    .ops-button,
+    .ops-button-secondary,
+    .ops-button-danger,
+    .ops-sidebar-link {
+        transition: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    .ops-shell { grid-template-columns: 1fr; }
+    .ops-sidebar { display: none; }
+    .ops-content { padding: 20px; }
+}
+
+/* =========================================================
+   Dispatch and Assignment Panels
+   ========================================================= */
+.ops-dispatch-card,
+.ops-carrier-chip {
+    border: 1px solid var(--ops-line);
+    border-radius: 12px;
+    background: #FFFFFF;
+    padding: 16px;
+    transition: transform 220ms var(--ops-ease), border-color 220ms var(--ops-ease), background-color 220ms var(--ops-ease), box-shadow 220ms var(--ops-ease);
+}
+
+.ops-dispatch-card:hover,
+.ops-carrier-chip:hover {
+    transform: translateY(-2px);
+    border-color: rgba(17, 17, 17, 0.16);
+    background: #FBFBFA;
+    box-shadow: 0 18px 42px rgba(17, 17, 17, 0.045);
+}
+
+.ops-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    justify-content: flex-end;
+    background: rgba(17, 17, 17, 0.34);
+    backdrop-filter: blur(6px);
+    animation: opsFadeIn 220ms var(--ops-ease) both;
+}
+
+.ops-slide-panel {
+    width: min(100%, 520px);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: #FFFFFF;
+    border-left: 1px solid var(--ops-line);
+    box-shadow: -28px 0 80px rgba(17, 17, 17, 0.16);
+    animation: opsSlideInRight 460ms var(--ops-ease) both;
+}
+
+@keyframes opsFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes opsSlideInRight {
+    from { opacity: 0; transform: translateX(32px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ops-modal-backdrop,
+    .ops-slide-panel,
+    .ops-dispatch-card,
+    .ops-carrier-chip {
+        animation: none;
+        transition: none;
+    }
+}

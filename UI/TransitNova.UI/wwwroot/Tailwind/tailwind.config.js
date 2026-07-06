@@ -27,6 +27,16 @@ window.tailwind.config = {
                     primary: "#2563EB",
                     primaryDark: "#1D4ED8"
                 },
+                admin: {
+                    bg: "#F7F6F3",
+                    paper: "#FBFBFA",
+                    card: "#FFFFFF",
+                    ink: "#111111",
+                    muted: "#2F3437",
+                    soft: "#787774",
+                    line: "#EAEAEA",
+                    blue: "#2563EB"
+                },
                 dashboard: {
                     bg: "#F8FAFC",
                     shell: "#FFFFFF",
@@ -53,5 +63,6 @@ window.tailwind.config = {
         }
     }
 };
+
 
 
