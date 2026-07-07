@@ -1,2 +1,16 @@
-@{ Layout = null; }
-<div></div>
+@model CarrierStatusFormViewModel
+@{
+    ViewData["Title"] = "Carrier Status";
+}
+
+<section class="carrier-fade-up mx-auto max-w-2xl">
+    <div class="carrier-card overflow-hidden">
+        <div class="border-b border-[#E7E5E0] bg-[#FBFBFA] p-6"><div class="carrier-badge carrier-badge-info">Availability</div><h2 class="mt-4 text-3xl font-black text-[#111111]">Update work status</h2></div>
+        <form asp-action="Status" method="post" class="p-6" data-loading-form data-loading-text="Updating...">
+            @Html.AntiForgeryToken()
+            <label class="carrier-label" asp-for="Status">Carrier status</label>
+            <select class="carrier-select" asp-for="Status" asp-items="Html.GetEnumSelectList<CarrierStatus>()"></select>
+            <div class="mt-6 flex justify-end gap-3"><a asp-action="Index" class="carrier-button-secondary">Back</a><button type="submit" class="carrier-button"><span class="carrier-spinner hidden" data-button-spinner></span><span data-button-text>Update status</span></button></div>
+        </form>
+    </div>
+</section>

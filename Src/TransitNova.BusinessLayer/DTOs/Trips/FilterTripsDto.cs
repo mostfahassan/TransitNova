@@ -4,6 +4,7 @@ namespace TransitNova.BusinessLayer.DTOs.Trips
 {
     public class FilterTripsDto
     {
+        public Guid? Id { get; set; }
         public TripType? TripType { get; set; }
         public TripStatus[]? Status { get; set; }
         public DateTime? CreatedAt { get; set; }
@@ -12,6 +13,7 @@ namespace TransitNova.BusinessLayer.DTOs.Trips
         public string? CreatedBy { get; set; }
         public Guid? CarrierId { get; set; }
         public Guid? WarehouseId { get; set; }
+        public Guid? HandlerId { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
     }

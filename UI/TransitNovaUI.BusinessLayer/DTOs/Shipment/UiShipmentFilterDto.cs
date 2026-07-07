@@ -9,6 +9,7 @@ public sealed class UiShipmentFilterDto
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
     public Guid? SenderId { get; set; }
+    public string? SearchTerm { get; set; }
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 20;
 
@@ -20,6 +21,7 @@ public sealed class UiShipmentFilterDto
             From = source.From,
             To = source.To,
             SenderId = source.SenderId,
+            SearchTerm = source.SearchTerm,
             PageNumber = source.PageNumber,
             PageSize = source.PageSize
         };

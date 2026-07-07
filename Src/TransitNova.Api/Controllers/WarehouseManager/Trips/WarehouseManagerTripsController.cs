@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.DTOs.Trips;
 using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Trips;
-using TransitNova.BusinessLayer.Features.WarehouseManagers.Queries;
+using TransitNova.BusinessLayer.Features.Trips.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
+
 namespace TransitNova.Api.Controllers.WarehouseManager.Trips
 {
     [Authorize(Roles = Role.WarehouseManager)]
@@ -27,9 +28,11 @@ namespace TransitNova.Api.Controllers.WarehouseManager.Trips
         [EndpointName("Get Warehouse Manager Trips")]
         [EndpointSummary("Get trips for the authenticated warehouse manager")]
         [EndpointDescription("Returns trips associated with the authenticated warehouse manager's warehouse.")]
-        public async Task<IActionResult> TripsAsync(Guid warehouseId, [FromQuery] FilterTripsDto filter,CancellationToken ct)
+        public async Task<IActionResult> TripsAsync(Guid warehouseId, [FromQuery] FilterTripsDto filter, CancellationToken ct)
         {
-            if (!await IsWrehouseManagerAsync(warehouseId)) return Forbid();
+            if (!await IsWrehouseManagerAsync(warehouseId))
+                return Forbid();
+
             filter.WarehouseId = warehouseId;
             var response = await mediator.Send(new FilterTripsQuery(filter), ct);
             return response.ToActionResult();
@@ -47,13 +50,14 @@ namespace TransitNova.Api.Controllers.WarehouseManager.Trips
         [EndpointName("Get Warehouse Manager Trip")]
         [EndpointSummary("Get trip for the authenticated warehouse manager")]
         [EndpointDescription("Returns trip details when the trip belongs to the authenticated warehouse manager's warehouse.")]
-        public async Task<IActionResult> TripAsync(Guid warehouseId, Guid tripId,CancellationToken ct)
+        public async Task<IActionResult> TripAsync(Guid warehouseId, Guid tripId, CancellationToken ct)
         {
-            if (!await IsWrehouseManagerAsync(warehouseId)) return Forbid();
+            if (!await IsWrehouseManagerAsync(warehouseId))
+                return Forbid();
+
             var response = await mediator.Send(new GetTripDetailsQuery(tripId), ct);
             return response.ToActionResult();
         }
-
 
         private async Task<bool> IsWrehouseManagerAsync(Guid warehouseId)
         {
@@ -63,4 +67,3 @@ namespace TransitNova.Api.Controllers.WarehouseManager.Trips
         }
     }
 }
-

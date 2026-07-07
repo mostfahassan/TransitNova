@@ -1,0 +1,28 @@
+@model WarehouseKpiTileViewModel
+@{
+    var toneClass = Model.Tone switch
+    {
+        "success" => "warehouse-badge-success",
+        "warning" => "warehouse-badge-warning",
+        "danger" => "warehouse-badge-danger",
+        "info" => "warehouse-badge-info",
+        _ => "warehouse-badge-neutral"
+    };
+    var progress = Math.Clamp(Model.Progress ?? 0, 0, 100);
+    var progressColor = progress >= 92 ? "#9F2F2D" : progress >= 78 ? "#956400" : "#346538";
+}
+
+<article class="warehouse-card p-5 warehouse-fade-up">
+    <div class="flex items-start justify-between gap-4">
+        <div>
+            <p class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">@Model.Label</p>
+            <div class="mt-3 text-3xl font-black tracking-[-0.035em] text-[#111111]">@Model.Value</div>
+        </div>
+        <span class="warehouse-badge @toneClass">@Model.Meta</span>
+    </div>
+    @if (Model.Progress.HasValue)
+    {
+        <div class="mt-5 warehouse-progress"><span style="--progress:@progress%;--progress-color:@progressColor"></span></div>
+        <div class="mt-2 text-xs font-bold text-[#787774]">@progress.ToString("0")% capacity signal</div>
+    }
+</article>

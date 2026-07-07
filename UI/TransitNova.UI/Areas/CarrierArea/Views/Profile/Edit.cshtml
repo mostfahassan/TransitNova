@@ -1,2 +1,26 @@
-@{ Layout = null; }
-<div></div>
+@model CarrierProfileFormViewModel
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<section class="carrier-fade-up mx-auto max-w-4xl">
+    <div class="carrier-card overflow-hidden">
+        <div class="border-b border-[#E7E5E0] bg-[#FBFBFA] p-6">
+            <div class="carrier-badge carrier-badge-info">Profile</div>
+            <h2 class="mt-4 text-3xl font-black tracking-[-0.03em] text-[#111111]">Update carrier profile</h2>
+        </div>
+        <form asp-action="Edit" method="post" class="p-6" data-loading-form data-loading-text="Saving...">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div class="grid gap-4 md:grid-cols-2">
+                <div><label class="carrier-label" asp-for="FirstName">First name</label><input class="carrier-input" asp-for="FirstName" /></div>
+                <div><label class="carrier-label" asp-for="LastName">Last name</label><input class="carrier-input" asp-for="LastName" /></div>
+                <div><label class="carrier-label" asp-for="PhoneNumber">Phone</label><input class="carrier-input" asp-for="PhoneNumber" /></div>
+                <div><label class="carrier-label" asp-for="Email">Email</label><input class="carrier-input" asp-for="Email" /></div>
+                <div><label class="carrier-label" asp-for="CityId">City Id</label><input class="carrier-input" asp-for="CityId" type="number" /></div>
+                <div class="md:col-span-2"><label class="carrier-label" asp-for="Address">Address</label><textarea class="carrier-textarea" asp-for="Address"></textarea></div>
+            </div>
+            <div class="mt-6 flex justify-end gap-3"><a asp-action="Index" class="carrier-button-secondary">Cancel</a><button type="submit" class="carrier-button"><span class="carrier-spinner hidden" data-button-spinner></span><span data-button-text>Save changes</span></button></div>
+        </form>
+    </div>
+</section>

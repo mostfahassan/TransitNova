@@ -1,0 +1,84 @@
+@model object?
+@{
+    ViewData["Title"] = "Trip Details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Eyebrow = "Trip oversight",
+        Title = "Trip details",
+        Description = "Inspect the carrier lane, warehouse context, timestamps, and shipment manifest for one trip.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Trips",
+        SecondaryAction = "Index"
+    };
+    var shipments = AdminDisplay.Value(Model, "Shipments");
+    var tripType = AdminDisplay.Text(Model, "TripType");
+    var tripStatus = AdminDisplay.Text(Model, "Status", "badge");
+    var totalShipments = AdminDisplay.Text(Model, "TotalShipments");
+    var tripTypeKpi = new AdminKpiTileViewModel("Trip type", tripType, "Movement lane", "TR");
+    var statusKpi = new AdminKpiTileViewModel("Status", tripStatus, "Current state", "ST");
+    var shipmentCountKpi = new AdminKpiTileViewModel("Shipments", totalShipments, "Manifest count", "SH");
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Trip record",
+        Subtitle = "Administrative trip projection returned by the API.",
+        Source = Model,
+        Controller = "Trips",
+        RouteIdName = "tripId",
+        IdPropertyPath = "Id",
+        EditAction = null,
+        DeleteAction = null,
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Trip", "Id", "id"),
+            new("Type", "TripType"),
+            new("Status", "Status", "badge"),
+            new("Carrier", "CarrierName"),
+            new("Carrier phone", "CarrierPhoneNumber"),
+            new("Warehouse", "WarehouseName"),
+            new("Address", "WarehouseAddress"),
+            new("Planned", "PlannedDate"),
+            new("Started", "StartTime"),
+            new("Ended", "EndTime"),
+            new("Shipments", "TotalShipments"),
+            new("Created by", "CreatedBy"),
+            new("Created", "CreatedAt")
+        }
+    };
+    var shipmentTable = new AdminTableViewModel
+    {
+        Title = "Trip shipment manifest",
+        Subtitle = "Shipments currently attached to this trip.",
+        Source = shipments,
+        Controller = "Shipments",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id",
+        ShowDetails = true,
+        ShowEdit = false,
+        ShowDelete = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Tracking", "TrackingNumber", "id"),
+            new("Status", "CurrentStatus", "badge"),
+            new("Receiver", "Receiver.FullName|Receiver.Email"),
+            new("Pickup", "PickupAddress"),
+            new("Delivery", "DeliveryAddress"),
+            new("Cost", "ShippingCost")
+        },
+        EmptyTitle = "No shipments on this trip",
+        EmptyDescription = "The manifest will appear here when shipments are attached to the trip."
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+
+<section class="mb-6 grid gap-4 md:grid-cols-3">
+    <partial name="_AdminKpiTile" model="tripTypeKpi" />
+    <partial name="_AdminKpiTile" model="statusKpi" />
+    <partial name="_AdminKpiTile" model="shipmentCountKpi" />
+</section>
+
+<partial name="_AdminDetail" model="detail" />
+
+<section class="mt-6">
+    <partial name="_AdminTable" model="shipmentTable" />
+</section>

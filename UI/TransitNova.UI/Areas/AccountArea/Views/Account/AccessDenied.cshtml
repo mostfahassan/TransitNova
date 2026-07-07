@@ -1,39 +1,18 @@
 @{
-    Layout = null;
+    var page = new ErrorPageViewModel(
+        "403",
+        "Access blocked",
+        "You do not have permission to open this workspace.",
+        "Your account is valid, but this route belongs to another role or requires a higher authorization level.",
+        "Go home",
+        "LandingArea",
+        "Home",
+        "Index",
+        "Use another account",
+        "AccountArea",
+        "Account",
+        "Login",
+        "warning");
 }
 
-<!doctype html>
-<html lang="en" class="h-full">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Access Denied | TransitNova</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="~/Tailwind/tailwind.config.js" asp-append-version="true"></script>
-    <link rel="stylesheet" href="~/css/Account/account.css" asp-append-version="true" />
-    <script src="~/js/Account/account.js" asp-append-version="true" defer></script>
-</head>
-<body class="account-page access-denied-page">
-    <main class="account-shell flex min-h-screen items-center justify-center px-5 py-10 sm:px-8">
-        <section class="account-card account-reveal w-full max-w-[620px] p-7 text-center sm:p-10">
-            <a asp-area="LandingArea" asp-controller="Home" asp-action="Index" class="mx-auto mb-9 inline-flex items-center gap-3 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-account-primary">
-                <span class="account-brand-mark">TN</span>
-                <span class="text-sm font-black tracking-tight text-slate-950">TransitNova</span>
-            </a>
-
-            <div class="mx-auto access-illustration" aria-hidden="true"></div>
-            <span class="account-kicker mx-auto mt-8">Access blocked</span>
-            <h1 class="mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">You do not have permission to open this workspace.</h1>
-            <p class="mx-auto mt-5 max-w-md text-base leading-7 text-slate-600">Your account is valid, but this route belongs to another role or requires a higher authorization level.</p>
-
-            <div class="mx-auto mt-8 grid max-w-sm gap-3 sm:grid-cols-2">
-                <a asp-area="LandingArea" asp-controller="Home" asp-action="Index" class="account-button">Go home</a>
-                <a asp-area="AccountArea" asp-controller="Account" asp-action="Login" class="inline-flex min-h-[46px] items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-900 transition-colors duration-200 hover:border-slate-300 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-account-primary">Use another account</a>
-            </div>
-        </section>
-    </main>
-</body>
-</html>
+<partial name="_AccountErrorPage" model="page" />

@@ -1,2 +1,19 @@
-@{ Layout = null; }
-<div></div>
+@model ErrorPageViewModel?
+@{
+    var page = Model ?? new ErrorPageViewModel(
+        "500",
+        "Server exception",
+        "TransitNova could not complete this request.",
+        "Something unexpected happened while processing the operation. Try again, or return to a safe workspace and retry the action.",
+        "Go home",
+        "LandingArea",
+        "Home",
+        "Index",
+        "Sign in again",
+        "AccountArea",
+        "Account",
+        "Login",
+        "danger");
+}
+
+<partial name="_AccountErrorPage" model="page" />

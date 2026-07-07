@@ -1,2 +1,61 @@
-@{ Layout = null; }
-<div></div>
+@model UiCarrierShipmentListDto?
+@{
+    ViewData["Title"] = "Carrier Shipments";
+    var list = Model ?? new UiCarrierShipmentListDto();
+    var shipments = list.Shipments.Data?.ToList() ?? [];
+}
+
+<section class="carrier-fade-up">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div><div class="carrier-badge carrier-badge-info">Shipments</div><h2 class="mt-4 text-3xl font-black tracking-[-0.03em] text-[#111111]">Assigned shipments</h2><p class="mt-2 text-sm text-[#66615a]">Pickup and delivery work assigned to your carrier profile.</p></div>
+        <a asp-action="Status" class="carrier-button">Update carrier status</a>
+    </div>
+
+    <section class="carrier-stagger mt-6 grid gap-4 md:grid-cols-3 xl:grid-cols-4">
+        @foreach (var stat in list.Statistics.Select((value, index) => new { value, index }))
+        {
+            <div class="carrier-card p-5" style="--item-index:@stat.index"><div class="text-xs font-black uppercase tracking-[0.14em] text-[#737373]">@stat.value.Status</div><div class="mt-3 text-3xl font-black text-[#111111]">@stat.value.Count</div></div>
+        }
+    </section>
+
+    <section class="carrier-card mt-6 overflow-hidden">
+        <div class="flex flex-col gap-3 border-b border-[#E7E5E0] p-5 md:flex-row md:items-center md:justify-between">
+            <div><h3 class="text-xl font-black text-[#111111]">Work queue</h3><p class="mt-1 text-sm text-[#66615a]">@list.Shipments.TotalCount shipments / page @list.Shipments.PageNumber of @Math.Max(list.Shipments.TotalPages, 1)</p></div>
+            <form method="get" class="flex flex-wrap gap-2">
+                <input name="SearchTerm" class="carrier-input min-w-[220px]" placeholder="Tracking, receiver, city" />
+                <select name="Status" class="carrier-select w-[180px]"><option value="">All status</option><option>OutForPickup</option><option>PickedUp</option><option>InWarehouse</option><option>OutForDelivery</option><option>Delivered</option></select>
+                <button class="carrier-button-secondary" type="submit">Filter</button>
+            </form>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="carrier-table">
+                <thead><tr><th>Tracking</th><th>Receiver</th><th>Route</th><th>Status</th><th>Cost</th><th class="text-right">Action</th></tr></thead>
+                <tbody>
+                @foreach (var item in shipments.Select((value, index) => new { value, index }))
+                {
+                    <tr style="--row-index:@item.index">
+                        <td><span class="font-mono text-xs font-black text-[#111111]">@item.value.TrackingNumber</span></td>
+                        <td>@item.value.Receiver.FullName<br /><span class="text-xs text-[#737373]">@item.value.Receiver.PhoneNumber</span></td>
+                        <td>@item.value.PickupAddress -> @item.value.DeliveryAddress</td>
+                        <td><span class="carrier-badge @BadgeClass(item.value.CurrentStatus.ToString())">@item.value.CurrentStatus</span></td>
+                        <td>@item.value.ShippingCost.ToString("N2") @item.value.Currency</td>
+                        <td class="text-right"><a asp-action="Details" asp-route-shipmentId="@item.value.Id" class="carrier-button-secondary !min-h-[34px] !px-3 !py-2">Open</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+
+@functions {
+    private static string BadgeClass(string value)
+    {
+        var text = value.ToLowerInvariant();
+        if (text.Contains("deliver") || text.Contains("warehouse")) return "carrier-badge-success";
+        if (text.Contains("pickup") || text.Contains("transit") || text.Contains("assigned")) return "carrier-badge-info";
+        if (text.Contains("pending") || text.Contains("planned")) return "carrier-badge-warning";
+        if (text.Contains("cancel") || text.Contains("reject") || text.Contains("fail")) return "carrier-badge-danger";
+        return "carrier-badge-neutral";
+    }
+}

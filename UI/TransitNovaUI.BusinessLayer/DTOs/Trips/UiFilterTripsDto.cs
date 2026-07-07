@@ -5,6 +5,7 @@ namespace TransitNovaUI.BusinessLayer.DTOs.Trips;
 
 public sealed class UiFilterTripsDto
 {
+    public Guid? Id { get; set; }
     public TripType? TripType { get; set; }
     public TripStatus[]? Status { get; set; }
     public DateTime? CreatedAt { get; set; }
@@ -19,6 +20,7 @@ public sealed class UiFilterTripsDto
     public static FilterTripsDto ToDto(UiFilterTripsDto source) =>
         new()
         {
+            Id = source.Id,
             TripType = source.TripType,
             Status = source.Status is null ? null : [.. source.Status],
             CreatedAt = source.CreatedAt,

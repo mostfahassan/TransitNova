@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" class="carrier-root h-full">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TransitNova Carrier</title>
+    <script src="~/Tailwind/tailwind.config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/Carrier/carrier.css" asp-append-version="true" />
+</head>
+<body class="carrier-body min-h-full">
+    <div class="carrier-shell">
+        <aside class="carrier-sidebar" data-carrier-sidebar>
+            <a asp-area="CarrierArea" asp-controller="Dashboard" asp-action="Index" class="carrier-brand">
+                <span class="carrier-brand-mark">TN</span>
+                <span>
+                    <span class="block text-sm font-black tracking-tight text-[#111111]">TransitNova</span>
+                    <span class="block text-[10px] font-black uppercase tracking-[0.18em] text-[#737373]">Carrier console</span>
+                </span>
+            </a>
+            <nav class="mt-8 space-y-1" aria-label="Carrier navigation">
+                @NavLink("Dashboard", "Dashboard", "Index")
+                @NavLink("Trips", "Trips", "Index")
+                @NavLink("Shipments", "Shipments", "Index")
+                @NavLink("Vehicles", "Vehicles", "Index")
+                @NavLink("Profile", "Profile", "Index")
+                @NavLink("Revenue", "Analytics", "Revenue")
+                @NavLink("Rating", "Analytics", "Rating")
+            </nav>
+            <div class="mt-auto rounded-[12px] border border-[#E7E5E0] bg-[#F7F6F3] p-4">
+                <div class="text-[10px] font-black uppercase tracking-[0.18em] text-[#737373]">Shift board</div>
+                <p class="mt-2 text-sm font-bold leading-5 text-[#111111]">Keep trip actions clean and confirm completion only after every shipment is done.</p>
+            </div>
+        </aside>
+
+        <div class="carrier-content">
+            <header class="carrier-topbar">
+                <button type="button" class="carrier-icon-button lg:hidden" data-carrier-sidebar-toggle aria-label="Open navigation">
+                    <span></span><span></span><span></span>
+                </button>
+                <div>
+                    <div class="text-[10px] font-black uppercase tracking-[0.18em] text-[#737373]">Carrier Area</div>
+                    <h1 class="mt-1 text-lg font-black tracking-[-0.02em] text-[#111111]">@ViewData["Title"]</h1>
+                </div>
+                <div class="ml-auto flex items-center gap-2">
+                    <a asp-area="CarrierArea" asp-controller="Trips" asp-action="Index" class="carrier-button-secondary hidden sm:inline-flex">Trips</a>
+                    <a asp-area="CarrierArea" asp-controller="Shipments" asp-action="Status" class="carrier-button">Status</a>
+                </div>
+            </header>
+
+            <main class="carrier-main">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/js/Carrier/carrier.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+@functions {
+    private IHtmlContent NavLink(string label, string controller, string action)
+    {
+        var currentController = Context.Request.RouteValues["controller"]?.ToString();
+        var isActive = string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase);
+        var href = Url.Action(action, controller, new { area = "CarrierArea" }) ?? "#";
+        var activeClass = isActive ? " is-active" : string.Empty;
+        return new HtmlString($"<a class=\"carrier-nav-link{activeClass}\" href=\"{href}\">{label}</a>");
+    }
+}

@@ -1,2 +1,49 @@
-@{ Layout = null; }
-<div></div>
+@model IReadOnlyCollection<UiCarrierTripDto>?
+@{
+    ViewData["Title"] = "Carrier Trips";
+    var trips = (Model ?? []).ToList();
+}
+
+<section class="carrier-fade-up">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div><div class="carrier-badge carrier-badge-info">Trips</div><h2 class="mt-4 text-3xl font-black tracking-[-0.03em] text-[#111111]">Trip board</h2><p class="mt-2 text-sm text-[#66615a]">Pickup and delivery trips assigned to you by operations.</p></div>
+        <a asp-area="CarrierArea" asp-controller="Shipments" asp-action="Index" class="carrier-button-secondary">Open shipments</a>
+    </div>
+
+    <section class="carrier-card mt-6 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="carrier-table">
+                <thead><tr><th>Trip</th><th>Warehouse</th><th>Planned</th><th>Status</th><th>Shipments</th><th>Progress</th><th class="text-right">Action</th></tr></thead>
+                <tbody>
+                @foreach (var item in trips.Select((value, index) => new { value, index }))
+                {
+                    var completed = CompletedCount(item.value);
+                    <tr style="--row-index:@item.index">
+                        <td><span class="font-black text-[#111111]">@item.value.TripType trip</span><br /><span class="font-mono text-xs text-[#737373]">@item.value.Id.ToString()[..8]</span></td>
+                        <td>@item.value.WarehouseName<br /><span class="text-xs text-[#737373]">@item.value.WarehouseAddress</span></td>
+                        <td>@item.value.PlannedDate.ToString("MMM dd, yyyy HH:mm")</td>
+                        <td><span class="carrier-badge @BadgeClass(item.value.Status.ToString())">@item.value.Status</span></td>
+                        <td>@item.value.ShipmentCount</td>
+                        <td><span class="font-black text-[#111111]">@completed</span> / @Math.Max(item.value.ShipmentCount, item.value.Shipments.Count)</td>
+                        <td class="text-right"><a asp-action="Details" asp-route-tripId="@item.value.Id" class="carrier-button-secondary !min-h-[34px] !px-3 !py-2">Open</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        @if (!trips.Any())
+        {
+            <div class="p-12 text-center"><h3 class="text-lg font-black text-[#111111]">No trips returned</h3><p class="mt-2 text-sm text-[#66615a]">When operations starts a pickup or delivery trip, it will appear here.</p></div>
+        }
+    </section>
+</section>
+
+@functions {
+    private static int CompletedCount(UiCarrierTripDto trip) => trip.TripType switch
+    {
+        TripType.Pickup => trip.Shipments.Count(shipment => shipment.CurrentStatus == ShipmentStatuses.InWarehouse),
+        TripType.Delivery => trip.Shipments.Count(shipment => shipment.CurrentStatus == ShipmentStatuses.Delivered),
+        _ => trip.Shipments.Count(shipment => shipment.CurrentStatus is ShipmentStatuses.InWarehouse or ShipmentStatuses.Delivered)
+    };
+    private static string BadgeClass(string value) { var text = value.ToLowerInvariant(); if (text.Contains("complete") || text.Contains("active")) return "carrier-badge-success"; if (text.Contains("planned")) return "carrier-badge-warning"; if (text.Contains("cancel")) return "carrier-badge-danger"; return "carrier-badge-neutral"; }
+}

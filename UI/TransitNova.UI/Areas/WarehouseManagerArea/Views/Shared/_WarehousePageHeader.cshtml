@@ -1,0 +1,23 @@
+@model WarehousePageHeaderViewModel
+
+<section class="mb-6 warehouse-card overflow-hidden">
+    <div class="grid gap-0 lg:grid-cols-[1fr_360px]">
+        <div class="p-6 md:p-8">
+            <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">@Model.Eyebrow</div>
+            <h1 class="mt-3 max-w-4xl text-3xl font-black leading-[1.02] tracking-[-0.035em] text-[#111111] md:text-5xl">@Model.Title</h1>
+            <p class="mt-4 max-w-3xl text-sm font-semibold leading-6 text-[#787774]">@Model.Description</p>
+        </div>
+        <div class="border-t border-[#EAEAEA] bg-[#FBFBFA] p-6 md:p-8 lg:border-l lg:border-t-0">
+            <div class="flex h-full flex-col justify-end gap-3">
+                @if (!string.IsNullOrWhiteSpace(Model.PrimaryLabel))
+                {
+                    <a asp-area="WarehouseManagerArea" asp-controller="@Model.PrimaryController" asp-action="@Model.PrimaryAction" asp-all-route-data="Model.PrimaryRouteValues" class="warehouse-button">@Model.PrimaryLabel</a>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.SecondaryLabel))
+                {
+                    <a asp-area="WarehouseManagerArea" asp-controller="@Model.SecondaryController" asp-action="@Model.SecondaryAction" asp-all-route-data="Model.SecondaryRouteValues" class="warehouse-button-secondary">@Model.SecondaryLabel</a>
+                }
+            </div>
+        </div>
+    </div>
+</section>

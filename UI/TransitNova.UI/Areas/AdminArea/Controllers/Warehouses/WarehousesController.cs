@@ -55,7 +55,17 @@ public sealed class WarehousesController(
     }
 
     [HttpGet("{warehouseId:guid}")]
-    public IActionResult Edit(Guid warehouseId) => View(new WarehouseFormViewModel());
+    public async Task<IActionResult> Edit(Guid warehouseId, CancellationToken cancellationToken)
+    {
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminWarehousesQuery.GetWarehouseByIdAsync(warehouseId, token!, ct), cancellationToken: cancellationToken);
+
+        if (response.IsFailure)
+            return HandleGetFailure(response);
+
+        return response.Data is null
+            ? RedirectToAction("NotFound", "Errors", new { area = "AccountArea" })
+            : View(PrefillViewModelFactory.Warehouse(response.Data));
+    }
 
     [HttpPost("{warehouseId:guid}")]
     [ValidateAntiForgeryToken]

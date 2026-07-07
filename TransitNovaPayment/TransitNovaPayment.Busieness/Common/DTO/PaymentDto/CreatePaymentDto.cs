@@ -6,6 +6,7 @@ namespace TransitNovaPayment.Busieness.Common.DTO.PaymentDto
     {
         public Guid ShipmentId { get; init; }
         public PaymentMethod PaymentMethod { get; init; }
+        public Currency Currency { get; init; }
         public decimal ShippingCost { get; init; }
     }
 }

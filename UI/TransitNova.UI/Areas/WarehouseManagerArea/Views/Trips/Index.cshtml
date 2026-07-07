@@ -1,0 +1,68 @@
+@model object?
+@{
+    ViewData["Title"] = "Warehouse Trips";
+    var header = new WarehousePageHeaderViewModel
+    {
+        Eyebrow = "Trip control",
+        Title = "Pickup and delivery trip board",
+        Description = "Track carrier movements attached to the warehouse, from planned dispatch through active and completed trips.",
+        PrimaryLabel = "Shipment inventory",
+        PrimaryController = "Shipments",
+        PrimaryAction = "Index",
+        SecondaryLabel = "Carrier roster",
+        SecondaryController = "Carriers",
+        SecondaryAction = "Index"
+    };
+    var table = new WarehouseTableViewModel
+    {
+        Title = "Warehouse trips",
+        Subtitle = "Trips filtered by the current warehouse context.",
+        Source = Model,
+        Controller = "Trips",
+        RouteIdName = "tripId",
+        IdPropertyPath = "Id",
+        Columns = new List<WarehouseTableColumnViewModel>
+        {
+            new("Trip", "Id", "id"),
+            new("Type", "TripType"),
+            new("Status", "Status", "badge"),
+            new("Carrier", "CarrierName|Carrier.FullName"),
+            new("Shipments", "TotalShipments"),
+            new("Planned", "PlannedDate"),
+            new("Started", "StartTime"),
+            new("Ended", "EndTime")
+        },
+        EmptyTitle = "No trips found",
+        EmptyDescription = "Pickup and delivery trips for this warehouse will appear here."
+    };
+}
+
+<partial name="_WarehousePageHeader" model="header" />
+
+<section class="mb-6 warehouse-card p-5 md:p-6">
+    <form method="get" class="grid gap-3 md:grid-cols-2 xl:grid-cols-[repeat(5,minmax(0,1fr))_auto] xl:items-end">
+        <div>
+            <label class="warehouse-label" for="TripType">Trip type</label>
+            <input id="TripType" name="TripType" value="@Context.Request.Query["TripType"]" class="warehouse-input" placeholder="Pickup / Delivery" autocomplete="off" />
+        </div>
+        <div>
+            <label class="warehouse-label" for="Status">Status</label>
+            <input id="Status" name="Status" value="@Context.Request.Query["Status"]" class="warehouse-input" placeholder="Active" autocomplete="off" />
+        </div>
+        <div>
+            <label class="warehouse-label" for="CarrierId">Carrier id</label>
+            <input id="CarrierId" name="CarrierId" value="@Context.Request.Query["CarrierId"]" class="warehouse-input" placeholder="Carrier Guid" autocomplete="off" />
+        </div>
+        <div>
+            <label class="warehouse-label" for="From">From</label>
+            <input id="From" name="From" value="@Context.Request.Query["From"]" type="date" class="warehouse-input" />
+        </div>
+        <div>
+            <label class="warehouse-label" for="To">To</label>
+            <input id="To" name="To" value="@Context.Request.Query["To"]" type="date" class="warehouse-input" />
+        </div>
+        <button type="submit" class="warehouse-button">Filter</button>
+    </form>
+</section>
+
+<partial name="_WarehouseTable" model="table" />

@@ -1,0 +1,12 @@
+@if (TempData.TryGetValue("Success", out var success) && success is not null)
+{
+    <div class="mb-5 rounded-xl border border-[#BFE3C2] bg-[#EDF3EC] px-4 py-3 text-sm font-bold text-[#346538]">@success</div>
+}
+@if (TempData.TryGetValue("Error", out var error) && error is not null)
+{
+    <div class="mb-5 rounded-xl border border-[#F3D1D1] bg-[#FDEBEC] px-4 py-3 text-sm font-bold text-[#9F2F2D]">@error</div>
+}
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="mb-5 rounded-xl border border-[#F3D1D1] bg-[#FDEBEC] px-4 py-3 text-sm font-bold text-[#9F2F2D]" asp-validation-summary="All"></div>
+}

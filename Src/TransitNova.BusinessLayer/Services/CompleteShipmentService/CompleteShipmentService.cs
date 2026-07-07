@@ -68,11 +68,6 @@ namespace TransitNova.BusinessLayer.Services.CompleteShipmentService
             //======= 3- Update Audits 
             carrier.CompleteShipment();
             shipment.Delivered(carrier.Id);
-            if (shipment.Trip is { Status: TripStatus.Active } trip &&
-                trip.Shipments.All(s => s.CurrentStatus == ShipmentStatuses.Delivered))
-            {
-                trip.Complete(carrier.Id);
-            }
 
             var performedByName = (await carrierQueryRepo.GetCarrierNameAsync(CarrierId, cancellationToken))!;
             var log = SystemActivityLog.AddLog(
@@ -84,17 +79,6 @@ namespace TransitNova.BusinessLayer.Services.CompleteShipmentService
 
             await systemLogCommands.LogAsync(log, cancellationToken);
 
-            if (shipment.Trip is { Status: TripStatus.Completed } completedTrip)
-            {
-                log = SystemActivityLog.AddLog(
-                    ActivityAction.Completed,
-                    ActivityEntityType.Shipment,
-                    $"Pickup trip {completedTrip.Id} was completed by carrier {CarrierId}.",
-                    CarrierId,
-                    performedByName);
-
-                await systemLogCommands.LogAsync(log, cancellationToken);
-            }
             return shipment;
         }
 
@@ -117,11 +101,6 @@ namespace TransitNova.BusinessLayer.Services.CompleteShipmentService
 
             carrier.CompleteShipment();
             shipment.DeliveredToWarehouse(carrier.Id);
-            if (shipment.Trip is { Status: TripStatus.Active } trip &&
-                trip.Shipments.All(s => s.CurrentStatus == ShipmentStatuses.InWarehouse))
-            {
-                trip.Complete(carrier.Id);
-            }
             return shipment;
         }
     }

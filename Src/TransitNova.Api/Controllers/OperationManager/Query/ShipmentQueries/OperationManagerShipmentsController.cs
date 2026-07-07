@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -8,6 +8,7 @@ using TransitNova.BusinessLayer.Features.OperationManagerService.Queries.Shipmen
 using TransitNova.BusinessLayer.Features.Shipments.Queries;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
+
 namespace TransitNova.Api.Controllers.OperationManager.Query.ShipmentQueries
 {
     [Authorize(Roles = Role.OperationManagerOrAdmin)]
@@ -49,8 +50,11 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.ShipmentQueries
         [EndpointDescription("Returns the shipment details required by the operation manager to review a shipment.")]
         public async Task<IActionResult> ReviewShipmentAsync(Guid shipmentId, CancellationToken ct)
         {
-            var operationManagerId = User.GetUserId();
-            var response = await mediator.Send(new ReviewShipmentCommand(shipmentId, operationManagerId), ct);
+            var operationManagerAppUserId = User.GetUserId();
+            if (operationManagerAppUserId == Guid.Empty)
+                return Forbid();
+
+            var response = await mediator.Send(new ReviewShipmentCommand(shipmentId, operationManagerAppUserId), ct);
             return response.ToActionResult();
         }
 
@@ -101,7 +105,6 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.ShipmentQueries
         [EndpointName("Get Review Queue")]
         [EndpointSummary("Get shipments waiting for review")]
         [EndpointDescription("Returns the shipments that are currently waiting in the review queue for the authenticated operation manager.")]
-
         public async Task<IActionResult> ReviewQueueAsync([FromQuery] ShipmentFilterDto filter, CancellationToken ct)
         {
             var result = await mediator.Send(new FilterShipmentsQuery(filter), ct);
@@ -120,10 +123,13 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.ShipmentQueries
         [EndpointName("Get Shipment")]
         [EndpointSummary("Get shipment details by id")]
         [EndpointDescription("Returns the full shipment details for the specified shipment identifier.")]
-
         public async Task<IActionResult> ShipmentAsync(Guid shipmentId, CancellationToken ct)
         {
-            var result = await mediator.Send(new GetShipmentByIdQuery(shipmentId), ct);
+            var operationManagerAppUserId = User.GetUserId();
+            if (operationManagerAppUserId == Guid.Empty)
+                return Forbid();
+
+            var result = await mediator.Send(new GetOperationManagerShipmentDetailsQuery(shipmentId, operationManagerAppUserId), ct);
             return result.ToActionResult();
         }
     }

@@ -1,0 +1,66 @@
+@model object?
+@{
+    ViewData["Title"] = "Warehouse Shipments";
+    var header = new WarehousePageHeaderViewModel
+    {
+        Eyebrow = "Inventory lane",
+        Title = "Shipment inventory and scan desk",
+        Description = "A scanner-first board for receiving, outbound staging, exception review, and warehouse-visible shipment records.",
+        PrimaryLabel = "Open trips",
+        PrimaryController = "Trips",
+        PrimaryAction = "Index",
+        SecondaryLabel = "Carrier roster",
+        SecondaryController = "Carriers",
+        SecondaryAction = "Index"
+    };
+    var table = new WarehouseTableViewModel
+    {
+        Title = "Shipment records",
+        Subtitle = "Warehouse shipment list with compact routing and status fields.",
+        Source = Model,
+        Controller = "Shipments",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id",
+        Columns = new List<WarehouseTableColumnViewModel>
+        {
+            new("Tracking", "TrackingNumber", "id"),
+            new("Status", "CurrentStatus", "badge"),
+            new("Receiver", "Receiver.FullName|Receiver.Email"),
+            new("Sender", "Sender.FullName|Sender.Email"),
+            new("Mode", "TransportationMode"),
+            new("Cost", "ShippingCost", "currency"),
+            new("Created", "CreatedAt")
+        },
+        EmptyTitle = "No shipments in this lane",
+        EmptyDescription = "Matching warehouse shipments will appear here after applying filters or scanner input."
+    };
+}
+
+<partial name="_WarehousePageHeader" model="header" />
+
+<section class="mb-6 grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
+    <form method="get" class="warehouse-card p-5 md:p-6">
+        <label class="warehouse-label" for="SearchTerm">Receiving / dispatch scan</label>
+        <div class="flex flex-col gap-3 lg:flex-row">
+            <input id="SearchTerm" name="SearchTerm" value="@Context.Request.Query["SearchTerm"]" class="warehouse-input warehouse-scan-input" placeholder="SCAN TRACKING NUMBER" autocomplete="off" autofocus />
+            <button type="submit" class="warehouse-button min-h-[74px] lg:w-40">Search</button>
+        </div>
+        <div class="mt-4 grid gap-3 md:grid-cols-4">
+            <input name="Status" value="@Context.Request.Query["Status"]" class="warehouse-input" placeholder="Status" />
+            <input name="Mode" value="@Context.Request.Query["Mode"]" class="warehouse-input" placeholder="Mode" />
+            <input name="From" value="@Context.Request.Query["From"]" type="date" class="warehouse-input" />
+            <input name="To" value="@Context.Request.Query["To"]" type="date" class="warehouse-input" />
+        </div>
+    </form>
+
+    <aside class="warehouse-card p-5 md:p-6">
+        <p class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Warehouse lanes</p>
+        <div class="mt-4 space-y-3">
+            <a asp-area="WarehouseManagerArea" asp-controller="Shipments" asp-action="Index" asp-route-Status="InWarehouse" class="flex items-center justify-between rounded-xl border border-[#EAEAEA] bg-white px-4 py-3 text-sm font-black text-[#111111] transition-all hover:border-black/15 hover:bg-black/[0.02] active:scale-[0.98]"><span>Inbound stock</span><span class="warehouse-badge warehouse-badge-success">In stock</span></a>
+            <a asp-area="WarehouseManagerArea" asp-controller="Shipments" asp-action="Index" asp-route-Status="OutForDelivery" class="flex items-center justify-between rounded-xl border border-[#EAEAEA] bg-white px-4 py-3 text-sm font-black text-[#111111] transition-all hover:border-black/15 hover:bg-black/[0.02] active:scale-[0.98]"><span>Outbound</span><span class="warehouse-badge warehouse-badge-warning">Dispatch</span></a>
+            <a asp-area="WarehouseManagerArea" asp-controller="Shipments" asp-action="Index" asp-route-Status="Issue" class="flex items-center justify-between rounded-xl border border-[#EAEAEA] bg-white px-4 py-3 text-sm font-black text-[#111111] transition-all hover:border-black/15 hover:bg-black/[0.02] active:scale-[0.98]"><span>Damaged / issue</span><span class="warehouse-badge warehouse-badge-danger">Review</span></a>
+        </div>
+    </aside>
+</section>
+
+<partial name="_WarehouseTable" model="table" />

@@ -18,7 +18,18 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.WarehouseManager.Trips.Q
         {
             object? content = null;
             string? idempotentKey = null;
-            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.WarehouseManagerTrips.GetTripsUrl, ("warehouseId", warehouseId), ("TripType", filter.TripType), ("Status", filter.Status), ("CreatedAt", filter.CreatedAt), ("From", filter.From), ("To", filter.To), ("CreatedBy", filter.CreatedBy), ("CarrierId", filter.CarrierId), ("PageNumber", filter.PageNumber), ("PageSize", filter.PageSize)));
+            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.WarehouseManagerTrips.GetTripsUrl,
+                ("warehouseId", warehouseId),
+                ("Id", filter.Id),
+                ("TripType", filter.TripType),
+                ("Status", filter.Status),
+                ("CreatedAt", filter.CreatedAt),
+                ("From", filter.From),
+                ("To", filter.To),
+                ("CreatedBy", filter.CreatedBy),
+                ("CarrierId", filter.CarrierId),
+                ("PageNumber", filter.PageNumber),
+                ("PageSize", filter.PageSize)));
 
             return SendQueryRequestAsync<UiPagedResult<UiTripDetailsDto>>(HttpMethod.Get, url, bearerToken, cancellationToken, content, idempotentKey);
         }

@@ -1,5 +1,4 @@
 namespace TransitNovaUI.BusinessLayer.ApiContracts;
-
 public static class ApiRoutes
 {
     public const string Version = "1";
@@ -56,12 +55,22 @@ public static class ApiRoutes
         public const string GetOperationManagersUrl = $"{Prefix}/admin/operation-managers";
     }
 
+    public static class AdminTrips
+    {
+        public const string GetTripByIdUrl = $"{Prefix}/admin/trips/{{tripId}}";
+        public const string GetTripsUrl = $"{Prefix}/admin/trips";
+    }
+
     public static class AdminUsers
     {
         public const string FilterUsersUrl = $"{Prefix}/admin/users";
         public const string GetUserDetailsUrl = $"{Prefix}/admin/users/{{userId}}";
     }
-
+    public static class AdminShipments
+    {
+        public const string FilterShipmentsUrl = $"{Prefix}/admin/shipments";
+        public const string GetShipmentDetailsUrl = $"{Prefix}/admin/shipments/{{shipmentId}}";
+    }
     public static class AdminWarehouseManagers
     {
         public const string GetWarehouseManagerByIdUrl = $"{Prefix}/admin/warehouse-managers/{{id}}";
@@ -183,9 +192,16 @@ public static class ApiRoutes
         public const string ReviewShipmentUrl = $"{Prefix}/operation-managers/shipments/{{shipmentId}}/review";
     }
 
+    public static class OperationManagerTrips
+    {
+        public const string GetTripByIdUrl = $"{Prefix}/operation-managers/trips/{{tripId}}";
+        public const string GetTripsUrl = $"{Prefix}/operation-managers/trips";
+    }
+
     public static class Trips
     {
         public const string GetCarrierTripByIdUrl = $"{Prefix}/carriers/{{carrierId}}/trips/{{tripId}}";
+        public const string CompleteCarrierTripUrl = $"{Prefix}/carriers/{{carrierId}}/trips/{{tripId}}/complete";
         public const string GetCarrierTripsUrl = $"{Prefix}/carriers/{{carrierId}}/trips";
         public const string StartDeliveryTripUrl = $"{Prefix}/operation-managers/trips/{{carrierId}}/start-delivery";
         public const string StartPickupTripUrl = $"{Prefix}/operation-managers/trips/{{carrierId}}/start-pickup";
@@ -285,4 +301,3 @@ public static class ApiRoutes
         public const string GetTripsUrl = $"{Prefix}/warehouse-managers/trips/{{warehouseId}}";
     }
 }
-

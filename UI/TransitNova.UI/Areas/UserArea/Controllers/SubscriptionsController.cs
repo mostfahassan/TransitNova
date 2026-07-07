@@ -16,9 +16,9 @@ public sealed class SubscriptionsController(
     IUserSubscriptionCommand userSubscriptionCommand)
     : AppControllerBase
 {
-    [HttpPost("{bundleId:int}")]
+    [HttpPost("{bundleId:guid}")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Subscribe(int bundleId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Subscribe(Guid bundleId, CancellationToken cancellationToken)
     {
         var response = await apiInvoker.ExecuteAsync((token, ct) => userSubscriptionCommand.SubscribeToBundleAsync(bundleId, token!, idempotencyKeyFactory.Create(), ct), cancellationToken: cancellationToken);
 
@@ -30,9 +30,9 @@ public sealed class SubscriptionsController(
         return RedirectToAction("Index", "Profile", new { area = "UserArea" });
     }
 
-    [HttpPost("{bundleId:int}")]
+    [HttpPost("{bundleId:guid}")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Unsubscribe(int bundleId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Unsubscribe(Guid bundleId, CancellationToken cancellationToken)
     {
         var response = await apiInvoker.ExecuteAsync((token, ct) => userSubscriptionCommand.UnsubscribeFromBundleAsync(bundleId, token!, idempotencyKeyFactory.Create(), ct), cancellationToken: cancellationToken);
 

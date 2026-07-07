@@ -25,8 +25,8 @@ public sealed class BundlesController(
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
 
-    [HttpGet("{bundleId:int}")]
-    public async Task<IActionResult> Details(int bundleId, CancellationToken cancellationToken)
+    [HttpGet("{bundleId:guid}")]
+    public async Task<IActionResult> Details(Guid bundleId, CancellationToken cancellationToken)
     {
         var response = await apiInvoker.ExecuteAsync((token, ct) => adminBundlesQuery.GetBundleByIdAsync(bundleId, token!, ct), cancellationToken: cancellationToken);
 
@@ -56,7 +56,17 @@ public sealed class BundlesController(
     }
 
     [HttpGet("{bundleId:guid}")]
-    public IActionResult Edit(Guid bundleId) => View(new BundleFormViewModel { BundleId = bundleId });
+    public async Task<IActionResult> Edit(Guid bundleId, CancellationToken cancellationToken)
+    {
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminBundlesQuery.GetBundleByIdAsync(bundleId, token!, ct), cancellationToken: cancellationToken);
+
+        if (response.IsFailure)
+            return HandleGetFailure(response);
+
+        return response.Data is null
+            ? RedirectToAction("NotFound", "Errors", new { area = "AccountArea" })
+            : View(PrefillViewModelFactory.Bundle(bundleId, response.Data));
+    }
 
     [HttpPost("{bundleId:guid}")]
     [ValidateAntiForgeryToken]
@@ -77,9 +87,9 @@ public sealed class BundlesController(
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpPost("{bundleId:int}")]
+    [HttpPost("{bundleId:guid}")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int bundleId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(Guid bundleId, CancellationToken cancellationToken)
     {
         var response = await apiInvoker.ExecuteAsync((token, ct) => adminBundlesCommand.DeleteBundleAsync(bundleId, token!, idempotencyKeyFactory.Create(), ct), cancellationToken: cancellationToken);
 

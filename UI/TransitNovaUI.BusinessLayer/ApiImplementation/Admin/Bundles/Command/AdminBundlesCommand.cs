@@ -14,7 +14,7 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Bundles.Command
             return SendRequestAsync(HttpMethod.Post, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
-        public Task<ApiResponse> DeleteBundleAsync(int bundleId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse> DeleteBundleAsync(Guid bundleId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             object? content = null;
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Bundles.DeleteBundleUrl, ("bundleId", bundleId)));

@@ -223,6 +223,7 @@ public sealed class ShipmentFilterViewModel
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
     public Guid? SenderId { get; set; }
+    public string? SearchTerm { get; set; }
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 20;
 
@@ -233,6 +234,7 @@ public sealed class ShipmentFilterViewModel
         From = From,
         To = To,
         SenderId = SenderId,
+        SearchTerm = SearchTerm,
         PageNumber = PageNumber,
         PageSize = PageSize
     };
@@ -341,6 +343,7 @@ public sealed class CarrierFilterViewModel
 
 public sealed class TripFilterViewModel
 {
+    public Guid? Id { get; set; }
     public TripType? TripType { get; set; }
     public TripStatus[]? Status { get; set; }
     public DateTime? CreatedAt { get; set; }
@@ -354,6 +357,7 @@ public sealed class TripFilterViewModel
 
     public UiFilterTripsDto ToDto() => new()
     {
+        Id = Id,
         TripType = TripType,
         Status = Status,
         CreatedAt = CreatedAt,
@@ -366,6 +370,9 @@ public sealed class TripFilterViewModel
         PageSize = PageSize
     };
 }
+
+
+
 public sealed class CarrierShipmentFilterViewModel
 {
     public ShipmentStatuses? Status { get; set; }

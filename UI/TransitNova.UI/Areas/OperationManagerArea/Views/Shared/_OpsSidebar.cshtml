@@ -5,6 +5,7 @@
     {
         new OpsSidebarItemViewModel("Command", "Dashboard", "Index", "grid"),
         new OpsSidebarItemViewModel("Live Tracking", "Shipments", "Index", "tracking"),
+        new OpsSidebarItemViewModel("Trips", "Trips", "Index", "dispatch"),
         new OpsSidebarItemViewModel("Dispatch", "Carriers", "Dispatch", "dispatch", "live"),
         new OpsSidebarItemViewModel("Fleet Status", "Carriers", "Index", "fleet"),
         new OpsSidebarItemViewModel("Exceptions", "Shipments", "ReviewQueue", "alert", "9"),
@@ -29,6 +30,7 @@
             var isActive = string.Equals(controller, item.Controller, StringComparison.OrdinalIgnoreCase)
                 && (string.Equals(action, item.Action, StringComparison.OrdinalIgnoreCase)
                     || (item.Controller == "Shipments" && controller == "Shipments" && item.Label == "Live Tracking" && action is "Details" or "Assigned" or "Histories" or "Review" or "Reject")
+                    || (item.Controller == "Trips" && controller == "Trips" && action is "Details" or "Index")
                     || (item.Controller == "Carriers" && controller == "Carriers" && item.Label == "Fleet Status" && action is "Details" or "Shipments" or "ShipmentDetails" or "AssignPickup" or "AssignDelivery")
                     || (item.Controller == "Carriers" && controller == "Carriers" && item.Label == "Dispatch" && action is "Dispatch"));
             <a asp-area="OperationManagerArea" asp-controller="@item.Controller" asp-action="@item.Action" class="ops-sidebar-link @(isActive ? "is-active" : null)">

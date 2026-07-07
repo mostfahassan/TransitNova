@@ -18,7 +18,7 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Governments.Comman
         {
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Governments.DeleteGovernmentUrl, ("governmentId", governmentId)));
 
-            return SendRequestAsync(HttpMethod.Delete, url, bearerToken, cancellationToken, idempotentKey);
+            return SendRequestAsync(HttpMethod.Delete, url, bearerToken, cancellationToken,null, idempotentKey);
         }
 
         public Task<ApiResponse> UpdateGovernmentAsync(int governmentId, UiUpdateGovernmentDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)

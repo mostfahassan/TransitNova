@@ -19,6 +19,11 @@ namespace TransitNova.BusinessLayer.Validators.TripValidators
                 .InclusiveBetween(1, MaxPageSize)
                 .WithMessage($"Page size must be between 1 and {MaxPageSize}.");
 
+            RuleFor(x => x.Id)
+                .NotEqual(Guid.Empty)
+                .WithMessage("Trip ID must not be an empty GUID.")
+                .When(x => x.Id.HasValue);
+
             RuleFor(x => x.TripType)
                 .IsInEnum()
                 .WithMessage("Invalid trip type value.")
@@ -63,6 +68,11 @@ namespace TransitNova.BusinessLayer.Validators.TripValidators
                 .NotEqual(Guid.Empty)
                 .WithMessage("Warehouse ID must not be an empty GUID.")
                 .When(x => x.WarehouseId.HasValue);
+
+            RuleFor(x => x.HandlerId)
+                .NotEqual(Guid.Empty)
+                .WithMessage("Handler ID must not be an empty GUID.")
+                .When(x => x.HandlerId.HasValue);
         }
     }
 }

@@ -2,6 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Bundles.Command
 
 public interface IDeleteBundleCommandService
 {
-    Task<ApiResponse> DeleteBundleAsync(int bundleId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
+    Task<ApiResponse> DeleteBundleAsync(Guid bundleId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

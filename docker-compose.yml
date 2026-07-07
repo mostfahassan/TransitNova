@@ -115,5 +115,7 @@ networks:
 
 volumes:
   sqlserver-data:
+    name: transitnova_sqlserver-data
   seq-data:
+    name: transitnova_seq-data
 

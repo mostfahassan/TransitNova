@@ -1,5 +1,4 @@
 using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
-
 namespace TransitNovaPayment.Busieness.Common.Abstract.PaymentMethods
 {
     internal class PaypalPayment : PaymentMethodService
@@ -8,7 +7,10 @@ namespace TransitNovaPayment.Busieness.Common.Abstract.PaymentMethods
 
         public override PaymentMethod PaymentMethod => PaymentMethod.PayPal;
 
-        public override decimal Pay(decimal shippingCost)
-            => shippingCost + (shippingCost * Commision);
+        public override decimal Pay(decimal shippingCost, Currency currency)
+        {
+            var rateExchange = GetCurrencyConversionRate(currency);
+            return shippingCost + (shippingCost * Commision) / rateExchange;
+        }
     }
 }

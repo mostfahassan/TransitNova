@@ -1,2 +1,14 @@
-@{ Layout = null; }
-<div></div>
+@model decimal?
+@{
+    ViewData["Title"] = "Carrier Rating";
+    var rating = Model ?? 0m;
+}
+
+<section class="carrier-fade-up mx-auto max-w-4xl">
+    <div class="carrier-card overflow-hidden">
+        <div class="grid gap-0 md:grid-cols-[1fr_300px]">
+            <div class="p-8"><div class="carrier-badge carrier-badge-success">Rating</div><h2 class="mt-5 text-5xl font-black tracking-[-0.05em] text-[#111111]">@rating.ToString("N1")</h2><p class="mt-3 text-sm leading-6 text-[#66615a]">Average customer and operation feedback score for completed carrier work.</p></div>
+            <aside class="border-t border-[#E7E5E0] bg-[#FBFBFA] p-8 md:border-l md:border-t-0"><div class="text-xs font-black uppercase tracking-[0.14em] text-[#737373]">Signal</div><p class="mt-3 text-sm font-bold leading-6 text-[#111111]">Keep pickup confirmations fast, delivery proof clean, and trip completion accurate to protect rating quality.</p></aside>
+        </div>
+    </div>
+</section>

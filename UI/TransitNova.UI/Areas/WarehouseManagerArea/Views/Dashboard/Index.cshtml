@@ -1,0 +1,64 @@
+@model object?
+@{
+    ViewData["Title"] = "Warehouse Dashboard";
+    var manager = AdminDisplay.Value(Model, "Manager");
+    var kpis = AdminDisplay.Value(Model, "Kpis");
+    var recentShipments = AdminDisplay.Value(Model, "RecentShipments");
+    var recentTrips = AdminDisplay.Value(Model, "RecentTrips");
+    var totalShipments = AdminDisplay.Text(kpis, "TotalShipments");
+    var deliveredShipments = AdminDisplay.Text(kpis, "DeliveredShipments");
+    var activeTrips = AdminDisplay.Text(kpis, "ActiveTrips");
+    var activeCarriers = AdminDisplay.Text(kpis, "ActiveCarriers");
+    var totalShipmentsNumber = AdminDisplay.Value(kpis, "TotalShipments") is int ts ? ts : 0;
+    var deliveredNumber = AdminDisplay.Value(kpis, "DeliveredShipments") is int ds ? ds : 0;
+    var deliveryProgress = totalShipmentsNumber == 0 ? 0 : Math.Round((decimal)deliveredNumber / totalShipmentsNumber * 100, 0);
+    var header = new WarehousePageHeaderViewModel
+    {
+        Eyebrow = "Warehouse command",
+        Title = $"{AdminDisplay.Text(manager, "WarehouseName", "text")} operating board",
+        Description = "Monitor shipments, active trips, and carrier capacity from one scanner-friendly operations surface.",
+        PrimaryLabel = "Open inventory",
+        PrimaryController = "Shipments",
+        PrimaryAction = "Index",
+        SecondaryLabel = "Carrier roster",
+        SecondaryController = "Carriers",
+        SecondaryAction = "Index"
+    };
+}
+
+<partial name="_WarehousePageHeader" model="header" />
+
+<section class="mb-6 grid gap-4 xl:grid-cols-[minmax(0,1fr)_420px]">
+    <form asp-area="WarehouseManagerArea" asp-controller="Shipments" asp-action="Index" method="get" class="warehouse-card p-5 md:p-6">
+        <label for="warehouseScan" class="warehouse-label">Primary scan lane</label>
+        <div class="flex flex-col gap-3 md:flex-row">
+            <input id="warehouseScan" name="SearchTerm" class="warehouse-input warehouse-scan-input" placeholder="SCAN SHIPMENT OR TYPE TRACKING" autocomplete="off" autofocus />
+            <button type="submit" class="warehouse-button min-h-[74px] md:w-40">Search</button>
+        </div>
+        <p class="mt-3 text-xs font-bold uppercase tracking-[0.12em] text-[#787774]">Hardware barcode scanners can type directly into this field.</p>
+    </form>
+
+    <section id="capacity" class="warehouse-card p-5 md:p-6">
+        <div class="flex items-center justify-between gap-4">
+            <div>
+                <p class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Capacity signal</p>
+                <h2 class="mt-2 text-2xl font-black tracking-tight text-[#111111]">Shipment throughput</h2>
+            </div>
+            <span class="warehouse-badge warehouse-badge-info">Live</span>
+        </div>
+        <div class="mt-5 warehouse-progress"><span style="--progress:@deliveryProgress%;--progress-color:@(deliveryProgress >= 90 ? "#9F2F2D" : deliveryProgress >= 75 ? "#956400" : "#346538")"></span></div>
+        <div class="mt-3 flex items-center justify-between text-xs font-bold text-[#787774]"><span>@deliveredShipments delivered</span><span>@deliveryProgress%</span></div>
+    </section>
+</section>
+
+<section class="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Total shipments", totalShipments, "All lanes", "info", deliveryProgress)" />
+    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Delivered", deliveredShipments, "Closed", "success")" />
+    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Active trips", activeTrips, "Moving", "warning")" />
+    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Active carriers", activeCarriers, "Available", "neutral")" />
+</section>
+
+<section class="grid gap-6 xl:grid-cols-2">
+    <partial name="_WarehouseTable" model="new WarehouseTableViewModel { Title = "Recent shipments", Subtitle = "Latest warehouse-visible shipments from the API.", Source = recentShipments, Controller = "Shipments", RouteIdName = "shipmentId", IdPropertyPath = "Id", Columns = new List<WarehouseTableColumnViewModel> { new("Tracking", "TrackingNumber"), new("Status", "CurrentStatus", "badge"), new("Created", "CreatedAt") }, EmptyTitle = "No recent shipments", EmptyDescription = "Warehouse shipments will appear here after the backend returns activity." }" />
+    <partial name="_WarehouseTable" model="new WarehouseTableViewModel { Title = "Recent trips", Subtitle = "Pickup and delivery trips attached to this warehouse.", Source = recentTrips, Controller = "Trips", RouteIdName = "tripId", IdPropertyPath = "Id", Columns = new List<WarehouseTableColumnViewModel> { new("Trip", "Id", "id"), new("Type", "TripType"), new("Status", "Status", "badge"), new("Planned", "PlannedDate") }, EmptyTitle = "No recent trips", EmptyDescription = "Trips will appear here when carriers are assigned to warehouse movement." }" />
+</section>

@@ -1,0 +1,62 @@
+@model object?
+@{
+    ViewData["Title"] = "Trip Details";
+    var shipments = AdminDisplay.Value(Model, "Shipments");
+    var totalShipments = AdminDisplay.Text(Model, "TotalShipments");
+    var tripStatus = AdminDisplay.Text(Model, "Status", "badge");
+    var tripType = AdminDisplay.Text(Model, "TripType");
+    var detail = new WarehouseDetailViewModel
+    {
+        Title = "Trip manifest",
+        Subtitle = "Carrier movement, warehouse lane, and shipment manifest attached to this trip.",
+        Source = Model,
+        Controller = "Trips",
+        Fields = new List<WarehouseTableColumnViewModel>
+        {
+            new("Trip", "Id", "id"),
+            new("Type", "TripType"),
+            new("Status", "Status", "badge"),
+            new("Carrier", "CarrierName"),
+            new("Carrier phone", "CarrierPhoneNumber"),
+            new("Warehouse", "WarehouseName"),
+            new("Address", "WarehouseAddress"),
+            new("Planned", "PlannedDate"),
+            new("Started", "StartTime"),
+            new("Ended", "EndTime"),
+            new("Shipments", "TotalShipments"),
+            new("Created by", "CreatedBy")
+        }
+    };
+    var shipmentTable = new WarehouseTableViewModel
+    {
+        Title = "Trip shipment manifest",
+        Subtitle = "Every shipment physically moving with this carrier trip.",
+        Source = shipments,
+        Controller = "Shipments",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id",
+        Columns = new List<WarehouseTableColumnViewModel>
+        {
+            new("Tracking", "TrackingNumber", "id"),
+            new("Status", "CurrentStatus", "badge"),
+            new("Receiver", "Receiver.FullName|Receiver.Email"),
+            new("Pickup", "PickupAddress"),
+            new("Delivery", "DeliveryAddress"),
+            new("Cost", "ShippingCost", "currency")
+        },
+        EmptyTitle = "No shipments on this trip",
+        EmptyDescription = "The manifest will show here when a trip carries shipments."
+    };
+}
+
+<section class="mb-6 grid gap-4 md:grid-cols-3">
+    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Trip type", tripType, "Movement lane", "info")" />
+    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Status", tripStatus, "Current state", "warning")" />
+    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Shipments", totalShipments, "Manifest count", "success")" />
+</section>
+
+<partial name="_WarehouseDetail" model="detail" />
+
+<section class="mt-6">
+    <partial name="_WarehouseTable" model="shipmentTable" />
+</section>

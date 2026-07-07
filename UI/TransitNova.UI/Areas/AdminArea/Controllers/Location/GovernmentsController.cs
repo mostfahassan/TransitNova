@@ -55,7 +55,17 @@ public sealed class GovernmentsController(
     }
 
     [HttpGet("{governmentId:int}")]
-    public IActionResult Edit(int governmentId) => View(new GovernmentFormViewModel());
+    public async Task<IActionResult> Edit(int governmentId, CancellationToken cancellationToken)
+    {
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminGovernmentQuery.GetGovernmentByIdAsync(governmentId, token!, ct), cancellationToken: cancellationToken);
+
+        if (response.IsFailure)
+            return HandleGetFailure(response);
+
+        return response.Data is null
+            ? RedirectToAction("NotFound", "Errors", new { area = "AccountArea" })
+            : View(PrefillViewModelFactory.Government(response.Data));
+    }
 
     [HttpPost("{governmentId:int}")]
     [ValidateAntiForgeryToken]

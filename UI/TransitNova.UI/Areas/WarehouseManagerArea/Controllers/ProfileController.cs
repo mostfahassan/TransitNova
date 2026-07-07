@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
- 
- 
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.WarehouseManager.Dashboard.Segregations.Commands;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.WarehouseManager.Dashboard.Segregations.Query;
 
 namespace TransitNova.UI.Areas.WarehouseManagerArea.Controllers;
 
@@ -14,11 +13,25 @@ namespace TransitNova.UI.Areas.WarehouseManagerArea.Controllers;
 public sealed class ProfileController(
     IBackendApiInvoker apiInvoker,
     IIdempotencyKeyFactory idempotencyKeyFactory,
+    IWarehouseManagerDashboardQuery warehouseManagerDashboardQuery,
     IWarehouseManagerDashboardCommand warehouseManagerDashboardCommand)
     : AppControllerBase
 {
     [HttpGet]
-    public IActionResult Edit() => View(new WarehouseManagerProfileFormViewModel());
+    public async Task<IActionResult> Edit(CancellationToken cancellationToken)
+    {
+        var response = await apiInvoker.ExecuteAsync((token, ct) => warehouseManagerDashboardQuery.GetWarehouseManagerDashboardAsync(token!, ct), cancellationToken: cancellationToken);
+
+        if (response.IsFailure)
+            return HandleGetFailure(response);
+
+        if (response.Data?.Manager.WarehouseId is Guid warehouseId && warehouseId != Guid.Empty)
+            SetCurrentWarehouseId(warehouseId);
+
+        return response.Data is null
+            ? RedirectToAction("NotFound", "Errors", new { area = "AccountArea" })
+            : View(PrefillViewModelFactory.WarehouseManagerProfile(response.Data));
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -34,6 +47,9 @@ public sealed class ProfileController(
             AddApiErrors(response);
             return View(model);
         }
+
+        if (model.WarehouseId is Guid warehouseId && warehouseId != Guid.Empty)
+            SetCurrentWarehouseId(warehouseId);
 
         Success("Warehouse manager profile updated successfully.");
         return RedirectToAction(nameof(Edit));

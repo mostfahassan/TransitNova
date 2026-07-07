@@ -1,2 +1,18 @@
-@{ Layout = null; }
-<div></div>
+@model ErrorPageViewModel?
+@{
+    var page = Model ?? new ErrorPageViewModel(
+        "404",
+        "Route not found",
+        "This TransitNova route is not available.",
+        "The link may be outdated, the record may have been removed, or the current role cannot open this endpoint.",
+        "Go home",
+        "LandingArea",
+        "Home",
+        "Index",
+        "Sign in again",
+        "AccountArea",
+        "Account",
+        "Login");
+}
+
+<partial name="_AccountErrorPage" model="page" />

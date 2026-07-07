@@ -24,6 +24,7 @@ public static class Errors
     public static Error CarrierNotAvailable(string message) => new(ErrorCode.CARRIER_NOT_AVAILABLE, message);
     public static Error FailedToAssign(string message) => new(ErrorCode.FAILED_TO_ASSIGN, message);
     public static Error BundleNotFound(string message) => new(ErrorCode.BUNDLE_NOT_FOUND, message);
+    public static Error ShipmentCreationFailed(string message) => new(ErrorCode.SHIPMENT_CREATION_FAILED, message);
     public static Error CarrierNotActive(Guid carrierId) => new(ErrorCode.CARRIER_NOT_ACTIVE, $"Carrier {carrierId} is not active.");
     public static Error ShipmentNotAssigned(Guid shipmentId, Guid carrierId) => new(ErrorCode.SHIPMENT_NOT_ASSIGNED, $"Shipment {shipmentId} is not assigned to Carrier {carrierId}.");
     public static Error InvalidCarrierStatus() => new(ErrorCode.INVALID_CARRIER_STATUS, "Carrier is not in valid status.");

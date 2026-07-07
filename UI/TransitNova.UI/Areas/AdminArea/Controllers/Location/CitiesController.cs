@@ -56,7 +56,17 @@ public sealed class CitiesController(
     }
 
     [HttpGet("{cityId:int}")]
-    public IActionResult Edit(int cityId) => View(new CityFormViewModel());
+    public async Task<IActionResult> Edit(int cityId, CancellationToken cancellationToken)
+    {
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminCityQuery.GetCityByIdAsync(cityId, token!, ct), cancellationToken: cancellationToken);
+
+        if (response.IsFailure)
+            return HandleGetFailure(response);
+
+        return response.Data is null
+            ? RedirectToAction("NotFound", "Errors", new { area = "AccountArea" })
+            : View(PrefillViewModelFactory.City(response.Data));
+    }
 
     [HttpPost("{cityId:int}")]
     [ValidateAntiForgeryToken]

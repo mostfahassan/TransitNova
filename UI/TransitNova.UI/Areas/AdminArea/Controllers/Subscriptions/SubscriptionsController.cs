@@ -21,8 +21,8 @@ public sealed class SubscriptionsController(
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
 
-    [HttpGet("{bundleId:int}")]
-    public async Task<IActionResult> BundleSubscribers(int bundleId, CancellationToken cancellationToken)
+    [HttpGet("{bundleId:guid}")]
+    public async Task<IActionResult> BundleSubscribers(Guid bundleId, CancellationToken cancellationToken)
     {
         var response = await apiInvoker.ExecuteAsync((token, ct) => adminSubscriptionQuery.GetBundleSubscribersAsync(bundleId, token!, ct), cancellationToken: cancellationToken);
 

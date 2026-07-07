@@ -12,6 +12,7 @@ using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.OperationManagers.Quer
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Roles.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Roles.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Subscriptions.Query;
+using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Trips.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Users.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Vehicles.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Vehicles.Query;
@@ -42,6 +43,8 @@ using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Roles.Queries;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Roles.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Subscriptions.Queries;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Subscriptions.Segregation;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Trips.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Trips.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Users.Queries;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Users.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Vehicles.Commands;
@@ -132,6 +135,11 @@ public static class AdminApiClientRegistrationExtensions
         services.AddScoped<IAdminSubscriptionQuery, AdminSubscriptionsQuery>();
         services.AddScoped<IGetBundleSubscribersQueryService, AdminSubscriptionsQuery>();
         services.AddScoped<IGetSubscriptionByIdQueryService, AdminSubscriptionsQuery>();
+
+        services.AddScoped<AdminTripsQuery>();
+        services.AddScoped<IAdminTripsQuery, AdminTripsQuery>();
+        services.AddScoped<IGetAdminTripByIdQueryService, AdminTripsQuery>();
+        services.AddScoped<IGetAdminTripsQueryService, AdminTripsQuery>();
 
         services.AddScoped<AdminUsersQuery>();
         services.AddScoped<IAdminUserQuery, AdminUsersQuery>();

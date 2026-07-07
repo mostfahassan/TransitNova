@@ -1,0 +1,79 @@
+@model object?
+@{
+    ViewData["Title"] = "Trip Details";
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Dispatch board",
+        Title = "Trip details",
+        Description = "Inspect the operational lane, manifest, and timing for a handled trip.",
+        SecondaryLabel = "Back to trips",
+        SecondaryController = "Trips",
+        SecondaryAction = "Index"
+    };
+    var shipments = AdminDisplay.Value(Model, "Shipments");
+    var tripType = AdminDisplay.Text(Model, "TripType");
+    var tripStatus = AdminDisplay.Text(Model, "Status", "badge");
+    var totalShipments = AdminDisplay.Text(Model, "TotalShipments");
+    var tripTypeKpi = new OpsKpiTileViewModel("Trip type", tripType, "Movement lane", "TR", "info");
+    var statusKpi = new OpsKpiTileViewModel("Status", tripStatus, "Current state", "ST", "warning");
+    var shipmentCountKpi = new OpsKpiTileViewModel("Shipments", totalShipments, "Manifest count", "SH", "success");
+    var detail = new OpsDetailViewModel
+    {
+        Title = "Trip detail",
+        Subtitle = "Handled trip projection from the API.",
+        Source = Model,
+        Controller = "Trips",
+        RouteIdName = "tripId",
+        IdPropertyPath = "Id",
+        Fields = new List<OpsTableColumnViewModel>
+        {
+            new("Trip", "Id", "id"),
+            new("Type", "TripType"),
+            new("Status", "Status", "badge"),
+            new("Carrier", "CarrierName"),
+            new("Carrier phone", "CarrierPhoneNumber"),
+            new("Warehouse", "WarehouseName"),
+            new("Address", "WarehouseAddress"),
+            new("Planned", "PlannedDate"),
+            new("Started", "StartTime"),
+            new("Ended", "EndTime"),
+            new("Shipments", "TotalShipments"),
+            new("Created by", "CreatedBy")
+        }
+    };
+    var shipmentTable = new OpsTableViewModel
+    {
+        Title = "Trip shipment manifest",
+        Subtitle = "Shipments currently moving on this handled trip.",
+        Source = shipments,
+        Controller = "Shipments",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id",
+        ShowDetails = true,
+        Columns = new List<OpsTableColumnViewModel>
+        {
+            new("Tracking", "TrackingNumber", "id"),
+            new("Status", "CurrentStatus", "badge"),
+            new("Receiver", "Receiver.FullName|Receiver.Email"),
+            new("Pickup", "PickupAddress"),
+            new("Delivery", "DeliveryAddress"),
+            new("Cost", "ShippingCost")
+        },
+        EmptyTitle = "No shipments on this trip",
+        EmptyDescription = "The shipment manifest will show here when the trip carries shipments."
+    };
+}
+
+<partial name="_OpsPageHeader" model="header" />
+
+<section class="mb-6 grid gap-4 md:grid-cols-3">
+    <partial name="_OpsKpiTile" model="tripTypeKpi" />
+    <partial name="_OpsKpiTile" model="statusKpi" />
+    <partial name="_OpsKpiTile" model="shipmentCountKpi" />
+</section>
+
+<partial name="_OpsDetail" model="detail" />
+
+<section class="mt-6">
+    <partial name="_OpsTable" model="shipmentTable" />
+</section>

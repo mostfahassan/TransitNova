@@ -6,7 +6,7 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Bundles.Query
 {
     public class AdminBundlesQuery(IHttpHandler httpHandler, HttpClient httpClient) : ApiServiceBase(httpHandler, httpClient), IAdminBundlesQuery
     {
-        public Task<ApiResponse<UiRetrieveBundleDto?>> GetBundleByIdAsync(int bundleId, string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<UiRetrieveBundleDto?>> GetBundleByIdAsync(Guid bundleId, string bearerToken, CancellationToken cancellationToken = default)
         {
             object? content = null;
             string? idempotentKey = null;

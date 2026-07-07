@@ -29,7 +29,7 @@
     <form method="get" class="grid gap-4 lg:grid-cols-[1fr_180px_180px_180px_auto] lg:items-end">
         <div>
             <label class="ops-label" for="SearchTerm">Search shipment</label>
-            <input id="SearchTerm" name="SearchTerm" class="ops-input" placeholder="Tracking number, city, address" />
+            <input id="SearchTerm" name="SearchTerm" value="@Context.Request.Query["SearchTerm"]" class="ops-input" placeholder="Tracking number, city, address" />
         </div>
         <div>
             <label class="ops-label" for="Status">Status</label>

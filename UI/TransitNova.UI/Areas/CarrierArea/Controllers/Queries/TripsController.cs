@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Trips.Carriers.Segregations.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Trips.Carriers.Segregations.Query;
+
 namespace TransitNova.UI.Areas.CarrierArea.Controllers.Queries;
 
 [Authorize(Roles = Role.Carrier)]
@@ -9,7 +11,9 @@ namespace TransitNova.UI.Areas.CarrierArea.Controllers.Queries;
 [Route("[area]/[controller]/[action]")]
 public sealed class TripsController(
     IBackendApiInvoker apiInvoker,
-    ICarrierTripsQuery carrierTripsQuery)
+    IIdempotencyKeyFactory idempotencyKeyFactory,
+    ICarrierTripsQuery carrierTripsQuery,
+    ICarrierTripsCommand carrierTripsCommand)
     : AppControllerBase
 {
     [HttpGet]
@@ -33,5 +37,21 @@ public sealed class TripsController(
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
-}
 
+    [HttpPost("{tripId:guid}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Complete(Guid tripId, CancellationToken cancellationToken)
+    {
+        if (ResolvedCarrierId is not Guid carrierId)
+            return Challenge();
+
+        var response = await apiInvoker.ExecuteAsync((token, ct) => carrierTripsCommand.CompleteCarrierTripAsync(carrierId, tripId, token!, idempotencyKeyFactory.Create(), ct), cancellationToken: cancellationToken);
+
+        if (response.IsFailure)
+            ApiError(response);
+        else
+            Success("Trip completed successfully.");
+
+        return RedirectToAction(nameof(Details), new { tripId });
+    }
+}

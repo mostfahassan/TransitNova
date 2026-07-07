@@ -1,4 +1,4 @@
-﻿namespace TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork
+namespace TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork
 {
     public interface IUnitOfWork:IDisposable
 

@@ -1,0 +1,74 @@
+@model object?
+@{
+    ViewData["Title"] = "Trips";
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Dispatch board",
+        Title = "Handled trips",
+        Description = "Review only the trips attached to carriers handled by your operation queue.",
+        PrimaryLabel = "Fleet status",
+        PrimaryController = "Carriers",
+        PrimaryAction = "Index",
+        SecondaryLabel = "Live tracking",
+        SecondaryController = "Shipments",
+        SecondaryAction = "Index"
+    };
+    var table = new OpsTableViewModel
+    {
+        Title = "Trip list",
+        Subtitle = "Trips scoped to your handled carriers.",
+        Source = Model,
+        Controller = "Trips",
+        RouteIdName = "tripId",
+        IdPropertyPath = "Id",
+        ShowDetails = true,
+        Columns = new List<OpsTableColumnViewModel>
+        {
+            new("Trip", "Id", "id"),
+            new("Type", "TripType"),
+            new("Status", "Status", "badge"),
+            new("Carrier", "CarrierName"),
+            new("Warehouse", "WarehouseName"),
+            new("Shipments", "TotalShipments"),
+            new("Planned", "PlannedDate"),
+            new("Started", "StartTime"),
+            new("Ended", "EndTime")
+        },
+        EmptyTitle = "No trips found",
+        EmptyDescription = "Trips for handled carriers will appear here when they match your filters."
+    };
+}
+
+<partial name="_OpsPageHeader" model="header" />
+
+<section class="ops-card mb-6 p-5">
+    <form method="get" class="grid gap-4 lg:grid-cols-[repeat(6,minmax(0,1fr))_auto] lg:items-end">
+        <div>
+            <label class="ops-label" for="Id">Trip Id</label>
+            <input id="Id" name="Id" value="@Context.Request.Query["Id"]" class="ops-input" placeholder="Trip Guid" autocomplete="off" />
+        </div>
+        <div>
+            <label class="ops-label" for="TripType">Trip type</label>
+            <input id="TripType" name="TripType" value="@Context.Request.Query["TripType"]" class="ops-input" placeholder="Pickup / Delivery" autocomplete="off" />
+        </div>
+        <div>
+            <label class="ops-label" for="Status">Status</label>
+            <input id="Status" name="Status" value="@Context.Request.Query["Status"]" class="ops-input" placeholder="Planned / Started" autocomplete="off" />
+        </div>
+        <div>
+            <label class="ops-label" for="CarrierId">Carrier Id</label>
+            <input id="CarrierId" name="CarrierId" value="@Context.Request.Query["CarrierId"]" class="ops-input" placeholder="Carrier Guid" autocomplete="off" />
+        </div>
+        <div>
+            <label class="ops-label" for="From">From</label>
+            <input id="From" name="From" value="@Context.Request.Query["From"]" type="date" class="ops-input" />
+        </div>
+        <div>
+            <label class="ops-label" for="To">To</label>
+            <input id="To" name="To" value="@Context.Request.Query["To"]" type="date" class="ops-input" />
+        </div>
+        <button type="submit" class="ops-button h-[46px]">Filter</button>
+    </form>
+</section>
+
+<partial name="_OpsTable" model="table" />

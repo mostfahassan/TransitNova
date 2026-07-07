@@ -77,9 +77,7 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         TransportationMode mode,
         Guid? packageBundleId,
         Guid paymentId,
-        PaymentMethod paymentMethod,
-        decimal shipmentCost,
-        DateTime deliveryDate)
+        PaymentMethod paymentMethod)
     {
         Id = Guid.CreateVersion7();
 
@@ -97,9 +95,6 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         PickupAddress = pickupAddress;
 
         PackageBundleId = packageBundleId;
-        ShipmentCost = shipmentCost;
-
-        EstimatedDeliveryDate = deliveryDate;
 
         TrackingNumber = GenerateTrackingNumber();
         CurrentStatus = ShipmentStatuses.Pending;
@@ -123,9 +118,7 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         TransportationMode mode,
         Guid? packageBundleId,
         Guid paymentId,
-        PaymentMethod paymentMethod,
-        decimal shipmentCost,
-        DateTime deliveryDate)
+        PaymentMethod paymentMethod)
     {
         var shipment = new Shipment(
             senderId,
@@ -139,9 +132,8 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             mode,
             packageBundleId,
             paymentId,
-            paymentMethod,
-            shipmentCost,
-            deliveryDate);
+            paymentMethod);
+
 
         shipment._shipmentStates.Add(
             shipment.CreateHistory(ShipmentStatuses.Pending));
@@ -360,5 +352,13 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
     {
         if (CurrentStatus is ShipmentStatuses.Delivered or ShipmentStatuses.Rejected)
             throw new InvalidShipmentStateException(Id, "NotFinalState", CurrentStatus.ToString());
+    }
+
+    public void SetShipmentCost(decimal cost,DateTime estimatedDeliveryDate)
+    {
+        if (cost < 0)
+            throw new DomainOperationException("Shipment cost cannot be negative.", "NEGATIVE_COST", nameof(Shipment), Id);
+        ShipmentCost = cost;
+        EstimatedDeliveryDate = estimatedDeliveryDate;
     }
 }

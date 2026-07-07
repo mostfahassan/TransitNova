@@ -1,6 +1,18 @@
 @model CreateShipmentViewModel
 @{
     ViewData["Title"] = "Create Shipment";
+
+    var formErrors = ViewData.ModelState
+        .Where(entry => entry.Value?.Errors.Count > 0)
+        .SelectMany(entry => entry.Value!.Errors.Select(error => new
+        {
+            entry.Key,
+            Message = string.IsNullOrWhiteSpace(error.ErrorMessage) ? "Invalid value." : error.ErrorMessage
+        }))
+        .ToArray();
+    var serverMessages = formErrors.Select(error => error.Message).Distinct(StringComparer.Ordinal).ToArray();
+    var hasFieldErrors = formErrors.Any(error => !string.IsNullOrWhiteSpace(error.Key));
+    var serverAlertTitle = hasFieldErrors ? "Please review the highlighted fields" : "Payment couldn't be completed";
 }
 
 <section class="customer-fade-up">
@@ -10,10 +22,26 @@
         <p class="mt-5 text-base leading-7 text-[#666666]">Receiver, route, package, and delivery preferences are kept on one page with instant checks before you submit.</p>
     </div>
 
-    <form asp-area="UserArea" asp-controller="Shipments" asp-action="Create" method="post" class="mx-auto mt-10 max-w-5xl space-y-6" data-loading-form data-loading-text="Processing..." data-customer-create-form>
+    <form asp-area="UserArea" asp-controller="Shipments" asp-action="Create" method="post" class="mx-auto mt-10 max-w-5xl space-y-6" data-customer-create-form>
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="PaymentId" />
         <input type="hidden" asp-for="PackageBundleId" />
+
+        <div class="@(serverMessages.Length == 0 ? "hidden " : string.Empty)mx-auto max-w-5xl" data-create-alert role="alert" aria-live="polite">
+            <div class="rounded-[28px] border border-[#F3D1D1] bg-[#FDEBEC] p-5 text-[#9F2F2D] shadow-[0_1px_0_rgba(17,17,17,0.03),0_24px_60px_rgba(17,17,17,0.08)] md:p-6">
+                <div class="text-[11px] font-black uppercase tracking-[0.18em] text-[#B04443]">Shipment update</div>
+                <h2 class="mt-2 text-2xl font-black tracking-[-0.03em] text-[#7C1F1E]" data-create-alert-title>@serverAlertTitle</h2>
+                <div class="mt-3 space-y-2 text-sm leading-6 text-[#8E2C2A]" data-create-alert-message>
+                    @if (serverMessages.Length > 0)
+                    {
+                        foreach (var message in serverMessages)
+                        {
+                            <p>@message</p>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
 
         <section class="customer-card p-6 md:p-8">
             <div class="grid gap-8 lg:grid-cols-[280px_1fr]">
@@ -156,7 +184,7 @@
                     <p class="mt-3 text-sm leading-6 text-[#666666]">Any live validation issue appears inline before the backend receives the request.</p>
                 </div>
                 <div class="border-t border-[#EAEAEA] bg-[#FBFBFA] p-6 md:p-8 lg:border-l lg:border-t-0">
-                    <button type="submit" class="customer-button min-h-[52px] w-full">
+                    <button type="submit" class="customer-button min-h-[52px] w-full" data-create-submit-button>
                         <span class="customer-spinner hidden" data-button-spinner></span>
                         <span data-button-text>Create Shipment</span>
                     </button>
@@ -165,95 +193,53 @@
             </div>
         </section>
     </form>
+
+    <div class="fixed inset-0 z-50 hidden bg-[#111111]/55 px-4 py-8 backdrop-blur-sm" data-payment-overlay aria-hidden="true" role="status" aria-live="polite">
+        <div class="flex min-h-full items-center justify-center">
+            <div class="w-full max-w-md rounded-[32px] bg-[#111111] p-8 text-white shadow-[0_24px_80px_rgba(17,17,17,0.35)]">
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5">
+                    <div class="h-12 w-12 animate-spin rounded-full border-[3px] border-white/20 border-t-white"></div>
+                </div>
+                <h2 class="mt-6 text-center text-2xl font-black tracking-[-0.03em]">Processing payment</h2>
+                <p class="mt-3 text-center text-sm leading-6 text-white/70">This usually takes around 5 seconds.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed inset-0 z-[60] hidden bg-[#111111]/55 px-4 py-8 backdrop-blur-sm" data-invoice-modal aria-hidden="true">
+        <div class="flex min-h-full items-center justify-center">
+            <div class="w-full max-w-3xl rounded-[32px] border border-[#EAEAEA] bg-white shadow-[0_24px_80px_rgba(17,17,17,0.18)]" role="dialog" aria-modal="true" aria-labelledby="invoice-modal-title">
+                <div class="flex items-start justify-between gap-4 border-b border-[#EFEFED] px-6 py-6 md:px-8">
+                    <div>
+                        <div class="customer-badge customer-badge-success">Payment complete</div>
+                        <h2 id="invoice-modal-title" class="mt-4 text-3xl font-black tracking-[-0.03em] text-[#111111]">Invoice ready</h2>
+                        <p class="mt-3 max-w-2xl text-sm leading-6 text-[#666666]">Your invoice is ready. You can review the payment details now and continue to the shipment record when you are ready.</p>
+                    </div>
+                    <button type="button" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#EAEAEA] text-xl font-semibold text-[#444444] transition hover:border-[#D8D8D5] hover:bg-[#F7F7F6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111]" data-invoice-close aria-label="Close invoice">×</button>
+                </div>
+                <div class="space-y-8 px-6 py-6 md:px-8">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="rounded-full bg-[#F3F7F3] px-4 py-2 text-sm font-bold text-[#14532D]" data-invoice-status-badge>Pending</div>
+                        <div class="text-sm font-semibold text-[#666666]">Payment method: <span class="text-[#111111]" data-invoice-payment-method>Not available</span></div>
+                    </div>
+                    <dl class="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Payment ID</dt><dd class="mt-2 break-all text-sm font-semibold leading-6 text-[#111111]" data-invoice-payment-id>Not available</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Paid at</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-invoice-paid-at>Pending confirmation</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Shipping cost</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-invoice-shipping-cost>0.00</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Commission</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-invoice-commission>0.00</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4 sm:col-span-2"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Amount</dt><dd class="mt-2 text-2xl font-black tracking-[-0.03em] text-[#111111]" data-invoice-amount>0.00</dd></div>
+                        <div class="sm:col-span-2"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Notes</dt><dd class="mt-2 text-sm leading-6 text-[#444444]" data-invoice-notes>No additional notes.</dd></div>
+                    </dl>
+                </div>
+                <div class="flex flex-col-reverse gap-3 border-t border-[#EFEFED] px-6 py-6 md:flex-row md:justify-end md:px-8">
+                    <button type="button" class="customer-button-secondary min-h-[48px] justify-center" data-invoice-close>Close</button>
+                    <a href="#" class="customer-button min-h-[48px] justify-center" data-shipment-details-link>Show Shipment Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 @section Scripts {
-    <script>
-        (() => {
-            const form = document.querySelector('[data-customer-create-form]');
-            if (!form) return;
-
-            const serviceableCities = new Set(['1', '2', '3', '4', '5', '10', '11', '12', '20']);
-
-            async function validateWithFetch(result) {
-                const url = 'data:application/json,' + encodeURIComponent(JSON.stringify(result));
-                const response = await fetch(url);
-                return await response.json();
-            }
-
-            function errorTarget(input) {
-                return document.querySelector(`[data-error-for="${input.id}"]`);
-            }
-
-            function setState(input, message) {
-                const target = errorTarget(input);
-                const invalid = Boolean(message);
-                input.classList.toggle('is-invalid', invalid);
-                input.setAttribute('aria-invalid', invalid ? 'true' : 'false');
-                if (target) {
-                    target.textContent = message || '';
-                    target.classList.toggle('is-visible', invalid);
-                }
-            }
-
-            async function validateInput(input) {
-                let message = '';
-                const value = input.value.trim();
-
-                if (input.hasAttribute('data-live-required') && value.length < 2) {
-                    message = `${input.getAttribute('data-live-required')} is required.`;
-                }
-
-                if (!message && input.hasAttribute('data-live-email') && !/^\S+@@\S+\.\S+$/.test(value)) {
-                    message = 'Use a valid receiver email.';
-                }
-
-                if (!message && input.hasAttribute('data-live-phone') && value.replace(/\D/g, '').length < 10) {
-                    message = 'Use a reachable phone number with at least 10 digits.';
-                }
-
-                if (!message && input.hasAttribute('data-live-city')) {
-                    const check = await validateWithFetch({ ok: serviceableCities.has(value), message: 'This city is not serviceable yet. Choose one of your active service cities.' });
-                    if (!check.ok) message = check.message;
-                }
-
-                if (!message && input.hasAttribute('data-live-weight')) {
-                    const number = Number(value);
-                    const check = await validateWithFetch({ ok: number > 0 && number <= 35, message: 'Packages above 35 kg need a freight quote before submission.' });
-                    if (!check.ok) message = check.message;
-                }
-
-                if (!message && input.hasAttribute('data-live-dimension')) {
-                    const number = Number(value);
-                    const check = await validateWithFetch({ ok: number > 0 && number <= 160, message: 'Single-side dimensions must be 160 cm or less.' });
-                    if (!check.ok) message = check.message;
-                }
-
-                if (!message && input.hasAttribute('data-live-pickup-date') && value) {
-                    const selected = new Date(value);
-                    const now = new Date();
-                    const check = await validateWithFetch({ ok: selected > now, message: 'Pickup time must be in the future.' });
-                    if (!check.ok) message = check.message;
-                }
-
-                setState(input, message);
-                return !message;
-            }
-
-            form.querySelectorAll('input, textarea, select').forEach((input) => {
-                input.addEventListener('blur', () => validateInput(input));
-                input.addEventListener('change', () => validateInput(input));
-            });
-
-            form.addEventListener('submit', async (event) => {
-                const inputs = [...form.querySelectorAll('[data-live-required], [data-live-email], [data-live-phone], [data-live-city], [data-live-weight], [data-live-dimension], [data-live-pickup-date]')];
-                const results = await Promise.all(inputs.map(validateInput));
-                if (results.some(valid => !valid)) {
-                    event.preventDefault();
-                    const firstInvalid = form.querySelector('.is-invalid');
-                    firstInvalid?.focus();
-                }
-            });
-        })();
-    </script>
+    <script src="~/js/User/create-shipment.js" asp-append-version="true"></script>
 }

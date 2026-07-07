@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IPaymentService;
 using TransitNovaPayment.Busieness.Common.CQRS;
 using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ErrorsResult;

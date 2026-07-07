@@ -1,5 +1,6 @@
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Segregation;
 using TransitNovaUI.BusinessLayer.Common.APIHelper.Http;
+using TransitNovaUI.BusinessLayer.DTOs.Payment;
 
 namespace TransitNovaUI.BusinessLayer.ApiImplementation.User.Shipments.Command
 {
@@ -14,12 +15,12 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.User.Shipments.Command
             return SendRequestAsync(HttpMethod.Patch, url, bearerToken, cancellationToken,null, idempotentKey);
         }
 
-        public Task<ApiResponse<UiRetrieveShipmentDto>> CreateShipmentAsync(UiCreateShipmentDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<UiInvoiceDto>> CreateShipmentAsync(UiCreateShipmentDto model, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)
         {
             var content = UiCreateShipmentDto.ToDto(model);
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.UserShipments.CreateShipmentUrl));
 
-            return SendRequestAsync<UiRetrieveShipmentDto>(HttpMethod.Post, url, bearerToken, cancellationToken, content, idempotentKey);
+            return SendRequestAsync<UiInvoiceDto>(HttpMethod.Post, url, bearerToken, cancellationToken, content, idempotentKey);
         }
 
         public Task<ApiResponse> DeleteShipmentAsync(Guid shipmentId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default)

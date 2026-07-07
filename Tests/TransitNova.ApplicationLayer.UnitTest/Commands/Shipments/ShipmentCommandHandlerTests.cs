@@ -30,7 +30,7 @@ public sealed class ShipmentCommandHandlerTests
         var userId = Guid.NewGuid();
         var shipmentId = Guid.NewGuid();
         var dto = new RetrieveShipmentDto { Id = shipmentId, TrackingNumber = "TN-100", ShippingCost = 125 };
-        fixture.Service.Setup(x => x.PrepareShipmentCreationAsync(It.IsAny<CreateShipmentDto>(), userId, It.IsAny<CancellationToken>())).ReturnsAsync(shipmentId);
+        fixture.Service.Setup(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), userId, It.IsAny<CancellationToken>())).ReturnsAsync(shipmentId);
         fixture.Shipments.Setup(x => x.CreateShipmentForUserAsync(shipmentId, It.IsAny<CancellationToken>())).ReturnsAsync(dto);
         fixture.Users.Setup(x => x.FindByIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(new AppUserDto { Id = userId, FullName = "Ahmed Ali" });
         fixture.UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
@@ -56,7 +56,7 @@ public sealed class ShipmentCommandHandlerTests
     {
         var fixture = new CreateFixture();
         var shipmentId = Guid.NewGuid();
-        fixture.Service.Setup(x => x.PrepareShipmentCreationAsync(It.IsAny<CreateShipmentDto>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(shipmentId);
+        fixture.Service.Setup(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(shipmentId);
         fixture.Shipments.Setup(x => x.CreateShipmentForUserAsync(shipmentId, It.IsAny<CancellationToken>())).ReturnsAsync((RetrieveShipmentDto?)null);
 
         var result = await fixture.Handler.Handle(
@@ -79,14 +79,14 @@ public sealed class ShipmentCommandHandlerTests
         var token = source.Token;
         var userId = Guid.NewGuid();
         var shipmentId = Guid.NewGuid();
-        fixture.Service.Setup(x => x.PrepareShipmentCreationAsync(It.IsAny<CreateShipmentDto>(), userId, token)).ReturnsAsync(shipmentId);
+        fixture.Service.Setup(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), userId, token)).ReturnsAsync(shipmentId);
         fixture.Shipments.Setup(x => x.CreateShipmentForUserAsync(shipmentId, token)).ReturnsAsync(new RetrieveShipmentDto { Id = shipmentId, TrackingNumber = "TN-101" });
         fixture.Users.Setup(x => x.FindByIdAsync(userId, token)).ReturnsAsync(new AppUserDto { Id = userId, FullName = "Ahmed" });
         fixture.UnitOfWork.Setup(x => x.SaveChangesAsync(token)).ReturnsAsync(1);
 
         await fixture.Handler.Handle(new CreateShipmentCommand(Guid.NewGuid(), ValidCreateDto(), userId), token);
 
-        fixture.Service.Verify(x => x.PrepareShipmentCreationAsync(It.IsAny<CreateShipmentDto>(), userId, token), Times.Once);
+        fixture.Service.Verify(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), userId, token), Times.Once);
         fixture.Shipments.Verify(x => x.CreateShipmentForUserAsync(shipmentId, token), Times.Once);
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(token), Times.Once);
     }

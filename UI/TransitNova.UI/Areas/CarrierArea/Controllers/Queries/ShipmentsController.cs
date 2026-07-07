@@ -37,6 +37,23 @@ public sealed class ShipmentsController(
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
 
+
+    [HttpPost("{shipmentId:guid}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> PickedUp(Guid shipmentId, CancellationToken cancellationToken)
+    {
+        if (ResolvedCarrierId is not Guid carrierId)
+            return Challenge();
+
+        var response = await apiInvoker.ExecuteAsync((token, ct) => carrierShipmentsCommand.MarkShipmentPickedUpAsync(carrierId, shipmentId, token!, idempotencyKeyFactory.Create(), ct), cancellationToken: cancellationToken);
+
+        if (response.IsFailure)
+            ApiError(response);
+        else
+            Success("Shipment picked up successfully.");
+
+        return RedirectToAction(nameof(Details), new { shipmentId });
+    }
     [HttpPost("{shipmentId:guid}")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CompletePickup(Guid shipmentId, CancellationToken cancellationToken)

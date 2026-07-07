@@ -1,4 +1,4 @@
-﻿using TransitNova.Domain.Contracts.DomainEvents;
+using TransitNova.Domain.Contracts.DomainEvents;
 using TransitNova.Domain.Contracts.DomainEvents.Events.TripDomainEvents;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.Common;
@@ -90,6 +90,8 @@ namespace TransitNova.Domain.Entities.MainEntities
             EnsureActive();
             if (CarrierId != carrierId)
                 throw new DomainOperationException("Only the assigned carrier can complete this trip.", "TRIP_CARRIER_MISMATCH", "Trip", Id);
+
+            EnsureShipmentsReadyForCompletion();
 
             Status = TripStatus.Completed;
             EndTime = DateTime.UtcNow;
@@ -185,6 +187,20 @@ namespace TransitNova.Domain.Entities.MainEntities
         {
             if (TripType != expectedType)
                 throw new TripPlanningException($"Trip must be a {expectedType} trip. Current type: {TripType}.", Id);
+        }
+
+        private void EnsureShipmentsReadyForCompletion()
+        {
+            var isReady = TripType switch
+            {
+                TripType.Pickup => Shipments.All(shipment => shipment.CurrentStatus == ShipmentStatuses.InWarehouse),
+                TripType.Delivery => Shipments.All(shipment => shipment.CurrentStatus == ShipmentStatuses.Delivered),
+                TripType.Mixed => Shipments.All(shipment => shipment.CurrentStatus is ShipmentStatuses.InWarehouse or ShipmentStatuses.Delivered),
+                _ => false
+            };
+
+            if (!isReady)
+                throw new DomainOperationException("All trip shipments must be completed before the trip can be completed.", "TRIP_SHIPMENTS_NOT_COMPLETED", "Trip", Id);
         }
 
     }

@@ -31,9 +31,6 @@ namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
             return response ?? ApiResponse<T>.FailedResponse(Errors.Failure("Failed to read command response."));
         }
 
-        public HttpRequestMessage RequestBuilder(HttpMethod httpMethod, object? content, string url, string? bearerToken, CancellationToken cancellationToken, string? idempotencyKey = null) =>
-            RequestBuilder(httpMethod, url, bearerToken, cancellationToken, content, idempotencyKey);
-
         public HttpRequestMessage RequestBuilder(HttpMethod httpMethod, string url, string? bearerToken, CancellationToken cancellationToken, object? content = null, string? idempotencyKey = null)
         {
             var request = new HttpRequestMessage(httpMethod, url);
@@ -78,7 +75,6 @@ namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
                 return CreateInvalidJsonResponse<TResponse>(httpResponse, body);
             }
         }
-
         private static TResponse? TryReadProblemDetailsResponse<TResponse>(HttpResponseMessage httpResponse, string body)
             where TResponse : ApiResponse
         {

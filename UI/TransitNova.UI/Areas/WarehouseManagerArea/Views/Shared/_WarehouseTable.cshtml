@@ -1,0 +1,97 @@
+@model WarehouseTableViewModel
+@{
+    var rows = AdminDisplay.Rows(Model.Source);
+    var totalCount = AdminDisplay.TotalCount(Model.Source);
+    var pageNumber = AdminDisplay.PageNumber(Model.Source);
+    var totalPages = AdminDisplay.TotalPages(Model.Source);
+}
+
+<section class="warehouse-card overflow-hidden">
+    <div class="flex flex-col gap-4 border-b border-[#EAEAEA] p-5 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+            <h2 class="text-lg font-black tracking-tight text-[#111111]">@Model.Title</h2>
+            <p class="mt-1 text-sm font-semibold text-[#787774]">@Model.Subtitle</p>
+        </div>
+        <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">
+            @totalCount records / page @pageNumber of @totalPages
+        </div>
+    </div>
+
+    @if (rows.Count == 0)
+    {
+        <div class="p-12 text-center">
+            <div class="mx-auto grid h-14 w-14 place-items-center rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] font-mono text-xs font-black text-[#787774]">WM</div>
+            <h3 class="mt-5 text-lg font-black text-[#111111]">@Model.EmptyTitle</h3>
+            <p class="mx-auto mt-2 max-w-md text-sm font-semibold leading-6 text-[#787774]">@Model.EmptyDescription</p>
+        </div>
+    }
+    else
+    {
+        <div class="overflow-x-auto">
+            <table class="warehouse-table">
+                <thead>
+                    <tr>
+                        @foreach (var column in Model.Columns)
+                        {
+                            <th>@column.Header</th>
+                        }
+                        @if (Model.ShowDetails)
+                        {
+                            <th class="text-right">Action</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var index = 0; index < rows.Count; index++)
+                    {
+                        var row = rows[index];
+                        var id = AdminDisplay.RouteValue(row, Model.IdPropertyPath);
+                        var routeValues = new RouteValueDictionary();
+                        if (id is not null)
+                        {
+                            routeValues[Model.RouteIdName] = id;
+                        }
+                        var detailsUrl = id is null ? null : Url.Action(Model.DetailsAction, Model.Controller, routeValues);
+                        <tr style="--row-index:@index">
+                            @foreach (var column in Model.Columns)
+                            {
+                                var text = AdminDisplay.Text(row, column.PropertyPath, column.Kind);
+                                <td>
+                                    @if (column.Kind == "badge")
+                                    {
+                                        <span class="@WarehouseBadge(text)">@text</span>
+                                    }
+                                    else if (column.Kind == "id")
+                                    {
+                                        <span class="font-mono text-xs font-black uppercase tracking-[0.1em] text-[#55524D]">@text</span>
+                                    }
+                                    else if (column.Kind == "currency")
+                                    {
+                                        <span class="font-mono text-sm font-black text-[#111111]">@text</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@text</span>
+                                    }
+                                </td>
+                            }
+                            @if (Model.ShowDetails)
+                            {
+                                <td class="text-right">
+                                    @if (!string.IsNullOrWhiteSpace(detailsUrl))
+                                    {
+                                        <a href="@detailsUrl" class="warehouse-button-secondary !min-h-9 !px-3">Open</a>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>
+
+@functions {
+    private static string WarehouseBadge(string value) => AdminDisplay.BadgeClass(value).Replace("admin-badge", "warehouse-badge", StringComparison.Ordinal);
+}

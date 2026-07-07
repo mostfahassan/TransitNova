@@ -12,7 +12,6 @@ using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ErrorsResult;
 using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ResultPattern;
 using TransitNovaPayment.Busieness.Contracts.Keys;
 using TransitNovaPayment.Busieness.Models.PaymentEntity;
-
 namespace TransitNovaPayment.Busieness.Common.Implementation
 {
     internal class PaymentProcess(
@@ -58,7 +57,7 @@ namespace TransitNovaPayment.Busieness.Common.Implementation
                 return BaseResult.Failure(Errors.Failure("Incorrect Payment Method, Payment Method Is Not Available Right Now"));
             }
 
-            var totalAmount = executedService.Pay(dto.ShippingCost);
+            var totalAmount = executedService.Pay(dto.ShippingCost, dto.Currency);
             var createPayment = Payment.Create(totalAmount, dto.ShipmentId, dto.PaymentMethod);
 
             var executionResult = await paymentExecutionStrategy.ExecuteAsync(cancellationToken);

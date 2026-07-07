@@ -1,7 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
+using TransitNovaUI.BusinessLayer.ApiImplementation.Trips.Carriers.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Trips.Carriers.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Trips.OperationManager.Command;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Trips.Carriers.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Trips.Carriers.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Trips.Carriers.Segregations.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Trips.Carriers.Segregations.Query;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Trips.OperationManager.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Trips.OperationManager.Segregations.Commands;
@@ -12,6 +15,11 @@ public static class TripsApiClientRegistrationExtensions
 {
     public static IServiceCollection AddTripsApiClients(this IServiceCollection services)
     {
+        services.AddScoped<TripsCarrierTripsCommand>();
+        services.AddScoped<ICarrierTripsCommand, TripsCarrierTripsCommand>();
+        services.AddScoped<ITripsCarrierTripsCommand, TripsCarrierTripsCommand>();
+        services.AddScoped<ICompleteCarrierTripCommandService, TripsCarrierTripsCommand>();
+
         services.AddScoped<TripsCarrierTripsQuery>();
         services.AddScoped<ICarrierTripsQuery, TripsCarrierTripsQuery>();
         services.AddScoped<ITripsCarrierTripsQuery, TripsCarrierTripsQuery>();

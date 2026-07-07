@@ -2,6 +2,6 @@ namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Subscriptions.Co
 
 public interface ISubscribeToBundleCommandService
 {
-    Task<ApiResponse> SubscribeToBundleAsync(int bundleId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
+    Task<ApiResponse> SubscribeToBundleAsync(Guid bundleId, string bearerToken, string idempotentKey, CancellationToken cancellationToken = default);
 }
 

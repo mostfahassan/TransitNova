@@ -63,7 +63,7 @@ namespace TransitNova.Domain.Contracts.Caching
         public static class OperationManagers
         {
             public static string Dashboard(Guid operationManagerId) => $"{OperationManagersPrefix}:dashboard:id:{operationManagerId}";
-          
+
             public const string OperationManagersDashboard = $"{OperationManagersPrefix}:dashboard";
             public const string ActiveList = $"{OperationManagersPrefix}:active-list";
             public static string AssignedShipments(object filter) => $"{OperationManagersPrefix}:assigned-shipments:{Serialize(filter)}";
@@ -80,6 +80,7 @@ namespace TransitNova.Domain.Contracts.Caching
             public const string Managers = AdminsPrefix + ":managers";
             public static string Subscribers(Guid bundleId) => $"{AdminsPrefix}:subscribers:bundle-id:{bundleId}";
         }
+
         public static class Roles
         {
             public static string ById(Guid roleId) => $"{RolesPrefix}:id:{roleId}";
@@ -101,23 +102,25 @@ namespace TransitNova.Domain.Contracts.Caching
         public static class Trips
         {
             public static string Filter(object filterCriteria) => $"{TripsPrefix}:filter:{Serialize(filterCriteria)}";
-            public static string Details(Guid tripId) => $"{TripsPrefix}:id:{tripId}";
+            public static string Details(Guid tripId, Guid? handlerId = null) =>
+                handlerId.HasValue
+                    ? $"{TripsPrefix}:id:{tripId}:handler-id:{handlerId.Value}"
+                    : $"{TripsPrefix}:id:{tripId}";
         }
+
         public static class WarehouseManagers
         {
             public static string Filter(object filterCriteria) => $"{WarehouseManagersPrefix}:filter:{Serialize(filterCriteria)}";
-
             public static string Details(Guid warehouseManagerId) => $"{WarehouseManagersPrefix}:id:{warehouseManagerId}";
             public static string Dashboard(Guid warehouseManagerId) => $"{WarehouseManagersPrefix}:dashboard:warehouse-manager-id:{warehouseManagerId}";
-         
         }
+
         public static class Warehouse
         {
             public static string Filter(object filterCriteria) => $"{WarehousesPrefix}:filter:{Serialize(filterCriteria)}";
             public static string ById(Guid warehouseId) => $"{WarehousesPrefix}:id:{warehouseId}";
             public static string Dashboard(Guid warehouseId) => $"{WarehousesPrefix}:dashboard:warehouse-id:{warehouseId}";
             public const string List = WarehousesPrefix + ":list";
-
         }
 
         public static class Users

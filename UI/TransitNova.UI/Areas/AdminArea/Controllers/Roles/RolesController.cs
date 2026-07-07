@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Roles.Segregation;
+
 namespace TransitNova.UI.Areas.AdminArea.Controllers.Roles;
 
 [Authorize(Roles = Role.Admin)]
@@ -54,7 +55,17 @@ public sealed class RolesController(
     }
 
     [HttpGet("{roleId:guid}")]
-    public IActionResult Edit(Guid roleId) => View(new RoleFormViewModel());
+    public async Task<IActionResult> Edit(Guid roleId, CancellationToken cancellationToken)
+    {
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminRolesQuery.GetRoleByIdAsync(roleId, token!, ct), cancellationToken: cancellationToken);
+
+        if (response.IsFailure)
+            return HandleGetFailure(response);
+
+        return response.Data is null
+            ? RedirectToAction("NotFound", "Errors", new { area = "AccountArea" })
+            : View(PrefillViewModelFactory.Role(response.Data));
+    }
 
     [HttpPost("{roleId:guid}")]
     [ValidateAntiForgeryToken]

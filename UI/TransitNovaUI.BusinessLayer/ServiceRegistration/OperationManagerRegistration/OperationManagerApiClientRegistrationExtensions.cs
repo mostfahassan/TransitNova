@@ -5,6 +5,7 @@ using TransitNovaUI.BusinessLayer.ApiImplementation.OperationManager.Dashboard.Q
 using TransitNovaUI.BusinessLayer.ApiImplementation.OperationManager.Profile.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.OperationManager.Shipments.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.OperationManager.Shipments.Query;
+using TransitNovaUI.BusinessLayer.ApiImplementation.OperationManager.Trips.Query;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Carriers.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Carriers.Queries;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Carriers.Segregation;
@@ -14,6 +15,8 @@ using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Profile.
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Shipments.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Shipments.Queries;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Shipments.Segregation;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Trips.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Trips.Segregation;
 
 namespace TransitNovaUI.BusinessLayer.ServiceRegistration.OperationManagerRegistration;
 
@@ -55,6 +58,11 @@ public static class OperationManagerApiClientRegistrationExtensions
         services.AddScoped<IGetShipmentHistoriesQueryService, OperationManagerShipmentsQuery>();
         services.AddScoped<IGetShipmentReviewQueueQueryService, OperationManagerShipmentsQuery>();
         services.AddScoped<IReviewShipmentQueryService, OperationManagerShipmentsQuery>();
+
+        services.AddScoped<OperationManagerTripsQuery>();
+        services.AddScoped<IOperationManagerTripsQuery, OperationManagerTripsQuery>();
+        services.AddScoped<IGetOperationManagerTripByIdQueryService, OperationManagerTripsQuery>();
+        services.AddScoped<IGetOperationManagerTripsQueryService, OperationManagerTripsQuery>();
 
         return services;
     }

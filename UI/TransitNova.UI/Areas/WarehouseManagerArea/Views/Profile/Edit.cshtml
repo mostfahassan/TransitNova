@@ -1,0 +1,75 @@
+@model WarehouseManagerProfileFormViewModel
+@{
+    ViewData["Title"] = "Warehouse Manager Profile";
+    var header = new WarehousePageHeaderViewModel
+    {
+        Eyebrow = "Profile",
+        Title = "Warehouse manager profile",
+        Description = "Keep the manager profile aligned with warehouse assignment and operational contact information.",
+        PrimaryLabel = "Dashboard",
+        PrimaryController = "Dashboard",
+        PrimaryAction = "Index",
+        SecondaryLabel = "Shipment inventory",
+        SecondaryController = "Shipments",
+        SecondaryAction = "Index"
+    };
+}
+
+<partial name="_WarehousePageHeader" model="header" />
+
+<section class="warehouse-card overflow-hidden">
+    <div class="border-b border-[#EAEAEA] p-6">
+        <h2 class="text-xl font-black tracking-tight text-[#111111]">Profile details</h2>
+        <p class="mt-1 text-sm font-semibold text-[#787774]">This form is intentionally compact for office and tablet workflows.</p>
+    </div>
+    <form asp-area="WarehouseManagerArea" asp-controller="Profile" asp-action="Edit" method="post" class="p-6" data-warehouse-loading-form>
+        @Html.AntiForgeryToken()
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="WarehouseId" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="mb-5 rounded-xl border border-[#F2C7C7] bg-[#FDEBEC] p-4 text-sm font-bold text-[#9F2F2D]"></div>
+        <div class="grid gap-4 md:grid-cols-2">
+            <div>
+                <label asp-for="FirstName" class="warehouse-label"></label>
+                <input asp-for="FirstName" class="warehouse-input" autocomplete="given-name" />
+                <span asp-validation-for="FirstName" class="mt-1 block text-xs font-bold text-[#9F2F2D]"></span>
+            </div>
+            <div>
+                <label asp-for="LastName" class="warehouse-label"></label>
+                <input asp-for="LastName" class="warehouse-input" autocomplete="family-name" />
+                <span asp-validation-for="LastName" class="mt-1 block text-xs font-bold text-[#9F2F2D]"></span>
+            </div>
+            <div>
+                <label asp-for="Email" class="warehouse-label"></label>
+                <input asp-for="Email" class="warehouse-input" autocomplete="email" />
+                <span asp-validation-for="Email" class="mt-1 block text-xs font-bold text-[#9F2F2D]"></span>
+            </div>
+            <div>
+                <label asp-for="PhoneNumber" class="warehouse-label"></label>
+                <input asp-for="PhoneNumber" class="warehouse-input" autocomplete="tel" />
+                <span asp-validation-for="PhoneNumber" class="mt-1 block text-xs font-bold text-[#9F2F2D]"></span>
+            </div>
+            <div>
+                <label asp-for="CityId" class="warehouse-label"></label>
+                <input asp-for="CityId" class="warehouse-input" inputmode="numeric" />
+                <span asp-validation-for="CityId" class="mt-1 block text-xs font-bold text-[#9F2F2D]"></span>
+            </div>
+            <div>
+                <label asp-for="WarehouseId" class="warehouse-label"></label>
+                <input value="@Model.WarehouseId" class="warehouse-input" disabled />
+            </div>
+            <div class="md:col-span-2">
+                <label asp-for="Address" class="warehouse-label"></label>
+                <textarea asp-for="Address" rows="4" class="warehouse-input resize-none"></textarea>
+                <span asp-validation-for="Address" class="mt-1 block text-xs font-bold text-[#9F2F2D]"></span>
+            </div>
+        </div>
+        <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <a asp-area="WarehouseManagerArea" asp-controller="Dashboard" asp-action="Index" class="warehouse-button-secondary">Cancel</a>
+            <button type="submit" class="warehouse-button" data-loading-text="Saving...">Save profile</button>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -21,7 +21,7 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.Authentication.Command
     
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Authentication.LoginUrl));
 
-            return SendRequestAsync<UiAuthResponseDto>(HttpMethod.Post, url, null, cancellationToken, content);
+            return SendRequestAsync<UiAuthResponseDto>(HttpMethod.Post, url, null, cancellationToken, content ,null);
         }
 
         public Task<ApiResponse<UiAuthResponseDto>> RefreshTokenAsync(UiRefreshTokenDto model, CancellationToken cancellationToken = default)

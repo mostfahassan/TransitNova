@@ -5,7 +5,10 @@ namespace TransitNovaPayment.Busieness.Common.Abstract.PaymentMethods
     {
         public override decimal Commision => 0.015m;
         public override PaymentMethod PaymentMethod => PaymentMethod.MobileWallets;
-        public override decimal Pay(decimal shippingCost)
-           => shippingCost + (shippingCost * Commision);
+        public override decimal Pay(decimal shippingCost, Currency currency)
+        {
+            var rateExchange = GetCurrencyConversionRate(currency);
+            return shippingCost + (shippingCost * Commision) / rateExchange;
+        }
     }
 }

@@ -12,6 +12,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/AccountArea/Errors/StatusCode", "?statusCode={0}");
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSession();

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Profile.Segregation;
+
 namespace TransitNova.UI.Areas.CarrierArea.Controllers.Queries;
 
 [Authorize(Roles = Role.Carrier)]
@@ -33,7 +34,20 @@ public sealed class ProfileController(
     }
 
     [HttpGet]
-    public IActionResult Edit() => View(new CarrierProfileFormViewModel { Id = CurrentCarrierId ?? Guid.Empty });
+    public async Task<IActionResult> Edit(CancellationToken cancellationToken)
+    {
+        if (ResolvedCarrierId is not Guid carrierId)
+            return Challenge();
+
+        var response = await apiInvoker.ExecuteAsync((token, ct) => carrierProfileQuery.GetCarrierProfileAsync(carrierId, token!, ct), cancellationToken: cancellationToken);
+
+        if (response.IsFailure)
+            return HandleGetFailure(response);
+
+        return response.Data is null
+            ? RedirectToAction("NotFound", "Errors", new { area = "AccountArea" })
+            : View(PrefillViewModelFactory.CarrierProfile(response.Data));
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]

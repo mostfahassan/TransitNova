@@ -1,0 +1,328 @@
+:root {
+    --warehouse-bg: #F7F6F3;
+    --warehouse-paper: #FBFBFA;
+    --warehouse-card: #FFFFFF;
+    --warehouse-ink: #111111;
+    --warehouse-muted: #2F3437;
+    --warehouse-soft: #787774;
+    --warehouse-line: #EAEAEA;
+    --warehouse-green-bg: #EDF3EC;
+    --warehouse-green: #346538;
+    --warehouse-blue-bg: #E1F3FE;
+    --warehouse-blue: #1F6C9F;
+    --warehouse-amber-bg: #FBF3DB;
+    --warehouse-amber: #956400;
+    --warehouse-red-bg: #FDEBEC;
+    --warehouse-red: #9F2F2D;
+    --warehouse-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.warehouse-root,
+.warehouse-body {
+    min-height: 100%;
+    background: var(--warehouse-bg);
+    color: var(--warehouse-ink);
+    font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    text-rendering: optimizeLegibility;
+}
+
+.warehouse-body::before {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    content: "";
+    pointer-events: none;
+    background-image: linear-gradient(rgba(17, 17, 17, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(17, 17, 17, 0.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%);
+}
+
+.warehouse-shell {
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: 286px minmax(0, 1fr);
+}
+
+.warehouse-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--warehouse-line);
+    background: rgba(251, 251, 250, 0.94);
+    backdrop-filter: blur(18px);
+}
+
+.warehouse-main {
+    min-width: 0;
+    background: rgba(247, 246, 243, 0.84);
+}
+
+.warehouse-content {
+    width: min(1260px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 28px 0 56px;
+}
+
+.warehouse-card {
+    border: 1px solid var(--warehouse-line);
+    border-radius: 12px;
+    background: var(--warehouse-card);
+    box-shadow: 0 1px 0 rgba(17, 17, 17, 0.025), 0 18px 52px rgba(17, 17, 17, 0.035);
+}
+
+.warehouse-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 10px;
+    padding: 11px 12px;
+    color: var(--warehouse-muted);
+    font-size: 0.9rem;
+    font-weight: 780;
+    transition: background-color 180ms var(--warehouse-ease), color 180ms var(--warehouse-ease), transform 160ms var(--warehouse-ease);
+}
+
+.warehouse-sidebar-link svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+}
+
+.warehouse-sidebar-link:hover,
+.warehouse-sidebar-link.is-active {
+    background: #FFFFFF;
+    color: var(--warehouse-ink);
+}
+
+.warehouse-sidebar-link:active,
+.warehouse-button:active,
+.warehouse-button-secondary:active,
+.warehouse-button-danger:active {
+    transform: scale(0.98);
+}
+
+.warehouse-button,
+.warehouse-button-secondary,
+.warehouse-button-danger {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 8px;
+    padding: 0 14px;
+    font-size: 0.86rem;
+    font-weight: 850;
+    line-height: 1;
+    transition: transform 160ms var(--warehouse-ease), background-color 180ms var(--warehouse-ease), border-color 180ms var(--warehouse-ease), color 180ms var(--warehouse-ease), opacity 180ms var(--warehouse-ease);
+}
+
+.warehouse-button {
+    background: var(--warehouse-ink);
+    color: #FFFFFF;
+}
+
+.warehouse-button:hover { background: #2F3437; }
+
+.warehouse-button-secondary {
+    border: 1px solid var(--warehouse-line);
+    background: #FFFFFF;
+    color: var(--warehouse-ink);
+}
+
+.warehouse-button-secondary:hover {
+    border-color: rgba(17,17,17,0.18);
+    background: #FBFBFA;
+}
+
+.warehouse-button-danger {
+    border: 1px solid #F3D1D1;
+    background: var(--warehouse-red-bg);
+    color: var(--warehouse-red);
+}
+
+.warehouse-input,
+.warehouse-select,
+.warehouse-textarea {
+    width: 100%;
+    border: 1px solid var(--warehouse-line);
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: var(--warehouse-ink);
+    outline: none;
+    transition: border-color 180ms var(--warehouse-ease), box-shadow 180ms var(--warehouse-ease), background-color 180ms var(--warehouse-ease);
+}
+
+.warehouse-input,
+.warehouse-select { min-height: 44px; padding: 0 13px; }
+.warehouse-textarea { min-height: 120px; padding: 13px; resize: vertical; }
+
+.warehouse-input:focus,
+.warehouse-select:focus,
+.warehouse-textarea:focus {
+    border-color: rgba(17, 17, 17, 0.32);
+    box-shadow: 0 0 0 5px rgba(17, 17, 17, 0.08);
+}
+
+.warehouse-scan-input {
+    min-height: 74px;
+    border-radius: 12px;
+    padding: 0 22px;
+    font-family: "SF Mono", "IBM Plex Mono", Consolas, monospace;
+    font-size: clamp(1.45rem, 2.4vw, 2.15rem);
+    font-weight: 900;
+    letter-spacing: 0.04em;
+}
+
+.warehouse-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--warehouse-muted);
+    font-size: 0.74rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.warehouse-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.warehouse-table th {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--warehouse-line);
+    color: var(--warehouse-soft);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.warehouse-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--warehouse-line);
+    color: var(--warehouse-muted);
+    font-size: 0.88rem;
+    vertical-align: middle;
+}
+
+.warehouse-table tbody tr {
+    animation: warehouseFadeUp 580ms var(--warehouse-ease) both;
+    animation-delay: calc(var(--row-index, 0) * 58ms);
+    transition: background-color 160ms var(--warehouse-ease);
+}
+
+.warehouse-table tbody tr:hover { background: rgba(17, 17, 17, 0.035); }
+
+.warehouse-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.warehouse-badge::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: currentColor;
+    content: "";
+}
+
+.warehouse-badge-success { background: var(--warehouse-green-bg); color: var(--warehouse-green); }
+.warehouse-badge-warning { background: var(--warehouse-amber-bg); color: var(--warehouse-amber); }
+.warehouse-badge-danger { background: var(--warehouse-red-bg); color: var(--warehouse-red); }
+.warehouse-badge-info { background: var(--warehouse-blue-bg); color: var(--warehouse-blue); }
+.warehouse-badge-neutral { background: #F1F1EF; color: #55524D; }
+
+.warehouse-progress {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #F1F1EF;
+}
+
+.warehouse-progress > span {
+    display: block;
+    height: 100%;
+    width: var(--progress, 0%);
+    border-radius: inherit;
+    background: var(--progress-color, var(--warehouse-green));
+    transition: width 560ms var(--warehouse-ease);
+}
+
+.warehouse-fade-up,
+.warehouse-stagger > * {
+    animation: warehouseFadeUp 680ms var(--warehouse-ease) both;
+    animation-delay: calc(var(--item-index, 0) * 70ms);
+}
+
+.warehouse-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: none;
+    background: rgba(17, 17, 17, 0.36);
+    backdrop-filter: blur(5px);
+}
+
+.warehouse-modal-backdrop.is-open { display: block; }
+
+.warehouse-slide-over {
+    position: fixed;
+    inset-block: 0;
+    right: 0;
+    z-index: 70;
+    width: min(520px, 100%);
+    transform: translateX(100%);
+    border-left: 1px solid var(--warehouse-line);
+    background: #FFFFFF;
+    box-shadow: -24px 0 80px rgba(17, 17, 17, 0.12);
+    transition: transform 320ms var(--warehouse-ease);
+}
+
+.warehouse-slide-over.is-open { transform: translateX(0); }
+
+.warehouse-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.36);
+    border-top-color: #FFFFFF;
+    border-radius: 999px;
+    animation: warehouseSpin 760ms linear infinite;
+}
+
+@keyframes warehouseFadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes warehouseSpin { to { transform: rotate(360deg); } }
+
+@media (max-width: 1024px) {
+    .warehouse-shell { grid-template-columns: 1fr; }
+    .warehouse-sidebar { position: fixed; inset: 0 auto 0 0; z-index: 50; width: 286px; transform: translateX(-100%); transition: transform 260ms var(--warehouse-ease); }
+    .warehouse-sidebar.is-open { transform: translateX(0); }
+    .warehouse-content { width: min(100% - 24px, 1260px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

@@ -1,0 +1,43 @@
+@model object?
+@{
+    ViewData["Title"] = "Shipment details";
+    var header = new AdminPageHeaderViewModel
+    {
+        Eyebrow = "Shipment oversight",
+        Title = "Shipment details",
+        Description = "Inspect the full shipment record, status, package data, and sender/receiver context.",
+        SecondaryLabel = "Back",
+        SecondaryController = "Shipments",
+        SecondaryAction = "Index"
+    };
+    var detail = new AdminDetailViewModel
+    {
+        Title = "Shipment record",
+        Subtitle = "Administrative shipment projection returned by the API.",
+        Source = Model,
+        Controller = "Shipments",
+        IndexAction = "Index",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id|ShipmentId",
+        EditAction = null,
+        DeleteAction = null,
+        Fields = new List<AdminTableColumnViewModel>
+        {
+            new("Tracking", "TrackingNumber", "id"),
+            new("Status", "CurrentStatus|Status", "badge"),
+            new("Pickup", "PickupAddress|SenderCity"),
+            new("Delivery", "DeliveryAddress|ReceiverCity"),
+            new("Mode", "TransportationMode"),
+            new("Type", "ShipmentType"),
+            new("Cost", "ShippingCost|ShipmentCost", "currency"),
+            new("Estimated delivery", "EstimatedDeliveryDate"),
+            new("Created", "CreatedAt"),
+            new("Receiver", "Receiver.FullName|Receiver.Email"),
+            new("Sender", "Sender.FullName|Sender.Email"),
+            new("Rejection reason", "RejectionReason")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminDetail" model="detail" />

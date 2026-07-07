@@ -1,4 +1,4 @@
-﻿using TransitNova.Domain.Enums.Shipment;
+using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.BusinessLayer.DTOs.Shipment
 {
     public class ShipmentFilterDto
@@ -9,6 +9,7 @@ namespace TransitNova.BusinessLayer.DTOs.Shipment
         public DateTime? To { get; set; }
         public Guid? SenderId { get; set; }
         public Guid? WarehouseId { get; set; }
+        public string? SearchTerm { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
     }

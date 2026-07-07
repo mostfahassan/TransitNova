@@ -1,2 +1,14 @@
-@{ Layout = null; }
-<div></div>
+@model decimal?
+@{
+    ViewData["Title"] = "Carrier Revenue";
+    var revenue = Model ?? 0m;
+}
+
+<section class="carrier-fade-up mx-auto max-w-4xl">
+    <div class="carrier-card overflow-hidden">
+        <div class="grid gap-0 md:grid-cols-[1fr_300px]">
+            <div class="p-8"><div class="carrier-badge carrier-badge-info">Revenue</div><h2 class="mt-5 text-5xl font-black tracking-[-0.05em] text-[#111111]">@revenue.ToString("N2")</h2><p class="mt-3 text-sm leading-6 text-[#66615a]">Revenue summary for completed carrier delivery work returned by the backend analytics endpoint.</p></div>
+            <aside class="border-t border-[#E7E5E0] bg-[#FBFBFA] p-8 md:border-l md:border-t-0"><div class="text-xs font-black uppercase tracking-[0.14em] text-[#737373]">Operations</div><p class="mt-3 text-sm font-bold leading-6 text-[#111111]">Completed trips and delivered shipments are the primary source of carrier revenue movement.</p></aside>
+        </div>
+    </div>
+</section>

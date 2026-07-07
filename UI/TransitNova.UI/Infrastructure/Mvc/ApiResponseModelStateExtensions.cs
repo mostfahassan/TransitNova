@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using TransitNovaUI.BusinessLayer.ApiContracts;
-
 namespace TransitNova.UI.Infrastructure.Mvc;
 
 public static class ApiResponseModelStateExtensions

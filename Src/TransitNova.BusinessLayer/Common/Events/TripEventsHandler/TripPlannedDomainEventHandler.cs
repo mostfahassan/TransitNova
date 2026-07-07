@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using TransitNova.BusinessLayer.Interfaces.Repositories.NotificationRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.TripRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
@@ -14,7 +14,7 @@ namespace TransitNova.BusinessLayer.Common.Events.TripEventsHandler
     {
         public async Task Handle(TripPlannedDomainEvent notification, CancellationToken cancellationToken)
         {
-            var trip = await tripRepository.GetTripAsync(notification.Id, cancellationToken);
+            var trip = await tripRepository.GetTripAsync(t => t.Id == notification.Id, cancellationToken);
             if (trip is null)
                 return;
 

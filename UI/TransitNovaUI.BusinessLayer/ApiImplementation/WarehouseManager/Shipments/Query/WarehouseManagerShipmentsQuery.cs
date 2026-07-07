@@ -7,7 +7,6 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.WarehouseManager.Shipmen
     {
         public Task<ApiResponse<UiRetrieveShipmentDto>> GetWarehouseManagerShipmentByIdAsync(Guid warehouseId, Guid shipmentId, string bearerToken, CancellationToken cancellationToken = default)
         {
-            
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.WarehouseManagerShipments.GetShipmentByIdUrl, ("shipmentId", shipmentId), ("warehouseId", warehouseId)));
 
             return SendQueryRequestAsync<UiRetrieveShipmentDto>(HttpMethod.Get, url, bearerToken, cancellationToken);
@@ -15,8 +14,16 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.WarehouseManager.Shipmen
 
         public Task<ApiResponse<UiPagedResult<UiRetrieveShipmentDto>>> GetWarehouseManagerShipmentsAsync(Guid warehouseId, UiShipmentFilterDto filter, string bearerToken, CancellationToken cancellationToken = default)
         {
-          
-            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.WarehouseManagerShipments.GetShipmentsUrl, ("warehouseId", warehouseId), ("Status", filter.Status), ("Mode", filter.Mode), ("From", filter.From), ("To", filter.To), ("SenderId", filter.SenderId), ("PageNumber", filter.PageNumber), ("PageSize", filter.PageSize)));
+            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.WarehouseManagerShipments.GetShipmentsUrl,
+                ("warehouseId", warehouseId),
+                ("Status", filter.Status),
+                ("Mode", filter.Mode),
+                ("From", filter.From),
+                ("To", filter.To),
+                ("SenderId", filter.SenderId),
+                ("SearchTerm", filter.SearchTerm),
+                ("PageNumber", filter.PageNumber),
+                ("PageSize", filter.PageSize)));
 
             return SendQueryRequestAsync<UiPagedResult<UiRetrieveShipmentDto>>(HttpMethod.Get, url, bearerToken, cancellationToken);
         }

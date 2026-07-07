@@ -1,0 +1,76 @@
+@model object?
+@{
+    ViewData["Title"] = "Shipments";
+    var header = new AdminPageHeaderViewModel
+    {
+        Eyebrow = "Shipment oversight",
+        Title = "Shipments",
+        Description = "Review platform shipments, inspect their routing data, and jump into the full shipment record."
+    };
+    var fallback = new[]
+    {
+        new { Id = Guid.Parse("35000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-9021", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Customs", CurrentStatus = "Pending", TransportationMode = "Land", ShipmentType = "Express", ShippingCost = 1450m, CreatedAt = DateTime.Now.AddMinutes(-28) },
+        new { Id = Guid.Parse("35000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-9022", PickupAddress = "Giza Depot", DeliveryAddress = "Mansoura DC", CurrentStatus = "Approved", TransportationMode = "Land", ShipmentType = "Standard", ShippingCost = 920m, CreatedAt = DateTime.Now.AddHours(-2) },
+        new { Id = Guid.Parse("35000000-0000-0000-0000-000000000003"), TrackingNumber = "TN-9023", PickupAddress = "Suez Gate", DeliveryAddress = "Tanta Warehouse", CurrentStatus = "InWarehouse", TransportationMode = "Air", ShipmentType = "Fragile", ShippingCost = 1280m, CreatedAt = DateTime.Now.AddHours(-6) }
+    };
+    var source = AdminDisplay.Rows(Model).Count > 0 ? Model : fallback;
+    var table = new AdminTableViewModel
+    {
+        Title = "Shipment registry",
+        Subtitle = "Operationally relevant shipment records returned by the API.",
+        Source = source,
+        Controller = "Shipments",
+        RouteIdName = "shipmentId",
+        IdPropertyPath = "Id|ShipmentId",
+        ShowDetails = true,
+        ShowEdit = false,
+        ShowDelete = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Tracking", "TrackingNumber", "id"),
+            new("Status", "CurrentStatus|Status", "badge"),
+            new("Pickup", "PickupAddress|SenderCity"),
+            new("Delivery", "DeliveryAddress|ReceiverCity"),
+            new("Mode", "TransportationMode"),
+            new("Type", "ShipmentType"),
+            new("Cost", "ShippingCost|ShipmentCost", "currency"),
+            new("Created", "CreatedAt")
+        },
+        EmptyTitle = "No shipments found",
+        EmptyDescription = "Once shipments are returned by the API they will appear here."
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+
+<section class="admin-card mb-6 p-5">
+    <form method="get" class="grid gap-4 lg:grid-cols-[1fr_180px_180px_180px_auto] lg:items-end">
+        <div>
+            <label class="admin-label" for="SearchTerm">Search shipment</label>
+            <input id="SearchTerm" name="SearchTerm" value="@Context.Request.Query["SearchTerm"]" class="admin-input" placeholder="Tracking, city, address" />
+        </div>
+        <div>
+            <label class="admin-label" for="Status">Status</label>
+            <select id="Status" name="Status" class="admin-select">
+                <option value="">Any status</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="AssignedToPickUpCarrier">Pickup assigned</option>
+                <option value="InWarehouse">In warehouse</option>
+                <option value="AssignedToDeliveryCarrier">Delivery assigned</option>
+                <option value="Delivered">Delivered</option>
+            </select>
+        </div>
+        <div>
+            <label class="admin-label" for="From">From</label>
+            <input id="From" name="From" type="date" value="@Context.Request.Query["From"]" class="admin-input" />
+        </div>
+        <div>
+            <label class="admin-label" for="To">To</label>
+            <input id="To" name="To" type="date" value="@Context.Request.Query["To"]" class="admin-input" />
+        </div>
+        <button type="submit" class="admin-button h-[46px]">Filter</button>
+    </form>
+</section>
+
+<partial name="_AdminTable" model="table" />

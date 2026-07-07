@@ -1,2 +1,27 @@
-@{ Layout = null; }
-<div></div>
+@model CarrierAdditionalInfoFormViewModel
+@{
+    ViewData["Title"] = "Additional Info";
+}
+
+<section class="carrier-fade-up mx-auto max-w-4xl">
+    <div class="carrier-card overflow-hidden">
+        <div class="border-b border-[#E7E5E0] bg-[#FBFBFA] p-6">
+            <div class="carrier-badge carrier-badge-warning">Readiness</div>
+            <h2 class="mt-4 text-3xl font-black tracking-[-0.03em] text-[#111111]">Complete operational details</h2>
+        </div>
+        <form asp-action="AdditionalInfo" method="post" class="p-6" data-loading-form data-loading-text="Saving...">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div class="grid gap-4 md:grid-cols-2">
+                <div><label class="carrier-label" asp-for="LicenseNumber">License</label><input class="carrier-input" asp-for="LicenseNumber" /></div>
+                <div><label class="carrier-label" asp-for="MaxDailyShipments">Max daily shipments</label><input class="carrier-input" asp-for="MaxDailyShipments" type="number" min="1" /></div>
+                <div><label class="carrier-label" asp-for="DefaultCostPerKg">Cost per kg</label><input class="carrier-input" asp-for="DefaultCostPerKg" type="number" step="0.01" /></div>
+                <div><label class="carrier-label" asp-for="YearsOfExperience">Experience</label><input class="carrier-input" asp-for="YearsOfExperience" type="number" min="0" /></div>
+                <div><label class="carrier-label" asp-for="ContractStartDate">Contract start</label><input class="carrier-input" asp-for="ContractStartDate" type="date" /></div>
+                <div><label class="carrier-label" asp-for="ContractYears">Contract years</label><input class="carrier-input" asp-for="ContractYears" type="number" min="1" /></div>
+                <div class="md:col-span-2"><label class="carrier-label" asp-for="WarehouseId">Warehouse Id</label><input class="carrier-input" asp-for="WarehouseId" /></div>
+            </div>
+            <div class="mt-6 flex justify-end gap-3"><a asp-action="Index" class="carrier-button-secondary">Cancel</a><button type="submit" class="carrier-button"><span class="carrier-spinner hidden" data-button-spinner></span><span data-button-text>Save info</span></button></div>
+        </form>
+    </div>
+</section>

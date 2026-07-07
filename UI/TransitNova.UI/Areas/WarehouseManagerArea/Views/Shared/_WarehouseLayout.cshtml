@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" class="warehouse-root h-full">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TransitNova Warehouse</title>
+    <script src="~/Tailwind/tailwind.config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/WarehouseManager/warehousemanager.css" asp-append-version="true" />
+</head>
+<body class="warehouse-body">
+    <div class="warehouse-shell">
+        <partial name="_WarehouseSidebar" />
+
+        <main class="warehouse-main">
+            <header class="sticky top-0 z-30 border-b border-[#EAEAEA] bg-[#FBFBFA]/92 backdrop-blur-xl">
+                <div class="flex min-h-16 items-center justify-between gap-4 px-4 py-3 lg:px-8">
+                    <div class="flex min-w-0 items-center gap-3">
+                        <button type="button" data-warehouse-sidebar-toggle class="warehouse-button-secondary !h-10 !w-10 !p-0 lg:hidden" aria-label="Open warehouse navigation">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+                        </button>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">
+                                <span>Warehouse</span><span class="text-[#D0D0CD]">/</span><span>@(Context.Request.RouteValues["controller"]?.ToString() ?? "Console")</span><span class="text-[#D0D0CD]">/</span><span>@(Context.Request.RouteValues["action"]?.ToString() ?? "Index")</span>
+                            </div>
+                            <h1 class="mt-1 truncate text-sm font-extrabold text-[#111111]">@(ViewData["Title"] ?? "Warehouse Console")</h1>
+                        </div>
+                    </div>
+
+                    <form asp-area="WarehouseManagerArea" asp-controller="Shipments" asp-action="Index" method="get" class="hidden min-w-[320px] max-w-xl flex-1 items-center rounded-xl border border-[#EAEAEA] bg-white px-3 py-2 xl:flex">
+                        <svg class="h-4 w-4 text-[#787774]" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m21 21-4.35-4.35M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg>
+                        <input name="SearchTerm" class="ml-2 w-full bg-transparent text-sm font-semibold text-[#111111] outline-none placeholder:text-[#787774]" placeholder="Scan or search shipment, carrier, trip" aria-label="Warehouse global search" />
+                    </form>
+
+                    <div class="relative flex items-center gap-3">
+                        <a asp-area="WarehouseManagerArea" asp-controller="Shipments" asp-action="Index" class="warehouse-button-secondary hidden sm:inline-flex">Scan lane</a>
+                        <button type="button" data-warehouse-profile-button class="inline-flex items-center gap-2 rounded-xl border border-[#EAEAEA] bg-white py-1.5 pl-1.5 pr-3 transition-all duration-200 hover:border-black/15 active:scale-[0.98]">
+                            <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#111111] text-xs font-black text-white">WM</span>
+                            <span class="hidden text-sm font-bold text-[#111111] sm:inline">Manager</span>
+                        </button>
+                        <div data-warehouse-profile-menu class="warehouse-card absolute right-0 top-12 hidden w-56 p-2">
+                            <a asp-area="WarehouseManagerArea" asp-controller="Profile" asp-action="Edit" class="block rounded-lg px-3 py-2 text-sm font-semibold text-[#2F3437] transition-colors hover:bg-black/5">Edit profile</a>
+                            <a asp-area="AccountArea" asp-controller="Account" asp-action="ChangePassword" class="block rounded-lg px-3 py-2 text-sm font-semibold text-[#2F3437] transition-colors hover:bg-black/5">Change password</a>
+                            <form asp-area="AccountArea" asp-controller="Account" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="block w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#9F2F2D] transition-colors hover:bg-[#FDEBEC]">Sign out</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="warehouse-content warehouse-fade-up">
+                <partial name="_WarehouseFlash" />
+                @RenderBody()
+            </section>
+        </main>
+    </div>
+
+    <div data-warehouse-modal-backdrop class="warehouse-modal-backdrop"></div>
+    <script src="~/js/WarehouseManager/warehousemanager.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

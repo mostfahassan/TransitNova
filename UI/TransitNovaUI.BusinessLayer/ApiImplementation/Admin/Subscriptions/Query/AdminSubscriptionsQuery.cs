@@ -5,7 +5,7 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Subscriptions.Quer
 {
     public class AdminSubscriptionsQuery(IHttpHandler httpHandler, HttpClient httpClient) : ApiServiceBase(httpHandler, httpClient), IAdminSubscriptionQuery
     {
-        public Task<ApiResponse<List<UiUserProfileDto>>> GetBundleSubscribersAsync(int bundleId, string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<List<UiUserProfileDto>>> GetBundleSubscribersAsync(Guid bundleId, string bearerToken, CancellationToken cancellationToken = default)
         {
           
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Subscriptions.GetBundleSubscribersUrl, ("bundleId", bundleId)));

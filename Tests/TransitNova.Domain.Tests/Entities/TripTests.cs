@@ -106,15 +106,24 @@ public sealed class TripTests
     [Fact]
     public void Complete_Should_CompleteTrip_When_AssignedCarrierCompletesActiveTrip()
     {
-        var carrierId = Guid.NewGuid();
-        var trip = Trip.Plan(carrierId, Guid.NewGuid(), TripType.Pickup, [DomainTestData.CreatePickupAssignedShipment()]);
-        trip.StartTrip(Guid.NewGuid(), TripType.Pickup);
+        var (trip, _) = CreateCompletablePickupTrip();
 
-        trip.Complete(carrierId);
+        trip.Complete(trip.CarrierId);
 
         trip.Status.Should().Be(TripStatus.Completed);
         trip.EndTime.Should().NotBeNull();
         trip.GetDomainEvents().Should().Contain(e => e is TripCompletedDomainEvent);
+    }
+
+    [Fact]
+    public void Complete_Should_ThrowException_When_PickupShipmentsAreNotInWarehouse()
+    {
+        var trip = CreatePickupTrip();
+        trip.StartTrip(Guid.NewGuid(), TripType.Pickup);
+
+        var act = () => trip.Complete(trip.CarrierId);
+
+        act.Should().Throw<DomainOperationException>().Which.ErrorCode.Should().Be("TRIP_SHIPMENTS_NOT_COMPLETED");
     }
 
     [Fact]
@@ -143,8 +152,7 @@ public sealed class TripTests
     [Fact]
     public void Cancel_Should_ThrowException_When_TripIsCompleted()
     {
-        var trip = CreatePickupTrip();
-        trip.StartTrip(Guid.NewGuid(), TripType.Pickup);
+        var (trip, _) = CreateCompletablePickupTrip();
         trip.Complete(trip.CarrierId);
 
         var act = () => trip.Cancel(Guid.NewGuid());
@@ -179,4 +187,15 @@ public sealed class TripTests
 
     private static Trip CreatePickupTrip() =>
         Trip.Plan(Guid.NewGuid(), Guid.NewGuid(), TripType.Pickup, [DomainTestData.CreatePickupAssignedShipment()]);
+
+    private static (Trip Trip, Shipment Shipment) CreateCompletablePickupTrip()
+    {
+        var carrierId = Guid.NewGuid();
+        var shipment = DomainTestData.CreatePickupAssignedShipment();
+        var trip = Trip.Plan(carrierId, Guid.NewGuid(), TripType.Pickup, [shipment]);
+        trip.StartTrip(Guid.NewGuid(), TripType.Pickup);
+        shipment.AssignedAsPickupTrip(trip.Id, carrierId);
+        shipment.DeliveredToWarehouse(carrierId);
+        return (trip, shipment);
+    }
 }

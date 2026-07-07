@@ -1,0 +1,68 @@
+@model object?
+@{
+    ViewData["Title"] = "Warehouse Carriers";
+    var header = new WarehousePageHeaderViewModel
+    {
+        Eyebrow = "Carrier roster",
+        Title = "Warehouse carrier availability",
+        Description = "Review assigned carriers, served cities, active trips, and current operating status for this warehouse.",
+        PrimaryLabel = "Open trips",
+        PrimaryController = "Trips",
+        PrimaryAction = "Index",
+        SecondaryLabel = "Shipment inventory",
+        SecondaryController = "Shipments",
+        SecondaryAction = "Index"
+    };
+    var table = new WarehouseTableViewModel
+    {
+        Title = "Carrier roster",
+        Subtitle = "Compact carrier board optimized for warehouse dispatch decisions.",
+        Source = Model,
+        Controller = "Carriers",
+        RouteIdName = "carrierId",
+        IdPropertyPath = "Id",
+        Columns = new List<WarehouseTableColumnViewModel>
+        {
+            new("Carrier", "FullName"),
+            new("Status", "Status", "badge"),
+            new("Code", "Code", "id"),
+            new("Phone", "PhoneNumber"),
+            new("Rating", "Rating"),
+            new("Active trips", "ActiveTripsCount"),
+            new("Assigned", "AssignedShipmentsCount"),
+            new("Served cities", "ServedCities")
+        },
+        EmptyTitle = "No carriers assigned",
+        EmptyDescription = "Warehouse carriers matching the current filters will appear here."
+    };
+}
+
+<partial name="_WarehousePageHeader" model="header" />
+
+<section class="mb-6 warehouse-card p-5 md:p-6">
+    <form method="get" class="grid gap-3 lg:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))_auto] lg:items-end">
+        <div>
+            <label class="warehouse-label" for="SearchTerm">Carrier search</label>
+            <input id="SearchTerm" name="SearchTerm" value="@Context.Request.Query["SearchTerm"]" class="warehouse-input" placeholder="Name, code, phone" autocomplete="off" />
+        </div>
+        <div>
+            <label class="warehouse-label" for="City">City</label>
+            <input id="City" name="City" value="@Context.Request.Query["City"]" class="warehouse-input" placeholder="Service city" autocomplete="off" />
+        </div>
+        <div>
+            <label class="warehouse-label" for="Status">Status</label>
+            <input id="Status" name="Status" value="@Context.Request.Query["Status"]" class="warehouse-input" placeholder="Available" autocomplete="off" />
+        </div>
+        <div>
+            <label class="warehouse-label" for="MinRating">Min rating</label>
+            <input id="MinRating" name="MinRating" value="@Context.Request.Query["MinRating"]" class="warehouse-input" inputmode="decimal" placeholder="4.5" />
+        </div>
+        <div>
+            <label class="warehouse-label" for="VehicleType">Vehicle</label>
+            <input id="VehicleType" name="VehicleType" value="@Context.Request.Query["VehicleType"]" class="warehouse-input" placeholder="Van" autocomplete="off" />
+        </div>
+        <button type="submit" class="warehouse-button">Apply</button>
+    </form>
+</section>
+
+<partial name="_WarehouseTable" model="table" />

@@ -17,8 +17,11 @@ namespace TransitNova.InfraStructure.ServiceRegistration.InfraStructureRegistrat
                 var interceptor = sp.GetService<ConvertDomainEventsToOutboxMessages>();
                 var connectionString = GetConnectionString(configuration);
 
-                options.UseSqlServer(connectionString).AddInterceptors(interceptor!);
+                options.UseSqlServer(connectionString)
+                    .AddInterceptors(interceptor!);
             });
+            
+            
             services.AddDbContextFactory<AppDbContext>(options =>
             {
                 var connectionString = GetConnectionString(configuration);
