@@ -8,7 +8,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers
     public static class CarrierDashboardBuilder
     {
         public static CarrierDashboardDto Build(Dictionary<ShipmentStatuses, int> stats,
-            List<CarrierTripDto> trips, decimal totalRevenue, Carrier carrier, IEnumerable<RetrieveShipmentDto> recentShipments)
+            List<CarrierTripDto> trips, decimal totalRevenue,Guid carrierId ,string carrierName,  IEnumerable<RetrieveShipmentDto> recentShipments)
         {
             var assigned = stats.GetValueOrDefault(ShipmentStatuses.AssignedToPickUpCarrier)
                 + stats.GetValueOrDefault(ShipmentStatuses.AssignedToDeliveryCarrier)
@@ -23,7 +23,14 @@ namespace TransitNova.BusinessLayer.Features.Carriers
                 .ToList();
             return new CarrierDashboardDto
             {
-                Profile = CarrierProfileBuilder.FromCarrier(carrier),
+                Id = carrierId,
+                Name = carrierName,
+                CarrierName = carrierName,
+                Profile = new CarrierProfileDto
+                {
+                    Id = carrierId,
+                    FullName = carrierName
+                },
                 AssignedShipmentsCount = assigned,
                 DeliveredShipmentsCount = stats.GetValueOrDefault(ShipmentStatuses.Delivered),
                 PendingShipmentsCount = stats.GetValueOrDefault(ShipmentStatuses.Pending),
@@ -47,3 +54,4 @@ namespace TransitNova.BusinessLayer.Features.Carriers
         }
     }
 }
+

@@ -6,7 +6,10 @@ using TransitNova.Domain.Enums.Result;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiContracts;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Segregation;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Shared.Locations.Queries;
 using TransitNovaUI.BusinessLayer.DTOs.Payment;
+using TransitNovaUI.BusinessLayer.DTOs.City;
+using TransitNovaUI.BusinessLayer.DTOs.Country;
 
 namespace TransitNova.UI.Areas.UserArea.Controllers;
 
@@ -17,20 +20,34 @@ public sealed class ShipmentsController(
     IBackendApiInvoker apiInvoker,
     IIdempotencyKeyFactory idempotencyKeyFactory,
     IUserShipmentsQuery userShipmentsQuery,
-    IUserShipmentsCommand userShipmentsCommand)
+    IUserShipmentsCommand userShipmentsCommand,
+    IGetCountriesQueryService countriesQuery,
+    IGetCountryGovernmentsQueryService countryGovernmentsQuery,
+    IGetCitiesByGovernmentQueryService citiesByGovernmentQuery)
     : AppControllerBase
 {
     private const string PaymentFailureFallbackMessage = "No invoice was generated. Please review the payment method and try again.";
 
     [HttpGet]
-    public IActionResult Create() => View(new CreateShipmentViewModel());
+    public async Task<IActionResult> Create(CancellationToken cancellationToken)
+    {
+        var model = new CreateShipmentViewModel();
+        await PopulateShipmentLocationsAsync(model, cancellationToken);
+        return View(model);
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateShipmentViewModel model, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
-            return IsAjaxRequest() ? AjaxValidationFailure() : View(model);
+        {
+            if (IsAjaxRequest())
+                return AjaxValidationFailure();
+
+            await PopulateShipmentLocationsAsync(model, cancellationToken);
+            return View(model);
+        }
 
         var senderId = CurrentUserId;
         if (senderId is null)
@@ -41,7 +58,11 @@ public sealed class ShipmentsController(
         if (response.IsFailure || response.Data is null)
         {
             AddApiErrors(response);
-            return IsAjaxRequest() ? AjaxApiFailure(response) : View(model);
+            if (IsAjaxRequest())
+                return AjaxApiFailure(response);
+
+            await PopulateShipmentLocationsAsync(model, cancellationToken);
+            return View(model);
         }
 
         var shipmentDetailsUrl = Url.Action(nameof(Details), new { shipmentId = response.Data.ShipmentId })
@@ -62,6 +83,46 @@ public sealed class ShipmentsController(
 
         Success("Shipment created successfully.");
         return RedirectToAction(nameof(Details), new { shipmentId = response.Data.ShipmentId });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Governments(int countryId, CancellationToken cancellationToken)
+    {
+        if (countryId <= 0)
+            return BadRequest(new { message = "Country is required.", items = Array.Empty<LocationOptionViewModel>() });
+
+        try
+        {
+            var response = await apiInvoker.ExecuteAsync((token, ct) => countryGovernmentsQuery.GetCountryGovernmentsAsync(countryId, token!, ct), cancellationToken: cancellationToken);
+            if (response.IsFailure)
+                return LocationFailure(response);
+
+            return Json(new { items = ToLocationOptions(response.Data) });
+        }
+        catch (HttpRequestException)
+        {
+            return LocationUnavailable();
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Cities(int governmentId, CancellationToken cancellationToken)
+    {
+        if (governmentId <= 0)
+            return BadRequest(new { message = "Government is required.", items = Array.Empty<LocationOptionViewModel>() });
+
+        try
+        {
+            var response = await apiInvoker.ExecuteAsync((token, ct) => citiesByGovernmentQuery.GetCitiesByGovernmentAsync(governmentId, token!, ct), cancellationToken: cancellationToken);
+            if (response.IsFailure)
+                return LocationFailure(response);
+
+            return Json(new { items = ToLocationOptions(response.Data) });
+        }
+        catch (HttpRequestException)
+        {
+            return LocationUnavailable();
+        }
     }
 
     [HttpGet("{shipmentId:guid}")]
@@ -179,6 +240,46 @@ public sealed class ShipmentsController(
         Success("Shipment deleted successfully.");
         return RedirectToAction(nameof(DashboardController.Index), "Dashboard");
     }
+
+    private async Task PopulateShipmentLocationsAsync(CreateShipmentViewModel model, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var countriesResponse = await apiInvoker.ExecuteAsync((token, ct) => countriesQuery.GetCountriesAsync(token!, ct), cancellationToken: cancellationToken);
+            model.Countries = ToLocationOptions(countriesResponse.Data);
+
+            if (model.CountryId > 0)
+            {
+                var governmentsResponse = await apiInvoker.ExecuteAsync((token, ct) => countryGovernmentsQuery.GetCountryGovernmentsAsync(model.CountryId, token!, ct), cancellationToken: cancellationToken);
+                model.Governments = ToLocationOptions(governmentsResponse.Data);
+            }
+
+            if (model.GovernmentId > 0)
+            {
+                var citiesResponse = await apiInvoker.ExecuteAsync((token, ct) => citiesByGovernmentQuery.GetCitiesByGovernmentAsync(model.GovernmentId, token!, ct), cancellationToken: cancellationToken);
+                model.Cities = ToLocationOptions(citiesResponse.Data);
+            }
+        }
+        catch (HttpRequestException)
+        {
+            Error("Location data is temporarily unavailable. Try again after the API is running.");
+        }
+    }
+
+    private IActionResult LocationFailure(ApiResponse response) =>
+        StatusCode(response.StatusCode, new { message = ResolveApiMessage(response), items = Array.Empty<LocationOptionViewModel>() });
+
+    private IActionResult LocationUnavailable() =>
+        StatusCode(StatusCodes.Status503ServiceUnavailable, new { message = "Location service is unavailable.", items = Array.Empty<LocationOptionViewModel>() });
+
+    private static IReadOnlyCollection<LocationOptionViewModel> ToLocationOptions(IEnumerable<UiCountryDto>? countries) =>
+        countries?.Select(country => new LocationOptionViewModel(country.Id, country.Name)).ToArray() ?? [];
+
+    private static IReadOnlyCollection<LocationOptionViewModel> ToLocationOptions(IEnumerable<UiGovernmentDto>? governments) =>
+        governments?.Select(government => new LocationOptionViewModel(government.Id, government.Name)).ToArray() ?? [];
+
+    private static IReadOnlyCollection<LocationOptionViewModel> ToLocationOptions(IEnumerable<UiCityDto>? cities) =>
+        cities?.Select(city => new LocationOptionViewModel(city.Id, city.Name)).ToArray() ?? [];
 
     private bool IsAjaxRequest() =>
         string.Equals(Request.Headers.XRequestedWith, "XMLHttpRequest", StringComparison.OrdinalIgnoreCase)

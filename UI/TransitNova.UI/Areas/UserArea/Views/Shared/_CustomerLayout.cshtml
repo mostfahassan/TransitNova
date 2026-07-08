@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+@{
+    var notificationsPageUrl = Url.Action("Index", "Notifications", new { area = "UserArea" }) ?? "/UserArea/Notifications/Index";
+    var isNotificationsPage = string.Equals(Context.Request.RouteValues["controller"]?.ToString(), "Notifications", StringComparison.OrdinalIgnoreCase);
+}<!DOCTYPE html>
 <html lang="en" class="customer-root h-full">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/User/customer.css" asp-append-version="true" />
 </head>
-<body class="customer-body min-h-full">
+<body class="customer-body min-h-full" data-notifications-page-url="@notificationsPageUrl" data-notifications-session-url="/notifications/bridge/session" data-notifications-page="@(isNotificationsPage ? "true" : "false")">
     <div class="customer-shell">
         <header class="customer-nav-wrap">
             <nav class="customer-nav" aria-label="Customer navigation">
@@ -32,6 +35,12 @@
 
                 <div class="flex items-center gap-2">
                     <a asp-area="UserArea" asp-controller="Shipments" asp-action="Create" class="customer-button hidden sm:inline-flex">New Shipment</a>
+                    <a href="@notificationsPageUrl" class="relative inline-flex h-11 w-11 items-center justify-center rounded-[14px] border border-[#EAEAEA] bg-white text-[#111111] transition-all duration-200 hover:border-black/15 active:scale-[0.98] @(isNotificationsPage ? "border-[#111111]" : string.Empty)" aria-label="Notifications" data-notifications-trigger>
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M15.5 17.5h-7m10-1.6c-.9-1.1-1.4-2.4-1.4-3.8V9.7a5.1 5.1 0 0 0-10.2 0v2.4c0 1.4-.5 2.7-1.4 3.8l-.7.8c-.5.6-.1 1.5.7 1.5h13.8c.8 0 1.2-.9.7-1.5l-.7-.8ZM13.8 20a2 2 0 0 1-3.6 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+    </svg>
+    <span data-notification-badge class="absolute -right-1 -top-1 hidden min-w-[20px] rounded-full bg-[#9F2F2D] px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-white">0</span>
+</a>
                     <button type="button" class="customer-profile-button" data-customer-profile-button aria-label="Open profile menu">
                         <span class="grid h-9 w-9 place-items-center rounded-[10px] bg-[#111111] text-xs font-black text-white">CU</span>
                         <span class="hidden text-sm font-bold text-[#111111] lg:inline">Customer</span>
@@ -54,6 +63,8 @@
     </div>
 
     <script src="~/js/User/customer.js" asp-append-version="true"></script>
+    <script src="~/lib/signalr/signalr.min.js" asp-append-version="true"></script>
+    <script src="~/js/shared/notifications.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

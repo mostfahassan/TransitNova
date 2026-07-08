@@ -6,7 +6,7 @@
         Title = "Handled shipments",
         Description = "Shipments currently reviewed or handled by the selected operation manager.",
         PrimaryLabel = null,
-        PrimaryController = "OperationManagers",
+        PrimaryController = "Shipments",
         PrimaryAction = null
     };
     var table = new AdminTableViewModel
@@ -14,10 +14,10 @@
         Title = "Handled shipment ledger",
         Subtitle = "Paginated shipment workload returned by the backend.",
         Source = Model,
-        Controller = "OperationManagers",
+        Controller = "Shipments",
         RouteIdName = "shipmentId",
         IdPropertyPath = "Id|ShipmentId",
-        ShowDetails = false,
+        ShowDetails = true,
         ShowEdit = false,
         ShowDelete = false,
         Columns = new List<AdminTableColumnViewModel>
@@ -34,3 +34,4 @@
 
 <partial name="_AdminPageHeader" model="header" />
 <partial name="_AdminTable" model="table" />
+

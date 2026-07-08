@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+@{
+    var notificationsPageUrl = Url.Action("Index", "Notifications", new { area = "CarrierArea" }) ?? "/CarrierArea/Notifications/Index";
+    var isNotificationsPage = string.Equals(Context.Request.RouteValues["controller"]?.ToString(), "Notifications", StringComparison.OrdinalIgnoreCase);
+}<!DOCTYPE html>
 <html lang="en" class="carrier-root h-full">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/Carrier/carrier.css" asp-append-version="true" />
 </head>
-<body class="carrier-body min-h-full">
+<body class="carrier-body min-h-full" data-notifications-page-url="@notificationsPageUrl" data-notifications-session-url="/notifications/bridge/session" data-notifications-page="@(isNotificationsPage ? "true" : "false")">
     <div class="carrier-shell">
         <aside class="carrier-sidebar" data-carrier-sidebar>
             <a asp-area="CarrierArea" asp-controller="Dashboard" asp-action="Index" class="carrier-brand">
@@ -26,7 +29,8 @@
                 @NavLink("Trips", "Trips", "Index")
                 @NavLink("Shipments", "Shipments", "Index")
                 @NavLink("Vehicles", "Vehicles", "Index")
-                @NavLink("Profile", "Profile", "Index")
+                @NavLink("Profile", "Profile", "Index", true)
+                @NavLink("Complete Profile", "Profile", "AdditionalInfo", true)
                 @NavLink("Revenue", "Analytics", "Revenue")
                 @NavLink("Rating", "Analytics", "Rating")
             </nav>
@@ -46,6 +50,26 @@
                     <h1 class="mt-1 text-lg font-black tracking-[-0.02em] text-[#111111]">@ViewData["Title"]</h1>
                 </div>
                 <div class="ml-auto flex items-center gap-2">
+                    <a href="@notificationsPageUrl" class="relative inline-flex h-11 w-11 items-center justify-center rounded-[14px] border border-[#E7E5E0] bg-white text-[#111111] transition-all duration-200 hover:border-black/15 active:scale-[0.98] @(isNotificationsPage ? "border-[#111111]" : string.Empty)" aria-label="Notifications" data-notifications-trigger>
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M15.5 17.5h-7m10-1.6c-.9-1.1-1.4-2.4-1.4-3.8V9.7a5.1 5.1 0 0 0-10.2 0v2.4c0 1.4-.5 2.7-1.4 3.8l-.7.8c-.5.6-.1 1.5.7 1.5h13.8c.8 0 1.2-.9.7-1.5l-.7-.8ZM13.8 20a2 2 0 0 1-3.6 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+    </svg>
+    <span data-notification-badge class="absolute -right-1 -top-1 hidden min-w-[20px] rounded-full bg-[#9F2F2D] px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-white">0</span>
+</a>
+                    <div class="relative">
+                        <button type="button" class="inline-flex h-11 items-center gap-2 rounded-[14px] border border-[#E7E5E0] bg-white py-1.5 pl-1.5 pr-3 text-[#111111] transition-all duration-200 hover:border-black/15 active:scale-[0.98]" data-carrier-profile-button aria-label="Open carrier profile menu" aria-expanded="false">
+                            <span class="grid h-8 w-8 place-items-center rounded-[10px] bg-[#111111] text-xs font-black text-white">CA</span>
+                            <span class="hidden text-sm font-black text-[#111111] lg:inline">Carrier</span>
+                        </button>
+                        <div class="absolute right-0 top-12 z-40 hidden w-56 rounded-[12px] border border-[#E7E5E0] bg-white p-2 shadow-[0_18px_52px_rgba(17,17,17,.12)]" data-carrier-profile-menu>
+                            <a asp-area="CarrierArea" asp-controller="Profile" asp-action="Index" class="block rounded-[10px] px-3 py-2 text-sm font-bold text-[#2F3437] transition-colors hover:bg-black/[0.04]">Profile</a>
+                            <a asp-area="AccountArea" asp-controller="Account" asp-action="ChangePassword" class="block rounded-[10px] px-3 py-2 text-sm font-bold text-[#2F3437] transition-colors hover:bg-black/[0.04]">Change password</a>
+                            <form asp-area="AccountArea" asp-controller="Account" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="block w-full rounded-[10px] px-3 py-2 text-left text-sm font-bold text-[#9F2F2D] transition-colors hover:bg-[#FDEBEA]">Sign out</button>
+                            </form>
+                        </div>
+                    </div>
                     <a asp-area="CarrierArea" asp-controller="Trips" asp-action="Index" class="carrier-button-secondary hidden sm:inline-flex">Trips</a>
                     <a asp-area="CarrierArea" asp-controller="Shipments" asp-action="Status" class="carrier-button">Status</a>
                 </div>
@@ -58,15 +82,20 @@
     </div>
 
     <script src="~/js/Carrier/carrier.js" asp-append-version="true"></script>
+    <script src="~/lib/signalr/signalr.min.js" asp-append-version="true"></script>
+    <script src="~/js/shared/notifications.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
 
 @functions {
-    private IHtmlContent NavLink(string label, string controller, string action)
+    private IHtmlContent NavLink(string label, string controller, string action, bool matchAction = false)
     {
         var currentController = Context.Request.RouteValues["controller"]?.ToString();
-        var isActive = string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase);
+        var currentAction = Context.Request.RouteValues["action"]?.ToString();
+        var controllerMatches = string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase);
+        var actionMatches = string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase);
+        var isActive = controllerMatches && (!matchAction || actionMatches);
         var href = Url.Action(action, controller, new { area = "CarrierArea" }) ?? "#";
         var activeClass = isActive ? " is-active" : string.Empty;
         return new HtmlString($"<a class=\"carrier-nav-link{activeClass}\" href=\"{href}\">{label}</a>");

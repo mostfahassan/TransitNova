@@ -1,8 +1,9 @@
 @model object?
 @{
     ViewData["Title"] = "Shipment Details";
-    var source = Model ?? new { Id = Guid.Parse("33000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-4091", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Customs", SenderCity = "Cairo", ReceiverCity = "Alexandria", CurrentStatus = "Approved", TransportationMode = "Land", ShipmentType = "Express", ShippingCost = 1450, EstimatedDeliveryDate = DateTime.Now.AddHours(7), CreatedAt = DateTime.Now.AddMinutes(-42), RejectionReason = "-" };
+    var source = Model;
     var shipmentId = AdminDisplay.RouteValue(source, "Id|ShipmentId");
+    var hasShipment = !string.IsNullOrWhiteSpace(Convert.ToString(shipmentId));
     var status = AdminDisplay.Text(source, "CurrentStatus|Status");
     var pickupCity = AdminDisplay.Text(source, "SenderCity|PickupCity|PickupAddress");
     var deliveryCity = AdminDisplay.Text(source, "ReceiverCity|DeliveryCity|DeliveryAddress");
@@ -11,10 +12,10 @@
         Eyebrow = "Shipment record",
         Title = AdminDisplay.Text(source, "TrackingNumber", "id"),
         Description = "Operational details for routing, assignment, approval, and exception handling.",
-        SecondaryLabel = "History",
-        SecondaryController = "Shipments",
-        SecondaryAction = "Histories",
-        SecondaryRouteValues = new Dictionary<string, string> { ["shipmentId"] = Convert.ToString(shipmentId) ?? string.Empty }
+        SecondaryLabel = hasShipment ? "History" : null,
+        SecondaryController = hasShipment ? "Shipments" : null,
+        SecondaryAction = hasShipment ? "Histories" : null,
+        SecondaryRouteValues = hasShipment ? new Dictionary<string, string> { ["shipmentId"] = Convert.ToString(shipmentId) ?? string.Empty } : null
     };
     var detail = new OpsDetailViewModel
     {
@@ -23,8 +24,8 @@
         Source = source,
         Controller = "Shipments",
         IndexAction = "Index",
-        SecondaryLabel = "History",
-        SecondaryAction = "Histories",
+        SecondaryLabel = hasShipment ? "History" : null,
+        SecondaryAction = hasShipment ? "Histories" : null,
         RouteIdName = "shipmentId",
         IdPropertyPath = "Id|ShipmentId",
         Fields = new List<OpsTableColumnViewModel>
@@ -46,7 +47,7 @@
 <partial name="_OpsDetail" model="detail" />
 
 <section class="mt-6 grid gap-4 md:grid-cols-3">
-    @if (IsPending(status))
+    @if (hasShipment && IsPending(status))
     {
         <form asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Approve" asp-route-shipmentId="@shipmentId" method="post" data-confirm="Approve this shipment?" data-ops-ajax-form="true" class="ops-card p-5">
             @Html.AntiForgeryToken()
@@ -62,7 +63,7 @@
             <span class="ops-button-danger mt-5 w-full">Reject</span>
         </a>
     }
-    @if (IsApproved(status))
+    @if (hasShipment && IsApproved(status))
     {
         <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="AssignPickup" asp-route-shipmentId="@shipmentId" asp-route-city="@pickupCity" class="ops-card ops-lift p-5">
             <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Dispatch</div>
@@ -71,7 +72,7 @@
             <span class="ops-button-secondary mt-5 w-full">Open pickup panel</span>
         </a>
     }
-    @if (IsInWarehouse(status))
+    @if (hasShipment && IsInWarehouse(status))
     {
         <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="AssignDelivery" asp-route-shipmentId="@shipmentId" asp-route-city="@deliveryCity" class="ops-card ops-lift p-5">
             <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Dispatch</div>
@@ -80,12 +81,15 @@
             <span class="ops-button-secondary mt-5 w-full">Open delivery panel</span>
         </a>
     }
-    <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Histories" asp-route-shipmentId="@shipmentId" class="ops-card ops-lift p-5">
-        <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Timeline</div>
-        <h3 class="mt-2 text-lg font-extrabold text-[#111111]">View history</h3>
-        <p class="mt-2 text-sm leading-6 text-[#787774]">Audit each state transition and assigned carrier handoff.</p>
-        <span class="ops-button-secondary mt-5 w-full">Open history</span>
-    </a>
+    @if (hasShipment)
+    {
+        <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Histories" asp-route-shipmentId="@shipmentId" class="ops-card ops-lift p-5">
+            <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Timeline</div>
+            <h3 class="mt-2 text-lg font-extrabold text-[#111111]">View history</h3>
+            <p class="mt-2 text-sm leading-6 text-[#787774]">Audit each state transition and assigned carrier handoff.</p>
+            <span class="ops-button-secondary mt-5 w-full">Open history</span>
+        </a>
+    }
 </section>
 
 @functions {

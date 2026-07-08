@@ -1,7 +1,7 @@
 @model object?
 @{
     ViewData["Title"] = "Operations Dashboard";
-    string Metric(string path, string fallback) => AdminDisplay.Text(Model, path) == "-" ? fallback : AdminDisplay.Text(Model, path);
+    string Metric(string path) => AdminDisplay.Text(Model, path) == "-" ? "0" : AdminDisplay.Text(Model, path);
 
     var header = new OpsPageHeaderViewModel
     {
@@ -16,37 +16,15 @@
         SecondaryAction = "Index"
     };
 
-    var alerts = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentActivity")).Count > 0
-        ? AdminDisplay.Value(Model, "RecentActivity")
-        : new[]
-        {
-            new { Title = "Shipment #TN-409 stuck at customs", Description = "Alexandria port clearance is 42 minutes past SLA.", Status = "Delayed", OccurredAt = DateTime.Now.AddMinutes(-9) },
-            new { Title = "Pickup capacity tight in Cairo", Description = "Three requests are waiting for available pickup carriers.", Status = "Pending Dispatch", OccurredAt = DateTime.Now.AddMinutes(-18) }
-        };
-
-    var recentShipments = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentShipments")).Count > 0
-        ? AdminDisplay.Value(Model, "RecentShipments")
-        : new[]
-        {
-            new { Id = Guid.Parse("10000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-409", SenderCity = "Cairo", ReceiverCity = "Alexandria", CurrentStatus = "Delayed", ShipmentType = "Express", ShippinCost = 1450, CreatedAt = DateTime.Now.AddMinutes(-24) },
-            new { Id = Guid.Parse("10000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-883", SenderCity = "Giza", ReceiverCity = "Mansoura", CurrentStatus = "InTransit", ShipmentType = "Standard", ShippinCost = 910, CreatedAt = DateTime.Now.AddMinutes(-38) },
-            new { Id = Guid.Parse("10000000-0000-0000-0000-000000000003"), TrackingNumber = "TN-774", SenderCity = "Suez", ReceiverCity = "Tanta", CurrentStatus = "Pending", ShipmentType = "Fragile", ShippinCost = 1280, CreatedAt = DateTime.Now.AddHours(-1) }
-        };
-
-    var fleetRows = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentCarriers")).Count > 0
-        ? AdminDisplay.Value(Model, "RecentCarriers")
-        : new[]
-        {
-            new { Id = Guid.Parse("20000000-0000-0000-0000-000000000001"), FullName = "Ahmed Hassan", Status = "Available", ServedCities = new[] { "Cairo", "Alex" }, AssignedShipmentsCount = 3, ActiveTripsCount = 1, Rating = 4.8m },
-            new { Id = Guid.Parse("20000000-0000-0000-0000-000000000002"), FullName = "Mona Adel", Status = "Busy", ServedCities = new[] { "Giza", "Mansoura" }, AssignedShipmentsCount = 5, ActiveTripsCount = 2, Rating = 4.6m },
-            new { Id = Guid.Parse("20000000-0000-0000-0000-000000000003"), FullName = "Youssef Nabil", Status = "Available", ServedCities = new[] { "Suez", "Tanta" }, AssignedShipmentsCount = 2, ActiveTripsCount = 1, Rating = 4.9m }
-        };
+    var alerts = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentActivity"));
+    var recentShipments = AdminDisplay.Value(Model, "RecentShipments");
+    var fleetRows = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentCarriers"));
 
     var kpis = new List<OpsKpiTileViewModel>
     {
-        new("Active shipments", Metric("ActiveShipments", "128"), "Shipments currently moving across routes.", "tracking", "info"),
-        new("Available drivers", AdminDisplay.Rows(fleetRows).Count.ToString(), "Carrier pool ready for dispatch.", "driver", "success"),
-        new("Pending dispatches", Metric("PendingShipments", "14"), "Shipments waiting for assignment or review.", "dispatch", "warning")
+        new("Active shipments", Metric("ActiveShipments"), "Shipments currently moving across routes.", "tracking", "info"),
+        new("Available drivers", fleetRows.Count.ToString(), "Carrier pool ready for dispatch.", "driver", "success"),
+        new("Pending dispatches", Metric("PendingShipments"), "Shipments waiting for assignment or review.", "dispatch", "warning")
     };
 
     var shipmentTable = new OpsTableViewModel
@@ -56,7 +34,7 @@
         Source = recentShipments,
         Controller = "Shipments",
         RouteIdName = "shipmentId",
-        IdPropertyPath = "Id",
+        IdPropertyPath = "Id|ShipmentId",
         Columns = new List<OpsTableColumnViewModel>
         {
             new("Shipment", "TrackingNumber", "id"),
@@ -81,17 +59,24 @@
             <a class="ops-button-danger" asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="ReviewQueue">Open queue</a>
         </div>
     </div>
-    <div class="ops-stagger grid gap-px bg-[#F5D4D4] md:grid-cols-2">
-        @foreach (var alert in AdminDisplay.Rows(alerts).Take(2).Select((value, index) => new { value, index }))
-        {
-            <article class="bg-white p-5" style="--item-index:@alert.index">
-                <span class="@BadgeClass(AdminDisplay.Text(alert.value, "Status|CurrentStatus"))">@AdminDisplay.Text(alert.value, "Status|CurrentStatus")</span>
-                <h4 class="mt-3 text-base font-extrabold text-[#111111]">@AdminDisplay.Text(alert.value, "Title|TrackingNumber")</h4>
-                <p class="mt-2 text-sm leading-6 text-[#787774]">@AdminDisplay.Text(alert.value, "Description|Route|DeliveryAddress")</p>
-                <div class="mt-4 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#787774]">@AdminDisplay.Text(alert.value, "OccurredAt|CreatedAt")</div>
-            </article>
-        }
-    </div>
+    @if (alerts.Count == 0)
+    {
+        <div class="p-6 text-sm font-semibold text-[#787774]">No urgent alerts are currently returned by the database.</div>
+    }
+    else
+    {
+        <div class="ops-stagger grid gap-px bg-[#F5D4D4] md:grid-cols-2">
+            @foreach (var alert in alerts.Take(2).Select((value, index) => new { value, index }))
+            {
+                <article class="bg-white p-5" style="--item-index:@alert.index">
+                    <span class="@BadgeClass(AdminDisplay.Text(alert.value, "Status|CurrentStatus"))">@AdminDisplay.Text(alert.value, "Status|CurrentStatus")</span>
+                    <h4 class="mt-3 text-base font-extrabold text-[#111111]">@AdminDisplay.Text(alert.value, "Title|TrackingNumber")</h4>
+                    <p class="mt-2 text-sm leading-6 text-[#787774]">@AdminDisplay.Text(alert.value, "Description|Route|DeliveryAddress")</p>
+                    <div class="mt-4 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#787774]">@AdminDisplay.Text(alert.value, "OccurredAt|CreatedAt")</div>
+                </article>
+            }
+        </div>
+    }
 </section>
 
 <section class="ops-stagger grid gap-4 md:grid-cols-3">
@@ -110,7 +95,11 @@
             <p class="mt-1 text-sm leading-6 text-[#787774]">Driver availability, served zones, and current load.</p>
         </div>
         <div class="ops-stagger divide-y divide-[#EAEAEA]">
-            @foreach (var carrier in AdminDisplay.Rows(fleetRows).Take(5).Select((value, index) => new { value, index }))
+            @if (fleetRows.Count == 0)
+            {
+                <div class="p-6 text-sm font-semibold text-[#787774]">No carriers are currently returned by the database.</div>
+            }
+            @foreach (var carrier in fleetRows.Take(5).Select((value, index) => new { value, index }))
             {
                 <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="Details" asp-route-carrierId="@AdminDisplay.RouteValue(carrier.value, "Id")" class="block p-5 transition-colors hover:bg-black/[0.035]" style="--item-index:@carrier.index">
                     <div class="flex items-start justify-between gap-4">

@@ -90,6 +90,8 @@ public sealed class RegisterViewModel
 
 public sealed record LocationOptionViewModel(int Id, string Name);
 
+public sealed record WarehouseOptionViewModel(Guid Id, string Name);
+
 public sealed class ChangePasswordViewModel
 {
     [Required]
@@ -168,6 +170,17 @@ public sealed class ReceiverViewModel
 public sealed class CreateShipmentViewModel
 {
     public ReceiverViewModel Receiver { get; set; } = new();
+
+    [Range(1, int.MaxValue)]
+    public int CountryId { get; set; }
+
+    [Range(1, int.MaxValue)]
+    public int GovernmentId { get; set; }
+
+    public IReadOnlyCollection<LocationOptionViewModel> Countries { get; set; } = [];
+    public IReadOnlyCollection<LocationOptionViewModel> Governments { get; set; } = [];
+    public IReadOnlyCollection<LocationOptionViewModel> Cities { get; set; } = [];
+
     public PackageSpecificationViewModel PackageSpecification { get; set; } = new();
     public Currency Currency { get; set; }
     public DateTime? PickUpDate { get; set; }
@@ -659,12 +672,14 @@ public sealed class CarrierAdditionalInfoFormViewModel
     [Range(0, int.MaxValue)]
     public int YearsOfExperience { get; set; }
 
-    public DateTime ContractStartDate { get; set; } = DateTime.UtcNow;
+    public DateTime ContractStartDate { get; set; } = DateTime.UtcNow.Date.AddDays(1);
 
     [Range(1, int.MaxValue)]
     public int ContractYears { get; set; }
 
     public Guid WarehouseId { get; set; }
+
+    public IReadOnlyCollection<WarehouseOptionViewModel> Warehouses { get; set; } = [];
 
     public UiAdditionalInfoDto ToDto(Guid carrierId) => new()
     {

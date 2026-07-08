@@ -7,18 +7,12 @@
         Title = "Shipments",
         Description = "Review platform shipments, inspect their routing data, and jump into the full shipment record."
     };
-    var fallback = new[]
-    {
-        new { Id = Guid.Parse("35000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-9021", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Customs", CurrentStatus = "Pending", TransportationMode = "Land", ShipmentType = "Express", ShippingCost = 1450m, CreatedAt = DateTime.Now.AddMinutes(-28) },
-        new { Id = Guid.Parse("35000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-9022", PickupAddress = "Giza Depot", DeliveryAddress = "Mansoura DC", CurrentStatus = "Approved", TransportationMode = "Land", ShipmentType = "Standard", ShippingCost = 920m, CreatedAt = DateTime.Now.AddHours(-2) },
-        new { Id = Guid.Parse("35000000-0000-0000-0000-000000000003"), TrackingNumber = "TN-9023", PickupAddress = "Suez Gate", DeliveryAddress = "Tanta Warehouse", CurrentStatus = "InWarehouse", TransportationMode = "Air", ShipmentType = "Fragile", ShippingCost = 1280m, CreatedAt = DateTime.Now.AddHours(-6) }
-    };
-    var source = AdminDisplay.Rows(Model).Count > 0 ? Model : fallback;
+
     var table = new AdminTableViewModel
     {
         Title = "Shipment registry",
         Subtitle = "Operationally relevant shipment records returned by the API.",
-        Source = source,
+        Source = Model,
         Controller = "Shipments",
         RouteIdName = "shipmentId",
         IdPropertyPath = "Id|ShipmentId",

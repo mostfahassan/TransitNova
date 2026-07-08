@@ -7,6 +7,7 @@ using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Authentication.Segregatio
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Shared.Locations.Queries;
 using TransitNovaUI.BusinessLayer.DTOs.City;
 using TransitNovaUI.BusinessLayer.DTOs.Country;
+using TransitNovaUI.BusinessLayer.DTOs.UserProfile.Auth;
 
 namespace TransitNova.UI.Areas.AccountArea.Controllers;
 
@@ -71,7 +72,7 @@ public sealed class AccountController(
             return View(model);
         }
 
-        ApiResponse<TransitNovaUI.BusinessLayer.DTOs.UserProfile.Auth.UiAuthResponseDto> response;
+        ApiResponse<UiAuthResponseDto> response;
         try
         {
             response = await apiInvoker.ExecuteAsync((_, ct) => authenticationCommand.RegisterAsync(model.ToDto(), ct), requiresAuthentication: false, cancellationToken);

@@ -13,14 +13,7 @@
         SecondaryController = "Carriers",
         SecondaryAction = "Dispatch"
     };
-    var fallback = new[]
-    {
-        new { Id = Guid.Parse("30000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-4091", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Customs", SenderCity = "Cairo", ReceiverCity = "Alexandria", CurrentStatus = "Approved", ShipmentType = "Express", ShippingCost = 1450, CreatedAt = DateTime.Now.AddMinutes(-28) },
-        new { Id = Guid.Parse("30000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-5107", PickupAddress = "Giza Depot", DeliveryAddress = "Mansoura DC", SenderCity = "Giza", ReceiverCity = "Mansoura", CurrentStatus = "InWarehouse", ShipmentType = "Standard", ShippingCost = 920, CreatedAt = DateTime.Now.AddMinutes(-47) },
-        new { Id = Guid.Parse("30000000-0000-0000-0000-000000000003"), TrackingNumber = "TN-7120", PickupAddress = "Suez Gate", DeliveryAddress = "Tanta Warehouse", SenderCity = "Suez", ReceiverCity = "Tanta", CurrentStatus = "Pending", ShipmentType = "Fragile", ShippingCost = 1280, CreatedAt = DateTime.Now.AddHours(-2) }
-    };
-    var source = AdminDisplay.Rows(Model).Count > 0 ? Model : fallback;
-    var rows = AdminDisplay.Rows(source);
+    var rows = AdminDisplay.Rows(Model);
 }
 
 <partial name="_OpsPageHeader" model="header" />
@@ -77,6 +70,12 @@
                 </tr>
             </thead>
             <tbody>
+                @if (rows.Count == 0)
+                {
+                    <tr>
+                        <td colspan="7" class="py-12 text-center text-sm font-semibold text-[#787774]">No shipments matched the current filters.</td>
+                    </tr>
+                }
                 @for (var index = 0; index < rows.Count; index++)
                 {
                     var row = rows[index];

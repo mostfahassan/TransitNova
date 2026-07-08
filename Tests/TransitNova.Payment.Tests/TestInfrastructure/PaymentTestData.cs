@@ -82,7 +82,16 @@ internal static class PaymentTestData
 
         public override PaymentMethod PaymentMethod => paymentMethod;
 
-        public override decimal Pay(decimal shippingCost)
-            => shippingCost + (shippingCost * commission);
+        public override decimal Pay(decimal shippingCost,Currency currency)
+        {
+            var rate = currency switch
+            {
+                Currency.USD => 1m,
+                Currency.EUR => 0.9m,
+                Currency.EGB => 30m,
+                _ => throw new ArgumentOutOfRangeException(nameof(currency), currency, null)
+            };
+            return shippingCost + (shippingCost * commission / rate);
+        }
     }
 }

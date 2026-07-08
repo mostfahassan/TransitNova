@@ -168,6 +168,22 @@ public sealed class TransitNovaWebApplicationFactory : WebApplicationFactory<Pro
         context.WarehouseManagersProfiles.Add(manager);
         await context.SaveChangesAsync();
 
+        if (!await context.OperationManagerProfiles.AnyAsync(
+                operationManager => operationManager.AppUserId == TestAuthenticationHandler.UserId))
+        {
+            var operationManager = OperationManagerProfile.Create(
+                TestAuthenticationHandler.UserId,
+                "Integration",
+                "Operation Manager",
+                "integration-operation-manager@transitnova.test",
+                "01000000001",
+                "Integration Address",
+                city.Id);
+
+            context.OperationManagerProfiles.Add(operationManager);
+            await context.SaveChangesAsync();
+        }
+
         var warehouse = Warehouse.Create(
             "Integration Warehouse",
             WarehouseType.MainWarehouse,

@@ -7,9 +7,6 @@ using System.Net;
 using System.Text;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Payment;
-using TransitNova.BusinessLayer.Features.Payment.Command;
-using TransitNova.BusinessLayer.Features.Payment.Command.CommandValidator;
-using TransitNova.BusinessLayer.Features.Payment.Handler;
 using TransitNova.BusinessLayer.Interfaces.Services.PaymentService;
 using TransitNova.BusinessLayer.Options;
 using TransitNova.BusinessLayer.Services.PaymentServices;
@@ -143,51 +140,7 @@ public sealed class PaymentWorkflowTests
         result.Error!.Message.Should().Be("Payment service unreachable");
     }
 
-    [Fact]
-    public async Task CreatePaymentHandler_Should_ReturnInvoice_WhenPaymentServiceSucceedsAsync()
-    {
-        var invoice = new Invoice { PaymentId = Guid.NewGuid(), ShipmentId = Guid.NewGuid(), Amount = 100m, Status = "Success" };
-        var paymentService = new Mock<IPaymentService>();
-        paymentService.Setup(x => x.Pay(It.IsAny<CreatePaymentDto>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<Invoice>.Success(invoice));
-        var handler = new CreatePaymentHandler(paymentService.Object);
-        var dto = CreatePaymentRequest(invoice.ShipmentId, 90m);
-
-        var result = await handler.Handle(new CreatePaymentCommand(dto, Guid.NewGuid()), CancellationToken.None);
-
-        result.IsSuccess.Should().BeTrue();
-        result.Data.Should().BeSameAs(invoice);
-    }
-
-    [Fact]
-    public async Task CreatePaymentHandler_Should_PreservePaymentServiceError_WhenPaymentServiceFailsAsync()
-    {
-        var paymentService = new Mock<IPaymentService>();
-        paymentService.Setup(x => x.Pay(It.IsAny<CreatePaymentDto>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<Invoice>.Failure(Errors.FailedOperation("gateway rejected payment")));
-        var handler = new CreatePaymentHandler(paymentService.Object);
-
-        var result = await handler.Handle(new CreatePaymentCommand(CreatePaymentRequest(Guid.NewGuid(), 90m), Guid.NewGuid()), CancellationToken.None);
-
-        result.IsFailure.Should().BeTrue();
-        result.Error!.Message.Should().Be("gateway rejected payment");
-    }
-
-    [Fact]
-    public async Task CreatePaymentValidator_Should_RejectMissingIdempotencyKeyAndInvalidDtoAsync()
-    {
-        IValidator<CreatePaymentDto> dtoValidator = new CratePaymentDtoValidator();
-        var validator = new CreatePaymentValidator(dtoValidator);
-        var command = new CreatePaymentCommand(new CreatePaymentDto(), Guid.Empty);
-
-        var result = await validator.ValidateAsync(command);
-
-        result.IsValid.Should().BeFalse();
-        result.Errors.Select(x => x.PropertyName).Should().Contain([
-            nameof(CreatePaymentCommand.IdempotentKey),
-            $"{nameof(CreatePaymentCommand.Dto)}.{nameof(CreatePaymentDto.ShipmentId)}",
-            $"{nameof(CreatePaymentCommand.Dto)}.{nameof(CreatePaymentDto.ShippingCost)}"]);
-    }
+  
 
     [Theory]
     [InlineData(0)]

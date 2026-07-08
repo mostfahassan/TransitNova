@@ -11,7 +11,7 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.Carrier.Dashboard.Query
           
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.CarrierDashboard.GetCarrierDashboardUrl, ("carrierId", carrierId)));
 
-            return SendQueryRequestAsync<UiCarrierDashboardDto>(HttpMethod.Get, url, bearerToken, cancellationToken);
+            return SendQueryRequestAsync<UiCarrierDashboardDto>(HttpMethod.Get, url, bearerToken, cancellationToken ,null ,null);
         }
 
     }

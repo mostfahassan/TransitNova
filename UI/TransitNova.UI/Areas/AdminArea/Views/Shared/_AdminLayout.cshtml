@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+@{
+    var notificationsPageUrl = Url.Action("Index", "Notifications", new { area = "AdminArea" }) ?? "/AdminArea/Notifications/Index";
+    var isNotificationsPage = string.Equals(Context.Request.RouteValues["controller"]?.ToString(), "Notifications", StringComparison.OrdinalIgnoreCase);
+}<!DOCTYPE html>
 <html lang="en" class="admin-root h-full">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/Admin/admin.css" asp-append-version="true" />
 </head>
-<body class="admin-body">
+<body class="admin-body" data-notifications-page-url="@notificationsPageUrl" data-notifications-session-url="/notifications/bridge/session" data-notifications-page="@(isNotificationsPage ? "true" : "false")">
     <div class="admin-shell">
         <partial name="_AdminSidebar" />
 
@@ -37,11 +40,12 @@
                     </div>
 
                     <div class="relative flex items-center gap-3">
-                        <button type="button" class="admin-button-secondary !h-10 !w-10 !p-0" aria-label="Notifications">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path d="M15.5 17.5h-7m10-1.6c-.9-1.1-1.4-2.4-1.4-3.8V9.7a5.1 5.1 0 0 0-10.2 0v2.4c0 1.4-.5 2.7-1.4 3.8l-.7.8c-.5.6-.1 1.5.7 1.5h13.8c.8 0 1.2-.9.7-1.5l-.7-.8ZM13.8 20a2 2 0 0 1-3.6 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                            </svg>
-                        </button>
+                        <a href="@notificationsPageUrl" class="admin-button-secondary relative !h-10 !w-10 !p-0 @(isNotificationsPage ? "!border-[#111111] bg-white" : string.Empty)" aria-label="Notifications" data-notifications-trigger>
+    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M15.5 17.5h-7m10-1.6c-.9-1.1-1.4-2.4-1.4-3.8V9.7a5.1 5.1 0 0 0-10.2 0v2.4c0 1.4-.5 2.7-1.4 3.8l-.7.8c-.5.6-.1 1.5.7 1.5h13.8c.8 0 1.2-.9.7-1.5l-.7-.8ZM13.8 20a2 2 0 0 1-3.6 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+    </svg>
+    <span data-notification-badge class="absolute -right-1 -top-1 hidden min-w-[20px] rounded-full bg-[#9F2F2D] px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-white">0</span>
+</a>
                         <button type="button" data-admin-profile-button class="flex items-center gap-2 rounded-xl border border-[#EAEAEA] bg-white py-1.5 pl-1.5 pr-3 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-black/15 active:scale-95">
                             <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#111111] text-xs font-bold text-white">TN</span>
                             <span class="hidden text-sm font-semibold text-[#111111] sm:inline">Admin</span>
@@ -67,6 +71,8 @@
     </div>
 
     <script src="~/js/Admin/admin.js" asp-append-version="true"></script>
+    <script src="~/lib/signalr/signalr.min.js" asp-append-version="true"></script>
+    <script src="~/js/shared/notifications.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

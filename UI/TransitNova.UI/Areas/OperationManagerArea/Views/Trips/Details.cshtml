@@ -1,3 +1,4 @@
+@using TransitNova.Domain.Enums.Trip
 @model object?
 @{
     ViewData["Title"] = "Trip Details";
@@ -12,7 +13,7 @@
     };
     var shipments = AdminDisplay.Value(Model, "Shipments");
     var tripType = AdminDisplay.Text(Model, "TripType");
-    var tripStatus = AdminDisplay.Text(Model, "Status", "badge");
+    var tripStatus = AdminDisplay.Text(Model, "Status");
     var totalShipments = AdminDisplay.Text(Model, "TotalShipments");
     var tripTypeKpi = new OpsKpiTileViewModel("Trip type", tripType, "Movement lane", "TR", "info");
     var statusKpi = new OpsKpiTileViewModel("Status", tripStatus, "Current state", "ST", "warning");
@@ -28,8 +29,6 @@
         Fields = new List<OpsTableColumnViewModel>
         {
             new("Trip", "Id", "id"),
-            new("Type", "TripType"),
-            new("Status", "Status", "badge"),
             new("Carrier", "CarrierName"),
             new("Carrier phone", "CarrierPhoneNumber"),
             new("Warehouse", "WarehouseName"),
@@ -70,6 +69,43 @@
     <partial name="_OpsKpiTile" model="tripTypeKpi" />
     <partial name="_OpsKpiTile" model="statusKpi" />
     <partial name="_OpsKpiTile" model="shipmentCountKpi" />
+</section>
+
+<section class="ops-card mb-6 p-6">
+    <div class="grid gap-4 md:grid-cols-2">
+        <div>
+            <label class="ops-label" for="TripType">Trip type</label>
+            <select id="TripType" class="ops-select" disabled aria-label="Trip type">
+                @foreach (var option in Enum.GetValues<TripType>())
+                {
+                    if (string.Equals(option.ToString(), tripType, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <option value="@option" selected>@option</option>
+                    }
+                    else
+                    {
+                        <option value="@option">@option</option>
+                    }
+                }
+            </select>
+        </div>
+        <div>
+            <label class="ops-label" for="TripStatus">Trip status</label>
+            <select id="TripStatus" class="ops-select" disabled aria-label="Trip status">
+                @foreach (var option in Enum.GetValues<TripStatus>())
+                {
+                    if (string.Equals(option.ToString(), tripStatus, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <option value="@option" selected>@option</option>
+                    }
+                    else
+                    {
+                        <option value="@option">@option</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
 </section>
 
 <partial name="_OpsDetail" model="detail" />

@@ -5,8 +5,8 @@ namespace TransitNova.Api.IntegrationTests.Infrastructure;
 
 internal static class ControllerEndpointCatalogSnapshot
 {
-    internal const int ExpectedEndpointCount = 122;
-    internal const string ExpectedSurfaceChecksum = "65EAD803B681A0C2CE535BD450B87A17BC2B19DE86B90F8284AFA48364C5FDAB";
+    internal const int ExpectedEndpointCount = 131;
+    internal const string ExpectedSurfaceChecksum = "59A7F84A8BCFE587B7AFC669D53934C2B14C22920396264F69098090116A530B";
 
     internal static string[] CreateSurfaceSignatures(IEnumerable<ControllerEndpoint> endpoints)
     {

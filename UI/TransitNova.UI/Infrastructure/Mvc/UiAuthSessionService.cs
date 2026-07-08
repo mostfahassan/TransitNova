@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Authentication.Commands;
@@ -31,6 +32,19 @@ public sealed class UiAuthSessionService(
 
     public void SetWarehouseId(Guid warehouseId) =>
         Session.SetString(SessionKeys.WarehouseId, warehouseId.ToString());
+
+    public async Task<string?> GetValidAccessTokenAsync(CancellationToken cancellationToken = default)
+    {
+        var accessToken = GetAccessToken();
+
+        if (string.IsNullOrWhiteSpace(accessToken))
+            return await TryRefreshAsync(cancellationToken) ? GetAccessToken() : null;
+
+        if (!IsExpiredOrNearExpiry(accessToken))
+            return accessToken;
+
+        return await TryRefreshAsync(cancellationToken) ? GetAccessToken() : null;
+    }
 
     public async Task SignInAsync(UiAuthResponseDto authResponse, CancellationToken cancellationToken = default)
     {
@@ -91,6 +105,41 @@ public sealed class UiAuthSessionService(
         Session.SetString(SessionKeys.Email, authResponse.Email);
         Session.SetString(SessionKeys.UserType, authResponse.UserType);
         Session.SetString(SessionKeys.Roles, string.Join(',', authResponse.Roles));
+    }
+
+    private static bool IsExpiredOrNearExpiry(string accessToken)
+    {
+        try
+        {
+            var tokenParts = accessToken.Split('.');
+            if (tokenParts.Length < 2)
+                return true;
+
+            var payload = tokenParts[1]
+                .Replace('-', '+')
+                .Replace('_', '/');
+
+            var padding = 4 - (payload.Length % 4);
+            if (padding is > 0 and < 4)
+                payload = payload.PadRight(payload.Length + padding, '=');
+
+            var payloadBytes = Convert.FromBase64String(payload);
+            using var document = JsonDocument.Parse(payloadBytes);
+
+            if (!document.RootElement.TryGetProperty("exp", out var expiresElement))
+                return true;
+
+            var expiresUnix = expiresElement.ValueKind == JsonValueKind.Number
+                ? expiresElement.GetInt64()
+                : long.Parse(expiresElement.GetString() ?? "0");
+
+            var expiresAt = DateTimeOffset.FromUnixTimeSeconds(expiresUnix);
+            return expiresAt <= DateTimeOffset.UtcNow.AddMinutes(1);
+        }
+        catch
+        {
+            return true;
+        }
     }
 
     private HttpContext HttpContext =>

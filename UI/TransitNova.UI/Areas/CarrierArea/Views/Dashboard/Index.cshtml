@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Carrier Dashboard";
     var dashboard = Model ?? new UiCarrierDashboardDto();
-    var profile = dashboard.Profile ?? new UiCarrierProfileDto();
     var recentShipments = dashboard.RecentShipments ?? [];
     var activeTrips = dashboard.ActiveTrips ?? [];
 }
@@ -12,21 +11,13 @@
         <div class="grid gap-0 lg:grid-cols-[1fr_360px]">
             <div class="p-6 md:p-8">
                 <div class="carrier-badge carrier-badge-info">Carrier workspace</div>
-                <h2 class="mt-5 text-4xl font-black leading-[1.02] tracking-[-0.04em] text-[#111111]">@Display(profile.FullName, "Carrier")</h2>
+                <h2 class="mt-5 text-4xl font-black leading-[1.02] tracking-[-0.04em] text-[#111111]">@Display(dashboard.CarrierName, "Carrier")</h2>
                 <p class="mt-3 max-w-2xl text-sm leading-6 text-[#66615a]">Run active trips, confirm pickup milestones, complete deliveries, and keep your profile ready for dispatch.</p>
                 <div class="mt-6 flex flex-wrap gap-3">
                     <a asp-area="CarrierArea" asp-controller="Trips" asp-action="Index" class="carrier-button">Open Trips</a>
                     <a asp-area="CarrierArea" asp-controller="Shipments" asp-action="Index" class="carrier-button-secondary">Assigned Shipments</a>
                 </div>
             </div>
-            <aside class="border-t border-[#E7E5E0] bg-[#FBFBFA] p-6 lg:border-l lg:border-t-0">
-                <div class="carrier-badge @BadgeClass(profile.Status.ToString())">@profile.Status</div>
-                <dl class="mt-5 space-y-3 text-sm">
-                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#66615a]">Rating</dt><dd class="font-black text-[#111111]">@profile.Rating.ToString("N1")</dd></div>
-                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#66615a]">City</dt><dd class="text-right font-black text-[#111111]">@Display(profile.CityName, "-")</dd></div>
-                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#66615a]">License</dt><dd class="text-right font-black text-[#111111]">@Display(profile.LicenseNumber, "Pending")</dd></div>
-                </dl>
-            </aside>
         </div>
     </div>
 </section>

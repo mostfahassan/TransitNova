@@ -2,25 +2,8 @@
 @{
     ViewData["Title"] = "Tracking Result";
     var tracking = AdminDisplay.Text(Model, "TrackingNumber|Code|Id");
-    if (tracking == "-")
-    {
-        tracking = Convert.ToString(ViewContext.RouteData.Values["trackingNumber"]) ?? "TN-4091";
-    }
-
     var status = AdminDisplay.Text(Model, "Status|CurrentStatus", "text");
-    if (status == "-")
-    {
-        status = "In Transit";
-    }
-
-    var steps = new[]
-    {
-        new { Title = "Shipment created", Detail = "Request accepted by TransitNova", Time = "Today, 08:10", State = "past" },
-        new { Title = "Pickup assigned", Detail = "Ahmed Mostafa confirmed pickup", Time = "Today, 09:05", State = "past" },
-        new { Title = "In transit", Detail = "Package is moving toward the sorting hub", Time = "Live now", State = "current" },
-        new { Title = "Warehouse scan", Detail = "Quality check and route consolidation", Time = "Expected 14:30", State = "future" },
-        new { Title = "Final delivery", Detail = "Delivered to New Cairo City", Time = "Expected tomorrow", State = "future" }
-    };
+    var steps = AdminDisplay.Rows(AdminDisplay.Value(Model, "ShipmentStates|States|History"));
 }
 
 <section class="customer-fade-up">
@@ -38,42 +21,48 @@
             <div class="mb-8 flex items-center justify-between gap-4">
                 <div>
                     <h2 class="text-2xl font-black tracking-[-0.03em] text-[#111111]">Delivery timeline</h2>
-                    <p class="mt-1 text-sm leading-6 text-[#666666]">Past steps, current checkpoint, and future milestones.</p>
+                    <p class="mt-1 text-sm leading-6 text-[#666666]">Database-backed shipment state history.</p>
                 </div>
                 <span class="@BadgeClass(status)">@status</span>
             </div>
 
-            <ol class="space-y-1">
-                @for (var index = 0; index < steps.Length; index++)
-                {
-                    var step = steps[index];
-                    var isPast = step.State == "past";
-                    var isCurrent = step.State == "current";
-                    <li class="relative grid grid-cols-[40px_1fr] gap-4 pb-9 last:pb-0 customer-fade-up" style="--item-index:@index">
-                        @if (index < steps.Length - 1)
-                        {
-                            <span class="absolute left-[19px] top-10 h-[calc(100%-40px)] w-px bg-[#EAEAEA]"></span>
-                        }
-                        <span class="relative z-10 grid h-10 w-10 place-items-center rounded-full @(isPast ? "bg-[#111111] text-white" : isCurrent ? "bg-white text-[#111111] ring-4 ring-black/10 shadow-[0_0_0_1px_#111111]" : "bg-[#F1F1EF] text-[#A8A29E]") @(isCurrent ? "animate-pulse" : string.Empty)">
-                            @if (isPast)
+            @if (steps.Count == 0)
+            {
+                <div class="rounded-[16px] border border-[#EAEAEA] bg-[#FBFBFA] p-6 text-sm font-semibold text-[#787774]">No shipment history has been returned from the database yet.</div>
+            }
+            else
+            {
+                <ol class="space-y-1">
+                    @for (var index = 0; index < steps.Count; index++)
+                    {
+                        var step = steps[index];
+                        var isCurrent = index == steps.Count - 1;
+                        <li class="relative grid grid-cols-[40px_1fr] gap-4 pb-9 last:pb-0 customer-fade-up" style="--item-index:@index">
+                            @if (index < steps.Count - 1)
                             {
-                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 12 4 4 8-8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <span class="absolute left-[19px] top-10 h-[calc(100%-40px)] w-px bg-[#EAEAEA]"></span>
                             }
-                            else
-                            {
-                                <span class="h-2.5 w-2.5 rounded-full bg-current"></span>
-                            }
-                        </span>
-                        <div class="rounded-[16px] border border-[#EAEAEA] bg-[#FBFBFA] p-5">
-                            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                <h3 class="text-base font-black tracking-[-0.02em] text-[#111111]">@step.Title</h3>
-                                <span class="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#787774]">@step.Time</span>
+                            <span class="relative z-10 grid h-10 w-10 place-items-center rounded-full @(isCurrent ? "bg-white text-[#111111] ring-4 ring-black/10 shadow-[0_0_0_1px_#111111]" : "bg-[#111111] text-white") @(isCurrent ? "animate-pulse" : string.Empty)">
+                                @if (isCurrent)
+                                {
+                                    <span class="h-2.5 w-2.5 rounded-full bg-current"></span>
+                                }
+                                else
+                                {
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 12 4 4 8-8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                }
+                            </span>
+                            <div class="rounded-[16px] border border-[#EAEAEA] bg-[#FBFBFA] p-5">
+                                <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                    <h3 class="text-base font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(step, "StatusType|Status")</h3>
+                                    <span class="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#787774]">@AdminDisplay.Text(step, "ChangedAt|CreatedAt")</span>
+                                </div>
+                                <p class="mt-2 text-sm leading-6 text-[#666666]">Carrier: @AdminDisplay.Text(step, "Carrier.FullName|CarrierName|Carrier")</p>
                             </div>
-                            <p class="mt-2 text-sm leading-6 text-[#666666]">@step.Detail</p>
-                        </div>
-                    </li>
-                }
-            </ol>
+                        </li>
+                    }
+                </ol>
+            }
         </section>
 
         <aside class="space-y-5">
@@ -91,7 +80,7 @@
                     </div>
                     <div class="flex items-center justify-between gap-5">
                         <dt class="font-bold text-[#666666]">ETA</dt>
-                        <dd class="text-right font-black text-[#111111]">@AdminDisplay.Text(Model, "Eta|ExpectedDeliveryDate|DeliveryDate")</dd>
+                        <dd class="text-right font-black text-[#111111]">@AdminDisplay.Text(Model, "Eta|ExpectedDeliveryDate|EstimatedDeliveryDate|DeliveryDate")</dd>
                     </div>
                     <div class="flex items-center justify-between gap-5">
                         <dt class="font-bold text-[#666666]">Last update</dt>

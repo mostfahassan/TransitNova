@@ -12,7 +12,7 @@
     <form asp-area="UserArea" asp-controller="Shipments" asp-action="TrackSubmit" method="post" class="mx-auto mt-12 max-w-4xl rounded-[28px] border border-[#EAEAEA] bg-white p-3 shadow-[0_1px_0_rgba(17,17,17,0.025),0_28px_80px_rgba(17,17,17,0.055)] md:flex md:items-center md:gap-3" data-loading-form data-loading-text="Tracking...">
         @Html.AntiForgeryToken()
         <label for="trackingNumber" class="sr-only">Tracking number</label>
-        <input id="trackingNumber" name="trackingNumber" class="customer-input min-h-[72px] flex-1 !border-transparent !bg-[#FBFBFA] px-6 text-xl font-black tracking-[-0.02em] md:text-2xl" placeholder="TN-9051" autocomplete="off" />
+        <input id="trackingNumber" name="trackingNumber" class="customer-input min-h-[72px] flex-1 !border-transparent !bg-[#FBFBFA] px-6 text-xl font-black tracking-[-0.02em] md:text-2xl" placeholder="Tracking number" autocomplete="off" />
         <button type="submit" class="customer-button mt-3 min-h-[72px] w-full px-8 text-base md:mt-0 md:w-auto">
             <span class="customer-spinner hidden" data-button-spinner></span>
             <span data-button-text>Track Package</span>
@@ -21,9 +21,9 @@
 
     <div class="customer-stagger mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3">
         <div class="customer-card-flat p-5" style="--item-index:0">
-            <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Example</div>
-            <div class="mt-3 font-mono text-lg font-black tracking-[0.06em] text-[#111111]">TN-4091</div>
-            <p class="mt-2 text-sm leading-6 text-[#666666]">Express laptop shipment to New Cairo City.</p>
+            <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Source</div>
+            <div class="mt-3 text-lg font-black tracking-[-0.02em] text-[#111111]">Database-backed</div>
+            <p class="mt-2 text-sm leading-6 text-[#666666]">Tracking results are loaded from the shipment API.</p>
         </div>
         <div class="customer-card-flat p-5" style="--item-index:1">
             <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Refresh</div>

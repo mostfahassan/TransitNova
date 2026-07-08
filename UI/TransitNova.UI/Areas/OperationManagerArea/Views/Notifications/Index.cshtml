@@ -1,0 +1,25 @@
+@using TransitNovaUI.BusinessLayer.Common.ResultPattern
+@using TransitNovaUI.BusinessLayer.DTOs.Notification
+@model UiPagedResult<UiNotificationDto>?
+@{
+    ViewData["Title"] = "Notifications";
+    ViewData["NotificationsArea"] = "OperationManagerArea";
+    ViewData["EmptyTitle"] = "No operational notifications yet";
+    ViewData["EmptyDescription"] = "Shipment reviews, dispatch updates, and workflow alerts for your queue will appear here.";
+
+    var header = new OpsPageHeaderViewModel
+    {
+        Eyebrow = "Live activity",
+        Title = "Notifications",
+        Description = "Stay on top of shipment reviews, dispatch activity, and account-level operational events without leaving the console.",
+        PrimaryLabel = "Shipments",
+        PrimaryController = "Shipments",
+        PrimaryAction = "Index",
+        SecondaryLabel = "Review queue",
+        SecondaryController = "Shipments",
+        SecondaryAction = "ReviewQueue"
+    };
+}
+
+<partial name="_OpsPageHeader" model="header" />
+<partial name="~/Views/Shared/_NotificationsFeed.cshtml" model="Model" />

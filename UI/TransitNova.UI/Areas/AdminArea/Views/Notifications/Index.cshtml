@@ -1,0 +1,22 @@
+@using TransitNovaUI.BusinessLayer.Common.ResultPattern
+@using TransitNovaUI.BusinessLayer.DTOs.Notification
+@model UiPagedResult<UiNotificationDto>?
+@{
+    ViewData["Title"] = "Notifications";
+    ViewData["NotificationsArea"] = "AdminArea";
+    ViewData["EmptyTitle"] = "No admin notifications yet";
+    ViewData["EmptyDescription"] = "Operational events for your admin account will appear here as they are triggered.";
+
+    var header = new AdminPageHeaderViewModel
+    {
+        Eyebrow = "Activity stream",
+        Title = "Notifications",
+        Description = "Track the latest platform events, account updates, and operational changes addressed to your admin account.",
+        PrimaryLabel = "Shipments",
+        PrimaryController = "Shipments",
+        PrimaryAction = "Index"
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="~/Views/Shared/_NotificationsFeed.cshtml" model="Model" />

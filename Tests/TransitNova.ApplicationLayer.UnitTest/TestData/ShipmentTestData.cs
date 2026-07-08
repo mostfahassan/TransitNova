@@ -31,9 +31,7 @@ internal static class ShipmentTestData
             TransportationMode.Land,
             null,
             Guid.NewGuid(),
-            PaymentMethod.MobileWallets,
-            125,
-            DateTime.UtcNow.AddDays(4));
+            PaymentMethod.MobileWallets);
     }
 
     internal static Shipment CreateDeliveredShipment()

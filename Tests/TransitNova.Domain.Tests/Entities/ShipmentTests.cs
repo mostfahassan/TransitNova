@@ -30,9 +30,7 @@ public sealed class ShipmentTests
             TransportationMode.Land,
             Guid.NewGuid(),
             Guid.NewGuid(),
-            PaymentMethod.MobileWallets,
-            500m,
-            DateTime.UtcNow.AddDays(2));
+            PaymentMethod.MobileWallets);
 
         shipment.Id.Should().NotBeEmpty();
         shipment.SenderId.Should().Be(senderId);

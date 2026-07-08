@@ -167,9 +167,8 @@ internal static class Phase2RepositoryTestData
             TransportationMode.Land,
             null,
             Guid.NewGuid(),
-            PaymentMethod.CreditCard,
-            125m,
-            DateTime.UtcNow.AddDays(4));
+            PaymentMethod.CreditCard);
+
         typeof(Shipment).GetProperty(nameof(Shipment.Sender))!.SetValue(shipment, sender);
         typeof(Shipment).GetProperty(nameof(Shipment.RowVersion))!.SetValue(shipment, new byte[] { 1 });
         fixture.Context.Shipments.Add(shipment);

@@ -1,0 +1,21 @@
+@using TransitNovaUI.BusinessLayer.Common.ResultPattern
+@using TransitNovaUI.BusinessLayer.DTOs.Notification
+@model UiPagedResult<UiNotificationDto>?
+@{
+    ViewData["Title"] = "Notifications";
+    ViewData["NotificationsArea"] = "UserArea";
+    ViewData["EmptyTitle"] = "No customer notifications yet";
+    ViewData["EmptyDescription"] = "Shipment progress, billing updates, and account notices for your workspace will appear here.";
+}
+
+<section class="customer-fade-up">
+    <div class="customer-card p-8 md:p-10">
+        <div class="customer-badge customer-badge-info">Customer updates</div>
+        <h1 class="mt-6 text-4xl font-black leading-[1.02] tracking-[-0.04em] text-[#111111] md:text-5xl">Notifications</h1>
+        <p class="mt-4 max-w-3xl text-base leading-7 text-[#666666]">Keep shipment milestones, delivery issues, and account-level updates in one place so you always know what changed and when.</p>
+    </div>
+</section>
+
+<section class="mt-8">
+    <partial name="~/Views/Shared/_NotificationsFeed.cshtml" model="Model" />
+</section>

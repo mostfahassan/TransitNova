@@ -1,0 +1,7 @@
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Shared.Notifications.Commands;
+
+namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.Shared.Notifications.Segregation;
+
+public interface ISharedNotificationsCommand : IMarkAllNotificationsReadCommandService
+{
+}

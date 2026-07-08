@@ -24,13 +24,10 @@
 
                 <dl class="mt-8 grid gap-4 md:grid-cols-2">
                     <div class="customer-card-flat p-5">
-                        <dt class="customer-label">First name</dt>
-                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "FirstName")</dd>
+                        <dt class="customer-label">Full name</dt>
+                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "FullName|Name|UserName")</dd>
                     </div>
-                    <div class="customer-card-flat p-5">
-                        <dt class="customer-label">Last name</dt>
-                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "LastName")</dd>
-                    </div>
+                   
                     <div class="customer-card-flat p-5">
                         <dt class="customer-label">Phone</dt>
                         <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "PhoneNumber|Phone")</dd>

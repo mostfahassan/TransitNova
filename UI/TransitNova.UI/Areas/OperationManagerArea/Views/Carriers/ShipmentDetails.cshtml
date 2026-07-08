@@ -1,7 +1,7 @@
 @model object?
 @{
     ViewData["Title"] = "Carrier Shipment Details";
-    var source = Model ?? new { Id = Guid.Parse("42000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-4091", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Port", CurrentStatus = "OutForPickup", TransportationMode = "Land", ShipmentType = "Express", EstimatedDeliveryDate = DateTime.Now.AddHours(6) };
+    var source = Model;
     var detail = new OpsDetailViewModel
     {
         Title = "Carrier shipment detail",

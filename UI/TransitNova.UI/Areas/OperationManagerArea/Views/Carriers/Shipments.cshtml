@@ -1,12 +1,6 @@
 @model object?
 @{
     ViewData["Title"] = "Carrier Shipments";
-    var fallback = new[]
-    {
-        new { Id = Guid.Parse("42000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-4091", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Port", CurrentStatus = "OutForPickup", ShipmentType = "Express", CreatedAt = DateTime.Now.AddMinutes(-25) },
-        new { Id = Guid.Parse("42000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-6120", PickupAddress = "Nasr City", DeliveryAddress = "Tanta Warehouse", CurrentStatus = "PickedUp", ShipmentType = "Standard", CreatedAt = DateTime.Now.AddHours(-1) }
-    };
-    var source = AdminDisplay.Rows(Model).Count > 0 ? Model : fallback;
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Carrier workload",
@@ -20,7 +14,7 @@
     {
         Title = "Carrier shipment ledger",
         Subtitle = "Shipment workload owned by the selected carrier.",
-        Source = source,
+        Source = Model,
         Controller = "Shipments",
         RouteIdName = "shipmentId",
         IdPropertyPath = "Id|ShipmentId",

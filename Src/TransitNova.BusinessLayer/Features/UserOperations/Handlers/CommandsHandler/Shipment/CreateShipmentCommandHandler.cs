@@ -38,7 +38,10 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
                 return Result<Invoice>.Failure(Errors.FailedOperation("Failed to create shipment."));
             }
 
-            var performedByName = (await userQuery.FindByIdAsync(request.AppUserId, cancellationToken))!.FullName!;
+            var performedBy = await userQuery.FindByIdAsync(request.AppUserId, cancellationToken);
+            var performedByName = string.IsNullOrWhiteSpace(performedBy?.FullName)
+                ? request.AppUserId.ToString()
+                : performedBy.FullName;
             var log = SystemActivityLog.AddLog(
                 ActivityAction.Created,
                 ActivityEntityType.Shipment,
@@ -65,5 +68,6 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
         }
     }
 }
+
 
 

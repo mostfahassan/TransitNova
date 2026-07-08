@@ -30,9 +30,7 @@ internal static class DomainTestData
             TransportationMode.Land,
             null,
             Guid.NewGuid(),
-            PaymentMethod.PayPal,
-            250m,
-            DateTime.UtcNow.AddDays(3));
+            PaymentMethod.PayPal);
 
     internal static Shipment CreatePickupAssignedShipment()
     {

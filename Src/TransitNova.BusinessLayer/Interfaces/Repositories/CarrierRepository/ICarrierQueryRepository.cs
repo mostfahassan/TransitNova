@@ -1,4 +1,4 @@
-﻿
+
 using System.Linq.Expressions;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Carrier;
@@ -8,6 +8,7 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository
 {
     public interface ICarrierQueryRepository
     {
+        Task<CarrierSummaryDto?> GetCarrierProfileSummaryAsync(Guid appUserId, CancellationToken ct = default);
         Task<TRetrieve?> GetCarrierDetailsAsync<TRetrieve>(Guid carrierId, CancellationToken ct = default);
         Task<Carrier?> GetCarrierAsync(Expression<Func<Carrier, bool>> predicate, CancellationToken cancellationToken =default);
         Task<Carrier?> GetCarrierForTripAsync(Expression<Func<Carrier, bool>> predicate, CancellationToken cancellationToken =default);
@@ -18,3 +19,4 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository
         
     }
 }
+

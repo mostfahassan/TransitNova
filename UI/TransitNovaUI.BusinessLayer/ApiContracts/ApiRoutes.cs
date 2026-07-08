@@ -15,15 +15,20 @@ public static class ApiRoutes
                 continue;
 
             var placeholder = $"{{{name}}}";
-            var formattedValue = Uri.EscapeDataString(value.ToString() ?? string.Empty);
 
             if (resolvedRoute.Contains(placeholder, StringComparison.OrdinalIgnoreCase))
             {
-                resolvedRoute = resolvedRoute.Replace(placeholder, formattedValue, StringComparison.OrdinalIgnoreCase);
+                resolvedRoute = resolvedRoute.Replace(
+                    placeholder,
+                    Uri.EscapeDataString(FormatRouteValue(value)),
+                    StringComparison.OrdinalIgnoreCase);
             }
             else
             {
-                queryValues.Add($"{Uri.EscapeDataString(name)}={formattedValue}");
+                foreach (var queryValue in ExpandQueryValues(value))
+                {
+                    queryValues.Add($"{Uri.EscapeDataString(name)}={Uri.EscapeDataString(FormatRouteValue(queryValue))}");
+                }
             }
         }
 
@@ -31,6 +36,26 @@ public static class ApiRoutes
             ? resolvedRoute
             : $"{resolvedRoute}?{string.Join("&", queryValues)}";
     }
+
+    private static IEnumerable<object> ExpandQueryValues(object value)
+    {
+        if (value is string)
+            return [value];
+
+        if (value is System.Collections.IEnumerable enumerable)
+            return enumerable.Cast<object>().Where(item => item is not null);
+
+        return [value];
+    }
+
+    private static string FormatRouteValue(object value) => value switch
+    {
+        DateTime dateTime => dateTime.ToString("O", System.Globalization.CultureInfo.InvariantCulture),
+        DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("O", System.Globalization.CultureInfo.InvariantCulture),
+        bool boolean => boolean.ToString().ToLowerInvariant(),
+        IFormattable formattable => formattable.ToString(null, System.Globalization.CultureInfo.InvariantCulture),
+        _ => value.ToString() ?? string.Empty
+    };
 
     public static class AdminCarriers
     {
@@ -158,6 +183,12 @@ public static class ApiRoutes
         public const string GetGovernmentsUrl = $"{Prefix}/governments";
     }
 
+    public static class Notifications
+    {
+        public const string GetNotificationsUrl = $"{Prefix}/notifications";
+        public const string GetUnreadCountUrl = $"{Prefix}/notifications/unread-count";
+        public const string MarkAllAsReadUrl = $"{Prefix}/notifications/read-all";
+    }
     public static class OperationManagerCarriers
     {
         public const string AssignDeliveryCarrierUrl = $"{Prefix}/operation-managers/carriers/{{shipmentId}}/assign-delivery";
@@ -227,6 +258,11 @@ public static class ApiRoutes
     public static class Shipments
     {
         public const string RateCalculationUrl = $"{Prefix}/shipments/rate-calculation";
+    }
+
+    public static class SharedWarehouses
+    {
+        public const string GetWarehousesUrl = $"{Prefix}/warehouses";
     }
 
     public static class UserCarrierRatings
@@ -301,3 +337,4 @@ public static class ApiRoutes
         public const string GetTripsUrl = $"{Prefix}/warehouse-managers/trips/{{warehouseId}}";
     }
 }
+

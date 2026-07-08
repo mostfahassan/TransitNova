@@ -1,11 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
-using TransitNova.UI.Infrastructure.Mvc;
- 
- 
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Dashboard.Segregation;
-
 namespace TransitNova.UI.Areas.CarrierArea.Controllers.Queries;
 
 [Authorize(Roles = Role.Carrier)]
@@ -27,7 +23,7 @@ public sealed class DashboardController(
         if (response.IsFailure)
             return HandleGetFailure(response);
 
-        if (response.Data?.Profile.Id is Guid profileCarrierId && profileCarrierId != Guid.Empty)
+        if (response.Data?.CarrierId is Guid profileCarrierId && profileCarrierId != Guid.Empty)
             SetCurrentCarrierId(profileCarrierId);
 
         return View(response.Data);

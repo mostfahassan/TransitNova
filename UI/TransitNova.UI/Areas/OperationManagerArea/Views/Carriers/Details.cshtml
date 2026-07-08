@@ -1,17 +1,18 @@
 @model object?
 @{
     ViewData["Title"] = "Carrier Details";
-    var source = Model ?? new { Id = Guid.Parse("41000000-0000-0000-0000-000000000001"), FullName = "Ahmed Mostafa", VehicleType = "Box Truck", Status = "Available", CurrentLoad = "2 / 8", City = "Cairo", AverageRating = 4.8m, PhoneNumber = "+20 101 445 1200", Email = "ahmed.carrier@transitnova.local" };
+    var source = Model;
     var carrierId = AdminDisplay.RouteValue(source, "Id|CarrierId");
+    var hasCarrier = !string.IsNullOrWhiteSpace(Convert.ToString(carrierId));
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Carrier record",
         Title = AdminDisplay.Text(source, "FullName|Name|CarrierName"),
         Description = "Carrier readiness, contact details, and current operation assignment data.",
-        PrimaryLabel = "Carrier shipments",
-        PrimaryController = "Carriers",
-        PrimaryAction = "Shipments",
-        PrimaryRouteValues = new Dictionary<string, string> { ["carrierId"] = Convert.ToString(carrierId) ?? string.Empty },
+        PrimaryLabel = hasCarrier ? "Carrier shipments" : null,
+        PrimaryController = hasCarrier ? "Carriers" : null,
+        PrimaryAction = hasCarrier ? "Shipments" : null,
+        PrimaryRouteValues = hasCarrier ? new Dictionary<string, string> { ["carrierId"] = Convert.ToString(carrierId) ?? string.Empty } : null,
         SecondaryLabel = "Back to fleet",
         SecondaryController = "Carriers",
         SecondaryAction = "Index"
@@ -23,8 +24,8 @@
         Source = source,
         Controller = "Carriers",
         IndexAction = "Index",
-        PrimaryLabel = "Shipments",
-        PrimaryAction = "Shipments",
+        PrimaryLabel = hasCarrier ? "Shipments" : null,
+        PrimaryAction = hasCarrier ? "Shipments" : null,
         RouteIdName = "carrierId",
         IdPropertyPath = "Id|CarrierId",
         Fields = new List<OpsTableColumnViewModel>
@@ -33,7 +34,7 @@
             new("Status", "Status|CarrierStatus", "badge"),
             new("Vehicle", "Vehicle.VehicleType|VehicleType"),
             new("Current load", "CurrentLoad|AssignedShipmentsCount"),
-            new("City", "City|Address"),
+            new("City", "ServedCities|City|Address"),
             new("Rating", "AverageRating|Rating"),
             new("Phone", "PhoneNumber"),
             new("Email", "Email")

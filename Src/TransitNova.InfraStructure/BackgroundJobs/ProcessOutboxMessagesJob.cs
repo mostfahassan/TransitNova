@@ -36,7 +36,6 @@ public sealed class ProcessOutboxMessagesJob(AppDbContext dbContext, IPublisher 
 
                 var domainEvent = JsonConvert.DeserializeObject(message.Content ?? string.Empty, eventType) as IDomainEvent ?? throw new InvalidOperationException($"Failed to deserialize outbox message '{message.Id}'.");
 
-
                 await publisher.Publish(domainEvent, context.CancellationToken);
 
                 message.ProcessedOn = DateTime.UtcNow;

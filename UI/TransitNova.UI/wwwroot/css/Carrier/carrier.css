@@ -42,6 +42,7 @@ html.carrier-root,
 .carrier-input, .carrier-select, .carrier-textarea { width: 100%; border: 1px solid var(--carrier-line); border-radius: 10px; background: #fff; padding: 12px 13px; color: var(--carrier-ink); font-size: .93rem; outline: none; transition: border-color 180ms var(--carrier-ease), box-shadow 180ms var(--carrier-ease); }
 .carrier-textarea { min-height: 120px; resize: vertical; }
 .carrier-input:focus, .carrier-select:focus, .carrier-textarea:focus { border-color: rgba(17,17,17,.34); box-shadow: 0 0 0 5px rgba(17,17,17,.08); }
+.carrier-input.is-invalid, .carrier-select.is-invalid, .carrier-textarea.is-invalid { border-color: #d56b68; box-shadow: 0 0 0 5px rgba(159,47,45,.1); }
 .carrier-label { display: block; margin-bottom: 7px; color: #2f3437; font-size: .72rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
 .carrier-badge { display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 6px 10px; font-size: .7rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
 .carrier-badge::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: currentColor; }

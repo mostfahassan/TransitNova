@@ -21,7 +21,7 @@
         @Html.AntiForgeryToken()
         <div>
             <label class="ops-label" asp-for="Reason">Rejection reason</label>
-            <textarea class="ops-textarea" asp-for="Reason" placeholder="Example: Pickup address is incomplete or package weight does not match declared data."></textarea>
+            <textarea class="ops-textarea" asp-for="Reason" placeholder="Write the rejection reason clearly."></textarea>
             <span class="ops-validation" asp-validation-for="Reason"></span>
         </div>
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">

@@ -22,7 +22,7 @@
         <p class="mt-5 text-base leading-7 text-[#666666]">Receiver, route, package, and delivery preferences are kept on one page with instant checks before you submit.</p>
     </div>
 
-    <form asp-area="UserArea" asp-controller="Shipments" asp-action="Create" method="post" class="mx-auto mt-10 max-w-5xl space-y-6" data-customer-create-form>
+    <form asp-area="UserArea" asp-controller="Shipments" asp-action="Create" method="post" class="mx-auto mt-10 max-w-5xl space-y-6" data-customer-create-form data-governments-url="@Url.Action("Governments", "Shipments", new { area = "UserArea" })" data-cities-url="@Url.Action("Cities", "Shipments", new { area = "UserArea" })">
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="PaymentId" />
         <input type="hidden" asp-for="PackageBundleId" />
@@ -99,8 +99,36 @@
                         <div class="customer-field-error" data-error-for="DeliveryAddress"></div>
                     </div>
                     <div>
-                        <label class="customer-label" asp-for="Receiver.CityId">Destination city id</label>
-                        <input class="customer-input" asp-for="Receiver.CityId" type="number" min="1" data-live-city />
+                        <label class="customer-label" asp-for="CountryId">Destination country</label>
+                        <select class="customer-select" asp-for="CountryId" data-country-select data-live-select="Country">
+                            <option value="">Choose country</option>
+                            @foreach (var country in Model.Countries)
+                            {
+                                <option value="@country.Id" selected="@(country.Id == Model.CountryId)">@country.Name</option>
+                            }
+                        </select>
+                        <div class="customer-field-error" data-error-for="CountryId"></div>
+                    </div>
+                    <div>
+                        <label class="customer-label" asp-for="GovernmentId">Destination government</label>
+                        <select class="customer-select" asp-for="GovernmentId" data-government-select data-live-select="Government" disabled="@(Model.Governments.Count == 0)">
+                            <option value="">Choose government</option>
+                            @foreach (var government in Model.Governments)
+                            {
+                                <option value="@government.Id" selected="@(government.Id == Model.GovernmentId)">@government.Name</option>
+                            }
+                        </select>
+                        <div class="customer-field-error" data-error-for="GovernmentId"></div>
+                    </div>
+                    <div>
+                        <label class="customer-label" asp-for="Receiver.CityId">Destination city</label>
+                        <select class="customer-select" asp-for="Receiver.CityId" data-city-select data-live-city disabled="@(Model.Cities.Count == 0)">
+                            <option value="">Choose city</option>
+                            @foreach (var city in Model.Cities)
+                            {
+                                <option value="@city.Id" selected="@(city.Id == Model.Receiver.CityId)">@city.Name</option>
+                            }
+                        </select>
                         <div class="customer-field-error" data-error-for="Receiver_CityId"></div>
                     </div>
                     <div>

@@ -1,12 +1,13 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using TransitNova.Domain.Enums.Result;
 
 namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
 {
-    public class HttpHandler : IHttpHandler
+    public class HttpHandler(ILogger<HttpHandler> logger) : IHttpHandler
     {
         private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
         {
@@ -55,12 +56,12 @@ namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
 
         public string UrlBuilder(string url) => $"{ApiHelper.BaseUrl}/{url.TrimStart('/')}";
 
-        private static async Task<TResponse?> TryReadResponseAsync<TResponse>(HttpResponseMessage httpResponse, CancellationToken ct)
+        private async Task<TResponse?> TryReadResponseAsync<TResponse>(HttpResponseMessage httpResponse, CancellationToken ct)
             where TResponse : ApiResponse
         {
             var body = await httpResponse.Content.ReadAsStringAsync(ct);
             if (string.IsNullOrWhiteSpace(body))
-                return null;
+                return CreateEmptyBodyResponse<TResponse>(httpResponse);
 
             var problemDetailsResponse = TryReadProblemDetailsResponse<TResponse>(httpResponse, body);
             if (problemDetailsResponse is not null)
@@ -70,10 +71,47 @@ namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
             {
                 return JsonSerializer.Deserialize<TResponse>(body, _jsonOptions);
             }
-            catch (JsonException)
+            catch (Exception ex) when (ex is JsonException or NotSupportedException or InvalidOperationException)
             {
+                logger.LogWarning(ex,
+                    "Failed to deserialize API response. StatusCode: {StatusCode}. Body starts with: {BodyPreview}",
+                    (int)httpResponse.StatusCode,
+                    Preview(body));
+
                 return CreateInvalidJsonResponse<TResponse>(httpResponse, body);
             }
+        }
+        private static TResponse CreateEmptyBodyResponse<TResponse>(HttpResponseMessage httpResponse)
+            where TResponse : ApiResponse
+        {
+            var statusCode = (int)httpResponse.StatusCode;
+            var status = ResolveStatus(statusCode);
+
+            if (httpResponse.IsSuccessStatusCode)
+                return CreateSuccessResponse<TResponse>(statusCode, status);
+
+            var message = $"Request failed with HTTP {statusCode}.";
+            var error = Errors.Failure(message);
+            return CreateFailureResponse<TResponse>(statusCode, message, error, [error]);
+        }
+
+        private static TResponse CreateSuccessResponse<TResponse>(int statusCode, ResultStatus status)
+            where TResponse : ApiResponse
+        {
+            if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(ApiResponse<>))
+            {
+                var dataType = typeof(TResponse).GetGenericArguments()[0];
+                var responseType = typeof(ApiResponse<>).MakeGenericType(dataType);
+                return (TResponse)Activator.CreateInstance(responseType, null, true, status, statusCode, null, null, Array.Empty<ApiError>(), null)!;
+            }
+
+            return (TResponse)(ApiResponse)new(true, status, statusCode, null, null, Array.Empty<ApiError>(), null);
+        }
+
+        private static string Preview(string body)
+        {
+            var preview = body.Trim();
+            return preview.Length > 180 ? preview[..180] : preview;
         }
         private static TResponse? TryReadProblemDetailsResponse<TResponse>(HttpResponseMessage httpResponse, string body)
             where TResponse : ApiResponse
@@ -230,3 +268,5 @@ namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
         }
     }
 }
+
+

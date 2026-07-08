@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
 using TransitNova.Domain.Enums.Carrier;
+using TransitNova.Domain.Enums.Shipment;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Carriers.Segregation;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Shipments.Segregation;
 
 namespace TransitNova.UI.Areas.OperationManagerArea.Controllers.Operations;
 
@@ -14,7 +16,8 @@ public sealed class CarriersController(
     IBackendApiInvoker apiInvoker,
     IIdempotencyKeyFactory idempotencyKeyFactory,
     IOperationManagerCarriersQuery operationManagerCarriersQuery,
-    IOperationManagerCarriersCommand operationManagerCarriersCommand)
+    IOperationManagerCarriersCommand operationManagerCarriersCommand,
+    IOperationManagerShipmentsQuery operationManagerShipmentsQuery)
     : AppControllerBase
 {
     [HttpGet]
@@ -32,9 +35,26 @@ public sealed class CarriersController(
         filter.AvailableFrom ??= DateTime.UtcNow;
         filter.PageSize = filter.PageSize <= 0 ? 20 : filter.PageSize;
 
-        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerCarriersQuery.FilterCarriersAsync(filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var carriersResponse = await apiInvoker.ExecuteAsync((token, ct) => operationManagerCarriersQuery.FilterCarriersAsync(filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        if (carriersResponse.IsFailure)
+            return HandleGetFailure(carriersResponse);
 
-        return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
+        var shipmentFilter = new ShipmentFilterViewModel
+        {
+            Status = [ShipmentStatuses.Approved, ShipmentStatuses.InWarehouse],
+            PageNumber = 1,
+            PageSize = 50
+        };
+
+        var shipmentsResponse = await apiInvoker.ExecuteAsync((token, ct) => operationManagerShipmentsQuery.FilterShipmentsAsync(shipmentFilter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        if (shipmentsResponse.IsFailure)
+            return HandleGetFailure(shipmentsResponse);
+
+        return View(new OpsDispatchPageViewModel
+        {
+            Carriers = carriersResponse.Data,
+            Shipments = shipmentsResponse.Data
+        });
     }
 
     [HttpGet("{carrierId:guid}")]
@@ -148,3 +168,4 @@ public sealed class CarriersController(
         };
     }
 }
+

@@ -1,27 +1,80 @@
 @model CarrierAdditionalInfoFormViewModel
 @{
-    ViewData["Title"] = "Additional Info";
+    ViewData["Title"] = "Complete Profile";
 }
 
-<section class="carrier-fade-up mx-auto max-w-4xl">
+<section class="carrier-fade-up mx-auto max-w-5xl">
     <div class="carrier-card overflow-hidden">
-        <div class="border-b border-[#E7E5E0] bg-[#FBFBFA] p-6">
-            <div class="carrier-badge carrier-badge-warning">Readiness</div>
-            <h2 class="mt-4 text-3xl font-black tracking-[-0.03em] text-[#111111]">Complete operational details</h2>
+        <div class="grid gap-0 lg:grid-cols-[300px_1fr]">
+            <aside class="border-b border-[#E7E5E0] bg-[#FBFBFA] p-6 lg:border-b-0 lg:border-r md:p-8">
+                <div class="carrier-badge carrier-badge-warning">Readiness</div>
+                <h2 class="mt-5 text-3xl font-black leading-tight tracking-[-0.03em] text-[#111111]">Complete your carrier profile.</h2>
+                <p class="mt-4 text-sm leading-6 text-[#66615a]">These operational details let dispatch assign shipments confidently and calculate carrier capacity without manual follow-up.</p>
+            </aside>
+
+            <form asp-area="CarrierArea" asp-controller="Profile" asp-action="AdditionalInfo" method="post" class="space-y-6 p-6 md:p-8" data-carrier-additional-info-form novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                <div class="hidden rounded-[12px] border border-[#f2caca] bg-[#FDEBEA] p-4 text-sm font-bold leading-6 text-[#9f2f2d]" data-carrier-form-alert role="alert" aria-live="polite"></div>
+                <div asp-validation-summary="ModelOnly" class="rounded-[12px] border border-[#f2caca] bg-[#FDEBEA] p-4 text-sm font-bold leading-6 text-[#9f2f2d]"></div>
+
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div>
+                        <label class="carrier-label" asp-for="LicenseNumber">License number</label>
+                        <input class="carrier-input" asp-for="LicenseNumber" required maxlength="50" autocomplete="off" placeholder="CR-LIC-2026-1042" />
+                        <span asp-validation-for="LicenseNumber" class="mt-2 block min-h-[18px] text-xs font-bold text-[#9f2f2d]" data-carrier-error-for="LicenseNumber"></span>
+                    </div>
+                    <div>
+                        <label class="carrier-label" asp-for="WarehouseId">Home warehouse</label>
+                        <select class="carrier-select" asp-for="WarehouseId" required disabled="@(Model.Warehouses.Count == 0)">
+                            <option value="">Choose warehouse</option>
+                            @foreach (var warehouse in Model.Warehouses)
+                            {
+                                <option value="@warehouse.Id" selected="@(warehouse.Id == Model.WarehouseId)">@warehouse.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="WarehouseId" class="mt-2 block min-h-[18px] text-xs font-bold text-[#9f2f2d]" data-carrier-error-for="WarehouseId"></span>
+                    </div>
+                    <div>
+                        <label class="carrier-label" asp-for="MaxDailyShipments">Max daily shipments</label>
+                        <input class="carrier-input" asp-for="MaxDailyShipments" type="number" min="1" step="1" required />
+                        <span asp-validation-for="MaxDailyShipments" class="mt-2 block min-h-[18px] text-xs font-bold text-[#9f2f2d]" data-carrier-error-for="MaxDailyShipments"></span>
+                    </div>
+                    <div>
+                        <label class="carrier-label" asp-for="DefaultCostPerKg">Default cost per kg</label>
+                        <input class="carrier-input" asp-for="DefaultCostPerKg" type="number" min="0.01" step="0.01" required />
+                        <span asp-validation-for="DefaultCostPerKg" class="mt-2 block min-h-[18px] text-xs font-bold text-[#9f2f2d]" data-carrier-error-for="DefaultCostPerKg"></span>
+                    </div>
+                    <div>
+                        <label class="carrier-label" asp-for="YearsOfExperience">Years of experience</label>
+                        <input class="carrier-input" asp-for="YearsOfExperience" type="number" min="0" step="1" required />
+                        <span asp-validation-for="YearsOfExperience" class="mt-2 block min-h-[18px] text-xs font-bold text-[#9f2f2d]" data-carrier-error-for="YearsOfExperience"></span>
+                    </div>
+                    <div>
+                        <label class="carrier-label" asp-for="ContractYears">Contract years</label>
+                        <input class="carrier-input" asp-for="ContractYears" type="number" min="1" step="1" required />
+                        <span asp-validation-for="ContractYears" class="mt-2 block min-h-[18px] text-xs font-bold text-[#9f2f2d]" data-carrier-error-for="ContractYears"></span>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="carrier-label" asp-for="ContractStartDate">Contract start date</label>
+                        <input class="carrier-input" asp-for="ContractStartDate" type="date" required />
+                        <span asp-validation-for="ContractStartDate" class="mt-2 block min-h-[18px] text-xs font-bold text-[#9f2f2d]" data-carrier-error-for="ContractStartDate"></span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col-reverse gap-3 border-t border-[#E7E5E0] pt-6 sm:flex-row sm:justify-end">
+                    <a asp-area="CarrierArea" asp-controller="Dashboard" asp-action="Index" class="carrier-button-secondary">Cancel</a>
+                    <button type="submit" class="carrier-button min-w-[150px]" data-carrier-submit-button data-loading-text="Saving...">
+                        <span class="carrier-spinner hidden" data-button-spinner></span>
+                        <span data-button-text>Save info</span>
+                    </button>
+                </div>
+            </form>
         </div>
-        <form asp-action="AdditionalInfo" method="post" class="p-6" data-loading-form data-loading-text="Saving...">
-            @Html.AntiForgeryToken()
-            <input type="hidden" asp-for="Id" />
-            <div class="grid gap-4 md:grid-cols-2">
-                <div><label class="carrier-label" asp-for="LicenseNumber">License</label><input class="carrier-input" asp-for="LicenseNumber" /></div>
-                <div><label class="carrier-label" asp-for="MaxDailyShipments">Max daily shipments</label><input class="carrier-input" asp-for="MaxDailyShipments" type="number" min="1" /></div>
-                <div><label class="carrier-label" asp-for="DefaultCostPerKg">Cost per kg</label><input class="carrier-input" asp-for="DefaultCostPerKg" type="number" step="0.01" /></div>
-                <div><label class="carrier-label" asp-for="YearsOfExperience">Experience</label><input class="carrier-input" asp-for="YearsOfExperience" type="number" min="0" /></div>
-                <div><label class="carrier-label" asp-for="ContractStartDate">Contract start</label><input class="carrier-input" asp-for="ContractStartDate" type="date" /></div>
-                <div><label class="carrier-label" asp-for="ContractYears">Contract years</label><input class="carrier-input" asp-for="ContractYears" type="number" min="1" /></div>
-                <div class="md:col-span-2"><label class="carrier-label" asp-for="WarehouseId">Warehouse Id</label><input class="carrier-input" asp-for="WarehouseId" /></div>
-            </div>
-            <div class="mt-6 flex justify-end gap-3"><a asp-action="Index" class="carrier-button-secondary">Cancel</a><button type="submit" class="carrier-button"><span class="carrier-spinner hidden" data-button-spinner></span><span data-button-text>Save info</span></button></div>
-        </form>
     </div>
 </section>
+
+@section Scripts {
+    <script src="~/js/Carrier/additional-info.js" asp-append-version="true"></script>
+}

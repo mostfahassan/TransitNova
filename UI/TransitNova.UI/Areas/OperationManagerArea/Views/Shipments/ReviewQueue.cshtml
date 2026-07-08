@@ -13,17 +13,12 @@
         SecondaryController = "Carriers",
         SecondaryAction = "Index"
     };
-    var fallback = new[]
-    {
-        new { Id = Guid.Parse("32000000-0000-0000-0000-000000000001"), TrackingNumber = "TN-409", PickupAddress = "Cairo Hub", DeliveryAddress = "Alexandria Customs", CurrentStatus = "PendingReview", ShipmentType = "Express", CreatedAt = DateTime.Now.AddMinutes(-16) },
-        new { Id = Guid.Parse("32000000-0000-0000-0000-000000000002"), TrackingNumber = "TN-902", PickupAddress = "Heliopolis", DeliveryAddress = "Suez Gate", CurrentStatus = "Delayed", ShipmentType = "Standard", CreatedAt = DateTime.Now.AddMinutes(-33) }
-    };
-    var source = AdminDisplay.Rows(Model).Count > 0 ? Model : fallback;
+
     var table = new OpsTableViewModel
     {
         Title = "Pending operational decisions",
         Subtitle = "Rows here need fast action from the operations manager.",
-        Source = source,
+        Source = Model,
         Controller = "Shipments",
         RouteIdName = "shipmentId",
         IdPropertyPath = "Id",

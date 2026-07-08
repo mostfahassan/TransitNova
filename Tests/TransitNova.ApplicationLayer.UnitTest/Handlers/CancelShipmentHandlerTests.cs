@@ -101,9 +101,7 @@ public sealed class CancelShipmentHandlerTests
             TransitNova.Domain.Enums.Shipment.TransportationMode.Land,
             null,
             Guid.NewGuid(),
-            PaymentMethod.MobileWallets,
-            100m,
-            DateTime.UtcNow.AddDays(2));
+            PaymentMethod.MobileWallets);
     }
 
     private sealed class Fixture

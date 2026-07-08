@@ -72,3 +72,9 @@ public sealed class OpsAssignCarrierPageViewModel
 
     public TransitNovaUI.BusinessLayer.DTOs.Carrier.UiAssignCarrierDto ToDto() => new(CarrierId);
 }
+public sealed class OpsDispatchPageViewModel
+{
+    public object? Carriers { get; set; }
+    public object? Shipments { get; set; }
+}
+

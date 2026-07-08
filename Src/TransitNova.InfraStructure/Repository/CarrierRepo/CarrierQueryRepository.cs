@@ -1,7 +1,6 @@
-﻿using AutoMapper;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Carrier;
@@ -186,5 +185,17 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
 
         public async Task<Carrier?> GetCarrierForTripAsync(Expression<Func<Carrier, bool>> predicate, CancellationToken cancellationToken = default)
           => await context.Carriers.Where(predicate).Include(c =>c.Trips).FirstOrDefaultAsync(cancellationToken);
+
+        public async Task<CarrierSummaryDto?> GetCarrierProfileSummaryAsync(Guid appUserId, CancellationToken ct = default)
+        => await context.Carriers
+            .AsNoTracking()
+            .Where(c => c.AppUserId == appUserId)
+            .Select(c => new CarrierSummaryDto
+            {
+                Id = c.Id,
+                FullName = c.FullName
+            })
+            .FirstOrDefaultAsync(ct);
     }
 }
+

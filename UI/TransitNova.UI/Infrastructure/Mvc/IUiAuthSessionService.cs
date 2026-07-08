@@ -10,6 +10,7 @@ public interface IUiAuthSessionService
     string? GetCurrentRole();
     string? GetWarehouseId();
     void SetWarehouseId(Guid warehouseId);
+    Task<string?> GetValidAccessTokenAsync(CancellationToken cancellationToken = default);
     Task SignInAsync(UiAuthResponseDto authResponse, CancellationToken cancellationToken = default);
     Task<bool> TryRefreshAsync(CancellationToken cancellationToken = default);
     Task SignOutAsync();

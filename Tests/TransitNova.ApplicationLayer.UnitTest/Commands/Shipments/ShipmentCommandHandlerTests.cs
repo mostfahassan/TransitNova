@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.ApplicationLayer.Tests.TestData;
 using TransitNova.BusinessLayer.Common.CommonData;
+using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.AppUser;
+using TransitNova.BusinessLayer.DTOs.Payment;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
@@ -18,21 +20,34 @@ using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Result;
 using TransitNova.Domain.Enums.SystemLogs;
+using static TransitNova.Domain.Contracts.Caching.CacheKeys;
 
 namespace TransitNova.ApplicationLayer.Tests.Commands.Shipments;
 
 public sealed class ShipmentCommandHandlerTests
 {
     [Fact]
-    public async Task CreateShipmentCommandHandler_WhenInputIsValid_ShouldReturnCreatedResultAndPersistActivityLogAsync()
+    public async Task CreateShipmentCommandHandler_WhenInputIsValid_ShouldReturnCreatedInvoiceAndPersistActivityLogAsync()
     {
         var fixture = new CreateFixture();
         var userId = Guid.NewGuid();
         var shipmentId = Guid.NewGuid();
-        var dto = new RetrieveShipmentDto { Id = shipmentId, TrackingNumber = "TN-100", ShippingCost = 125 };
-        fixture.Service.Setup(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), userId, It.IsAny<CancellationToken>())).ReturnsAsync(shipmentId);
-        fixture.Shipments.Setup(x => x.CreateShipmentForUserAsync(shipmentId, It.IsAny<CancellationToken>())).ReturnsAsync(dto);
-        fixture.Users.Setup(x => x.FindByIdAsync(userId, It.IsAny<CancellationToken>())).ReturnsAsync(new AppUserDto { Id = userId, FullName = "Ahmed Ali" });
+        var invoice = new Invoice
+        {
+            ShipmentId = shipmentId,
+            PaymentId = Guid.NewGuid(),
+            ShippingCost = 125,
+            Commission = 12.5m,
+            Amount = 137.5m,
+            PaymentMethod = "PayPal",
+            Status = "Paid",
+            PaidAt = DateTime.UtcNow
+        };
+
+        fixture.Service.Setup(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), userId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Result<Invoice>.Success(invoice), "TN-100"));
+        fixture.Users.Setup(x => x.FindByIdAsync(userId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AppUserDto { Id = userId, FullName = "Ahmed Ali" });
         fixture.UnitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
         SystemActivityLog? capturedLog = null;
         fixture.Logs.Setup(x => x.LogAsync(It.IsAny<SystemActivityLog>(), It.IsAny<CancellationToken>()))
@@ -43,7 +58,8 @@ public sealed class ShipmentCommandHandlerTests
         var result = await fixture.Handler.Handle(command, CancellationToken.None);
 
         result.Status.Should().Be(ResultStatus.Created);
-        result.Data.Should().BeSameAs(dto);
+        result.Data.Should().BeSameAs(invoice);
+        result.Data!.ShipmentId.Should().Be(shipmentId);
         capturedLog.Should().NotBeNull();
         capturedLog!.Action.Should().Be(ActivityAction.Created);
         capturedLog.PerformedByUserId.Should().Be(userId);
@@ -52,19 +68,19 @@ public sealed class ShipmentCommandHandlerTests
     }
 
     [Fact]
-    public async Task CreateShipmentCommandHandler_WhenCreatedShipmentCannotBeRetrieved_ShouldReturnFailureWithoutLoggingAsync()
+    public async Task CreateShipmentCommandHandler_WhenInvoiceIsMissing_ShouldReturnFailureWithoutLoggingAsync()
     {
         var fixture = new CreateFixture();
-        var shipmentId = Guid.NewGuid();
-        fixture.Service.Setup(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(shipmentId);
-        fixture.Shipments.Setup(x => x.CreateShipmentForUserAsync(shipmentId, It.IsAny<CancellationToken>())).ReturnsAsync((RetrieveShipmentDto?)null);
+        var userId = Guid.NewGuid();
+        fixture.Service.Setup(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), userId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Result<Invoice>.Failure(Errors.FailedOperation("Payment operation failed")), string.Empty));
 
         var result = await fixture.Handler.Handle(
-            new CreateShipmentCommand(Guid.NewGuid(), ValidCreateDto(), Guid.NewGuid()),
+            new CreateShipmentCommand(Guid.NewGuid(), ValidCreateDto(), userId),
             CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error!.Message.Should().Be("Shipment created but retrieval failed");
+        result.Error!.Message.Should().Be("Failed to create shipment.");
         fixture.Users.VerifyNoOtherCalls();
         fixture.Logs.Verify(x => x.LogAsync(It.IsAny<SystemActivityLog>(), It.IsAny<CancellationToken>()), Times.Never);
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
@@ -78,19 +94,21 @@ public sealed class ShipmentCommandHandlerTests
         using var source = new CancellationTokenSource();
         var token = source.Token;
         var userId = Guid.NewGuid();
-        var shipmentId = Guid.NewGuid();
-        fixture.Service.Setup(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), userId, token)).ReturnsAsync(shipmentId);
-        fixture.Shipments.Setup(x => x.CreateShipmentForUserAsync(shipmentId, token)).ReturnsAsync(new RetrieveShipmentDto { Id = shipmentId, TrackingNumber = "TN-101" });
-        fixture.Users.Setup(x => x.FindByIdAsync(userId, token)).ReturnsAsync(new AppUserDto { Id = userId, FullName = "Ahmed" });
+        var invoice = new Invoice { ShipmentId = Guid.NewGuid(), ShippingCost = 125 };
+        fixture.Service.Setup(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), userId, token))
+            .ReturnsAsync((Result<Invoice>.Success(invoice), "TN-100"));
+        fixture.Users.Setup(x => x.FindByIdAsync(userId, token))
+            .ReturnsAsync(new AppUserDto { Id = userId, FullName = "Ahmed" });
         fixture.UnitOfWork.Setup(x => x.SaveChangesAsync(token)).ReturnsAsync(1);
+        fixture.Logs.Setup(x => x.LogAsync(It.IsAny<SystemActivityLog>(), token)).Returns(Task.CompletedTask);
 
         await fixture.Handler.Handle(new CreateShipmentCommand(Guid.NewGuid(), ValidCreateDto(), userId), token);
 
         fixture.Service.Verify(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), userId, token), Times.Once);
-        fixture.Shipments.Verify(x => x.CreateShipmentForUserAsync(shipmentId, token), Times.Once);
+        fixture.Users.Verify(x => x.FindByIdAsync(userId, token), Times.Once);
+        fixture.Logs.Verify(x => x.LogAsync(It.IsAny<SystemActivityLog>(), token), Times.Once);
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(token), Times.Once);
     }
-
     [Fact]
     public async Task UpdateShipmentHandler_WhenShipmentDoesNotExist_ShouldReturnNotFoundWithoutSavingAsync()
     {
@@ -269,7 +287,6 @@ public sealed class ShipmentCommandHandlerTests
         internal CreateFixture()
         {
             Handler = new CreateShipmentCommandHandler(
-                Shipments.Object,
                 Service.Object,
                 Users.Object,
                 Logs.Object,
@@ -278,5 +295,6 @@ public sealed class ShipmentCommandHandlerTests
         }
     }
 }
+
 
 

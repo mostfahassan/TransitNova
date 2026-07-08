@@ -1,0 +1,21 @@
+@using TransitNovaUI.BusinessLayer.Common.ResultPattern
+@using TransitNovaUI.BusinessLayer.DTOs.Notification
+@model UiPagedResult<UiNotificationDto>?
+@{
+    ViewData["Title"] = "Notifications";
+    ViewData["NotificationsArea"] = "CarrierArea";
+    ViewData["EmptyTitle"] = "No carrier notifications yet";
+    ViewData["EmptyDescription"] = "Dispatch updates, trip events, and shipment alerts assigned to your carrier account will appear here.";
+}
+
+<section class="carrier-fade-up">
+    <div class="carrier-card p-6 md:p-8">
+        <div class="carrier-badge carrier-badge-info">Carrier updates</div>
+        <h2 class="mt-5 text-4xl font-black leading-[1.02] tracking-[-0.04em] text-[#111111]">Notifications</h2>
+        <p class="mt-3 max-w-3xl text-sm leading-6 text-[#66615a]">Watch new dispatch instructions, trip activity, and account events land in one feed while you stay focused on active runs.</p>
+    </div>
+</section>
+
+<section class="mt-6">
+    <partial name="~/Views/Shared/_NotificationsFeed.cshtml" model="Model" />
+</section>

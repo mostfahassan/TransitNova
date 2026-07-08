@@ -6,7 +6,7 @@
         Title = "Carrier shipments",
         Description = "Review shipments currently associated with the selected carrier.",
         PrimaryLabel = null,
-        PrimaryController = "Carriers",
+        PrimaryController = "Shipments",
         PrimaryAction = null
     };
     var table = new AdminTableViewModel
@@ -14,10 +14,10 @@
         Title = "Carrier shipment ledger",
         Subtitle = "Shipment rows filtered through the carrier administration endpoint.",
         Source = Model,
-        Controller = "Carriers",
+        Controller = "Shipments",
         RouteIdName = "shipmentId",
         IdPropertyPath = "Id|ShipmentId",
-        ShowDetails = false,
+        ShowDetails = true,
         ShowEdit = false,
         ShowDelete = false,
         Columns = new List<AdminTableColumnViewModel>
@@ -35,3 +35,4 @@
 
 <partial name="_AdminPageHeader" model="header" />
 <partial name="_AdminTable" model="table" />
+

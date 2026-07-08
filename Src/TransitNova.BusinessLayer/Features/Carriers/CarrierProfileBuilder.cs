@@ -1,4 +1,4 @@
-using TransitNova.BusinessLayer.DTOs.Carrier;
+﻿using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.Domain.Entities.MainEntities;
 
 namespace TransitNova.BusinessLayer.Features.Carriers

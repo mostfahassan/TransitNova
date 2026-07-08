@@ -23,7 +23,7 @@ namespace TransitNova.Api.Controllers.Admin.Shipmments
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Shipments")]
+        [EndpointName("Get Shipments For Admin")]
         [EndpointSummary("Get filtered shipments for the operation manager")]
         [EndpointDescription(
          "Returns the filtered shipments list available to the authenticated operation manager.")]
@@ -42,7 +42,7 @@ namespace TransitNova.Api.Controllers.Admin.Shipmments
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Shipment")]
+        [EndpointName("Get Shipment For Admin")]
         [EndpointSummary("Get shipment details by id")]
         [EndpointDescription("Returns the full shipment details for the specified shipment identifier.")]
 

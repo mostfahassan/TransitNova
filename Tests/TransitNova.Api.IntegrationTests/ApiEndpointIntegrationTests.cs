@@ -1,15 +1,11 @@
 using FluentAssertions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Net;
 using System.Net.Http.Json;
 using TransitNova.Api.IntegrationTests.Infrastructure;
-
 namespace TransitNova.Api.IntegrationTests;
-
 public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebApplicationFactory>, IAsyncLifetime
 {
     private static readonly HashSet<HttpStatusCode> InvalidAuthenticatedStatuses =

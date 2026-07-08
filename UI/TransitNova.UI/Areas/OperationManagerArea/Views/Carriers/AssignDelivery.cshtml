@@ -1,13 +1,8 @@
 @model OpsAssignCarrierPageViewModel
 @{
     ViewData["Title"] = "Assign Delivery";
-    var carriers = AdminDisplay.Rows(Model.Carriers).Count > 0
-        ? AdminDisplay.Rows(Model.Carriers)
-        : new object[]
-        {
-            new { Id = Guid.Parse("41000000-0000-0000-0000-000000000001"), FullName = "Ahmed Mostafa", Status = "Available", City = Model.City ?? "Cairo", VehicleType = "Box Truck", CurrentLoad = "2 / 8" },
-            new { Id = Guid.Parse("41000000-0000-0000-0000-000000000004"), FullName = "Youssef Sameh", Status = "Available", City = Model.City ?? "Cairo", VehicleType = "Van", CurrentLoad = "1 / 6" }
-        };
+    var carriers = AdminDisplay.Rows(Model.Carriers);
+    var hasCarriers = carriers.Count > 0;
 }
 
 <div class="ops-modal-backdrop">
@@ -31,7 +26,7 @@
             <div class="flex-1 space-y-5 overflow-y-auto p-6">
                 <div>
                     <label class="ops-label" asp-for="CarrierId">Available carrier</label>
-                    <select class="ops-select" asp-for="CarrierId">
+                    <select class="ops-select" asp-for="CarrierId" disabled="@(!hasCarriers)">
                         <option value="">Choose carrier</option>
                         @foreach (var carrier in carriers)
                         {
@@ -40,6 +35,10 @@
                         }
                     </select>
                     <span class="ops-validation" asp-validation-for="CarrierId"></span>
+                    @if (!hasCarriers)
+                    {
+                        <p class="mt-2 text-sm font-semibold text-[#9F2F2D]">No available delivery carriers were returned by the database for this filter.</p>
+                    }
                 </div>
 
                 <div>
@@ -54,14 +53,8 @@
             </div>
 
             <div class="sticky bottom-0 border-t border-[#EAEAEA] bg-white p-6">
-                <button type="submit" class="ops-button w-full">Confirm Delivery Assignment</button>
+                <button type="submit" class="ops-button w-full" disabled="@(!hasCarriers)">Confirm Delivery Assignment</button>
             </div>
         </form>
     </section>
 </div>
-
-@section Scripts {
-    <script>
-        // AJAX placeholder: intercept data-ops-assignment-form, send Fetch API request, then close panel and update the dispatch table state.
-    </script>
-}

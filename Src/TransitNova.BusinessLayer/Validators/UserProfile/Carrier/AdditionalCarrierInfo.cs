@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using System;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 
@@ -35,6 +35,10 @@ namespace TransitNova.BusinessLayer.Validators.UserProfile.Carrier
                 .GreaterThan(DateTime.UtcNow)
                 .LessThan(DateTime.UtcNow.AddMonths(1))
                 .WithMessage("Start date must be in the future.");
+
+            RuleFor(x => x.WarehouseId)
+                .NotEmpty()
+                .WithMessage("Warehouse is required.");
         }
     }
 }

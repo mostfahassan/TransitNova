@@ -301,9 +301,6 @@ namespace TransitNova.Api
                 options.AddDocumentTransformer<ApiSecuritySchemeDocumentation>();
                 options.AddOperationTransformer<ApiOperationSecuritySchemeDocumentation>();
             });
-
-
-
             return services;
         }
 

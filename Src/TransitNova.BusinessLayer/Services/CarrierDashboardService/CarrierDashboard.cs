@@ -12,26 +12,26 @@ namespace TransitNova.BusinessLayer.Services.CarrierDashboardService
     {
         public async Task<Result<CarrierDashboardDto>> BuildAsync(Guid carrierId, CancellationToken cancellationToken)
         {
-            var carrier = await carrierRepository.GetCarrierAsync(c => c.Id == carrierId || c.AppUserId == carrierId, cancellationToken);
-            if (carrier is null)
+            var carrierSummary = await carrierRepository.GetCarrierProfileSummaryAsync(carrierId, cancellationToken);
+            if (carrierSummary == null || string.IsNullOrWhiteSpace(carrierSummary.FullName))
             {
                 logger.LogWarning("Carrier dashboard rejected because AppUser {CarrierId} has no Carrier profile", carrierId);
                 var notFoundResult = Result<CarrierDashboardDto>.NotFound(Errors.CarrierNotFound("Carrier profile not found."));
                 return notFoundResult;
             }
-            var filter = new CarrierShipmentFilterDto { PageNumber = 1, PageSize = 10 };
+            var filter = new CarrierShipmentFilterDto { PageNumber = 1, PageSize = 15 };
            
-            var recentShipmentsTask = carrierDashboardRepository.GetCarrierShipmentsAsync(carrier.Id, filter, cancellationToken);
+            var recentShipmentsTask = carrierDashboardRepository.GetCarrierShipmentsAsync(carrierSummary.Id, filter, cancellationToken);
             
-            var statsTask = carrierDashboardRepository.GetCarrierShipmentCountInStatusAsync(carrier.Id, cancellationToken);
+            var statsTask = carrierDashboardRepository.GetCarrierShipmentCountInStatusAsync(carrierSummary.Id, cancellationToken);
 
-            var tripsTask =  carrierDashboardRepository.GetCarrierTripsAsync(carrier.Id, cancellationToken);
+            var tripsTask =  carrierDashboardRepository.GetCarrierTripsAsync(carrierSummary.Id, cancellationToken);
 
-            var revenueTask = carrierDashboardRepository.GetCarrierRevenueAsync(carrier.Id, cancellationToken);
+            var revenueTask = carrierDashboardRepository.GetCarrierRevenueAsync(carrierSummary.Id, cancellationToken);
 
             await Task.WhenAll(statsTask, tripsTask, revenueTask, recentShipmentsTask);
 
-            var dashboard = CarrierDashboardBuilder.Build(statsTask.Result, tripsTask.Result, revenueTask.Result, carrier, recentShipmentsTask.Result.Data);
+            var dashboard = CarrierDashboardBuilder.Build(statsTask.Result, tripsTask.Result, revenueTask.Result, carrierSummary.Id,carrierSummary.FullName, recentShipmentsTask.Result.Data);
             return Result<CarrierDashboardDto>.Success(dashboard);
         }
     }

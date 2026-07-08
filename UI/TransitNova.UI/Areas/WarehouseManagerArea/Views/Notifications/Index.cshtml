@@ -1,0 +1,25 @@
+@using TransitNovaUI.BusinessLayer.Common.ResultPattern
+@using TransitNovaUI.BusinessLayer.DTOs.Notification
+@model UiPagedResult<UiNotificationDto>?
+@{
+    ViewData["Title"] = "Notifications";
+    ViewData["NotificationsArea"] = "WarehouseManagerArea";
+    ViewData["EmptyTitle"] = "No warehouse notifications yet";
+    ViewData["EmptyDescription"] = "Trip updates, carrier events, and warehouse-visible alerts addressed to your account will appear here.";
+
+    var header = new WarehousePageHeaderViewModel
+    {
+        Eyebrow = "Warehouse activity",
+        Title = "Notifications",
+        Description = "Review warehouse-scoped events and account notices in one scanner-friendly stream.",
+        PrimaryLabel = "Shipments",
+        PrimaryController = "Shipments",
+        PrimaryAction = "Index",
+        SecondaryLabel = "Trips",
+        SecondaryController = "Trips",
+        SecondaryAction = "Index"
+    };
+}
+
+<partial name="_WarehousePageHeader" model="header" />
+<partial name="~/Views/Shared/_NotificationsFeed.cshtml" model="Model" />

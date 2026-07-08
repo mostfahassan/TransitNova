@@ -57,14 +57,14 @@ namespace TransitNova.Api.Controllers.Carrier.Command
         [Consumes("application/json")]
         [EndpointName("Add Carrier Additional Info")]
         [EndpointSummary("Add Carrier Additional Info For Authenticated Carrier")]
-        [EndpointDescription("Appends or updates supplementary information for the authenticated carrier. Requires a valid X-Idempotency-Key header and resource ownership validation to ensure safe execution")]
+        [EndpointDescription("Appends supplementary information for the authenticated carrier. Requires a valid X-Idempotency-Key header and resolves ownership from the authenticated user claim.")]
         public async Task<IActionResult> AddCarrierInfoAsync([IdempotencyKey] Guid requestId, [FromBody] AdditionalInfoDto dto, CancellationToken ct)
         {
-
-            if (!await IsCarrierOwnerAsync(dto.Id))
-                return Forbid();
             var userId = User.GetUserId();
-            var response = await mediator.Send(new AddingCarrierAdditionalInfoCommand(requestId, dto , userId), ct);
+            if (userId == Guid.Empty)
+                return Forbid();
+
+            var response = await mediator.Send(new AddingCarrierAdditionalInfoCommand(requestId, dto, userId), ct);
             return response.ToActionResult();
         }
 

@@ -13,7 +13,7 @@
     const invoiceCloseButtons = document.querySelectorAll('[data-invoice-close]');
     const shipmentDetailsLink = document.querySelector('[data-shipment-details-link]');
     const allInputs = [...form.querySelectorAll('input, textarea, select')];
-    const validationInputs = [...form.querySelectorAll('[data-live-required], [data-live-email], [data-live-phone], [data-live-city], [data-live-weight], [data-live-dimension], [data-live-pickup-date]')];
+    const validationInputs = [...form.querySelectorAll('[data-live-required], [data-live-email], [data-live-phone], [data-live-select], [data-live-city], [data-live-weight], [data-live-dimension], [data-live-pickup-date]')];
     const allControls = [...form.querySelectorAll('input, textarea, select, button')];
     const statusBadge = document.querySelector('[data-invoice-status-badge]');
     const paymentMethodField = document.querySelector('[data-invoice-payment-method]');
@@ -28,6 +28,9 @@
     const defaultFailureMessage = 'No invoice was generated. Please review the payment method and try again.';
     const defaultValidationMessage = 'Please review the highlighted fields and try again.';
     const originalBodyOverflow = document.body.style.overflow;
+    const countrySelect = form.querySelector('[data-country-select]');
+    const governmentSelect = form.querySelector('[data-government-select]');
+    const citySelect = form.querySelector('[data-city-select]');
 
     let isSubmitting = false;
     let paymentOverlayOpen = false;
@@ -71,8 +74,13 @@
             message = 'Use a reachable phone number with at least 10 digits.';
         }
 
+        if (!message && input.hasAttribute('data-live-select') && !value) {
+            message = (input.getAttribute('data-live-select') || 'Selection') + ' is required.';
+        }
+
         if (!message && input.hasAttribute('data-live-city')) {
-            const check = await validateWithFetch({ ok: serviceableCities.has(value), message: 'This city is not serviceable yet. Choose one of your active service cities.' });
+            const number = Number(value);
+            const check = await validateWithFetch({ ok: Number.isInteger(number) && number > 0, message: 'Choose a pickup city before continuing.' });
             if (!check.ok) message = check.message;
         }
 
@@ -157,6 +165,76 @@
     function findInputByKey(key) {
         const normalizedKey = normalizeKey(key);
         return normalizedKey ? form.querySelector('#' + CSS.escape(normalizedKey)) : null;
+    }
+
+    function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = '';
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = placeholder;
+        select.appendChild(emptyOption);
+
+        (items || []).forEach((item) => {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.textContent = item.name;
+            select.appendChild(option);
+        });
+    }
+
+    async function loadOptions(url, target, placeholder) {
+        if (!target) return;
+        target.disabled = true;
+        fillSelect(target, [], 'Loading...');
+
+        try {
+            const response = await fetch(url, {
+                credentials: 'same-origin',
+                headers: {
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            const payload = await response.json();
+            if (!response.ok) {
+                fillSelect(target, [], payload?.message || placeholder);
+                return;
+            }
+
+            fillSelect(target, payload.items || [], placeholder);
+            target.disabled = false;
+            setState(target, '');
+        } catch {
+            fillSelect(target, [], 'Unable to load options');
+        }
+    }
+
+    function wireLocationCascade() {
+        if (!countrySelect || !governmentSelect || !citySelect) return;
+
+        countrySelect.addEventListener('change', () => {
+            fillSelect(governmentSelect, [], 'Choose government');
+            fillSelect(citySelect, [], 'Choose city');
+            governmentSelect.disabled = true;
+            citySelect.disabled = true;
+            setState(governmentSelect, '');
+            setState(citySelect, '');
+
+            if (!countrySelect.value) return;
+            const url = `${form.dataset.governmentsUrl}?countryId=${encodeURIComponent(countrySelect.value)}`;
+            loadOptions(url, governmentSelect, 'Choose government');
+        });
+
+        governmentSelect.addEventListener('change', () => {
+            fillSelect(citySelect, [], 'Choose city');
+            citySelect.disabled = true;
+            setState(citySelect, '');
+
+            if (!governmentSelect.value) return;
+            const url = `${form.dataset.citiesUrl}?governmentId=${encodeURIComponent(governmentSelect.value)}`;
+            loadOptions(url, citySelect, 'Choose city');
+        });
     }
 
     function applyValidationErrors(validationErrors) {
@@ -291,6 +369,8 @@
             togglePaymentOverlay(false);
         }
     }
+
+    wireLocationCascade();
 
     allInputs.forEach((input) => {
         input.addEventListener('blur', () => validateInput(input));

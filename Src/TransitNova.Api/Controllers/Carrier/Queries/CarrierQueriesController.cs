@@ -19,24 +19,6 @@ namespace TransitNova.Api.Controllers.Carrier.Queries
     [Tags("Carrier Queries")]
     public sealed class CarrierQueriesController(IMediator mediator) : ControllerBase
     {
-        [Authorize(Policy = CarrierPermissions.CanViewDashboard)]
-        [EnableRateLimiting("DefaultRateLimiter")]
-        [HttpGet("{carrierId:guid}/dashboard")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EndpointName("Get Carrier Dashboard")]
-        [EndpointSummary("Get the authenticated carrier dashboard")]
-        [EndpointDescription("Returns the dashboard data for the authenticated carrier, including the information required to monitor the account and shipment activity.")]
-        public async Task<IActionResult> DashboardAsync(Guid carrierId, CancellationToken ct)
-        {
-            if (!await IsCarrierOwnerAsync(carrierId))
-                return Forbid();
-            var result = await mediator.Send(new GetCarrierDashboardQuery(carrierId), ct);
-            return result.ToActionResult();
-        }
 
         [Authorize(Policy = CarrierPermissions.ViewAssignedShipments)]
         [EnableRateLimiting("DefaultRateLimiter")]

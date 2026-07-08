@@ -1,6 +1,6 @@
-﻿
 using TransitNova.Domain.Contracts.DomainEvents.Events.NotificationEvents;
 using TransitNova.Domain.Entities.Common;
+
 namespace TransitNova.Domain.Entities.MainEntities
 {
     public sealed class Notification : AggregateRoot<Guid>
@@ -24,7 +24,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             string title,
             string message)
         {
-            var notification =  new Notification
+            var notification = new Notification
             {
                 Id = Guid.CreateVersion7(),
                 UserId = userId,
@@ -34,7 +34,13 @@ namespace TransitNova.Domain.Entities.MainEntities
                 CreatedOnUtc = DateTime.UtcNow
             };
 
-            notification.RaiseDomainEvent(new NotificationCreatedDomainEvent(notification.Id, notification.UserId, notification.Title, notification.Message));
+            notification.RaiseDomainEvent(new NotificationCreatedDomainEvent(
+                notification.Id,
+                notification.UserId,
+                notification.Title,
+                notification.Message,
+                notification.CreatedOnUtc,
+                notification.IsRead));
             return notification;
         }
 

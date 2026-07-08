@@ -1,0 +1,87 @@
+@using TransitNovaUI.BusinessLayer.Common.ResultPattern
+@using TransitNovaUI.BusinessLayer.DTOs.Notification
+@model UiPagedResult<UiNotificationDto>?
+@{
+    var page = Model ?? UiPagedResult<UiNotificationDto>.From(Array.Empty<UiNotificationDto>(), 0, 1, 20);
+    var notifications = page.Data?.ToList() ?? [];
+    var area = ViewData["NotificationsArea"]?.ToString() ?? string.Empty;
+    var emptyTitle = ViewData["EmptyTitle"]?.ToString() ?? "No notifications yet";
+    var emptyDescription = ViewData["EmptyDescription"]?.ToString() ?? "New activity will appear here as soon as it is triggered.";
+    var pageNumber = page.PageNumber <= 0 ? 1 : page.PageNumber;
+    var pageSize = page.PageSize <= 0 ? 20 : page.PageSize;
+    var totalPages = page.TotalPages <= 0 ? 1 : page.TotalPages;
+    var isFirstPage = pageNumber <= 1;
+    var isLastPage = page.TotalCount == 0 || pageNumber >= totalPages;
+    var summary = page.TotalCount == 0
+        ? "0 notifications"
+        : $"Showing {notifications.Count} of {page.TotalCount} notifications";
+}
+
+<section class="overflow-hidden rounded-[18px] border border-[#EAEAEA] bg-white shadow-sm" data-notifications-feed data-notifications-page-size="@pageSize">
+    <div class="flex flex-col gap-3 border-b border-[#EAEAEA] px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h2 class="text-lg font-bold text-[#111111]">Notification center</h2>
+            <p class="mt-1 text-sm text-[#6B7280]">@summary</p>
+        </div>
+        <div class="text-xs font-semibold uppercase tracking-[0.12em] text-[#6B7280]">Page @pageNumber of @totalPages</div>
+    </div>
+
+    <div class="p-6">
+        <div data-notifications-empty class="@(notifications.Count > 0 ? "hidden" : string.Empty) rounded-[18px] border border-dashed border-[#D1D5DB] bg-[#F8FAFC] px-6 py-10 text-center">
+            <h3 class="text-base font-semibold text-[#111111]">@emptyTitle</h3>
+            <p class="mt-2 text-sm leading-6 text-[#6B7280]">@emptyDescription</p>
+        </div>
+
+        <div data-notifications-list class="space-y-3 @(notifications.Count == 0 ? "hidden" : string.Empty)">
+            @foreach (var notification in notifications)
+            {
+                <article data-notification-item data-read="@notification.IsRead.ToString().ToLowerInvariant()" class="@NotificationCardClass(notification.IsRead)">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div class="min-w-0 flex-1">
+                            <h3 class="text-base font-semibold text-[#111111]">@notification.Title</h3>
+                            <p class="mt-2 text-sm leading-6 text-[#4B5563]">@notification.Message</p>
+                        </div>
+                        <span data-notification-state class="@NotificationStateClass(notification.IsRead)">@(notification.IsRead ? "Read" : "Unread")</span>
+                    </div>
+                    <p class="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#6B7280]">@notification.CreatedOnUtc.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</p>
+                </article>
+            }
+        </div>
+    </div>
+
+    @if (page.TotalCount > 0)
+    {
+        <div class="flex flex-col gap-3 border-t border-[#EAEAEA] px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-sm text-[#6B7280]">Newest notifications are shown first.</p>
+            <div class="flex items-center gap-3">
+                @if (isFirstPage)
+                {
+                    <span class="inline-flex min-h-[40px] items-center rounded-xl border border-[#E5E7EB] px-4 text-sm font-semibold text-[#9CA3AF]">Previous</span>
+                }
+                else
+                {
+                    <a asp-area="@area" asp-controller="Notifications" asp-action="Index" asp-route-pageNumber="@(pageNumber - 1)" asp-route-pageSize="@pageSize" class="inline-flex min-h-[40px] items-center rounded-xl border border-[#E5E7EB] px-4 text-sm font-semibold text-[#111111] transition hover:border-[#111111]">Previous</a>
+                }
+
+                @if (isLastPage)
+                {
+                    <span class="inline-flex min-h-[40px] items-center rounded-xl border border-[#E5E7EB] bg-[#111111] px-4 text-sm font-semibold text-white opacity-50">Next</span>
+                }
+                else
+                {
+                    <a asp-area="@area" asp-controller="Notifications" asp-action="Index" asp-route-pageNumber="@(pageNumber + 1)" asp-route-pageSize="@pageSize" class="inline-flex min-h-[40px] items-center rounded-xl bg-[#111111] px-4 text-sm font-semibold text-white transition hover:bg-black">Next</a>
+                }
+            </div>
+        </div>
+    }
+</section>
+
+@functions {
+    private static string NotificationCardClass(bool isRead) => isRead
+        ? "rounded-[18px] border border-[#E5E7EB] bg-white p-5 shadow-sm"
+        : "rounded-[18px] border border-[#F5D48B] bg-[#FFFBEA] p-5 shadow-sm";
+
+    private static string NotificationStateClass(bool isRead) => isRead
+        ? "inline-flex min-w-[72px] justify-center rounded-full border border-[#D1D5DB] bg-[#F8FAFC] px-2.5 py-1 text-[11px] font-semibold text-[#475569]"
+        : "inline-flex min-w-[72px] justify-center rounded-full border border-[#F59E0B] bg-[#FFF7ED] px-2.5 py-1 text-[11px] font-semibold text-[#B45309]";
+}

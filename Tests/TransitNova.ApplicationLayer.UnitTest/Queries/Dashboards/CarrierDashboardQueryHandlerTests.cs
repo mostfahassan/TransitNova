@@ -18,11 +18,7 @@ public sealed class CarrierDashboardQueryHandlerTests
         var carrierId = Guid.NewGuid();
         var dashboard = new CarrierDashboardDto
         {
-            Profile = new CarrierProfileDto
-            {
-                Id = carrierId,
-                FullName = "Ahmed Ali"
-            }
+           
         };
         var dashboardService = new Mock<ICarrierDashboard>();
         dashboardService.Setup(x => x.BuildAsync(carrierId, It.IsAny<CancellationToken>()))
@@ -33,7 +29,7 @@ public sealed class CarrierDashboardQueryHandlerTests
 
         result.IsSuccess.Should().BeTrue();
         result.Data.Should().BeSameAs(dashboard);
-        result.Data!.Profile.FullName.Should().Be("Ahmed Ali");
+      
     }
 
     [Fact]
