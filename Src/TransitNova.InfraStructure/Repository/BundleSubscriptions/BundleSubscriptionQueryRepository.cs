@@ -6,6 +6,7 @@ using TransitNova.BusinessLayer.DTOs.UserProfile;
 using TransitNova.BusinessLayer.Interfaces.Repositories.BundleSubscriptionRepository;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.BundleSubscriptions
 {
     internal class BundleSubscriptionQueryRepository(AppDbContext context) : IBundleSubscriptionQueryRepository

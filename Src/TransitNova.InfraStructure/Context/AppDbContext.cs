@@ -12,9 +12,11 @@ namespace TransitNova.InfraStructure.Context
         public DbSet<ReceiverProfile> ReceiverProfiles { get; set; }
         public DbSet<OperationManagerProfile> OperationManagerProfiles { get; set; }
         public DbSet<AdminProfile> Admins { get; set; }
+        public DbSet<PaymentInvoice> PaymentInvoices { get; set; }
         public DbSet<WarehouseManagerProfile> WarehouseManagersProfiles { get; set; }
         public DbSet<SystemActivityLog> SystemActivityLogs { get; set; }
         public DbSet<Zone> Zones { get; set; }
+        public DbSet<ReportRequest> ReportRequests { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<OutboxMessage> OutboxMessages { get; set; }
         public DbSet<IdempotentTable> IdempotentTableKey { get; set; }

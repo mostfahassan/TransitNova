@@ -8,6 +8,6 @@ namespace TransitNova.BusinessLayer.Interfaces.Services.ShipmentServices
     public interface IShipmentService
     {
         void UpdateShipmentDetails(Shipment shipment, UpdateShipmentDto shipmentCommand);
-        Task<(Result<Invoice>, string)> HandleShipmentCreation(CreateShipmentDto Dto , Guid AppUserId,CancellationToken cancellationToken);
+        Task<(Result<InvoiceDto>, string)> HandleShipmentCreation(CreateShipmentDto Dto , Guid AppUserId,CancellationToken cancellationToken);
     }
 }

@@ -2,6 +2,7 @@
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.CarrierRepo;
 
 public class CarrierCommandRepository(AppDbContext context) : ICarrierCommandRepository

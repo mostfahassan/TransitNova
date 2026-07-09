@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Health
 {
     internal class DatabaseHealthCheck(AppDbContext db ) : IHealthCheck

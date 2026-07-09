@@ -2,6 +2,7 @@
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.User
 {
     public class ReceiverRepository(AppDbContext context , ILogger<ReceiverRepository> logger) : IReceiverRepository

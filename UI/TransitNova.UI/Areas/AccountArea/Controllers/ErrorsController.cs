@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TransitNova.UI.Infrastructure.Mvc.Common;
 
 namespace TransitNova.UI.Areas.AccountArea.Controllers;
 

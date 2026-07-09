@@ -58,7 +58,7 @@ public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebAp
         {
             using var client = _factory.CreateAuthenticatedClient(
                 $"route-{Guid.NewGuid():N}");
-            using var request = CreateRequest(endpoint, Guid.NewGuid().ToString());
+            using var request = await EndpointRequestFactory.CreateRequestAsync(_factory, endpoint, Guid.NewGuid().ToString());
             using var response = await client.SendAsync(request);
 
             if (InvalidAuthenticatedStatuses.Contains(response.StatusCode) ||
@@ -84,7 +84,7 @@ public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebAp
         using var client = _factory.CreateAnonymousClient();
         foreach (var endpoint in endpoints)
         {
-            using var request = CreateRequest(endpoint, Guid.NewGuid().ToString());
+            using var request = await EndpointRequestFactory.CreateRequestAsync(_factory, endpoint, Guid.NewGuid().ToString());
             using var response = await client.SendAsync(request);
 
             if (response.StatusCode != HttpStatusCode.Unauthorized)
@@ -109,7 +109,7 @@ public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebAp
         using var client = _factory.CreateAnonymousClient();
         foreach (var endpoint in endpoints)
         {
-            using var request = CreateRequest(endpoint, Guid.NewGuid().ToString());
+            using var request = await EndpointRequestFactory.CreateRequestAsync(_factory, endpoint, Guid.NewGuid().ToString());
             using var response = await client.SendAsync(request);
 
             if (response.StatusCode is HttpStatusCode.Unauthorized)
@@ -151,7 +151,7 @@ public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebAp
         {
             using var client = _factory.CreateAuthenticatedClient(
                 $"idempotency-{Guid.NewGuid():N}");
-            using var request = CreateRequest(endpoint, "not-a-guid");
+            using var request = await EndpointRequestFactory.CreateRequestAsync(_factory, endpoint, "not-a-guid");
             using var response = await client.SendAsync(request);
 
             if (response.StatusCode != HttpStatusCode.BadRequest)
@@ -192,22 +192,6 @@ public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebAp
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
-    private static HttpRequestMessage CreateRequest(
-        ControllerEndpoint endpoint,
-        string idempotencyKey)
-    {
-        var request = new HttpRequestMessage(
-            new HttpMethod(endpoint.HttpMethod),
-            endpoint.RequestPath);
-
-        if (endpoint.HttpMethod is "POST" or "PUT" or "PATCH" or "DELETE")
-            request.Headers.Add("X-Idempotency-Key", idempotencyKey);
-
-        if (endpoint.HttpMethod is "POST" or "PUT" or "PATCH")
-            request.Content = JsonContent.Create(new { });
-
-        return request;
-    }
 
     private static bool HasIdempotencyHeaderParameter(ControllerActionDescriptor action) =>
         action.MethodInfo
@@ -224,3 +208,5 @@ public sealed class ApiEndpointIntegrationTests : IClassFixture<TransitNovaWebAp
         return endpoint.HttpMethod == "DELETE" || HasIdempotencyHeaderParameter(endpoint.ActionDescriptor);
     }
 }
+
+

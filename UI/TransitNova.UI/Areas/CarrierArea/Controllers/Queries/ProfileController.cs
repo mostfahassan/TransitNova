@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNova.UI.Infrastructure.Mvc.Common;
+using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiContracts;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Profile.Segregation;

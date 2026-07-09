@@ -3,6 +3,7 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.WarehouseManager;
 using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseManagerRepository;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.WarehouseManagerRepo
 {
     internal sealed class WarehouseManagerQueryRepository(AppDbContext context)

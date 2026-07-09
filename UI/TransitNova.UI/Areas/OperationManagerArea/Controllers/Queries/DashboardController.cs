@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
-using TransitNova.UI.Infrastructure.Mvc;
+using TransitNova.UI.Infrastructure.Mvc.Common;
+using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Dashboard.Segregation;
 
 namespace TransitNova.UI.Areas.OperationManagerArea.Controllers.Queries;

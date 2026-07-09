@@ -14,7 +14,7 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
             await using var context = await dbContextFactory.CreateDbContextAsync(ct);
             var shipments = context.Shipments.AsQueryable()
                 .AsNoTracking()
-                .Where(sh => sh.CurrentStatus != ShipmentStatuses.Delivered && sh.CurrentStatus != ShipmentStatuses.Cancelled || sh.CurrentStatus == ShipmentStatuses.Issue);
+                .Where(sh => sh.CurrentStatus != ShipmentStatuses.Delivered && sh.CurrentStatus != ShipmentStatuses.Cancelled);
                
              var totalCount = await shipments.CountAsync(ct);
             
@@ -31,6 +31,8 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
                     Weight = sh.PackageSpecification.Weight,
                     EstimatedDeliveryDate = sh.EstimatedDeliveryDate,
                 })
+                .OrderByDescending(sh => sh.CreatedAt)
+                .ThenBy(sh => sh.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(ct);

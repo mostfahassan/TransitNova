@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.Admin
 {
     public class AdminRulesRepository(AppDbContext context) : IAdminRulesRepository, IAdminQueryRepository

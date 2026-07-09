@@ -1,6 +1,7 @@
 ﻿using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRatingRepository;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.CarrierRatings
 {
     internal class CarrierRatingCommandsRepository(AppDbContext context) : ICarrierRatingCommandsRepository

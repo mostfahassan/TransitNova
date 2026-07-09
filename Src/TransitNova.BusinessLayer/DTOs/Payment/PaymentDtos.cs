@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using TransitNova.Domain.Enums.Payment;
 namespace TransitNova.BusinessLayer.DTOs.Payment
 {
     public sealed class PaymentGatewayResponse
@@ -13,7 +10,6 @@ namespace TransitNova.BusinessLayer.DTOs.Payment
         public int StatusCode { get; init; }
         public PaymentGatewayError? Error { get; init; }
     }
-
     public sealed class PaymentGatewayInvoice
     {
         public Guid PaymentId { get; init; }
@@ -21,20 +17,20 @@ namespace TransitNova.BusinessLayer.DTOs.Payment
         public decimal Amount { get; init; }
         public decimal Commission { get; init; }
         public decimal TotalAmount { get; init; }
-        public string PaymentMethod { get; init; } = string.Empty;
-        public string Status { get; init; } = string.Empty;
+        public PaymentMethod PaymentMethod { get; set; }
+        public PaymentStatus Status { get; set; }
         public DateTime? PaidAt { get; init; }
         public string? Notes { get; init; }
 
-        public Invoice ToInvoice(decimal shippingCost)
+        public InvoiceDto ToInvoice(decimal shippingCost)
         {
-            return new Invoice
+            return new InvoiceDto
             {
                 PaymentId = PaymentId,
                 ShipmentId = ShipmentId,
                 ShippingCost = shippingCost,
                 Commission = Commission,
-                Amount = TotalAmount,
+                TotalAmount = TotalAmount,
                 PaymentMethod = PaymentMethod,
                 Status = Status,
                 PaidAt = PaidAt,

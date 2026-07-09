@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.Generic
 {
     public class GenericRepository<TEntity, TKey>(AppDbContext context, IConfigurationProvider mapperConfig)

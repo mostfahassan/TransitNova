@@ -1,0 +1,79 @@
+[
+  {
+    "Scenario": "BadRequest_InvalidIdempotencyKey",
+    "Endpoint": "/api/v1/admin/bundles/11111111-1111-1111-1111-111111111111",
+    "StatusCode": 400,
+    "ContentType": "application/problem\u002Bjson; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: object",
+      "$.errors.X-Idempotency-Key: array",
+      "$.errors.X-Idempotency-Key[*]: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "Scenario": "Unauthorized_AnonymousProtectedEndpoint",
+    "Endpoint": "/api/v1/warehouse-managers/dashboard",
+    "StatusCode": 401,
+    "ContentType": null,
+    "Signatures": [
+      "$: empty"
+    ]
+  },
+  {
+    "Scenario": "Forbidden_WarehouseManagerDashboard",
+    "Endpoint": "/api/v1/warehouse-managers/dashboard",
+    "StatusCode": 403,
+    "ContentType": null,
+    "Signatures": [
+      "$: empty"
+    ]
+  },
+  {
+    "Scenario": "NotFound_Government",
+    "Endpoint": "/api/v1/governments/999999",
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "Scenario": "Conflict_IdempotencyHashMismatch",
+    "Endpoint": "/api/v1/admin/bundles",
+    "StatusCode": 409,
+    "ContentType": "application/problem\u002Bjson",
+    "Signatures": [
+      "$: object",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "Scenario": "Validation_CreateWarehouse_InvalidZones",
+    "Endpoint": "/api/v1/admin/warehouses",
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  }
+]

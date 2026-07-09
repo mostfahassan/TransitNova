@@ -1,6 +1,5 @@
 ﻿
 using TransitNova.BusinessLayer.DTOs.AppUser;
-using TransitNova.BusinessLayer.DTOs.RefreshToken;
 namespace TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService
 {
     public interface IUserAuthQueryService

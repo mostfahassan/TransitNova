@@ -13,6 +13,7 @@ using TransitNova.InfraStructure.ServiceRegistration.InfraStructureRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.LocationRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.NotificationRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.OperationManagerRegistration;
+using TransitNova.InfraStructure.ServiceRegistration.PaymentInvoiceRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.PermissionsRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.ShipmentRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.StrategyRegistration;
@@ -22,6 +23,9 @@ using TransitNova.InfraStructure.ServiceRegistration.UserRepositoryRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.VehicleRepositoryRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.WarehouseRegistration;
 using TransitNova.InfraStructure.ServiceRegistration.WarehouseManagerRegistration;
+using TransitNova.InfraStructure.ServiceRegistration.HangFireServiceRegisteration;
+using TransitNova.InfraStructure.ServiceRegistration.ReportRequestRepository;
+using TransitNova.InfraStructure.ServiceRegistration.ReportStrategyRegistration;
 namespace TransitNova.InfraStructure.ServiceRegistration
 {
     public static class DependencyInjection
@@ -62,7 +66,13 @@ namespace TransitNova.InfraStructure.ServiceRegistration
                 .AddWarehouseManagerRepositories()
                 .AddLocationRepositories()
                 .AddNotificationServices()
-                .AddBundleSubscriptionRepositories();
+                .AddBundleSubscriptionRepositories()
+                .AddPaymentInvoiceRepositories();
+
+            services.AddHangFireService(configuration);
+            services.AddReportRequestRepository();
+            services.AddReportStrategyRegistration();
+
 
             services.AddScoped<ISystemLogCommands, SystemLogCommands>();
             
@@ -76,3 +86,5 @@ namespace TransitNova.InfraStructure.ServiceRegistration
        
     }
 }
+
+

@@ -51,8 +51,8 @@ public sealed class PaymentWorkflowTests
         result.Data.ShipmentId.Should().Be(shipmentId);
         result.Data.ShippingCost.Should().Be(125m);
         result.Data.Commission.Should().Be(12.5m);
-        result.Data.Amount.Should().Be(137.5m);
-        result.Data.Status.Should().Be("Success");
+        result.Data.TotalAmount.Should().Be(137.5m);
+        result.Data.Status.Should().Be(PaymentStatus.Success);
         service.Handler.Requests.Should().ContainSingle();
         service.Handler.Requests[0].Headers.GetValues("X-PaymentKey").Should().ContainSingle("public-key");
         service.Handler.Requests[0].RequestUri!.ToString().Should().Be("https://payments.test/api/v1/payments/pay");
@@ -226,3 +226,4 @@ public sealed class PaymentWorkflowTests
         }
     }
 }
+

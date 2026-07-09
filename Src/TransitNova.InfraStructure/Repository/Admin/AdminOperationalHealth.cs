@@ -4,6 +4,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.Admin
 {
     internal class AdminOperationalHealth(IDbContextFactory<AppDbContext> contextFactory) : IAdminOperationalHealth

@@ -4,6 +4,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.ShipmentRepo
 {
     internal class ShipmentRulesRepository(AppDbContext context) : IShipmentRulesRepository

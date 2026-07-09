@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNova.UI.Infrastructure.Mvc.Common;
+using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Trips.Carriers.Segregations.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Trips.Carriers.Segregations.Query;
 

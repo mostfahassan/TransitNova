@@ -9,9 +9,7 @@ namespace TransitNova.InfraStructure.Common.StrategyFactory
         public UserStrategyFactory(IEnumerable<IUserRegistrationStrategy> strategies)
         => _strategies = strategies;
         public IUserRegistrationStrategy? ResolveUserStrategy(UserType userType)
-        {
-            var strategy = _strategies.FirstOrDefault(s => s.UserType == userType);
-            return strategy;
-        }
+        => _strategies.FirstOrDefault(s => s.UserType == userType);
+         
     }
 }

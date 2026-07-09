@@ -2,6 +2,7 @@
 using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.Domain.Enums.Trip;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.Admin
 {
     internal class AdminStatisticsQueryRepository(IDbContextFactory<AppDbContext> contextFactory) : IAdminStatisticsQueryRepository

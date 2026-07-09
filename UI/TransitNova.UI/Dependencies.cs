@@ -4,6 +4,8 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using System.Text.Json.Serialization;
+using TransitNova.UI.Infrastructure.Mvc.Implementation;
+using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNovaUI.BusinessLayer;
 
 namespace TransitNova.UI

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNovaUI.BusinessLayer.Common.APIHelper;
 
 namespace TransitNova.UI.Controllers;

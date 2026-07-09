@@ -9,26 +9,21 @@ using TransitNova.BusinessLayer.DTOs.UserProfile;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.User
 {
-    public class UserQueryRepository(AppDbContext context, ILogger<UserQueryRepository> logger,IMapper mapper) : IUserQueryRepository
+    public class UserQueryRepository(AppDbContext context,IMapper mapper) : IUserQueryRepository
     {
         public async Task<Guid> GetAppUserIdAsync(Guid AppUserId, CancellationToken ct)
-        {
-            logger.LogDebug("Start Fetching User profile Id");
-            var userId = await context.UserProfiles.AsNoTracking()
+             => await context.UserProfiles.AsNoTracking()
                 .Where(u => u.AppUserId == AppUserId)
                 .Select(u => u.Id)
                 .FirstOrDefaultAsync(ct);
-            logger.LogDebug("Creating Receiver profile Succeeded");
-            return userId;
-        }
+           
+     
 
         public async Task<IEnumerable<RetrieveShipmentSummaryDto>> GetUserShipmentsAsync(Guid AppUserId, CancellationToken ct)
-        {
-            logger.LogInformation("Starting retrieving shipments summary");
-
-            var query = await context.Shipments.AsNoTracking()
+           => await context.Shipments.AsNoTracking()
                 .Where(sh => sh.Sender.AppUserId == AppUserId)
                 .Select(sh => new RetrieveShipmentSummaryDto
                 {
@@ -42,15 +37,10 @@ namespace TransitNova.InfraStructure.Repository.User
                     Weight = sh.PackageSpecification.Weight
                 })
                 .ToListAsync(ct);
-
-            logger.LogInformation("Retrieved {Count} shipments successfully", query.Count);
-            return query;
-                
-        }
+   
 
         public async Task<Dictionary<ShipmentStatuses, int>> GetShipmentCountInStatusAsync(Guid AppUserId, CancellationToken cancellationToken)
-        {
-            var shipmentCounts = await context.Shipments
+            => await context.Shipments
                                 .AsNoTracking()
                                 .Where(sh => sh.Sender.AppUserId == AppUserId)
                                 .GroupBy(sh => sh.CurrentStatus)
@@ -59,9 +49,7 @@ namespace TransitNova.InfraStructure.Repository.User
                                  g => g.Count(),
                                  cancellationToken);
 
-            return shipmentCounts;
-        }
-
+   
         public async Task<UserProfileDto?> GetUserProfileAsync(Guid userId, CancellationToken ct)
             => await context.UserProfiles
                 .AsNoTracking()
@@ -233,6 +221,12 @@ namespace TransitNova.InfraStructure.Repository.User
                     IsLockedOut = appUser.LockoutEnd.HasValue && appUser.LockoutEnd > now,
                     CreatedAt = profile.CreatedAt
                 };
-        
+
+        public async Task<string?> GetUserFullName(Guid AppUserId, CancellationToken ct)
+          => await context.UserProfiles
+                .AsNoTracking()
+                .Where(u => u.AppUserId == AppUserId || u.Id == AppUserId)
+                .Select(u => u.FullName)
+                .FirstOrDefaultAsync(ct);
     }
 }

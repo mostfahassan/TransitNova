@@ -4,6 +4,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseManagerReposito
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Trip;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.WarehouseManagerRepo
 {
     internal sealed class WarehouseManagerDashboardRepository(IDbContextFactory<AppDbContext> contextFactory) : IWarehouseManagerDashboardRepository

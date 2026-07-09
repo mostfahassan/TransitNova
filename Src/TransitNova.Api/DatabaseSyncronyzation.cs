@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TransitNova.Domain.Enums.Users;
 using TransitNova.InfraStructure;
 using TransitNova.InfraStructure.Context;
+using TransitNova.InfraStructure.Context.Seeder;
 
 namespace TransitNova.Api
 {
@@ -43,6 +44,12 @@ namespace TransitNova.Api
                     }
 
                     await SeedIdentityRolesAsync(services, logger);
+
+                    if (app.Configuration.GetValue("SeedDemoData", app.Environment.IsDevelopment()))
+                    {
+                        await DatabaseSeeder.SeedDemoDataAsync(services, logger);
+                    }
+
                     return;
                 }
                 catch (Exception ex) when (attempt < maxAttempts)

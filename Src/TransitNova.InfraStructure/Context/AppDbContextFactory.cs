@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using System.Text.Json;
-
 namespace TransitNova.InfraStructure.Context
 {
     public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>

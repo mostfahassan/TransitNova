@@ -277,6 +277,12 @@ public static class ApiRoutes
         public const string GetUserProfileUrl = $"{Prefix}/users/profile";
     }
 
+    public static class UserPaymentInvoices
+    {
+        public const string GetUserPaymentInvoiceUrl = $"{Prefix}/users/payment-invoices/{{paymentId}}";
+        public const string GetUserPaymentInvoicesUrl = $"{Prefix}/users/payment-invoices";
+    }
+
     public static class UserShipments
     {
         public const string CancelShipmentUrl = $"{Prefix}/users/shipments/{{shipmentId}}/cancel";
@@ -337,4 +343,5 @@ public static class ApiRoutes
         public const string GetTripsUrl = $"{Prefix}/warehouse-managers/trips/{{warehouseId}}";
     }
 }
+
 

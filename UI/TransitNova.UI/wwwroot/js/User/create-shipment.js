@@ -16,6 +16,7 @@
     const validationInputs = [...form.querySelectorAll('[data-live-required], [data-live-email], [data-live-phone], [data-live-select], [data-live-city], [data-live-weight], [data-live-dimension], [data-live-pickup-date]')];
     const allControls = [...form.querySelectorAll('input, textarea, select, button')];
     const statusBadge = document.querySelector('[data-invoice-status-badge]');
+    const invoiceIdField = document.querySelector('[data-invoice-id]');
     const paymentMethodField = document.querySelector('[data-invoice-payment-method]');
     const paymentIdField = document.querySelector('[data-invoice-payment-id]');
     const paidAtField = document.querySelector('[data-invoice-paid-at]');
@@ -305,12 +306,15 @@
 
     function populateInvoice(invoice) {
         if (!invoice) return;
+        if (invoiceIdField) invoiceIdField.textContent = invoice.invoiceId || 'Not available';
         if (paymentIdField) paymentIdField.textContent = invoice.paymentId || 'Not available';
         if (paymentMethodField) paymentMethodField.textContent = humanize(invoice.paymentMethod);
         if (paidAtField) paidAtField.textContent = formatDateTime(invoice.paidAt);
-        if (shippingCostField) shippingCostField.textContent = formatAmount(invoice.shippingCost);
-        if (commissionField) commissionField.textContent = formatAmount(invoice.commission);
-        if (amountField) amountField.textContent = formatAmount(invoice.amount);
+        const currency = humanize(invoice.currency || '');
+        if (shippingCostField) shippingCostField.textContent = `${formatAmount(invoice.shippingCost)} ${currency}`.trim();
+        if (commissionField) commissionField.textContent = `${formatAmount(invoice.commission)} ${currency}`.trim();
+        const totalAmount = invoice.totalAmount ?? invoice.amount;
+        if (amountField) amountField.textContent = `${formatAmount(totalAmount)} ${currency}`.trim();
         if (notesField) notesField.textContent = invoice.notes || 'No additional notes.';
         updateStatusBadge(invoice.status);
     }
@@ -393,3 +397,4 @@
         if (event.key === 'Escape' && invoiceModalOpen) toggleInvoiceModal(false);
     });
 })();
+

@@ -1,0 +1,100 @@
+@model UserPaymentInvoicesIndexViewModel
+@{
+    ViewData["Title"] = "Payment Invoices";
+    var invoices = Model.Invoices.OrderByDescending(invoice => invoice.PaidAt ?? DateTime.MinValue).ToArray();
+    var paidCount = invoices.Count(invoice => invoice.Status.ToString().Contains("Success", StringComparison.OrdinalIgnoreCase));
+    var totalAmount = invoices.Sum(invoice => invoice.TotalAmount);
+}
+
+<section class="customer-fade-up">
+    <div class="grid gap-6 lg:grid-cols-[1fr_360px] lg:items-stretch">
+        <div class="customer-card p-8 md:p-10">
+            <div class="customer-badge customer-badge-info">Invoice archive</div>
+            <h1 class="mt-5 max-w-3xl text-4xl font-black leading-[1.02] tracking-[-0.04em] text-[#111111] md:text-6xl">Every payment receipt in one quiet ledger.</h1>
+            <p class="mt-5 max-w-2xl text-base leading-7 text-[#666666]">Review shipment invoices, payment state, currency, and exact totals without searching through shipment records.</p>
+            <div class="mt-8 flex flex-wrap gap-3">
+                <a asp-area="UserArea" asp-controller="Shipments" asp-action="Create" class="customer-button">Create shipment</a>
+                <a asp-area="UserArea" asp-controller="Dashboard" asp-action="Index" class="customer-button-secondary">Back to dashboard</a>
+            </div>
+        </div>
+
+        <aside class="customer-card-flat grid gap-1 overflow-hidden bg-[#EAEAEA] p-px">
+            <div class="bg-white p-6">
+                <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Total invoices</div>
+                <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">@invoices.Length</div>
+            </div>
+            <div class="bg-white p-6">
+                <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Successful payments</div>
+                <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">@paidCount</div>
+            </div>
+            <div class="bg-white p-6">
+                <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Recorded value</div>
+                <div class="mt-3 text-3xl font-black tracking-[-0.04em] text-[#111111]">@FormatMoney(totalAmount)</div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<section class="customer-card mt-8 overflow-hidden">
+    <div class="flex flex-col gap-3 border-b border-[#EAEAEA] p-6 md:flex-row md:items-center md:justify-between">
+        <div>
+            <h2 class="text-xl font-black tracking-[-0.02em] text-[#111111]">Invoice ledger</h2>
+            <p class="mt-1 text-sm leading-6 text-[#666666]">Compact payment records for report generation, accounting, and shipment follow-up.</p>
+        </div>
+        <span class="font-mono text-[11px] font-black uppercase tracking-[0.14em] text-[#787774]">PAYMENT / ARCHIVE</span>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="customer-table">
+            <thead>
+                <tr>
+                    <th>Invoice</th>
+                    <th>Payment</th>
+                    <th>Shipment</th>
+                    <th>Status</th>
+                    <th>Paid at</th>
+                    <th class="text-right">Total</th>
+                    <th class="text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (invoices.Length == 0)
+                {
+                    <tr>
+                        <td colspan="7" class="py-12 text-center text-sm font-semibold text-[#787774]">No invoices have been generated yet. Create a shipment to produce the first invoice.</td>
+                    </tr>
+                }
+                @for (var index = 0; index < invoices.Length; index++)
+                {
+                    var invoice = invoices[index];
+                    <tr style="--row-index:@index">
+                        <td><span class="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#111111]">@(invoice.InvoiceId ?? ShortId(invoice.PaymentId))</span></td>
+                        <td><span class="font-mono text-xs font-bold text-[#666666]">@ShortId(invoice.PaymentId)</span></td>
+                        <td><span class="font-mono text-xs font-bold text-[#666666]">@ShortId(invoice.ShipmentId)</span></td>
+                        <td><span class="@BadgeClass(invoice.Status.ToString())">@invoice.Status</span></td>
+                        <td>@FormatDate(invoice.PaidAt)</td>
+                        <td class="text-right font-black text-[#111111]">@FormatMoney(invoice.TotalAmount) @invoice.Currency</td>
+                        <td class="text-right">
+                            <a asp-area="UserArea" asp-controller="PaymentInvoices" asp-action="Details" asp-route-paymentId="@invoice.PaymentId" class="customer-button-secondary !px-3 !py-2">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+@functions {
+    private static string ShortId(Guid id) => id == Guid.Empty ? "-" : id.ToString()[..8].ToUpperInvariant();
+    private static string FormatMoney(decimal value) => value.ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
+    private static string FormatDate(DateTime? value) => value is null ? "Pending" : value.Value.ToString("MMM dd, yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+
+    private static string BadgeClass(string value)
+    {
+        var text = value.ToLowerInvariant();
+        if (text.Contains("success") || text.Contains("paid")) return "customer-badge customer-badge-success";
+        if (text.Contains("pending")) return "customer-badge customer-badge-warning";
+        if (text.Contains("fail") || text.Contains("declin")) return "customer-badge customer-badge-danger";
+        return "customer-badge customer-badge-neutral";
+    }
+}

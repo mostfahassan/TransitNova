@@ -1,0 +1,17 @@
+{
+  "Name": "SerializerProbe",
+  "Json": "{\u0022id\u0022:\u002244444444-4444-4444-4444-444444444444\u0022,\u0022createdAt\u0022:\u00222026-07-09T11:45:00Z\u0022,\u0022shipDate\u0022:\u00222026-07-10\u0022,\u0022dispatchTime\u0022:\u002214:05:30\u0022,\u0022price\u0022:199.95,\u0022userType\u0022:\u0022User\u0022,\u0022notes\u0022:null,\u0022tags\u0022:[],\u0022scores\u0022:[1,2,3]}",
+  "Signatures": [
+    "$: object",
+    "$.createdAt: string(date-time)",
+    "$.dispatchTime: string(time-only)",
+    "$.id: string(guid)",
+    "$.notes: null",
+    "$.price: number(decimal)",
+    "$.scores: array",
+    "$.scores[*]: integer",
+    "$.shipDate: string(date-only)",
+    "$.tags: array(empty)",
+    "$.userType: string"
+  ]
+}

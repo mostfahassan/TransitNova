@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
 using TransitNova.Domain.Enums.Shipment;
@@ -137,5 +137,6 @@ public sealed class UserRepositoryPhase2Tests
     }
 
     private static UserQueryRepository CreateRepository(SqliteAppDbContextFixture fixture) =>
-        new(fixture.Context, NullLogger<UserQueryRepository>.Instance, Phase2RepositoryTestData.CreateMapper());
+        new(fixture.Context, Phase2RepositoryTestData.CreateMapper());
 }
+

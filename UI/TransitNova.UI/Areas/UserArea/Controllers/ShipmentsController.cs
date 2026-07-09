@@ -10,6 +10,8 @@ using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Shared.Locations.Queries;
 using TransitNovaUI.BusinessLayer.DTOs.Payment;
 using TransitNovaUI.BusinessLayer.DTOs.City;
 using TransitNovaUI.BusinessLayer.DTOs.Country;
+using TransitNova.UI.Infrastructure.Mvc.Interface;
+using TransitNova.UI.Infrastructure.Mvc.Common;
 
 namespace TransitNova.UI.Areas.UserArea.Controllers;
 
@@ -74,7 +76,7 @@ public sealed class ShipmentsController(
                 response.StatusCode is >= 200 and < 300 ? response.StatusCode : StatusCodes.Status200OK,
                 new CreateShipmentFlowResponse(
                     true,
-                    "Invoice ready",
+                    "InvoiceReport ready",
                     "Your payment was processed and the invoice is ready.",
                     response.Data,
                     shipmentDetailsUrl,

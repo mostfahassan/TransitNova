@@ -7,8 +7,10 @@ builder.Host.AddSerilog();
 #endregion
 
 var app = builder.Build();
+await DatabaseSyncronyzation.ApplyDatabaseMigrationsAsync(app);
 app.UseDependencies();
 app.Run();
+
 
 
 

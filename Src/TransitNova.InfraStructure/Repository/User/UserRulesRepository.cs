@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.User
 {
     internal class UserRulesRepository(AppDbContext context) : IUserRulesRepository

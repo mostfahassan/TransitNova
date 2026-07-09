@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Shipment;
+using TransitNova.UI.Infrastructure.Mvc.Common;
+using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Carriers.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Shipments.Segregation;

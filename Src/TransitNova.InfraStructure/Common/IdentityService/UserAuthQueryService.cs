@@ -7,33 +7,28 @@ using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 namespace TransitNova.InfraStructure.Common.IdentityService
 {
     internal class UserAuthQueryService(IMapper mapper ,
-        UserManager<AppUser> userManager ,
-        ILogger<UserAuthQueryService> logger) : IUserAuthQueryService
+        UserManager<AppUser> userManager ) : IUserAuthQueryService
     {
         public async Task<AppUserDto?> FindByIdAsync(Guid userId, CancellationToken ct)
         {
-            logger.LogTrace("Finding user by ID: {UserId}", userId);
             var user = await userManager.FindByIdAsync(userId.ToString());
             return user is null ? null : mapper.Map<AppUserDto>(user);
         }
 
         public async Task<AppUserDto?> FindByNameAsync(string userName, CancellationToken ct)
         {
-            logger.LogTrace("Finding user by UserName: {UserName}", userName);
             var user = await userManager.FindByNameAsync(userName);
             return user is null ? null : mapper.Map<AppUserDto>(user);
         }
 
         public async Task<AppUserDto?> FindByEmailAsync(string email, CancellationToken ct)
         {
-            logger.LogTrace("Finding user by Email: {Email}", email);
+          
             var user = await userManager.FindByEmailAsync(email);
             return user is null ? null : mapper.Map<AppUserDto>(user);
         }
-
         public async Task<IList<string>> GetUserRolesAsync(Guid userId, CancellationToken ct)
         {
-            logger.LogDebug("Fetching roles for User ID: {UserId}", userId);
             var appUser = await userManager.FindByIdAsync(userId.ToString());
             return appUser is null ? []
             : await userManager.GetRolesAsync(appUser);

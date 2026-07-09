@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseManagerRepository;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.WarehouseManagerRepo
 {
     internal sealed class WarehouseManagerRulesRepository(AppDbContext context) : IWarehouseManagerRuleseRepository

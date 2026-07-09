@@ -6,6 +6,7 @@ using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.Domain.Contracts.Carrier;
+using TransitNova.Domain.Contracts.Sorting;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Trip;
 using TransitNova.InfraStructure.Context;
@@ -54,31 +55,32 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
             {
                 query = query.Where(sh => sh.Mode == filter.Mode.Value);
             }
-
             if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
             {
-                var term = filter.SearchTerm.Trim().ToLower();
+                var term = filter.SearchTerm.Trim();
+
                 query = query.Where(sh =>
-                    EF.Functions.Like(sh.TrackingNumber.ToLower(), $"%{term}%") ||
-                    EF.Functions.Like(sh.Receiver.FirstName.ToLower(), $"%{term}%") ||
-                    EF.Functions.Like(sh.Receiver.LastName.ToLower(), $"%{term}%") ||
-                    EF.Functions.Like(sh.Sender.FirstName.ToLower(), $"%{term}%") ||
-                    EF.Functions.Like(sh.Sender.LastName.ToLower(), $"%{term}%"));
+                    EF.Functions.Like(sh.TrackingNumber, $"%{term}%") ||
+                    EF.Functions.Like(sh.Receiver.FirstName, $"%{term}%") ||
+                    EF.Functions.Like(sh.Receiver.LastName, $"%{term}%") ||
+                    EF.Functions.Like(sh.Sender.FirstName, $"%{term}%") ||
+                    EF.Functions.Like(sh.Sender.LastName, $"%{term}%"));
             }
 
-            var totalCount = await query.CountAsync(ct);
 
+
+            var totalCount = await query.CountAsync(ct);
             query = (filter.SortBy?.Trim().ToLowerInvariant()) switch
             {
-                "trackingnumber" => filter.SortDescending
+                SortBy.TrackingNumber   => filter.SortDescending
                     ? query.OrderByDescending(sh => sh.TrackingNumber)
                     : query.OrderBy(sh => sh.TrackingNumber),
 
-                "status" => filter.SortDescending
+                SortBy.Status => filter.SortDescending
                     ? query.OrderByDescending(sh => sh.CurrentStatus)
                     : query.OrderBy(sh => sh.CurrentStatus),
 
-                "cost" => filter.SortDescending
+                SortBy.Cost => filter.SortDescending
                     ? query.OrderByDescending(sh => sh.ShipmentCost)
                     : query.OrderBy(sh => sh.ShipmentCost),
 

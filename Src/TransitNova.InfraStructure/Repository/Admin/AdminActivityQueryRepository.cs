@@ -7,6 +7,7 @@ using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.Admin
 {
     internal class AdminActivityQueryRepository(IDbContextFactory<AppDbContext> contextFactory, IMapper mapper) : IAdminActivityQueryRepository

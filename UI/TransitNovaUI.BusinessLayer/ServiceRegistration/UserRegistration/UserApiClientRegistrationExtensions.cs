@@ -1,11 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.CarrierRatings.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.Profile.Query;
+using TransitNovaUI.BusinessLayer.ApiImplementation.User.PaymentInvoices.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.Shipments.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.Shipments.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.Subscriptions.Command;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.CarrierRatings.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Profile.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.PaymentInvoices.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.PaymentInvoices.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Profile.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Shipments.Queries;
@@ -37,6 +40,11 @@ public static class UserApiClientRegistrationExtensions
         services.AddScoped<IIssueShipmentCommandService, UserShipmentsCommand>();
         services.AddScoped<IUpdateShipmentCommandService, UserShipmentsCommand>();
 
+        services.AddScoped<UserPaymentInvoicesQuery>();
+        services.AddScoped<IUserPaymentInvoicesQuery, UserPaymentInvoicesQuery>();
+        services.AddScoped<IGetUserPaymentInvoiceQueryService, UserPaymentInvoicesQuery>();
+        services.AddScoped<IGetUserPaymentInvoicesQueryService, UserPaymentInvoicesQuery>();
+
         services.AddScoped<UserShipmentsQuery>();
         services.AddScoped<IUserShipmentsQuery, UserShipmentsQuery>();
         services.AddScoped<IUserShipmentQuery, UserShipmentsQuery>();
@@ -51,3 +59,5 @@ public static class UserApiClientRegistrationExtensions
         return services;
     }
 }
+
+

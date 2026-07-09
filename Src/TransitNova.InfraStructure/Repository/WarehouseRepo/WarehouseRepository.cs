@@ -4,6 +4,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseRepository;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Trip;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.WarehouseRepo
 {
     internal class WarehouseRepository(AppDbContext context) : IWarehouseQueriesRepository

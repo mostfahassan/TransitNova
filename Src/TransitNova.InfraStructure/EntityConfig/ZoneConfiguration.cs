@@ -25,21 +25,4 @@ namespace TransitNova.InfraStructure.EntityConfig
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
+ }

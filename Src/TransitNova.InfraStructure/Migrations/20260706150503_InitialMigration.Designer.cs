@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransitNova.InfraStructure.Context;
 
+
 #nullable disable
 
 namespace TransitNova.InfraStructure.Migrations

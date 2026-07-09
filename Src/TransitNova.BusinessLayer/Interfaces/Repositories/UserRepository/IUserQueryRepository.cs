@@ -7,6 +7,7 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository
     public interface IUserQueryRepository
     {
         Task<Guid> GetAppUserIdAsync(Guid AppUserId, CancellationToken ct);
+        Task <string?> GetUserFullName (Guid AppUserId, CancellationToken ct);
         Task<UserProfileDto?> GetUserProfileAsync(Guid UserId, CancellationToken ct);
         Task<IEnumerable<RetrieveShipmentSummaryDto>> GetUserShipmentsAsync(Guid AppUserId, CancellationToken ct);
         Task<RetrieveShipmentDto?> GetUserShipmentDetailsAsync(Guid AppUserId, Guid shipmentId, CancellationToken ct);

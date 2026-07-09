@@ -65,10 +65,18 @@ namespace TransitNova.Api
             app.MapHub<NotificationHub>("/hubs/notifications");
             app.MapHealthChecks("health");
             app.MapControllers();
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
             {
                 app.MapOpenApi();
+                app.UseSwaggerUI(options =>
+                {
+                    options.DocumentTitle = "TransitNova API Documentation";
+                    options.SwaggerEndpoint("/openapi/v1.json", "TransitNova API V1");
+                    options.RoutePrefix = string.Empty;
 
+                    options.EnableDeepLinking();
+                    options.EnableFilter();
+                });
                 app.MapScalarApiReference();
             }
 
@@ -306,3 +314,6 @@ namespace TransitNova.Api
 
     }
 }
+
+
+

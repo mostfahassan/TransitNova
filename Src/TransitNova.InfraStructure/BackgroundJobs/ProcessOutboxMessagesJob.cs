@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Quartz;
 using TransitNova.Domain.Contracts.DomainEvents;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.BackgroundJobs;
 
 [DisallowConcurrentExecution]

@@ -1,0 +1,7 @@
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.PaymentInvoices.Queries;
+
+namespace TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.PaymentInvoices.Segregation;
+
+public interface IUserPaymentInvoicesQuery : IGetUserPaymentInvoiceQueryService, IGetUserPaymentInvoicesQueryService
+{
+}

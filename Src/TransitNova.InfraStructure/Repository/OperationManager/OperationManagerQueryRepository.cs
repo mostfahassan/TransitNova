@@ -9,6 +9,7 @@ using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Trip;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.OperationManager
 {
     internal class OperationManagerQueryRepository(AppDbContext context) : IOperationManagerQueryRepository

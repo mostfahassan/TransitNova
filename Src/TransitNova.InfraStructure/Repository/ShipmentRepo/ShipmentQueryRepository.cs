@@ -69,6 +69,7 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
 
             query = query
                 .OrderByDescending(sh => sh.CreatedAt)
+                .ThenBy(sh => sh.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize);
 

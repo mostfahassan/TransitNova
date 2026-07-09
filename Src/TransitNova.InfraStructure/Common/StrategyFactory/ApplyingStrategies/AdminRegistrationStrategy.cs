@@ -4,6 +4,7 @@ using TransitNova.BusinessLayer.Interfaces.Services.Users.RegistrationStrategy;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Users;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Common.StrategyFactory.ApplyingStrategies
 {
     public class AdminRegistrationStrategy(AppDbContext context) : IUserRegistrationStrategy

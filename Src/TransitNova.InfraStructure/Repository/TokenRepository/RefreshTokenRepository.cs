@@ -4,6 +4,7 @@ using TransitNova.BusinessLayer.DTOs.AppUser;
 using TransitNova.BusinessLayer.DTOs.RefreshToken;
 using TransitNova.BusinessLayer.Interfaces.Repositories.TokenRepository;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.TokenRepository
 {
     internal sealed class RefreshTokenRepository(AppDbContext context) : IRefreshTokenRepository

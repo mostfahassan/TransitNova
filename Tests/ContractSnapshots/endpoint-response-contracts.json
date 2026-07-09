@@ -1,0 +1,2586 @@
+[
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/bundles",
+    "RequestPath": "/api/v1/admin/bundles",
+    "EndpointName": "Get Bundles",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/bundles",
+    "RequestPath": "/api/v1/admin/bundles",
+    "EndpointName": "Create Bundle",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/bundles/{bundleId:guid}",
+    "RequestPath": "/api/v1/admin/bundles/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Delete Bundle",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/bundles/{bundleId:guid}",
+    "RequestPath": "/api/v1/admin/bundles/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Bundle",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/bundles/{bundleId:guid}",
+    "RequestPath": "/api/v1/admin/bundles/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Update Bundle",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/carriers",
+    "RequestPath": "/api/v1/admin/carriers",
+    "EndpointName": "Get Admin Carriers",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/carriers/{carrierId:guid}",
+    "RequestPath": "/api/v1/admin/carriers/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Admin Carrier",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/carriers/{carrierId:guid}/shipments",
+    "RequestPath": "/api/v1/admin/carriers/11111111-1111-1111-1111-111111111111/shipments",
+    "EndpointName": "Get Carrier Shipments For Admin",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.shipments: object",
+      "$.data.shipments.data: array(empty)",
+      "$.data.shipments.pageNumber: integer",
+      "$.data.shipments.pageSize: integer",
+      "$.data.shipments.totalCount: integer",
+      "$.data.shipments.totalPages: integer",
+      "$.data.statistics: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/carriers/{carrierId:guid}/shipments/{shipmentId:guid}",
+    "RequestPath": "/api/v1/admin/carriers/11111111-1111-1111-1111-111111111111/shipments/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Carrier Shipment ById For Admin",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/carriers/{id:guid}",
+    "RequestPath": "/api/v1/admin/carriers/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Delete Carrier",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/cities",
+    "RequestPath": "/api/v1/admin/cities",
+    "EndpointName": "Get Admin Cities",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array",
+      "$.data.data[*]: object",
+      "$.data.data[*].governmentId: integer",
+      "$.data.data[*].governmentName: string",
+      "$.data.data[*].id: integer",
+      "$.data.data[*].name: string",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/cities",
+    "RequestPath": "/api/v1/admin/cities",
+    "EndpointName": "Create City",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/cities/{cityId:int}",
+    "RequestPath": "/api/v1/admin/cities/999999",
+    "EndpointName": "Delete City",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/cities/{cityId:int}",
+    "RequestPath": "/api/v1/admin/cities/999999",
+    "EndpointName": "Get Admin City",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/cities/{cityId:int}",
+    "RequestPath": "/api/v1/admin/cities/999999",
+    "EndpointName": "Update City",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/dashboard",
+    "RequestPath": "/api/v1/admin/dashboard",
+    "EndpointName": "Get Admin Dashboard",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.kpis: object",
+      "$.data.kpis.activeCarriers: integer",
+      "$.data.kpis.activeShipments: integer",
+      "$.data.kpis.activeTrips: integer",
+      "$.data.kpis.deliveredShipments: integer",
+      "$.data.kpis.pendingShipments: integer",
+      "$.data.kpis.totalCarriers: integer",
+      "$.data.kpis.totalOperationManagers: integer",
+      "$.data.kpis.totalShipments: integer",
+      "$.data.kpis.totalUsers: integer",
+      "$.data.operationalHealth: object",
+      "$.data.operationalHealth.activeOperationManagers: integer",
+      "$.data.operationalHealth.availableCarriers: integer",
+      "$.data.operationalHealth.averageCarrierRating: integer",
+      "$.data.operationalHealth.busyCarriers: integer",
+      "$.data.operationalHealth.cancelledShipmentRate: integer",
+      "$.data.operationalHealth.deliverySuccessRate: integer",
+      "$.data.recentActivities: array(empty)",
+      "$.data.recentShipments: array(empty)",
+      "$.data.revenueSummary: object",
+      "$.data.revenueSummary.dailyRevenue: integer",
+      "$.data.revenueSummary.monthlyRevenue: integer",
+      "$.data.revenueSummary.totalRevenue: integer",
+      "$.data.revenueSummary.weeklyRevenue: integer",
+      "$.data.shipmentStatistics: array(empty)",
+      "$.data.topCarriers: array(empty)",
+      "$.data.topOperationManagers: array",
+      "$.data.topOperationManagers[*]: object",
+      "$.data.topOperationManagers[*].approvedShipments: integer",
+      "$.data.topOperationManagers[*].fullName: string",
+      "$.data.topOperationManagers[*].operationManagerId: string(guid)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/governments",
+    "RequestPath": "/api/v1/admin/governments",
+    "EndpointName": "Get Admin Governments",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array",
+      "$.data[*]: object",
+      "$.data[*].id: integer",
+      "$.data[*].name: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/governments",
+    "RequestPath": "/api/v1/admin/governments",
+    "EndpointName": "Create Government",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/governments/{governmentId:int}",
+    "RequestPath": "/api/v1/admin/governments/999999",
+    "EndpointName": "Delete Government",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/governments/{governmentId:int}",
+    "RequestPath": "/api/v1/admin/governments/999999",
+    "EndpointName": "Get Admin Government",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/governments/{governmentId:int}",
+    "RequestPath": "/api/v1/admin/governments/999999",
+    "EndpointName": "Update Government",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/operation-managers",
+    "RequestPath": "/api/v1/admin/operation-managers",
+    "EndpointName": "Get Operation Managers",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array",
+      "$.data[*]: object",
+      "$.data[*].address: string",
+      "$.data[*].cityName: string",
+      "$.data[*].countryName: string",
+      "$.data[*].email: string",
+      "$.data[*].fullName: string",
+      "$.data[*].governmentName: string",
+      "$.data[*].id: string(guid)",
+      "$.data[*].phoneNumber: string",
+      "$.data[*].totalCarriertHandled: integer",
+      "$.data[*].totalShipmentHandled: integer",
+      "$.data[*].userType: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/operation-managers/active",
+    "RequestPath": "/api/v1/admin/operation-managers/active",
+    "EndpointName": "Get Active Operation Managers",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array",
+      "$.data[*]: object",
+      "$.data[*].address: string",
+      "$.data[*].cityName: string",
+      "$.data[*].countryName: string",
+      "$.data[*].email: string",
+      "$.data[*].fullName: string",
+      "$.data[*].governmentName: string",
+      "$.data[*].id: string(guid)",
+      "$.data[*].phoneNumber: string",
+      "$.data[*].totalCarriertHandled: integer",
+      "$.data[*].totalShipmentHandled: integer",
+      "$.data[*].userType: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/operation-managers/{operationManagerId:guid}",
+    "RequestPath": "/api/v1/admin/operation-managers/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Operation Manager",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.address: string",
+      "$.data.cityName: string",
+      "$.data.countryName: string",
+      "$.data.email: string",
+      "$.data.fullName: string",
+      "$.data.governmentName: string",
+      "$.data.id: string(guid)",
+      "$.data.phoneNumber: string",
+      "$.data.totalCarriertHandled: integer",
+      "$.data.totalShipmentHandled: integer",
+      "$.data.userType: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/operation-managers/{operationManagerId:guid}/handled-carriers",
+    "RequestPath": "/api/v1/admin/operation-managers/11111111-1111-1111-1111-111111111111/handled-carriers",
+    "EndpointName": "Get Operation Manager Handled Carriers",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/operation-managers/{operationManagerId:guid}/handled-shipments",
+    "RequestPath": "/api/v1/admin/operation-managers/11111111-1111-1111-1111-111111111111/handled-shipments",
+    "EndpointName": "Get Operation Manager Handled Shipments",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles",
+    "RequestPath": "/api/v1/admin/roles",
+    "EndpointName": "Get Roles",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array",
+      "$.data[*]: object",
+      "$.data[*].roleId: string(guid)",
+      "$.data[*].roleName: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles",
+    "RequestPath": "/api/v1/admin/roles",
+    "EndpointName": "Create Role",
+    "RequiresAuthorization": true,
+    "StatusCode": 400,
+    "ContentType": "application/problem\u002Bjson; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: object",
+      "$.errors.RoleName: array",
+      "$.errors.RoleName[*]: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}",
+    "RequestPath": "/api/v1/admin/roles/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Delete Role",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/problem\u002Bjson",
+    "Signatures": [
+      "$: object",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}",
+    "RequestPath": "/api/v1/admin/roles/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Role",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}",
+    "RequestPath": "/api/v1/admin/roles/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Update Role",
+    "RequiresAuthorization": true,
+    "StatusCode": 400,
+    "ContentType": "application/problem\u002Bjson; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: object",
+      "$.errors.RoleName: array",
+      "$.errors.RoleName[*]: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}/members",
+    "RequestPath": "/api/v1/admin/roles/11111111-1111-1111-1111-111111111111/members",
+    "EndpointName": "Get Role Members",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}/members",
+    "RequestPath": "/api/v1/admin/roles/11111111-1111-1111-1111-111111111111/members",
+    "EndpointName": "Update Role Members",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/problem\u002Bjson",
+    "Signatures": [
+      "$: object",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/shipments",
+    "RequestPath": "/api/v1/admin/shipments",
+    "EndpointName": "Get Shipments For Admin",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/shipments/{shipmentId:guid}",
+    "RequestPath": "/api/v1/admin/shipments/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Shipment For Admin",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/subscriptions/bundles/{bundleId:guid}/subscribers",
+    "RequestPath": "/api/v1/admin/subscriptions/bundles/11111111-1111-1111-1111-111111111111/subscribers",
+    "EndpointName": "Get Bundle Subscribers",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/subscriptions/{subscriptionId:guid}",
+    "RequestPath": "/api/v1/admin/subscriptions/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Subscription ById",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/trips",
+    "RequestPath": "/api/v1/admin/trips",
+    "EndpointName": "Get Admin Trips",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/trips/{tripId:guid}",
+    "RequestPath": "/api/v1/admin/trips/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Admin Trip",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/users",
+    "RequestPath": "/api/v1/admin/users",
+    "EndpointName": "Get Users",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/users/{userId:guid}",
+    "RequestPath": "/api/v1/admin/users/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get User ById",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles",
+    "RequestPath": "/api/v1/admin/vehicles",
+    "EndpointName": "Get Vehicles",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles",
+    "RequestPath": "/api/v1/admin/vehicles",
+    "EndpointName": "Create Vehicle",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles/active",
+    "RequestPath": "/api/v1/admin/vehicles/active",
+    "EndpointName": "Get Active Vehicles",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles/plate-number/{plateNumber}",
+    "RequestPath": "/api/v1/admin/vehicles/plate-number/ABC-123",
+    "EndpointName": "Get Vehicle By Plate Number",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles/{vehicleId:guid}",
+    "RequestPath": "/api/v1/admin/vehicles/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Delete Vehicle",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles/{vehicleId:guid}",
+    "RequestPath": "/api/v1/admin/vehicles/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Vehicle",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouse-managers",
+    "RequestPath": "/api/v1/admin/warehouse-managers",
+    "EndpointName": "Get Warehouse Managers",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array",
+      "$.data.data[*]: object",
+      "$.data.data[*].email: string",
+      "$.data.data[*].fullName: string",
+      "$.data.data[*].id: string(guid)",
+      "$.data.data[*].warehouseId: string(guid)",
+      "$.data.data[*].warehouseName: string",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouse-managers/{id:guid}",
+    "RequestPath": "/api/v1/admin/warehouse-managers/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Warehouse Manager",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.createdAt: string(date-time)",
+      "$.data.email: string",
+      "$.data.fullName: string",
+      "$.data.id: string(guid)",
+      "$.data.phoneNumber: string",
+      "$.data.warehouseId: string(guid)",
+      "$.data.warehouseName: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouses",
+    "RequestPath": "/api/v1/admin/warehouses",
+    "EndpointName": "Get Warehouses",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array",
+      "$.data[*]: object",
+      "$.data[*].activeTripsCount: integer",
+      "$.data[*].address: string",
+      "$.data[*].capacity: number(decimal)",
+      "$.data[*].carrierCount: integer",
+      "$.data[*].createdAt: string(date-time)",
+      "$.data[*].currentUsage: number(decimal)",
+      "$.data[*].id: string(guid)",
+      "$.data[*].name: string",
+      "$.data[*].operatingHours: integer",
+      "$.data[*].type: string",
+      "$.data[*].updatedAt: null",
+      "$.data[*].warehouseManagerName: string",
+      "$.data[*].zoneIds: array(empty)",
+      "$.data[*].zoneNames: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouses",
+    "RequestPath": "/api/v1/admin/warehouses",
+    "EndpointName": "Create Warehouse",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouses/{warehouseId:guid}",
+    "RequestPath": "/api/v1/admin/warehouses/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Delete Warehouse",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouses/{warehouseId:guid}",
+    "RequestPath": "/api/v1/admin/warehouses/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Warehouse",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouses/{warehouseId:guid}",
+    "RequestPath": "/api/v1/admin/warehouses/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Update Warehouse",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/auth/change-password",
+    "RequestPath": "/api/v1/auth/change-password",
+    "EndpointName": "Change Password",
+    "RequiresAuthorization": true,
+    "StatusCode": 400,
+    "ContentType": "application/problem\u002Bjson; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: object",
+      "$.errors.ConfirmNewPassword: array",
+      "$.errors.ConfirmNewPassword[*]: string",
+      "$.errors.CurrentPassword: array",
+      "$.errors.CurrentPassword[*]: string",
+      "$.errors.NewPassword: array",
+      "$.errors.NewPassword[*]: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/auth/login",
+    "RequestPath": "/api/v1/auth/login",
+    "EndpointName": "Login User",
+    "RequiresAuthorization": false,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.email: string",
+      "$.data.id: string(guid)",
+      "$.data.isAuthenticated: boolean",
+      "$.data.refreshToken: string",
+      "$.data.roles: array",
+      "$.data.roles[*]: string",
+      "$.data.token: string",
+      "$.data.userType: string",
+      "$.data.username: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/auth/register",
+    "RequestPath": "/api/v1/auth/register",
+    "EndpointName": "Register User",
+    "RequiresAuthorization": false,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.email: string",
+      "$.data.id: string(guid)",
+      "$.data.isAuthenticated: boolean",
+      "$.data.refreshToken: string",
+      "$.data.roles: array",
+      "$.data.roles[*]: string",
+      "$.data.token: string",
+      "$.data.userType: string",
+      "$.data.username: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/auth/signout",
+    "RequestPath": "/api/v1/auth/signout",
+    "EndpointName": "Sign Out User",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: null",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/additional-info",
+    "RequestPath": "/api/v1/carriers/additional-info",
+    "EndpointName": "Add Carrier Additional Info",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/profile",
+    "RequestPath": "/api/v1/carriers/profile",
+    "EndpointName": "Update Carrier Profile",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/dashboard",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/dashboard",
+    "EndpointName": "Get Carrier Dashboard",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/profile",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/profile",
+    "EndpointName": "Get Carrier Profile",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/rating",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/rating",
+    "EndpointName": "Get Carrier Rating",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/revenue",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/revenue",
+    "EndpointName": "Get Carrier Revenue",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: number(decimal)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/shipments",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/shipments",
+    "EndpointName": "Get Carrier Shipments",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.shipments: object",
+      "$.data.shipments.data: array(empty)",
+      "$.data.shipments.pageNumber: integer",
+      "$.data.shipments.pageSize: integer",
+      "$.data.shipments.totalCount: integer",
+      "$.data.shipments.totalPages: integer",
+      "$.data.statistics: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/shipments/{shipmentId:guid}",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/shipments/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Carrier Shipment ById",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/shipments/{shipmentId:guid}/complete-delivery",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/shipments/11111111-1111-1111-1111-111111111111/complete-delivery",
+    "EndpointName": "Complete Shipment Delivery",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/problem\u002Bjson",
+    "Signatures": [
+      "$: object",
+      "$.entityType: string",
+      "$.errorCode: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/shipments/{shipmentId:guid}/complete-pickup",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/shipments/11111111-1111-1111-1111-111111111111/complete-pickup",
+    "EndpointName": "Complete Shipment Pickup",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/problem\u002Bjson",
+    "Signatures": [
+      "$: object",
+      "$.entityType: string",
+      "$.errorCode: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/shipments/{shipmentId:guid}/picked-up",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/shipments/11111111-1111-1111-1111-111111111111/picked-up",
+    "EndpointName": "Mark Shipment Picked Up",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/problem\u002Bjson",
+    "Signatures": [
+      "$: object",
+      "$.entityType: string",
+      "$.errorCode: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/status",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/status",
+    "EndpointName": null,
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/trips",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/trips",
+    "EndpointName": "Get Carrier Trips",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/trips/{tripId:guid}",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/trips/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Carrier Trip ById",
+    "RequiresAuthorization": true,
+    "StatusCode": 400,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/trips/{tripId:guid}/complete",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/trips/11111111-1111-1111-1111-111111111111/complete",
+    "EndpointName": "Complete Carrier Trip",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/problem\u002Bjson",
+    "Signatures": [
+      "$: object",
+      "$.entityType: string",
+      "$.errorCode: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/vehicles",
+    "RequestPath": "/api/v1/carriers/11111111-1111-1111-1111-111111111111/vehicles",
+    "EndpointName": "Get Carrier Vehicle",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/cities",
+    "RequestPath": "/api/v1/cities",
+    "EndpointName": "Get Public Cities",
+    "RequiresAuthorization": false,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array",
+      "$.data.data[*]: object",
+      "$.data.data[*].governmentId: integer",
+      "$.data.data[*].governmentName: string",
+      "$.data.data[*].id: integer",
+      "$.data.data[*].name: string",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/cities/{cityId:int}",
+    "RequestPath": "/api/v1/cities/999999",
+    "EndpointName": "Get Public City",
+    "RequiresAuthorization": false,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/countries",
+    "RequestPath": "/api/v1/countries",
+    "EndpointName": "Get Countries",
+    "RequiresAuthorization": false,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array",
+      "$.data[*]: object",
+      "$.data[*].id: integer",
+      "$.data[*].name: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/countries/{countryId:int}/governments",
+    "RequestPath": "/api/v1/countries/999999/governments",
+    "EndpointName": "Get Country Governments",
+    "RequiresAuthorization": false,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/governments",
+    "RequestPath": "/api/v1/governments",
+    "EndpointName": "Get public Governments",
+    "RequiresAuthorization": false,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array",
+      "$.data[*]: object",
+      "$.data[*].id: integer",
+      "$.data[*].name: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/governments/{governmentId:int}",
+    "RequestPath": "/api/v1/governments/999999",
+    "EndpointName": "Get public Government",
+    "RequiresAuthorization": false,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/governments/{governmentId:int}/cities",
+    "RequestPath": "/api/v1/governments/999999/cities",
+    "EndpointName": "Get Government Cities",
+    "RequiresAuthorization": false,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/notifications",
+    "RequestPath": "/api/v1/notifications",
+    "EndpointName": "Get Notifications",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/notifications/read-all",
+    "RequestPath": "/api/v1/notifications/read-all",
+    "EndpointName": "Mark All Notifications As Read",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: null",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/notifications/unread-count",
+    "RequestPath": "/api/v1/notifications/unread-count",
+    "EndpointName": "Get Notifications Unread Count",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.count: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers",
+    "RequestPath": "/api/v1/operation-managers/carriers",
+    "EndpointName": "Get Operation Manager Carriers",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers/{carrierId:guid}",
+    "RequestPath": "/api/v1/operation-managers/carriers/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Operation Manager Carrier",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers/{carrierId:guid}/shipments",
+    "RequestPath": "/api/v1/operation-managers/carriers/11111111-1111-1111-1111-111111111111/shipments",
+    "EndpointName": "Get Carrier Shipments For Operation Manager",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.shipments: object",
+      "$.data.shipments.data: array(empty)",
+      "$.data.shipments.pageNumber: integer",
+      "$.data.shipments.pageSize: integer",
+      "$.data.shipments.totalCount: integer",
+      "$.data.shipments.totalPages: integer",
+      "$.data.statistics: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers/{carrierId:guid}/shipments/{shipmentId:guid}",
+    "RequestPath": "/api/v1/operation-managers/carriers/11111111-1111-1111-1111-111111111111/shipments/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Carrier Shipment ById For Operation Manager",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers/{shipmentId:guid}/assign-delivery",
+    "RequestPath": "/api/v1/operation-managers/carriers/11111111-1111-1111-1111-111111111111/assign-delivery",
+    "EndpointName": "Assign Delivery Carrier",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers/{shipmentId:guid}/assign-pickup",
+    "RequestPath": "/api/v1/operation-managers/carriers/11111111-1111-1111-1111-111111111111/assign-pickup",
+    "EndpointName": "Assign Pickup Carrier",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/dashboard",
+    "RequestPath": "/api/v1/operation-managers/dashboard",
+    "EndpointName": "Get Operation Manager Dashboard",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.activeShipments: integer",
+      "$.data.cancelledShipments: integer",
+      "$.data.deliveredShipments: integer",
+      "$.data.issueShipments: integer",
+      "$.data.pendingShipments: integer",
+      "$.data.recentActivity: array(empty)",
+      "$.data.recentCarriers: array(empty)",
+      "$.data.recentShipments: array(empty)",
+      "$.data.shipmentStatistics: array",
+      "$.data.shipmentStatistics[*]: object",
+      "$.data.shipmentStatistics[*].count: integer",
+      "$.data.shipmentStatistics[*].status: string",
+      "$.data.totalHandedCarriers: integer",
+      "$.data.totalHandedShipments: integer",
+      "$.data.totalPickupShipments: integer",
+      "$.data.totalShipments: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments",
+    "RequestPath": "/api/v1/operation-managers/shipments",
+    "EndpointName": "Get Shipments",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/assigned",
+    "RequestPath": "/api/v1/operation-managers/shipments/assigned",
+    "EndpointName": "Get Assigned Shipments",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/review-queue",
+    "RequestPath": "/api/v1/operation-managers/shipments/review-queue",
+    "EndpointName": "Get Review Queue",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}",
+    "RequestPath": "/api/v1/operation-managers/shipments/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Shipment",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}/approve",
+    "RequestPath": "/api/v1/operation-managers/shipments/11111111-1111-1111-1111-111111111111/approve",
+    "EndpointName": "Approve Shipment",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}/histories",
+    "RequestPath": "/api/v1/operation-managers/shipments/11111111-1111-1111-1111-111111111111/histories",
+    "EndpointName": "Get Shipment Histories",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}/reject",
+    "RequestPath": "/api/v1/operation-managers/shipments/11111111-1111-1111-1111-111111111111/reject",
+    "EndpointName": "Reject Shipment",
+    "RequiresAuthorization": true,
+    "StatusCode": 400,
+    "ContentType": "application/problem\u002Bjson; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: object",
+      "$.errors.RejectionReason: array",
+      "$.errors.RejectionReason[*]: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}/review",
+    "RequestPath": "/api/v1/operation-managers/shipments/11111111-1111-1111-1111-111111111111/review",
+    "EndpointName": "Review Shipment",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/trips",
+    "RequestPath": "/api/v1/operation-managers/trips",
+    "EndpointName": "Get Operation Manager Trips",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/trips/{carrierId:guid}/start-delivery",
+    "RequestPath": "/api/v1/operation-managers/trips/11111111-1111-1111-1111-111111111111/start-delivery",
+    "EndpointName": "Start Delivery Trip",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/problem\u002Bjson",
+    "Signatures": [
+      "$: object",
+      "$.entityType: string",
+      "$.errorCode: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/trips/{carrierId:guid}/start-pickup",
+    "RequestPath": "/api/v1/operation-managers/trips/11111111-1111-1111-1111-111111111111/start-pickup",
+    "EndpointName": "Start Pickup Trip",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/problem\u002Bjson",
+    "Signatures": [
+      "$: object",
+      "$.entityType: string",
+      "$.errorCode: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/trips/{tripId:guid}",
+    "RequestPath": "/api/v1/operation-managers/trips/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Operation Manager Trip",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/{operationManagerId:guid}",
+    "RequestPath": "/api/v1/operation-managers/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Operation Manager ById",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.address: string",
+      "$.data.cityName: string",
+      "$.data.countryName: string",
+      "$.data.email: string",
+      "$.data.fullName: string",
+      "$.data.governmentName: string",
+      "$.data.id: string(guid)",
+      "$.data.phoneNumber: string",
+      "$.data.totalCarriertHandled: integer",
+      "$.data.totalShipmentHandled: integer",
+      "$.data.userType: string",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/{operationManagerId:guid}/handled-carriers",
+    "RequestPath": "/api/v1/operation-managers/11111111-1111-1111-1111-111111111111/handled-carriers",
+    "EndpointName": "Get Handled Carriers",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/{operationManagerId:guid}/handled-shipments",
+    "RequestPath": "/api/v1/operation-managers/11111111-1111-1111-1111-111111111111/handled-shipments",
+    "EndpointName": "Get Handled Shipments",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/refresh-tokens",
+    "RequestPath": "/api/v1/refresh-tokens",
+    "EndpointName": "Refresh Token",
+    "RequiresAuthorization": false,
+    "StatusCode": 400,
+    "ContentType": "application/problem\u002Bjson; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: object",
+      "$.errors.Token: array",
+      "$.errors.Token[*]: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/refresh-tokens/{userId:guid}",
+    "RequestPath": "/api/v1/refresh-tokens/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Revoke Refresh Token",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: null",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/request",
+    "RequestPath": "/api/v1/reports/request",
+    "EndpointName": "Request Report",
+    "RequiresAuthorization": true,
+    "StatusCode": 201,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: null",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/{reportId:guid}/download",
+    "RequestPath": "/api/v1/reports/11111111-1111-1111-1111-111111111111/download",
+    "EndpointName": "Download Report",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/shipments/rate-calculation",
+    "RequestPath": "/api/v1/shipments/rate-calculation",
+    "EndpointName": "Calculate Shipment Rate",
+    "RequiresAuthorization": false,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: number(decimal)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/shipments/{shipmentId:guid}/rate-delivery-carrier",
+    "RequestPath": "/api/v1/shipments/11111111-1111-1111-1111-111111111111/rate-delivery-carrier",
+    "EndpointName": "Rate Delivery Carrier",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/shipments/{shipmentId:guid}/rate-pickup-carrier",
+    "RequestPath": "/api/v1/shipments/11111111-1111-1111-1111-111111111111/rate-pickup-carrier",
+    "EndpointName": "Rate Pickup Carrier",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/subscriptions/bundles/{bundleId:guid}/subscription",
+    "RequestPath": "/api/v1/subscriptions/bundles/11111111-1111-1111-1111-111111111111/subscription",
+    "EndpointName": "Unsubscribe From Bundle",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/subscriptions/bundles/{bundleId:guid}/subscription",
+    "RequestPath": "/api/v1/subscriptions/bundles/11111111-1111-1111-1111-111111111111/subscription",
+    "EndpointName": "Subscribe To Bundle",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/dashboard",
+    "RequestPath": "/api/v1/users/dashboard",
+    "EndpointName": "Get User Dashboard",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.activeShipments: integer",
+      "$.data.deliveredShipments: integer",
+      "$.data.issueShipments: integer",
+      "$.data.pendingShipments: integer",
+      "$.data.shipmentSummary: array(empty)",
+      "$.data.totalShipments: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/payment-invoices",
+    "RequestPath": "/api/v1/users/payment-invoices",
+    "EndpointName": "Get User Payment Invoices",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/payment-invoices/{paymentId:guid}",
+    "RequestPath": "/api/v1/users/payment-invoices/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get User Payment Invoice",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/profile",
+    "RequestPath": "/api/v1/users/profile",
+    "EndpointName": "Get User Profile",
+    "RequiresAuthorization": true,
+    "StatusCode": 400,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments",
+    "RequestPath": "/api/v1/users/shipments",
+    "EndpointName": "CreateShipment",
+    "RequiresAuthorization": true,
+    "StatusCode": 400,
+    "ContentType": "application/problem\u002Bjson; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: object",
+      "$.errors.DeliveryAddress: array",
+      "$.errors.DeliveryAddress[*]: string",
+      "$.errors.PackageSpecification: array",
+      "$.errors.PackageSpecification[*]: string",
+      "$.errors.PickupAddress: array",
+      "$.errors.PickupAddress[*]: string",
+      "$.errors.Receiver: array",
+      "$.errors.Receiver[*]: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{shipmentId:guid}",
+    "RequestPath": "/api/v1/users/shipments/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "DeleteShipment",
+    "RequiresAuthorization": true,
+    "StatusCode": 400,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{shipmentId:guid}",
+    "RequestPath": "/api/v1/users/shipments/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Shipment ById",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{shipmentId:guid}",
+    "RequestPath": "/api/v1/users/shipments/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "UpdateShipmentDetails",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{shipmentId:guid}/cancel",
+    "RequestPath": "/api/v1/users/shipments/11111111-1111-1111-1111-111111111111/cancel",
+    "EndpointName": "CancelShipment",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{shipmentId:guid}/issue",
+    "RequestPath": "/api/v1/users/shipments/11111111-1111-1111-1111-111111111111/issue",
+    "EndpointName": "IssueShipment",
+    "RequiresAuthorization": true,
+    "StatusCode": 400,
+    "ContentType": "application/problem\u002Bjson; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: object",
+      "$.errors.IssueReason: array",
+      "$.errors.IssueReason[*]: string",
+      "$.instance: string",
+      "$.status: integer",
+      "$.title: string",
+      "$.traceId: string",
+      "$.type: string"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{trackingNumber}",
+    "RequestPath": "/api/v1/users/shipments/TN-2026-000001",
+    "EndpointName": "TrackShipment",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/carriers/{carrierId:guid}/warehouse/{warehouseId:guid}",
+    "RequestPath": "/api/v1/warehouse-managers/carriers/11111111-1111-1111-1111-111111111111/warehouse/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Warehouse Manager Carrier",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/carriers/{warehouseId:guid}",
+    "RequestPath": "/api/v1/warehouse-managers/carriers/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Warehouse Manager Carriers",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/dashboard",
+    "RequestPath": "/api/v1/warehouse-managers/dashboard",
+    "EndpointName": "Get Warehouse Manager Dashboard",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.kpis: object",
+      "$.data.kpis.activeCarriers: integer",
+      "$.data.kpis.activeTrips: integer",
+      "$.data.kpis.completedTrips: integer",
+      "$.data.kpis.deliveredShipments: integer",
+      "$.data.kpis.inTransitShipments: integer",
+      "$.data.kpis.totalCarriers: integer",
+      "$.data.kpis.totalShipments: integer",
+      "$.data.kpis.totalTrips: integer",
+      "$.data.manager: object",
+      "$.data.manager.managerId: string(guid)",
+      "$.data.manager.managerName: string",
+      "$.data.manager.warehouseId: string(guid)",
+      "$.data.manager.warehouseName: string",
+      "$.data.recentShipments: array(empty)",
+      "$.data.recentTrips: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/shipments/{shipmentId:guid}/warehouse/{warehouseId:guid}",
+    "RequestPath": "/api/v1/warehouse-managers/shipments/11111111-1111-1111-1111-111111111111/warehouse/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Warehouse Manager Shipment",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/shipments/{warehouseId:guid}",
+    "RequestPath": "/api/v1/warehouse-managers/shipments/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Warehouse Manager Shipments",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/trips/{tripId:guid}/warehouse/{warehouseId:guid}",
+    "RequestPath": "/api/v1/warehouse-managers/trips/11111111-1111-1111-1111-111111111111/warehouse/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Warehouse Manager Trip",
+    "RequiresAuthorization": true,
+    "StatusCode": 404,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/trips/{warehouseId:guid}",
+    "RequestPath": "/api/v1/warehouse-managers/trips/11111111-1111-1111-1111-111111111111",
+    "EndpointName": "Get Warehouse Manager Trips",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: object",
+      "$.data.data: array(empty)",
+      "$.data.pageNumber: integer",
+      "$.data.pageSize: integer",
+      "$.data.totalCount: integer",
+      "$.data.totalPages: integer",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/update",
+    "RequestPath": "/api/v1/warehouse-managers/update",
+    "EndpointName": "Update Warehouse Manager",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouses",
+    "RequestPath": "/api/v1/warehouses",
+    "EndpointName": "Get Shared Warehouses",
+    "RequiresAuthorization": true,
+    "StatusCode": 200,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.data: array",
+      "$.data[*]: object",
+      "$.data[*].activeTripsCount: integer",
+      "$.data[*].address: string",
+      "$.data[*].capacity: number(decimal)",
+      "$.data[*].carrierCount: integer",
+      "$.data[*].createdAt: string(date-time)",
+      "$.data[*].currentUsage: number(decimal)",
+      "$.data[*].id: string(guid)",
+      "$.data[*].name: string",
+      "$.data[*].operatingHours: integer",
+      "$.data[*].type: string",
+      "$.data[*].updatedAt: null",
+      "$.data[*].warehouseManagerName: string",
+      "$.data[*].zoneIds: array(empty)",
+      "$.data[*].zoneNames: array(empty)",
+      "$.isSuccess: boolean",
+      "$.message: null",
+      "$.statusCode: integer"
+    ]
+  }
+]

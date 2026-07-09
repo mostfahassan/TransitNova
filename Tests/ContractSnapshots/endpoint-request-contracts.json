@@ -1,0 +1,2947 @@
+[
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/bundles",
+    "EndpointName": "Get Bundles",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/bundles",
+    "EndpointName": "Create Bundle",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "CreateBundleDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CreateBundleDto) nullable=false required=true",
+          "$.bundleDescription: string nullable=false required=false",
+          "$.bundleName: string nullable=false required=false",
+          "$.bundlePrice: number(decimal) nullable=false required=false",
+          "$.totalDistance: number(decimal) nullable=false required=false",
+          "$.totalShipments: integer nullable=false required=false",
+          "$.totalWeight: number(decimal) nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/bundles/{bundleId:guid}",
+    "EndpointName": "Delete Bundle",
+    "Parameters": [
+      {
+        "Name": "bundleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/bundles/{bundleId:guid}",
+    "EndpointName": "Get Bundle",
+    "Parameters": [
+      {
+        "Name": "bundleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/bundles/{bundleId:guid}",
+    "EndpointName": "Update Bundle",
+    "Parameters": [
+      {
+        "Name": "bundleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "UpdateBundleDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(UpdateBundleDto) nullable=false required=true",
+          "$.bundleDescription: string nullable=false required=false",
+          "$.bundleName: string nullable=false required=false",
+          "$.bundlePrice: number(decimal) nullable=false required=false",
+          "$.totalDistance: number(decimal) nullable=false required=false",
+          "$.totalShipments: integer nullable=false required=false",
+          "$.totalWeight: number(decimal) nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/carriers",
+    "EndpointName": "Get Admin Carriers",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "FilterCarrierDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(FilterCarrierDto) nullable=false required=true",
+          "$.availableFrom: date-time nullable=true required=false",
+          "$.city: string nullable=true required=false",
+          "$.cityId: integer nullable=true required=false",
+          "$.maxRating: number(decimal) nullable=true required=false",
+          "$.maxYearsOfExperience: integer nullable=true required=false",
+          "$.minRating: number(decimal) nullable=true required=false",
+          "$.minYearsOfExperience: integer nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.servedZones: array(List\u003CString\u003E) nullable=true required=false",
+          "$.servedZones[*]: string nullable=false required=false",
+          "$.sortBy: enum(CarrierSortBy)[Rating|Yearsofexperience|Name|Status] serialization=string nullable=true required=false",
+          "$.sortDescending: boolean nullable=false required=false",
+          "$.status: enum(CarrierStatus)[Available|Unavailable|AssignedToPickUpShipment|AssignedToDeliveryShipment|InActive|OnTrip] serialization=string nullable=true required=false",
+          "$.vehicleCapacityWeight: number(decimal) nullable=true required=false",
+          "$.vehicleType: enum(VehicleType)[Van|Truck|RefrigeratedTruck] serialization=string nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/carriers/{carrierId:guid}",
+    "EndpointName": "Get Admin Carrier",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/carriers/{carrierId:guid}/shipments",
+    "EndpointName": "Get Carrier Shipments For Admin",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "CarrierShipmentFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CarrierShipmentFilterDto) nullable=false required=true",
+          "$.mode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.sortBy: string nullable=true required=false",
+          "$.sortDescending: boolean nullable=false required=false",
+          "$.status: enum(ShipmentStatuses)[Pending|Approved|Rejected|InWarehouse|OnHold|AssignedToPickUpCarrier|AssignedToDeliveryCarrier|InTransit|OutForDelivery|OutForPickup|Delivered|FailedDelivery|Issue|Cancelled|Deleted|PickedUp] serialization=string nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/carriers/{carrierId:guid}/shipments/{shipmentId:guid}",
+    "EndpointName": "Get Carrier Shipment ById For Admin",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/carriers/{id:guid}",
+    "EndpointName": "Delete Carrier",
+    "Parameters": [
+      {
+        "Name": "id",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/cities",
+    "EndpointName": "Get Admin Cities",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "CityFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CityFilterDto) nullable=false required=true",
+          "$.governmentId: integer nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.sortDescending: boolean nullable=false required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/cities",
+    "EndpointName": "Create City",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "CreateCityDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CreateCityDto) nullable=false required=true",
+          "$.governmentId: integer nullable=false required=false",
+          "$.name: string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/cities/{cityId:int}",
+    "EndpointName": "Delete City",
+    "Parameters": [
+      {
+        "Name": "cityId",
+        "Source": "Path",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/cities/{cityId:int}",
+    "EndpointName": "Get Admin City",
+    "Parameters": [
+      {
+        "Name": "cityId",
+        "Source": "Path",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/cities/{cityId:int}",
+    "EndpointName": "Update City",
+    "Parameters": [
+      {
+        "Name": "cityId",
+        "Source": "Path",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "UpdateCityDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(UpdateCityDto) nullable=false required=true",
+          "$.governmentId: integer nullable=false required=false",
+          "$.name: string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/dashboard",
+    "EndpointName": "Get Admin Dashboard",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/governments",
+    "EndpointName": "Get Admin Governments",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/governments",
+    "EndpointName": "Create Government",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "CreateGovernmentDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CreateGovernmentDto) nullable=false required=true",
+          "$.countryId: integer nullable=false required=false",
+          "$.name: string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/governments/{governmentId:int}",
+    "EndpointName": "Delete Government",
+    "Parameters": [
+      {
+        "Name": "governmentId",
+        "Source": "Path",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/governments/{governmentId:int}",
+    "EndpointName": "Get Admin Government",
+    "Parameters": [
+      {
+        "Name": "governmentId",
+        "Source": "Path",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/governments/{governmentId:int}",
+    "EndpointName": "Update Government",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "UpdateGovernmentDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(UpdateGovernmentDto) nullable=false required=true",
+          "$.countryId: integer nullable=false required=false",
+          "$.name: string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "governmentId",
+        "Source": "Path",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/operation-managers",
+    "EndpointName": "Get Operation Managers",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/operation-managers/active",
+    "EndpointName": "Get Active Operation Managers",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/operation-managers/{operationManagerId:guid}",
+    "EndpointName": "Get Operation Manager",
+    "Parameters": [
+      {
+        "Name": "operationManagerId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/operation-managers/{operationManagerId:guid}/handled-carriers",
+    "EndpointName": "Get Operation Manager Handled Carriers",
+    "Parameters": [
+      {
+        "Name": "operationManagerId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "pageNumber",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      },
+      {
+        "Name": "pageSize",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/operation-managers/{operationManagerId:guid}/handled-shipments",
+    "EndpointName": "Get Operation Manager Handled Shipments",
+    "Parameters": [
+      {
+        "Name": "operationManagerId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "pageNumber",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      },
+      {
+        "Name": "pageSize",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles",
+    "EndpointName": "Get Roles",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles",
+    "EndpointName": "Create Role",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "RoleNameDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(RoleNameDto) nullable=false required=true",
+          "$.roleName: string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}",
+    "EndpointName": "Delete Role",
+    "Parameters": [
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "roleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}",
+    "EndpointName": "Get Role",
+    "Parameters": [
+      {
+        "Name": "roleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}",
+    "EndpointName": "Update Role",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "RoleNameDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(RoleNameDto) nullable=false required=true",
+          "$.roleName: string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "roleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}/members",
+    "EndpointName": "Get Role Members",
+    "Parameters": [
+      {
+        "Name": "roleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}/members",
+    "EndpointName": "Update Role Members",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "UpdateRoleMembersDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(UpdateRoleMembersDto) nullable=false required=true",
+          "$.users: array(IReadOnlyCollection\u003CRoleMemberUpdateDto\u003E) nullable=false required=false",
+          "$.users[*]: object(RoleMemberUpdateDto) nullable=false required=false",
+          "$.users[*].isInRole: boolean nullable=false required=false",
+          "$.users[*].userId: guid nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "roleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/shipments",
+    "EndpointName": "Get Shipments For Admin",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "ShipmentFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(ShipmentFilterDto) nullable=false required=true",
+          "$.from: date-time nullable=true required=false",
+          "$.mode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.senderId: guid nullable=true required=false",
+          "$.status: array(ShipmentStatuses[]) nullable=true required=false",
+          "$.status[*]: enum(ShipmentStatuses)[Pending|Approved|Rejected|InWarehouse|OnHold|AssignedToPickUpCarrier|AssignedToDeliveryCarrier|InTransit|OutForDelivery|OutForPickup|Delivered|FailedDelivery|Issue|Cancelled|Deleted|PickedUp] serialization=string nullable=false required=false",
+          "$.to: date-time nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/shipments/{shipmentId:guid}",
+    "EndpointName": "Get Shipment For Admin",
+    "Parameters": [
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/subscriptions/bundles/{bundleId:guid}/subscribers",
+    "EndpointName": "Get Bundle Subscribers",
+    "Parameters": [
+      {
+        "Name": "bundleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/subscriptions/{subscriptionId:guid}",
+    "EndpointName": "Get Subscription ById",
+    "Parameters": [
+      {
+        "Name": "subscriptionId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/trips",
+    "EndpointName": "Get Admin Trips",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "FilterTripsDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(FilterTripsDto) nullable=false required=true",
+          "$.carrierId: guid nullable=true required=false",
+          "$.createdAt: date-time nullable=true required=false",
+          "$.createdBy: string nullable=true required=false",
+          "$.from: date-time nullable=true required=false",
+          "$.handlerId: guid nullable=true required=false",
+          "$.id: guid nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.status: array(TripStatus[]) nullable=true required=false",
+          "$.status[*]: enum(TripStatus)[Planned|Active|Completed|Cancelled] serialization=string nullable=false required=false",
+          "$.to: date-time nullable=true required=false",
+          "$.tripType: enum(TripType)[Pickup|Delivery|Mixed] serialization=string nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/trips/{tripId:guid}",
+    "EndpointName": "Get Admin Trip",
+    "Parameters": [
+      {
+        "Name": "tripId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/users",
+    "EndpointName": "Get Users",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "UserFiltrationDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(UserFiltrationDto) nullable=false required=true",
+          "$.createdFrom: date-time nullable=true required=false",
+          "$.createdTo: date-time nullable=true required=false",
+          "$.email: string nullable=true required=false",
+          "$.isActive: boolean nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.phoneNumber: string nullable=true required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.userName: string nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/users/{userId:guid}",
+    "EndpointName": "Get User ById",
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles",
+    "EndpointName": "Get Vehicles",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles",
+    "EndpointName": "Create Vehicle",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "CreateVehicleDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CreateVehicleDto) nullable=false required=true",
+          "$.capacityVolume: number(decimal) nullable=false required=false",
+          "$.capacityWeight: number(decimal) nullable=false required=false",
+          "$.carrierId: guid nullable=false required=false",
+          "$.isRefrigerated: boolean nullable=false required=false",
+          "$.plateNumber: string nullable=false required=false",
+          "$.vehicleType: enum(VehicleType)[Van|Truck|RefrigeratedTruck] serialization=string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles/active",
+    "EndpointName": "Get Active Vehicles",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles/plate-number/{plateNumber}",
+    "EndpointName": "Get Vehicle By Plate Number",
+    "Parameters": [
+      {
+        "Name": "plateNumber",
+        "Source": "Path",
+        "ClrType": "String",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles/{vehicleId:guid}",
+    "EndpointName": "Delete Vehicle",
+    "Parameters": [
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "vehicleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/vehicles/{vehicleId:guid}",
+    "EndpointName": "Get Vehicle",
+    "Parameters": [
+      {
+        "Name": "vehicleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouse-managers",
+    "EndpointName": "Get Warehouse Managers",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "WarehouseManagerFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(WarehouseManagerFilterDto) nullable=false required=true",
+          "$.email: string nullable=true required=false",
+          "$.fullName: string nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouse-managers/{id:guid}",
+    "EndpointName": "Get Warehouse Manager",
+    "Parameters": [
+      {
+        "Name": "id",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouses",
+    "EndpointName": "Get Warehouses",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouses",
+    "EndpointName": "Create Warehouse",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "CreateWarehouseDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CreateWarehouseDto) nullable=false required=true",
+          "$.address: string nullable=false required=false",
+          "$.capacity: number(decimal) nullable=false required=false",
+          "$.currentUsage: number(decimal) nullable=false required=false",
+          "$.managerId: guid nullable=false required=false",
+          "$.name: string nullable=false required=false",
+          "$.operatingHours: integer nullable=false required=false",
+          "$.type: enum(WarehouseType)[MainWarehouse|BranchWarehouse] serialization=string nullable=false required=false",
+          "$.zoneIds: array(IReadOnlyCollection\u003CGuid\u003E) nullable=false required=false",
+          "$.zoneIds[*]: guid nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouses/{warehouseId:guid}",
+    "EndpointName": "Delete Warehouse",
+    "Parameters": [
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "warehouseId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouses/{warehouseId:guid}",
+    "EndpointName": "Get Warehouse",
+    "Parameters": [
+      {
+        "Name": "warehouseId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/warehouses/{warehouseId:guid}",
+    "EndpointName": "Update Warehouse",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "UpdateWarehouseDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(UpdateWarehouseDto) nullable=false required=true",
+          "$.address: string nullable=false required=false",
+          "$.capacity: number(decimal) nullable=false required=false",
+          "$.currentUsage: number(decimal) nullable=false required=false",
+          "$.managerId: guid nullable=true required=false",
+          "$.name: string nullable=false required=false",
+          "$.operatingHours: integer nullable=true required=false",
+          "$.type: enum(WarehouseType)[MainWarehouse|BranchWarehouse] serialization=string nullable=false required=false",
+          "$.zoneIds: array(IReadOnlyCollection\u003CGuid\u003E) nullable=false required=false",
+          "$.zoneIds[*]: guid nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "warehouseId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/auth/change-password",
+    "EndpointName": "Change Password",
+    "Parameters": [
+      {
+        "Name": "changePassword",
+        "Source": "Body",
+        "ClrType": "ChangePasswordDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(ChangePasswordDto) nullable=false required=true",
+          "$.confirmNewPassword: string nullable=false required=false",
+          "$.currentPassword: string nullable=false required=false",
+          "$.newPassword: string nullable=false required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/auth/login",
+    "EndpointName": "Login User",
+    "Parameters": [
+      {
+        "Name": "login",
+        "Source": "Body",
+        "ClrType": "LoginDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(LoginDto) nullable=false required=true",
+          "$.email: string nullable=false required=false",
+          "$.password: string nullable=false required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/auth/register",
+    "EndpointName": "Register User",
+    "Parameters": [
+      {
+        "Name": "register",
+        "Source": "Body",
+        "ClrType": "RegisterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(RegisterDto) nullable=false required=true",
+          "$.address: string nullable=false required=false",
+          "$.cityId: integer nullable=false required=false",
+          "$.confirmPassword: string nullable=false required=false",
+          "$.email: string nullable=false required=false",
+          "$.firstName: string nullable=false required=false",
+          "$.lastName: string nullable=false required=false",
+          "$.password: string nullable=false required=false",
+          "$.phoneNumber: string nullable=false required=false",
+          "$.userName: string nullable=false required=false",
+          "$.userType: enum(UserType)[Admin|User|OperationManager|Carrier|Receiver|WarehouseManager] serialization=string nullable=false required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/auth/signout",
+    "EndpointName": "Sign Out User",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/additional-info",
+    "EndpointName": "Add Carrier Additional Info",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "AdditionalInfoDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(AdditionalInfoDto) nullable=false required=true",
+          "$.contractStartDate: date-time nullable=false required=false",
+          "$.contractYears: integer nullable=false required=false",
+          "$.defaultCostPerKg: number(decimal) nullable=false required=false",
+          "$.id: guid nullable=false required=false",
+          "$.licenseNumber: string nullable=false required=false",
+          "$.maxDailyShipments: integer nullable=false required=false",
+          "$.warehouseId: guid nullable=false required=false",
+          "$.yearsOfExperience: integer nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/profile",
+    "EndpointName": "Update Carrier Profile",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "UpdateCarrierDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(UpdateCarrierDto) nullable=false required=true",
+          "$.address: string nullable=true required=false",
+          "$.cityId: integer nullable=true required=false",
+          "$.email: string nullable=true required=false",
+          "$.firstName: string nullable=true required=false",
+          "$.id: guid nullable=false required=false",
+          "$.lastName: string nullable=true required=false",
+          "$.phoneNumber: string nullable=true required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/dashboard",
+    "EndpointName": "Get Carrier Dashboard",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/profile",
+    "EndpointName": "Get Carrier Profile",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/rating",
+    "EndpointName": "Get Carrier Rating",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/revenue",
+    "EndpointName": "Get Carrier Revenue",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/shipments",
+    "EndpointName": "Get Carrier Shipments",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "CarrierShipmentFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CarrierShipmentFilterDto) nullable=false required=true",
+          "$.mode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.sortBy: string nullable=true required=false",
+          "$.sortDescending: boolean nullable=false required=false",
+          "$.status: enum(ShipmentStatuses)[Pending|Approved|Rejected|InWarehouse|OnHold|AssignedToPickUpCarrier|AssignedToDeliveryCarrier|InTransit|OutForDelivery|OutForPickup|Delivered|FailedDelivery|Issue|Cancelled|Deleted|PickedUp] serialization=string nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/shipments/{shipmentId:guid}",
+    "EndpointName": "Get Carrier Shipment ById",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/shipments/{shipmentId:guid}/complete-delivery",
+    "EndpointName": "Complete Shipment Delivery",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/shipments/{shipmentId:guid}/complete-pickup",
+    "EndpointName": "Complete Shipment Pickup",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/shipments/{shipmentId:guid}/picked-up",
+    "EndpointName": "Mark Shipment Picked Up",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/status",
+    "EndpointName": null,
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "ChangeCarrierStatus",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(ChangeCarrierStatus) nullable=false required=true",
+          "$.status: enum(CarrierStatus)[Available|Unavailable|AssignedToPickUpShipment|AssignedToDeliveryShipment|InActive|OnTrip] serialization=string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/trips",
+    "EndpointName": "Get Carrier Trips",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/trips/{tripId:guid}",
+    "EndpointName": "Get Carrier Trip ById",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "tripId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/trips/{tripId:guid}/complete",
+    "EndpointName": "Complete Carrier Trip",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "tripId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/carriers/{carrierId:guid}/vehicles",
+    "EndpointName": "Get Carrier Vehicle",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/cities",
+    "EndpointName": "Get Public Cities",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "CityFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CityFilterDto) nullable=false required=true",
+          "$.governmentId: integer nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.sortDescending: boolean nullable=false required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/cities/{cityId:int}",
+    "EndpointName": "Get Public City",
+    "Parameters": [
+      {
+        "Name": "cityId",
+        "Source": "Path",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/countries",
+    "EndpointName": "Get Countries",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/countries/{countryId:int}/governments",
+    "EndpointName": "Get Country Governments",
+    "Parameters": [
+      {
+        "Name": "countryId",
+        "Source": "Path",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/governments",
+    "EndpointName": "Get public Governments",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/governments/{governmentId:int}",
+    "EndpointName": "Get public Government",
+    "Parameters": [
+      {
+        "Name": "governmentId",
+        "Source": "Path",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/governments/{governmentId:int}/cities",
+    "EndpointName": "Get Government Cities",
+    "Parameters": [
+      {
+        "Name": "governmentId",
+        "Source": "Path",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/notifications",
+    "EndpointName": "Get Notifications",
+    "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      },
+      {
+        "Name": "pageSize",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/notifications/read-all",
+    "EndpointName": "Mark All Notifications As Read",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/notifications/unread-count",
+    "EndpointName": "Get Notifications Unread Count",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers",
+    "EndpointName": "Get Operation Manager Carriers",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "FilterCarrierDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(FilterCarrierDto) nullable=false required=true",
+          "$.availableFrom: date-time nullable=true required=false",
+          "$.city: string nullable=true required=false",
+          "$.cityId: integer nullable=true required=false",
+          "$.maxRating: number(decimal) nullable=true required=false",
+          "$.maxYearsOfExperience: integer nullable=true required=false",
+          "$.minRating: number(decimal) nullable=true required=false",
+          "$.minYearsOfExperience: integer nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.servedZones: array(List\u003CString\u003E) nullable=true required=false",
+          "$.servedZones[*]: string nullable=false required=false",
+          "$.sortBy: enum(CarrierSortBy)[Rating|Yearsofexperience|Name|Status] serialization=string nullable=true required=false",
+          "$.sortDescending: boolean nullable=false required=false",
+          "$.status: enum(CarrierStatus)[Available|Unavailable|AssignedToPickUpShipment|AssignedToDeliveryShipment|InActive|OnTrip] serialization=string nullable=true required=false",
+          "$.vehicleCapacityWeight: number(decimal) nullable=true required=false",
+          "$.vehicleType: enum(VehicleType)[Van|Truck|RefrigeratedTruck] serialization=string nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers/{carrierId:guid}",
+    "EndpointName": "Get Operation Manager Carrier",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers/{carrierId:guid}/shipments",
+    "EndpointName": "Get Carrier Shipments For Operation Manager",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "CarrierShipmentFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CarrierShipmentFilterDto) nullable=false required=true",
+          "$.mode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.sortBy: string nullable=true required=false",
+          "$.sortDescending: boolean nullable=false required=false",
+          "$.status: enum(ShipmentStatuses)[Pending|Approved|Rejected|InWarehouse|OnHold|AssignedToPickUpCarrier|AssignedToDeliveryCarrier|InTransit|OutForDelivery|OutForPickup|Delivered|FailedDelivery|Issue|Cancelled|Deleted|PickedUp] serialization=string nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers/{carrierId:guid}/shipments/{shipmentId:guid}",
+    "EndpointName": "Get Carrier Shipment ById For Operation Manager",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers/{shipmentId:guid}/assign-delivery",
+    "EndpointName": "Assign Delivery Carrier",
+    "Parameters": [
+      {
+        "Name": "request",
+        "Source": "Body",
+        "ClrType": "AssignCarrierDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(AssignCarrierDto) nullable=false required=true",
+          "$.carrierId: guid nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/carriers/{shipmentId:guid}/assign-pickup",
+    "EndpointName": "Assign Pickup Carrier",
+    "Parameters": [
+      {
+        "Name": "request",
+        "Source": "Body",
+        "ClrType": "AssignCarrierDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(AssignCarrierDto) nullable=false required=true",
+          "$.carrierId: guid nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/dashboard",
+    "EndpointName": "Get Operation Manager Dashboard",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments",
+    "EndpointName": "Get Shipments",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "ShipmentFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(ShipmentFilterDto) nullable=false required=true",
+          "$.from: date-time nullable=true required=false",
+          "$.mode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.senderId: guid nullable=true required=false",
+          "$.status: array(ShipmentStatuses[]) nullable=true required=false",
+          "$.status[*]: enum(ShipmentStatuses)[Pending|Approved|Rejected|InWarehouse|OnHold|AssignedToPickUpCarrier|AssignedToDeliveryCarrier|InTransit|OutForDelivery|OutForPickup|Delivered|FailedDelivery|Issue|Cancelled|Deleted|PickedUp] serialization=string nullable=false required=false",
+          "$.to: date-time nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/assigned",
+    "EndpointName": "Get Assigned Shipments",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "ShipmentFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(ShipmentFilterDto) nullable=false required=true",
+          "$.from: date-time nullable=true required=false",
+          "$.mode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.senderId: guid nullable=true required=false",
+          "$.status: array(ShipmentStatuses[]) nullable=true required=false",
+          "$.status[*]: enum(ShipmentStatuses)[Pending|Approved|Rejected|InWarehouse|OnHold|AssignedToPickUpCarrier|AssignedToDeliveryCarrier|InTransit|OutForDelivery|OutForPickup|Delivered|FailedDelivery|Issue|Cancelled|Deleted|PickedUp] serialization=string nullable=false required=false",
+          "$.to: date-time nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/review-queue",
+    "EndpointName": "Get Review Queue",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "ShipmentFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(ShipmentFilterDto) nullable=false required=true",
+          "$.from: date-time nullable=true required=false",
+          "$.mode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.senderId: guid nullable=true required=false",
+          "$.status: array(ShipmentStatuses[]) nullable=true required=false",
+          "$.status[*]: enum(ShipmentStatuses)[Pending|Approved|Rejected|InWarehouse|OnHold|AssignedToPickUpCarrier|AssignedToDeliveryCarrier|InTransit|OutForDelivery|OutForPickup|Delivered|FailedDelivery|Issue|Cancelled|Deleted|PickedUp] serialization=string nullable=false required=false",
+          "$.to: date-time nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}",
+    "EndpointName": "Get Shipment",
+    "Parameters": [
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}/approve",
+    "EndpointName": "Approve Shipment",
+    "Parameters": [
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}/histories",
+    "EndpointName": "Get Shipment Histories",
+    "Parameters": [
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}/reject",
+    "EndpointName": "Reject Shipment",
+    "Parameters": [
+      {
+        "Name": "request",
+        "Source": "Body",
+        "ClrType": "RejectShipmentReason",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(RejectShipmentReason) nullable=false required=true",
+          "$.rejectionReason: string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/shipments/{shipmentId:guid}/review",
+    "EndpointName": "Review Shipment",
+    "Parameters": [
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/trips",
+    "EndpointName": "Get Operation Manager Trips",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "FilterTripsDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(FilterTripsDto) nullable=false required=true",
+          "$.carrierId: guid nullable=true required=false",
+          "$.createdAt: date-time nullable=true required=false",
+          "$.createdBy: string nullable=true required=false",
+          "$.from: date-time nullable=true required=false",
+          "$.handlerId: guid nullable=true required=false",
+          "$.id: guid nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.status: array(TripStatus[]) nullable=true required=false",
+          "$.status[*]: enum(TripStatus)[Planned|Active|Completed|Cancelled] serialization=string nullable=false required=false",
+          "$.to: date-time nullable=true required=false",
+          "$.tripType: enum(TripType)[Pickup|Delivery|Mixed] serialization=string nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/trips/{carrierId:guid}/start-delivery",
+    "EndpointName": "Start Delivery Trip",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/trips/{carrierId:guid}/start-pickup",
+    "EndpointName": "Start Pickup Trip",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/trips/{tripId:guid}",
+    "EndpointName": "Get Operation Manager Trip",
+    "Parameters": [
+      {
+        "Name": "tripId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/{operationManagerId:guid}",
+    "EndpointName": "Get Operation Manager ById",
+    "Parameters": [
+      {
+        "Name": "operationManagerId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/{operationManagerId:guid}/handled-carriers",
+    "EndpointName": "Get Handled Carriers",
+    "Parameters": [
+      {
+        "Name": "operationManagerId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "pageNumber",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      },
+      {
+        "Name": "pageSize",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/operation-managers/{operationManagerId:guid}/handled-shipments",
+    "EndpointName": "Get Handled Shipments",
+    "Parameters": [
+      {
+        "Name": "operationManagerId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "pageNumber",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      },
+      {
+        "Name": "pageSize",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/refresh-tokens",
+    "EndpointName": "Refresh Token",
+    "Parameters": [
+      {
+        "Name": "refreshToken",
+        "Source": "Body",
+        "ClrType": "RefreshToken",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(RefreshToken) nullable=false required=true",
+          "$.token: string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/refresh-tokens/{userId:guid}",
+    "EndpointName": "Revoke Refresh Token",
+    "Parameters": [
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "userId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/request",
+    "EndpointName": "Request Report",
+    "Parameters": [
+      {
+        "Name": "request",
+        "Source": "Body",
+        "ClrType": "CreateReportRequest",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CreateReportRequest) nullable=false required=true",
+          "$.parameters: array(Dictionary\u003CString,String\u003E) nullable=false required=false",
+          "$.parameters[*]: object(KeyValuePair\u003CString,String\u003E) nullable=false required=false",
+          "$.parameters[*].key: string nullable=true required=false",
+          "$.parameters[*].value: string nullable=true required=false",
+          "$.reportType: enum(ReportType)[InvoiceReport|ShipmentAnalysisReport|DashboardReport] serialization=string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/{reportId:guid}/download",
+    "EndpointName": "Download Report",
+    "Parameters": [
+      {
+        "Name": "reportId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/shipments/rate-calculation",
+    "EndpointName": "Calculate Shipment Rate",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "RateCalculatorDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(RateCalculatorDto) nullable=false required=true",
+          "$.packageSpecification: object(PackageSpecificationDto) nullable=false required=false",
+          "$.packageSpecification.height: number(decimal) nullable=false required=false",
+          "$.packageSpecification.length: number(decimal) nullable=false required=false",
+          "$.packageSpecification.weight: number(decimal) nullable=false required=false",
+          "$.packageSpecification.width: number(decimal) nullable=false required=false",
+          "$.shipmentDeliveryType: enum(enShipmentType)[Standard|Express|Fragile] serialization=string nullable=false required=false",
+          "$.transportationMode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=false required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/shipments/{shipmentId:guid}/rate-delivery-carrier",
+    "EndpointName": "Rate Delivery Carrier",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "RatingCarrierDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(RatingCarrierDto) nullable=false required=true",
+          "$.carrierId: guid nullable=false required=false",
+          "$.comment: string nullable=true required=false",
+          "$.rating: integer nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/shipments/{shipmentId:guid}/rate-pickup-carrier",
+    "EndpointName": "Rate Pickup Carrier",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "RatingCarrierDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(RatingCarrierDto) nullable=false required=true",
+          "$.carrierId: guid nullable=false required=false",
+          "$.comment: string nullable=true required=false",
+          "$.rating: integer nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/subscriptions/bundles/{bundleId:guid}/subscription",
+    "EndpointName": "Unsubscribe From Bundle",
+    "Parameters": [
+      {
+        "Name": "bundleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/subscriptions/bundles/{bundleId:guid}/subscription",
+    "EndpointName": "Subscribe To Bundle",
+    "Parameters": [
+      {
+        "Name": "bundleId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/dashboard",
+    "EndpointName": "Get User Dashboard",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/payment-invoices",
+    "EndpointName": "Get User Payment Invoices",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/payment-invoices/{paymentId:guid}",
+    "EndpointName": "Get User Payment Invoice",
+    "Parameters": [
+      {
+        "Name": "paymentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/profile",
+    "EndpointName": "Get User Profile",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments",
+    "EndpointName": "CreateShipment",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "CreateShipmentDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(CreateShipmentDto) nullable=false required=true",
+          "$.currency: enum(Currency)[EGP|USD|EUR] serialization=string nullable=false required=false",
+          "$.deliveryAddress: string nullable=false required=false",
+          "$.packageBundleId: guid nullable=true required=false",
+          "$.packageSpecification: object(PackageSpecificationDto) nullable=false required=false",
+          "$.packageSpecification.height: number(decimal) nullable=false required=false",
+          "$.packageSpecification.length: number(decimal) nullable=false required=false",
+          "$.packageSpecification.weight: number(decimal) nullable=false required=false",
+          "$.packageSpecification.width: number(decimal) nullable=false required=false",
+          "$.paymentId: guid nullable=false required=false",
+          "$.paymentMethod: enum(PaymentMethod)[CreditCard|PayPal|MobileWallets] serialization=string nullable=false required=false",
+          "$.pickUpDate: date-time nullable=true required=false",
+          "$.pickupAddress: string nullable=false required=false",
+          "$.receiver: object(CreateReceiverDto) nullable=false required=false",
+          "$.receiver.address: string nullable=false required=false",
+          "$.receiver.cityId: integer nullable=false required=false",
+          "$.receiver.email: string nullable=false required=false",
+          "$.receiver.firstName: string nullable=false required=false",
+          "$.receiver.lastName: string nullable=false required=false",
+          "$.receiver.phoneNumber: string nullable=false required=false",
+          "$.receiver.senderId: guid nullable=false required=false",
+          "$.shipmentDeliveryType: enum(enShipmentType)[Standard|Express|Fragile] serialization=string nullable=false required=false",
+          "$.transportationMode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "DELETE",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{shipmentId:guid}",
+    "EndpointName": "DeleteShipment",
+    "Parameters": [
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{shipmentId:guid}",
+    "EndpointName": "Get Shipment ById",
+    "Parameters": [
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{shipmentId:guid}",
+    "EndpointName": "UpdateShipmentDetails",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "UpdateShipmentDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(UpdateShipmentDto) nullable=false required=true",
+          "$.deliveryAddress: string nullable=true required=false",
+          "$.packageSpecification: object(PackageSpecificationDto) nullable=true required=false",
+          "$.packageSpecification.height: number(decimal) nullable=false required=false",
+          "$.packageSpecification.length: number(decimal) nullable=false required=false",
+          "$.packageSpecification.weight: number(decimal) nullable=false required=false",
+          "$.packageSpecification.width: number(decimal) nullable=false required=false",
+          "$.pickupAddress: string nullable=true required=false",
+          "$.receiverId: guid nullable=true required=false",
+          "$.shipmentType: enum(enShipmentType)[Standard|Express|Fragile] serialization=string nullable=true required=false",
+          "$.transportationMode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=true required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{shipmentId:guid}/cancel",
+    "EndpointName": "CancelShipment",
+    "Parameters": [
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PATCH",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{shipmentId:guid}/issue",
+    "EndpointName": "IssueShipment",
+    "Parameters": [
+      {
+        "Name": "issue",
+        "Source": "Body",
+        "ClrType": "IssueShipmentReason",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(IssueShipmentReason) nullable=false required=true",
+          "$.issueReason: string nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/shipments/{trackingNumber}",
+    "EndpointName": "TrackShipment",
+    "Parameters": [
+      {
+        "Name": "trackingNumber",
+        "Source": "Path",
+        "ClrType": "String",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/carriers/{carrierId:guid}/warehouse/{warehouseId:guid}",
+    "EndpointName": "Get Warehouse Manager Carrier",
+    "Parameters": [
+      {
+        "Name": "carrierId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "warehouseId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/carriers/{warehouseId:guid}",
+    "EndpointName": "Get Warehouse Manager Carriers",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "FilterCarrierDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(FilterCarrierDto) nullable=false required=true",
+          "$.availableFrom: date-time nullable=true required=false",
+          "$.city: string nullable=true required=false",
+          "$.cityId: integer nullable=true required=false",
+          "$.maxRating: number(decimal) nullable=true required=false",
+          "$.maxYearsOfExperience: integer nullable=true required=false",
+          "$.minRating: number(decimal) nullable=true required=false",
+          "$.minYearsOfExperience: integer nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.servedZones: array(List\u003CString\u003E) nullable=true required=false",
+          "$.servedZones[*]: string nullable=false required=false",
+          "$.sortBy: enum(CarrierSortBy)[Rating|Yearsofexperience|Name|Status] serialization=string nullable=true required=false",
+          "$.sortDescending: boolean nullable=false required=false",
+          "$.status: enum(CarrierStatus)[Available|Unavailable|AssignedToPickUpShipment|AssignedToDeliveryShipment|InActive|OnTrip] serialization=string nullable=true required=false",
+          "$.vehicleCapacityWeight: number(decimal) nullable=true required=false",
+          "$.vehicleType: enum(VehicleType)[Van|Truck|RefrigeratedTruck] serialization=string nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      },
+      {
+        "Name": "warehouseId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/dashboard",
+    "EndpointName": "Get Warehouse Manager Dashboard",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/shipments/{shipmentId:guid}/warehouse/{warehouseId:guid}",
+    "EndpointName": "Get Warehouse Manager Shipment",
+    "Parameters": [
+      {
+        "Name": "shipmentId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "warehouseId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/shipments/{warehouseId:guid}",
+    "EndpointName": "Get Warehouse Manager Shipments",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "ShipmentFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(ShipmentFilterDto) nullable=false required=true",
+          "$.from: date-time nullable=true required=false",
+          "$.mode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.searchTerm: string nullable=true required=false",
+          "$.senderId: guid nullable=true required=false",
+          "$.status: array(ShipmentStatuses[]) nullable=true required=false",
+          "$.status[*]: enum(ShipmentStatuses)[Pending|Approved|Rejected|InWarehouse|OnHold|AssignedToPickUpCarrier|AssignedToDeliveryCarrier|InTransit|OutForDelivery|OutForPickup|Delivered|FailedDelivery|Issue|Cancelled|Deleted|PickedUp] serialization=string nullable=false required=false",
+          "$.to: date-time nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      },
+      {
+        "Name": "warehouseId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/trips/{tripId:guid}/warehouse/{warehouseId:guid}",
+    "EndpointName": "Get Warehouse Manager Trip",
+    "Parameters": [
+      {
+        "Name": "tripId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      },
+      {
+        "Name": "warehouseId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/trips/{warehouseId:guid}",
+    "EndpointName": "Get Warehouse Manager Trips",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "FilterTripsDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(FilterTripsDto) nullable=false required=true",
+          "$.carrierId: guid nullable=true required=false",
+          "$.createdAt: date-time nullable=true required=false",
+          "$.createdBy: string nullable=true required=false",
+          "$.from: date-time nullable=true required=false",
+          "$.handlerId: guid nullable=true required=false",
+          "$.id: guid nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.status: array(TripStatus[]) nullable=true required=false",
+          "$.status[*]: enum(TripStatus)[Planned|Active|Completed|Cancelled] serialization=string nullable=false required=false",
+          "$.to: date-time nullable=true required=false",
+          "$.tripType: enum(TripType)[Pickup|Delivery|Mixed] serialization=string nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      },
+      {
+        "Name": "warehouseId",
+        "Source": "Path",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "PUT",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouse-managers/update",
+    "EndpointName": "Update Warehouse Manager",
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "UpdateWarehouseManagerProfile",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(UpdateWarehouseManagerProfile) nullable=false required=true",
+          "$.address: string nullable=true required=false",
+          "$.cityId: integer nullable=true required=false",
+          "$.email: string nullable=true required=false",
+          "$.firstName: string nullable=true required=false",
+          "$.id: guid nullable=false required=false",
+          "$.lastName: string nullable=true required=false",
+          "$.phoneNumber: string nullable=true required=false",
+          "$.warehouseId: guid nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/warehouses",
+    "EndpointName": "Get Shared Warehouses",
+    "Parameters": []
+  }
+]

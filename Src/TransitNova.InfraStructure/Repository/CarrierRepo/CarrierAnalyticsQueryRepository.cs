@@ -5,6 +5,7 @@ using TransitNova.Domain.Contracts.Carrier;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Trip;
 using TransitNova.InfraStructure.Context;
+
 namespace TransitNova.InfraStructure.Repository.CarrierRepo
 {
     internal class CarrierAnalyticsQueryRepository(AppDbContext context) : ICarrierAnalyticsQueryRepository

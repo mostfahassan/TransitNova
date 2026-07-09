@@ -1,0 +1,444 @@
+[
+  {
+    "Name": "TransitNova.Api.Contracts.Reports.CreateReportRequest",
+    "Json": "{\u0022reportType\u0022:\u0022InvoiceReport\u0022,\u0022parameters\u0022:{\u0022sample\u0022:\u0022sample\u0022}}",
+    "Signatures": [
+      "$: object",
+      "$.parameters: object",
+      "$.parameters.sample: string",
+      "$.reportType: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Bundle.CreateBundleDto",
+    "Json": "{\u0022bundleName\u0022:\u0022sample\u0022,\u0022totalWeight\u0022:123.45,\u0022bundlePrice\u0022:123.45,\u0022bundleDescription\u0022:\u0022sample\u0022,\u0022totalDistance\u0022:123.45,\u0022totalShipments\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.bundleDescription: string",
+      "$.bundleName: string",
+      "$.bundlePrice: number(decimal)",
+      "$.totalDistance: number(decimal)",
+      "$.totalShipments: integer",
+      "$.totalWeight: number(decimal)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Bundle.UpdateBundleDto",
+    "Json": "{\u0022bundleName\u0022:\u0022sample\u0022,\u0022totalWeight\u0022:123.45,\u0022bundlePrice\u0022:123.45,\u0022bundleDescription\u0022:\u0022sample\u0022,\u0022totalDistance\u0022:123.45,\u0022totalShipments\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.bundleDescription: string",
+      "$.bundleName: string",
+      "$.bundlePrice: number(decimal)",
+      "$.totalDistance: number(decimal)",
+      "$.totalShipments: integer",
+      "$.totalWeight: number(decimal)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Carrier.AdditionalInfoDto",
+    "Json": "{\u0022id\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022licenseNumber\u0022:\u0022sample\u0022,\u0022maxDailyShipments\u0022:7,\u0022defaultCostPerKg\u0022:123.45,\u0022yearsOfExperience\u0022:7,\u0022contractStartDate\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022contractYears\u0022:7,\u0022warehouseId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.contractStartDate: string(date-time)",
+      "$.contractYears: integer",
+      "$.defaultCostPerKg: number(decimal)",
+      "$.id: string(guid)",
+      "$.licenseNumber: string",
+      "$.maxDailyShipments: integer",
+      "$.warehouseId: string(guid)",
+      "$.yearsOfExperience: integer"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Carrier.AssignCarrierDto",
+    "Json": "{\u0022carrierId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.carrierId: string(guid)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Carrier.CarrierShipmentFilterDto",
+    "Json": "{\u0022status\u0022:\u0022Pending\u0022,\u0022mode\u0022:\u0022Air\u0022,\u0022searchTerm\u0022:\u0022sample\u0022,\u0022sortBy\u0022:\u0022sample\u0022,\u0022sortDescending\u0022:true,\u0022pageNumber\u0022:7,\u0022pageSize\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.mode: string",
+      "$.pageNumber: integer",
+      "$.pageSize: integer",
+      "$.searchTerm: string",
+      "$.sortBy: string",
+      "$.sortDescending: boolean",
+      "$.status: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Carrier.ChangeCarrierStatus",
+    "Json": "{\u0022status\u0022:\u0022Available\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.status: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Carrier.FilterCarrierDto",
+    "Json": "{\u0022status\u0022:\u0022Available\u0022,\u0022minRating\u0022:123.45,\u0022maxRating\u0022:123.45,\u0022minYearsOfExperience\u0022:7,\u0022maxYearsOfExperience\u0022:7,\u0022city\u0022:\u0022sample\u0022,\u0022cityId\u0022:7,\u0022searchTerm\u0022:\u0022sample\u0022,\u0022availableFrom\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022pageNumber\u0022:7,\u0022pageSize\u0022:7,\u0022sortBy\u0022:\u0022Rating\u0022,\u0022sortDescending\u0022:true,\u0022vehicleCapacityWeight\u0022:123.45,\u0022vehicleType\u0022:\u0022Van\u0022,\u0022warehouseId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022servedZones\u0022:[\u0022sample\u0022]}",
+    "Signatures": [
+      "$: object",
+      "$.availableFrom: string(date-time)",
+      "$.city: string",
+      "$.cityId: integer",
+      "$.maxRating: number(decimal)",
+      "$.maxYearsOfExperience: integer",
+      "$.minRating: number(decimal)",
+      "$.minYearsOfExperience: integer",
+      "$.pageNumber: integer",
+      "$.pageSize: integer",
+      "$.searchTerm: string",
+      "$.servedZones: array",
+      "$.servedZones[*]: string",
+      "$.sortBy: string",
+      "$.sortDescending: boolean",
+      "$.status: string",
+      "$.vehicleCapacityWeight: number(decimal)",
+      "$.vehicleType: string",
+      "$.warehouseId: string(guid)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Carrier.RatingCarrierDto",
+    "Json": "{\u0022carrierId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022comment\u0022:\u0022sample\u0022,\u0022rating\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.carrierId: string(guid)",
+      "$.comment: string",
+      "$.rating: integer"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Carrier.UpdateCarrierDto",
+    "Json": "{\u0022id\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022firstName\u0022:\u0022sample\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022cityId\u0022:7,\u0022address\u0022:\u0022sample\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.address: string",
+      "$.cityId: integer",
+      "$.email: string",
+      "$.firstName: string",
+      "$.id: string(guid)",
+      "$.lastName: string",
+      "$.phoneNumber: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.City.CityFilterDto",
+    "Json": "{\u0022governmentId\u0022:7,\u0022searchTerm\u0022:\u0022sample\u0022,\u0022pageNumber\u0022:7,\u0022pageSize\u0022:7,\u0022sortDescending\u0022:true}",
+    "Signatures": [
+      "$: object",
+      "$.governmentId: integer",
+      "$.pageNumber: integer",
+      "$.pageSize: integer",
+      "$.searchTerm: string",
+      "$.sortDescending: boolean"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.City.CreateCityDto",
+    "Json": "{\u0022name\u0022:\u0022sample\u0022,\u0022governmentId\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.governmentId: integer",
+      "$.name: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.City.UpdateCityDto",
+    "Json": "{\u0022name\u0022:\u0022sample\u0022,\u0022governmentId\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.governmentId: integer",
+      "$.name: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Country.CreateGovernmentDto",
+    "Json": "{\u0022name\u0022:\u0022sample\u0022,\u0022countryId\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.countryId: integer",
+      "$.name: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Country.UpdateGovernmentDto",
+    "Json": "{\u0022name\u0022:\u0022sample\u0022,\u0022countryId\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.countryId: integer",
+      "$.name: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.RefreshToken.RefreshToken",
+    "Json": "{\u0022token\u0022:\u0022sample\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.token: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Roles.RoleNameDto",
+    "Json": "{\u0022roleName\u0022:\u0022sample\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.roleName: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Roles.UpdateRoleMembersDto",
+    "Json": "{\u0022users\u0022:[{\u0022userId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022isInRole\u0022:true}]}",
+    "Signatures": [
+      "$: object",
+      "$.users: array",
+      "$.users[*]: object",
+      "$.users[*].isInRole: boolean",
+      "$.users[*].userId: string(guid)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Shipment.CreateShipmentDto",
+    "Json": "{\u0022receiver\u0022:{\u0022firstName\u0022:\u0022sample\u0022,\u0022senderId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022address\u0022:\u0022sample\u0022,\u0022cityId\u0022:7},\u0022packageSpecification\u0022:{\u0022weight\u0022:123.45,\u0022width\u0022:123.45,\u0022height\u0022:123.45,\u0022length\u0022:123.45},\u0022currency\u0022:\u0022EGP\u0022,\u0022pickUpDate\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022transportationMode\u0022:\u0022Air\u0022,\u0022shipmentDeliveryType\u0022:\u0022Standard\u0022,\u0022deliveryAddress\u0022:\u0022sample\u0022,\u0022pickupAddress\u0022:\u0022sample\u0022,\u0022packageBundleId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022paymentId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022paymentMethod\u0022:\u0022CreditCard\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.currency: string",
+      "$.deliveryAddress: string",
+      "$.packageBundleId: string(guid)",
+      "$.packageSpecification: object",
+      "$.packageSpecification.height: number(decimal)",
+      "$.packageSpecification.length: number(decimal)",
+      "$.packageSpecification.weight: number(decimal)",
+      "$.packageSpecification.width: number(decimal)",
+      "$.paymentId: string(guid)",
+      "$.paymentMethod: string",
+      "$.pickUpDate: string(date-time)",
+      "$.pickupAddress: string",
+      "$.receiver: object",
+      "$.receiver.address: string",
+      "$.receiver.cityId: integer",
+      "$.receiver.email: string",
+      "$.receiver.firstName: string",
+      "$.receiver.lastName: string",
+      "$.receiver.phoneNumber: string",
+      "$.receiver.senderId: string(guid)",
+      "$.shipmentDeliveryType: string",
+      "$.transportationMode: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Shipment.IssueShipmentReason",
+    "Json": "{\u0022issueReason\u0022:\u0022sample\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.issueReason: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Shipment.RateCalculatorDto",
+    "Json": "{\u0022packageSpecification\u0022:{\u0022weight\u0022:123.45,\u0022width\u0022:123.45,\u0022height\u0022:123.45,\u0022length\u0022:123.45},\u0022transportationMode\u0022:\u0022Air\u0022,\u0022shipmentDeliveryType\u0022:\u0022Standard\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.packageSpecification: object",
+      "$.packageSpecification.height: number(decimal)",
+      "$.packageSpecification.length: number(decimal)",
+      "$.packageSpecification.weight: number(decimal)",
+      "$.packageSpecification.width: number(decimal)",
+      "$.shipmentDeliveryType: string",
+      "$.transportationMode: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Shipment.RejectShipmentReason",
+    "Json": "{\u0022rejectionReason\u0022:\u0022sample\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.rejectionReason: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Shipment.ShipmentFilterDto",
+    "Json": "{\u0022status\u0022:[\u0022Pending\u0022],\u0022mode\u0022:\u0022Air\u0022,\u0022from\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022to\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022senderId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022warehouseId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022searchTerm\u0022:\u0022sample\u0022,\u0022pageNumber\u0022:7,\u0022pageSize\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.from: string(date-time)",
+      "$.mode: string",
+      "$.pageNumber: integer",
+      "$.pageSize: integer",
+      "$.searchTerm: string",
+      "$.senderId: string(guid)",
+      "$.status: array",
+      "$.status[*]: string",
+      "$.to: string(date-time)",
+      "$.warehouseId: string(guid)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Shipment.UpdateShipmentDto",
+    "Json": "{\u0022receiverId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022deliveryAddress\u0022:\u0022sample\u0022,\u0022pickupAddress\u0022:\u0022sample\u0022,\u0022packageSpecification\u0022:{\u0022weight\u0022:123.45,\u0022width\u0022:123.45,\u0022height\u0022:123.45,\u0022length\u0022:123.45},\u0022shipmentType\u0022:\u0022Standard\u0022,\u0022transportationMode\u0022:\u0022Air\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.deliveryAddress: string",
+      "$.packageSpecification: object",
+      "$.packageSpecification.height: number(decimal)",
+      "$.packageSpecification.length: number(decimal)",
+      "$.packageSpecification.weight: number(decimal)",
+      "$.packageSpecification.width: number(decimal)",
+      "$.pickupAddress: string",
+      "$.receiverId: string(guid)",
+      "$.shipmentType: string",
+      "$.transportationMode: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Trips.FilterTripsDto",
+    "Json": "{\u0022id\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022tripType\u0022:\u0022Pickup\u0022,\u0022status\u0022:[\u0022Planned\u0022],\u0022createdAt\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022from\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022to\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022createdBy\u0022:\u0022sample\u0022,\u0022carrierId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022warehouseId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022handlerId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022pageNumber\u0022:7,\u0022pageSize\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.carrierId: string(guid)",
+      "$.createdAt: string(date-time)",
+      "$.createdBy: string",
+      "$.from: string(date-time)",
+      "$.handlerId: string(guid)",
+      "$.id: string(guid)",
+      "$.pageNumber: integer",
+      "$.pageSize: integer",
+      "$.status: array",
+      "$.status[*]: string",
+      "$.to: string(date-time)",
+      "$.tripType: string",
+      "$.warehouseId: string(guid)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.UserProfile.Auth.ChangePasswordDto",
+    "Json": "{\u0022currentPassword\u0022:\u0022sample\u0022,\u0022newPassword\u0022:\u0022sample\u0022,\u0022confirmNewPassword\u0022:\u0022sample\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.confirmNewPassword: string",
+      "$.currentPassword: string",
+      "$.newPassword: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.UserProfile.Auth.LoginDto",
+    "Json": "{\u0022password\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.email: string",
+      "$.password: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.UserProfile.Auth.RegisterDto",
+    "Json": "{\u0022userName\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022password\u0022:\u0022sample\u0022,\u0022confirmPassword\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022firstName\u0022:\u0022sample\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022address\u0022:\u0022sample\u0022,\u0022userType\u0022:\u0022Admin\u0022,\u0022cityId\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.address: string",
+      "$.cityId: integer",
+      "$.confirmPassword: string",
+      "$.email: string",
+      "$.firstName: string",
+      "$.lastName: string",
+      "$.password: string",
+      "$.phoneNumber: string",
+      "$.userName: string",
+      "$.userType: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.UserProfile.UpdateWarehouseManagerProfile",
+    "Json": "{\u0022warehouseId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022id\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022firstName\u0022:\u0022sample\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022cityId\u0022:7,\u0022address\u0022:\u0022sample\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.address: string",
+      "$.cityId: integer",
+      "$.email: string",
+      "$.firstName: string",
+      "$.id: string(guid)",
+      "$.lastName: string",
+      "$.phoneNumber: string",
+      "$.warehouseId: string(guid)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.UserProfile.UserFiltrationDto",
+    "Json": "{\u0022searchTerm\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022userName\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022isActive\u0022:true,\u0022createdFrom\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022createdTo\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022pageNumber\u0022:7,\u0022pageSize\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.createdFrom: string(date-time)",
+      "$.createdTo: string(date-time)",
+      "$.email: string",
+      "$.isActive: boolean",
+      "$.pageNumber: integer",
+      "$.pageSize: integer",
+      "$.phoneNumber: string",
+      "$.searchTerm: string",
+      "$.userName: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Vehicle.CreateVehicleDto",
+    "Json": "{\u0022vehicleType\u0022:\u0022Van\u0022,\u0022plateNumber\u0022:\u0022sample\u0022,\u0022capacityWeight\u0022:123.45,\u0022capacityVolume\u0022:123.45,\u0022isRefrigerated\u0022:true,\u0022carrierId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.capacityVolume: number(decimal)",
+      "$.capacityWeight: number(decimal)",
+      "$.carrierId: string(guid)",
+      "$.isRefrigerated: boolean",
+      "$.plateNumber: string",
+      "$.vehicleType: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Warehouse.CreateWarehouseDto",
+    "Json": "{\u0022name\u0022:\u0022sample\u0022,\u0022type\u0022:\u0022MainWarehouse\u0022,\u0022address\u0022:\u0022sample\u0022,\u0022capacity\u0022:123.45,\u0022currentUsage\u0022:123.45,\u0022operatingHours\u0022:7,\u0022zoneIds\u0022:[\u002233333333-3333-3333-3333-333333333333\u0022],\u0022managerId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.address: string",
+      "$.capacity: number(decimal)",
+      "$.currentUsage: number(decimal)",
+      "$.managerId: string(guid)",
+      "$.name: string",
+      "$.operatingHours: integer",
+      "$.type: string",
+      "$.zoneIds: array",
+      "$.zoneIds[*]: string(guid)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Warehouse.UpdateWarehouseDto",
+    "Json": "{\u0022name\u0022:\u0022sample\u0022,\u0022type\u0022:\u0022MainWarehouse\u0022,\u0022address\u0022:\u0022sample\u0022,\u0022capacity\u0022:123.45,\u0022currentUsage\u0022:123.45,\u0022operatingHours\u0022:7,\u0022managerId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022zoneIds\u0022:[\u002233333333-3333-3333-3333-333333333333\u0022]}",
+    "Signatures": [
+      "$: object",
+      "$.address: string",
+      "$.capacity: number(decimal)",
+      "$.currentUsage: number(decimal)",
+      "$.managerId: string(guid)",
+      "$.name: string",
+      "$.operatingHours: integer",
+      "$.type: string",
+      "$.zoneIds: array",
+      "$.zoneIds[*]: string(guid)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.WarehouseManager.WarehouseManagerFilterDto",
+    "Json": "{\u0022fullName\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022warehouseId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022pageNumber\u0022:7,\u0022pageSize\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.email: string",
+      "$.fullName: string",
+      "$.pageNumber: integer",
+      "$.pageSize: integer",
+      "$.warehouseId: string(guid)"
+    ]
+  }
+]
