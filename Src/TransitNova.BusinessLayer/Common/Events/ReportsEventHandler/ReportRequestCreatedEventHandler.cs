@@ -13,12 +13,11 @@ namespace TransitNova.BusinessLayer.Common.Events.ReportsEventHandler
         public async Task Handle(ReportRequestCreatedEvent notification, CancellationToken cancellationToken)
         {
             logger.LogInformation(
-                "Report request {ReportId} created for {ReportType}. ParameterCount: {ParameterCount}",
+                "Report request {ReportId} created for {ReportKey}.",
                 notification.ReportId,
-                notification.ReportType,
-                notification.Parameters.Count);
+                notification.ReportKey);
 
-            await reportGenerationJob.GenerateAsync(notification.ReportId, cancellationToken);
+            await reportGenerationJob.DelegateToBackgroundAsync(notification.ReportId, cancellationToken);
         }
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Text.Json;
 using TransitNova.Domain.Entities.MainEntities;
 
 namespace TransitNova.InfraStructure.EntityConfig
@@ -11,12 +10,18 @@ namespace TransitNova.InfraStructure.EntityConfig
         {
             reportRequest.HasKey(r => r.Id);
 
-            reportRequest.Property(r => r.Parameters)
-                .HasConversion(
-                    value => JsonSerializer.Serialize(value, (JsonSerializerOptions?)null),
-                    value => string.IsNullOrWhiteSpace(value)
-                        ? new Dictionary<string, string>()
-                        : JsonSerializer.Deserialize<Dictionary<string, string>>(value) ?? new Dictionary<string, string>());
+            reportRequest.Property(r => r.ReportKey)
+                .HasMaxLength(128)
+                .IsRequired();
+
+            reportRequest.Property(r => r.PayloadJson)
+                .IsRequired();
+
+            reportRequest.Property(r => r.FilePath)
+                .HasMaxLength(1024);
+
+            reportRequest.Property(r => r.ErrorMessage)
+                .HasMaxLength(4000);
         }
     }
 }

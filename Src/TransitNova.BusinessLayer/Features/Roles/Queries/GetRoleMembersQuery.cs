@@ -8,6 +8,6 @@ namespace TransitNova.BusinessLayer.Features.Roles.Queries
 {
     public sealed record GetRoleMembersQuery(Guid RoleId) : IQuery<Result<RoleMembersDto>>, ICachable
     {
-        public string CacheKey => CacheKeys.Roles.MemberList;
+        public string CacheKey => $"{CacheKeys.Roles.MemberList}:{RoleId}";
     };
 }

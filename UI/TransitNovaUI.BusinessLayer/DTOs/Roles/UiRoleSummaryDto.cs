@@ -5,7 +5,8 @@ public sealed class UiRoleSummaryDto
 {
     public string? RoleId { get; set; }
     public string? RoleName { get; set; }
+    public int TotalUsers { get; set; } = 0;
 
     public static UiRoleSummaryDto ToUiDto(RoleSummaryDto source) =>
-        new() { RoleId = source.RoleId, RoleName = source.RoleName };
+        new() { RoleId = source.RoleId, RoleName = source.RoleName, TotalUsers = source.TotalUsers };
 }

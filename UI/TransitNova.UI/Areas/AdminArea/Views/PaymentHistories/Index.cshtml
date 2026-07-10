@@ -1,0 +1,120 @@
+@model object?
+@{
+    ViewData["Title"] = "Payment History";
+    var header = new AdminPageHeaderViewModel
+    {
+        Eyebrow = "Payment audit",
+        Title = "Payment history",
+        Description = "Review paged payment history records for finance checks, report generation, and operational audits."
+    };
+
+    var table = new AdminTableViewModel
+    {
+        Title = "Payment history ledger",
+        Subtitle = "History rows returned from the payment service integration.",
+        Source = Model,
+        Controller = "PaymentHistories",
+        ShowDetails = false,
+        ShowEdit = false,
+        ShowDelete = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Payment", "PaymentId", "id"),
+            new("Method", "PaymentMethod", "badge"),
+            new("Old status", "OldStatus", "badge"),
+            new("New status", "NewStatus", "badge"),
+            new("Changed", "ChangedAt"),
+            new("Created", "CreatedAt"),
+            new("Created by", "CreatedBy")
+        },
+        EmptyTitle = "No payment history found",
+        EmptyDescription = "When matching history records are returned from the payment service they will appear here."
+    };
+
+    var pageNumber = AdminDisplay.PageNumber(Model);
+    var totalPages = AdminDisplay.TotalPages(Model);
+    var pager = new AdminPagerViewModel
+    {
+        PageNumber = pageNumber,
+        TotalPages = totalPages,
+        PreviousUrl = BuildPageUrl(pageNumber - 1, totalPages),
+        NextUrl = BuildPageUrl(pageNumber + 1, totalPages)
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+
+<section class="admin-card mb-6 p-5 md:p-6">
+    <form method="get" class="grid gap-3 md:grid-cols-2 xl:grid-cols-[repeat(6,minmax(0,1fr))_110px_110px_auto] xl:items-end">
+        <div>
+            <label class="admin-label" for="PaymentId">Payment Id</label>
+            <input id="PaymentId" name="PaymentId" value="@Context.Request.Query["PaymentId"]" class="admin-input" placeholder="Payment Guid" autocomplete="off" />
+        </div>
+        <div>
+            <label class="admin-label" for="PaymentStatus">Status</label>
+            <select id="PaymentStatus" name="PaymentStatus" class="admin-select">
+                <option value="">Any status</option>
+                <option value="Pending" selected="@(Context.Request.Query["PaymentStatus"] == "Pending")">Pending</option>
+                <option value="Success" selected="@(Context.Request.Query["PaymentStatus"] == "Success")">Success</option>
+                <option value="Failed" selected="@(Context.Request.Query["PaymentStatus"] == "Failed")">Failed</option>
+            </select>
+        </div>
+        <div>
+            <label class="admin-label" for="PaymentMethod">Method</label>
+            <select id="PaymentMethod" name="PaymentMethod" class="admin-select">
+                <option value="">Any method</option>
+                <option value="CreditCard" selected="@(Context.Request.Query["PaymentMethod"] == "CreditCard")">Credit Card</option>
+                <option value="PayPal" selected="@(Context.Request.Query["PaymentMethod"] == "PayPal")">PayPal</option>
+                <option value="MobileWallets" selected="@(Context.Request.Query["PaymentMethod"] == "MobileWallets")">Mobile Wallets</option>
+            </select>
+        </div>
+        <div>
+            <label class="admin-label" for="CreatedBy">Created by</label>
+            <input id="CreatedBy" name="CreatedBy" value="@Context.Request.Query["CreatedBy"]" class="admin-input" placeholder="Actor" autocomplete="off" />
+        </div>
+        <div>
+            <label class="admin-label" for="CreatedAt">Created at</label>
+            <input id="CreatedAt" name="CreatedAt" value="@Context.Request.Query["CreatedAt"]" type="datetime-local" class="admin-input" />
+        </div>
+        <div>
+            <label class="admin-label" for="CreatedAtFrom">From</label>
+            <input id="CreatedAtFrom" name="CreatedAtFrom" value="@Context.Request.Query["CreatedAtFrom"]" type="datetime-local" class="admin-input" />
+        </div>
+        <div>
+            <label class="admin-label" for="CreatedAtTo">To</label>
+            <input id="CreatedAtTo" name="CreatedAtTo" value="@Context.Request.Query["CreatedAtTo"]" type="datetime-local" class="admin-input" />
+        </div>
+        <div>
+            <label class="admin-label" for="PageNumber">Page</label>
+            <input id="PageNumber" name="PageNumber" value="@Context.Request.Query["PageNumber"]" type="number" min="1" class="admin-input" />
+        </div>
+        <div>
+            <label class="admin-label" for="PageSize">Size</label>
+            <input id="PageSize" name="PageSize" value="@Context.Request.Query["PageSize"]" type="number" min="1" class="admin-input" />
+        </div>
+        <button type="submit" class="admin-button">Filter</button>
+    </form>
+</section>
+
+<partial name="_AdminTable" model="table" />
+<partial name="_AdminPager" model="pager" />
+
+@functions {
+    private string? BuildPageUrl(int targetPage, int totalPages)
+    {
+        if (targetPage < 1 || targetPage > totalPages)
+            return null;
+
+        var routeValues = Context.Request.Query.ToDictionary(
+            pair => pair.Key,
+            pair => pair.Value.ToString(),
+            StringComparer.OrdinalIgnoreCase);
+
+        routeValues["PageNumber"] = targetPage.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        routeValues["PageSize"] = string.IsNullOrWhiteSpace(Context.Request.Query["PageSize"])
+            ? "20"
+            : Context.Request.Query["PageSize"].ToString();
+
+        return Url.Action("Index", "PaymentHistories", routeValues);
+    }
+}

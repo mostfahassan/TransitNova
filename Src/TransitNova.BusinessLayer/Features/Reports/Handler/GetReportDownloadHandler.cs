@@ -4,7 +4,6 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Reports;
 using TransitNova.BusinessLayer.Features.Reports.Queries;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ReportsRepository;
-
 namespace TransitNova.BusinessLayer.Features.Reports.Handler
 {
     public sealed class GetReportDownloadHandler(
@@ -23,7 +22,6 @@ namespace TransitNova.BusinessLayer.Features.Reports.Handler
                 logger.LogWarning("Report download was not found or is not accessible. ReportId: {ReportId}, UserId: {UserId}", request.ReportId, request.RequestedBy);
 
                 return Result<ReportDownloadDto>.NotFound(Errors.NotFound("Report was not found, is not ready yet, or you do not have access to it."));
-
             }
 
             return Result<ReportDownloadDto>.Success(download);

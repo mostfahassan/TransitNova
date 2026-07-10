@@ -119,7 +119,7 @@ public static class AdminDisplay
 
     public static int TotalCount(object? source)
     {
-        var value = Value(source, "TotalCount|Count");
+        var value = Value(source, "TotalCount|TotalUsers|UsersCount|Count");
         return value is int count ? count : Rows(source).Count;
     }
 

@@ -21,7 +21,7 @@ namespace TransitNova.BusinessLayer.Features.Roles.Handlers.ApplyCommands
             await rolesCommandsService.DeleteRoleAsync(request.RoleId, ct);
 
             logger.LogInformation("Role deleted successfully. RoleId: {RoleId}", request.RoleId);
-            CacheInvalidationContext.Set(request, CacheKeys.Roles.List, CacheKeys.Roles.MemberList);
+            CacheInvalidationContext.Set(request, CacheKeys.Roles.List, CacheKeys.Roles.Member);
             return BaseResult.Success();
 
         }

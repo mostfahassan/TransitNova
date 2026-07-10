@@ -20,10 +20,14 @@
         ShowDetails = true,
         ShowEdit = true,
         ShowDelete = true,
+        RowActions = new List<AdminRowActionViewModel>
+        {
+            new("RoleMembers", "RoleMembers")
+        },
         Columns = new List<AdminTableColumnViewModel>
         {
             new("Role", "RoleName|Name"),
-            new("Role ID", "RoleId|Id", "id")
+            new("Total Users", "TotalUsers|UsersCount")
         }
     };
 }

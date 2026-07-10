@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNovaPayment.Busieness.Common.DTO.PaymentDto;
@@ -33,7 +33,7 @@ namespace TransitNovaPayment.API.Controllers.Payment
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPost("history")]
+        [HttpGet("history")]
         [EnableRateLimiting("CommandsLimiter")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -44,10 +44,11 @@ namespace TransitNovaPayment.API.Controllers.Payment
         [EndpointSummary("Retrieves paginated payment history records.")]
         [EndpointDescription("Retrieves payment history records using the supplied filtering criteria.Supports filtering by payment ID, payment status, creator information, and date range. " +
             "Results are returned in a paginated format.")]
-        public async Task<IActionResult> History([FromBody] FilterPaymentHistoryDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> History([FromQuery] FilterPaymentHistoryDto dto, CancellationToken cancellationToken)
         {
             var response = await mediator.Send(new FilterPaymentsQuery(dto), cancellationToken);
             return Ok(response);
         }
     }
 }
+

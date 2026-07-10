@@ -29,7 +29,7 @@ public sealed class RolesController(
     [HttpGet("{roleId:guid}")]
     public async Task<IActionResult> Details(Guid roleId, CancellationToken cancellationToken)
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => adminRolesQuery.GetRoleByIdAsync(roleId, token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminRolesQuery.GetRoleByIdAsync(roleId, token!, cancellationToken: ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
@@ -59,7 +59,7 @@ public sealed class RolesController(
     [HttpGet("{roleId:guid}")]
     public async Task<IActionResult> Edit(Guid roleId, CancellationToken cancellationToken)
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => adminRolesQuery.GetRoleByIdAsync(roleId, token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminRolesQuery.GetRoleByIdAsync(roleId, token!, cancellationToken: ct), cancellationToken: cancellationToken);
 
         if (response.IsFailure)
             return HandleGetFailure(response);
@@ -100,6 +100,14 @@ public sealed class RolesController(
             Success("Role deleted successfully.");
 
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet("{roleId:guid}")]
+    public async Task<IActionResult> RoleMembers(Guid roleId, int pageNumber = 1, int pageSize = 20, CancellationToken cancellationToken = default)
+    {
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminRolesQuery.GetRoleByIdAsync(roleId, token!, pageNumber, pageSize, ct), cancellationToken: cancellationToken);
+
+        return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
 
     [HttpGet("{roleId:guid}")]

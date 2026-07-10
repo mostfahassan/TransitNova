@@ -1,4 +1,3 @@
-﻿using TransitNova.Domain.Contracts.DomainEvents;
 using TransitNova.Domain.Contracts.DomainEvents.Events.UsersEvent;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Users;
@@ -6,9 +5,10 @@ namespace TransitNova.Domain.Entities.MainEntities
 {
     public class UserProfile : BaseInfo<Guid>
     {
+        public Guid AppUserId { get; private set; }
         public virtual ICollection<Shipment> SentShipments { get; set; } = new List<Shipment>();
         public ICollection<BundleSubscription> Subscriptions { get; set; } = new List<BundleSubscription>();
-        public Guid AppUserId { get; private set; }
+        public ICollection<PaymentInvoice> PaymentInvoices { get; set; } = new List<PaymentInvoice>();
         public ICollection<ReceiverProfile> Receivers { get; set; } = new List<ReceiverProfile>();
 
         private UserProfile()
@@ -39,4 +39,5 @@ namespace TransitNova.Domain.Entities.MainEntities
 
     }
 }
+
 

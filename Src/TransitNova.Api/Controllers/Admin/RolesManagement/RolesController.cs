@@ -46,10 +46,10 @@ namespace TransitNova.Api.Controllers.Admin.RolesManagement
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [EndpointName("Get Role")]
         [EndpointSummary("Get role details")]
-        [EndpointDescription("Returns details for a specific role.")]
-        public async Task<IActionResult> RoleDetailsAsync(Guid roleId, CancellationToken ct)
+        [EndpointDescription("Returns paginated member details for a specific role.")]
+        public async Task<IActionResult> RoleDetailsAsync(Guid roleId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
         {
-            var response = await mediator.Send(new GetRoleByIdQuery(roleId), ct);
+            var response = await mediator.Send(new GetRoleByIdQuery(roleId, pageNumber, pageSize), ct);
             return response.ToActionResult();
         }
 

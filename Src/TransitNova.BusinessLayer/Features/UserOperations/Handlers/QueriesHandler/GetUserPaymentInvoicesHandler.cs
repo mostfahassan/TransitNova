@@ -15,7 +15,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.QueriesHand
         {
             logger.LogInformation("Retrieving payment invoice {PaymentId} for User {UserId}", request.PaymentId, request.AppUserId);
 
-            var invoice = await paymentRepositoryQuery.GetUserInvoiceByPaymentId(request.AppUserId, request.PaymentId, cancellationToken);
+            var invoice = await paymentRepositoryQuery.GetUserInvoiceByPaymentIdAsync(request.AppUserId, request.PaymentId, cancellationToken);
             if (invoice is null)
             {
                 logger.LogWarning("Payment invoice {PaymentId} was not found for User {UserId}", request.PaymentId, request.AppUserId);
@@ -35,7 +35,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.QueriesHand
         {
             logger.LogInformation("Retrieving payment invoices for User {UserId}", request.AppUserId);
 
-            var invoices = await paymentRepositoryQuery.GetUserInvoices(request.AppUserId, cancellationToken);
+            var invoices = await paymentRepositoryQuery.GetUserInvoicesAsync(request.AppUserId, cancellationToken);
             return Result<IEnumerable<PaymentInvoiceDto>>.Success(invoices);
         }
     }

@@ -6,6 +6,7 @@ namespace TransitNova.Domain.Enums.Reports
         Pending,
         InProgress,
         Completed,
-        Failed
+        Failed,
+        Deleted,
     }
 }

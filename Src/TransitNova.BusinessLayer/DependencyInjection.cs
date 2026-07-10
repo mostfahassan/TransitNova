@@ -52,6 +52,7 @@ namespace TransitNova.BusinessLayer
                 .AddScoped<IWarehouseManagerDashboard, WarehouseManagerDashboardBuilder>()
                 .AddScoped<ITripServices, TripManagementService>()
                 .AddScoped<IPaymentService, PaymentService>()
+                .AddScoped<IPaymentHistoryService, PaymentHistoryService>()
                 .AddScoped<IAdminDashboard, AdminDashboard>()
                 .AddScoped<IOperationManagerDashboard, OperationManagerDashboard>()
                 .AddScoped<ICarrierDashboard, CarrierDashboard>();
@@ -61,4 +62,3 @@ namespace TransitNova.BusinessLayer
         }
     }
 }
-

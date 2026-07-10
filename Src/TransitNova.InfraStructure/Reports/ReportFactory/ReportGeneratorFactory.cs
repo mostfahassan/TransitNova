@@ -1,16 +1,27 @@
-using TransitNova.Domain.Enums.Reports;
 using TransitNova.InfraStructure.Reports.Interface;
 
 namespace TransitNova.InfraStructure.Reports.ReportFactory
 {
     public sealed class ReportGeneratorFactory : IReportGeneratorFactory
     {
-        private readonly IEnumerable<IReportGenerator> _reportGenerators;
-        public ReportGeneratorFactory(IEnumerable<IReportGenerator> reportGenerators)
-            => _reportGenerators = reportGenerators;
+        private readonly IReadOnlyDictionary<string, IReportGenerator> _reportGenerators;
 
-        public IReportGenerator? ReportGeneratorResolver(ReportType reportType)
-        => _reportGenerators.FirstOrDefault(generator => generator.ReportType == reportType);   
+        public ReportGeneratorFactory(IEnumerable<IReportGenerator> reportGenerators)
+        {
+            _reportGenerators = reportGenerators.ToDictionary(
+                generator => generator.ReportKey,
+                StringComparer.OrdinalIgnoreCase);
+        }
+
+        public IReportGenerator? ReportGeneratorResolver(string reportKey)
+        {
+            if (string.IsNullOrWhiteSpace(reportKey))
+            {
+                return null;
+            }
+
+            _reportGenerators.TryGetValue(reportKey, out var generator);
+            return generator;
+        }
     }
 }
-

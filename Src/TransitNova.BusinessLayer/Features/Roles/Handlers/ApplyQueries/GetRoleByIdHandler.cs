@@ -10,21 +10,21 @@ namespace TransitNova.BusinessLayer.Features.Roles.Handlers.ApplyQueries
     public sealed class GetRoleByIdHandler(
         IRolesQueryService rolesQueryService,
         ILogger<GetRoleByIdHandler> logger)
-        : IQueryHandler<GetRoleByIdQuery, Result<RoleSummaryDto>>
+        : IQueryHandler<GetRoleByIdQuery, Result<RoleMembersDto>>
     {
-        public async Task<Result<RoleSummaryDto>> Handle(GetRoleByIdQuery request, CancellationToken ct)
+        public async Task<Result<RoleMembersDto>> Handle(GetRoleByIdQuery request, CancellationToken ct)
         {
-            logger.LogInformation("Retrieving role details. RoleId: {RoleId}", request.RoleId);
+            logger.LogInformation("Retrieving role details. RoleId: {RoleId}, PageNumber: {PageNumber}, PageSize: {PageSize}", request.RoleId, request.PageNumber, request.PageSize);
 
-            var role = await rolesQueryService.GetRoleByIdAsync(request.RoleId, ct);
+            var role = await rolesQueryService.GetRoleByIdAsync(request.RoleId, request.PageNumber, request.PageSize, ct);
             if (role is null)
             {
                 logger.LogWarning("Role details not found. RoleId: {RoleId}", request.RoleId);
-                return Result<RoleSummaryDto>.NotFound(Errors.NotFound("Role not found."));
+                return Result<RoleMembersDto>.NotFound(Errors.NotFound("Role not found."));
             }
 
-            logger.LogInformation("Role details retrieved successfully. RoleId: {RoleId}", request.RoleId);
-            return Result<RoleSummaryDto>.Success(role);
+            logger.LogInformation("Role details retrieved successfully. RoleId: {RoleId}, TotalUsers: {TotalUsers}", request.RoleId, role.TotalUsers);
+            return Result<RoleMembersDto>.Success(role);
         }
     }
 }

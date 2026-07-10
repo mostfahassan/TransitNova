@@ -15,18 +15,12 @@ namespace TransitNova.BusinessLayer.Common.Events.ReportsEventHandler
     {
         public async Task Handle(ReportRequestCompletedEvent notification, CancellationToken cancellationToken)
         {
-            var userNotification = Notification.Create(
-                notification.RequestedBy,
-                "Report Generated",
-                $"Your requested report {notification.ReportId} has been generated successfully.");
+            var userNotification = Notification.Create(notification.RequestedBy,"Report Generated",$"Your requested report {notification.ReportId} has been generated successfully.");
 
             await notificationRepo.AddNotificationAsync(userNotification, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            logger.LogInformation(
-                "Report request {ReportId} completed and notification sent to User {UserId}.",
-                notification.ReportId,
-                notification.RequestedBy);
+            logger.LogInformation("Report request {ReportId} completed and notification sent to User {UserId}.", notification.ReportId, notification.RequestedBy);
         }
     }
 }

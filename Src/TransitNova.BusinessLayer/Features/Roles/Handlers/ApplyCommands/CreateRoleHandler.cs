@@ -17,7 +17,7 @@ namespace TransitNova.BusinessLayer.Features.Roles.Handlers.ApplyCommands
             logger.LogInformation("Creating role. RoleName: {RoleName}", request.RoleName);
             await rolesCommandsService.AddNewRoleAsync(request.RoleName, ct);
             logger.LogInformation("Role created successfully. RoleName: {RoleName}", request.RoleName);
-            CacheInvalidationContext.Set(request, CacheKeys.Roles.List, CacheKeys.Roles.MemberList);
+            CacheInvalidationContext.Set(request, CacheKeys.Roles.List, CacheKeys.Roles.Member);
             return BaseResult.Created("Role created successfully.");
 
         }

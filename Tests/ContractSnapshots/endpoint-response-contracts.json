@@ -536,6 +536,22 @@
   },
   {
     "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/payment-histories",
+    "RequestPath": "/api/v1/admin/payment-histories",
+    "EndpointName": "Get Admin Payment Histories",
+    "RequiresAuthorization": true,
+    "StatusCode": 400,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errorCode: string",
+      "$.isSuccess: boolean",
+      "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "GET",
     "RouteTemplate": "api/v{version:apiVersion}/admin/roles",
     "RequestPath": "/api/v1/admin/roles",
     "EndpointName": "Get Roles",
@@ -548,6 +564,7 @@
       "$.data[*]: object",
       "$.data[*].roleId: string(guid)",
       "$.data[*].roleName: string",
+      "$.data[*].totalUsers: integer",
       "$.isSuccess: boolean",
       "$.message: null",
       "$.statusCode: integer"
@@ -2077,9 +2094,9 @@
   },
   {
     "HttpMethod": "POST",
-    "RouteTemplate": "api/v{version:apiVersion}/reports/request",
-    "RequestPath": "/api/v1/reports/request",
-    "EndpointName": "Request Report",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/dashboards",
+    "RequestPath": "/api/v1/reports/dashboards",
+    "EndpointName": "Request Dashboard Report",
     "RequiresAuthorization": true,
     "StatusCode": 201,
     "ContentType": "application/json; charset=utf-8",
@@ -2088,6 +2105,42 @@
       "$.data: null",
       "$.isSuccess: boolean",
       "$.message: string",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/invoices",
+    "RequestPath": "/api/v1/reports/invoices",
+    "EndpointName": "Request Invoice Report",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
+      "$.statusCode: integer"
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/shipments",
+    "RequestPath": "/api/v1/reports/shipments",
+    "EndpointName": "Request Shipment Report",
+    "RequiresAuthorization": true,
+    "StatusCode": 422,
+    "ContentType": "application/json; charset=utf-8",
+    "Signatures": [
+      "$: object",
+      "$.errors: array",
+      "$.errors[*]: object",
+      "$.errors[*].code: string",
+      "$.errors[*].message: string",
+      "$.isSuccess: boolean",
       "$.statusCode: integer"
     ]
   },

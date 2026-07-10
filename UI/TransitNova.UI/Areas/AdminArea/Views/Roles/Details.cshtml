@@ -4,7 +4,7 @@
     var header = new AdminPageHeaderViewModel
     {
         Title = "Role details",
-        Description = "Inspect role identity data before managing its members.",
+        Description = "Inspect the selected role before editing its name or reviewing its members.",
         SecondaryLabel = "Back",
         SecondaryController = "Roles",
         SecondaryAction = "Index"
@@ -12,7 +12,7 @@
     var detail = new AdminDetailViewModel
     {
         Title = "Role record",
-        Subtitle = "Authorization role information from the backend.",
+        Subtitle = "Authorization role summary from the backend.",
         Source = Model,
         Controller = "Roles",
         RouteIdName = "roleId",
@@ -22,7 +22,7 @@
         Fields = new List<AdminTableColumnViewModel>
         {
             new("Role", "RoleName|Name"),
-            new("Role ID", "RoleId|Id", "id")
+            new("Total Users", "TotalUsers|UsersCount")
         }
     };
 }

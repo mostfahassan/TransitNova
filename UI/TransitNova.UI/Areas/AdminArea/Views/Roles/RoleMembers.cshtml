@@ -1,0 +1,48 @@
+@model object?
+@{
+    ViewData["Title"] = "Role Members";
+    var roleName = AdminDisplay.Text(Model, "RoleName|Name");
+    var roleId = AdminDisplay.Value(Model, "RoleId|Id");
+    var pageNumber = AdminDisplay.PageNumber(Model);
+    var totalPages = AdminDisplay.TotalPages(Model);
+    var pageSizeValue = AdminDisplay.Value(Model, "PageSize");
+    var pageSize = pageSizeValue is int size && size > 0 ? size : 20;
+    var pager = new AdminPagerViewModel
+    {
+        PageNumber = pageNumber,
+        TotalPages = totalPages,
+        PreviousUrl = pageNumber > 1 ? Url.Action("RoleMembers", "Roles", new { area = "AdminArea", roleId, pageNumber = pageNumber - 1, pageSize }) : null,
+        NextUrl = pageNumber < totalPages ? Url.Action("RoleMembers", "Roles", new { area = "AdminArea", roleId, pageNumber = pageNumber + 1, pageSize }) : null
+    };
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "RoleMembers",
+        Description = "Read-only paginated view of the users currently assigned to the selected role.",
+        SecondaryLabel = "Back to roles",
+        SecondaryController = "Roles",
+        SecondaryAction = "Index"
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = roleName,
+        Subtitle = $"{AdminDisplay.Text(Model, "TotalUsers|UsersCount")} current members in this role.",
+        Source = Model,
+        Controller = "Roles",
+        RouteIdName = "userId",
+        IdPropertyPath = "UserId|Id",
+        ShowDetails = false,
+        ShowEdit = false,
+        ShowDelete = false,
+        Columns = new List<AdminTableColumnViewModel>
+        {
+            new("Full Name", "FullName|UserName|Email"),
+            new("Email", "Email"),
+            new("Phone Number", "PhoneNumber"),
+            new("Status", "Status", "badge")
+        }
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />
+<partial name="_AdminPager" model="pager" />

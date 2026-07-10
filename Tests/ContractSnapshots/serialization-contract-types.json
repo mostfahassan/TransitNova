@@ -1,15 +1,5 @@
 [
   {
-    "Name": "TransitNova.Api.Contracts.Reports.CreateReportRequest",
-    "Json": "{\u0022reportType\u0022:\u0022InvoiceReport\u0022,\u0022parameters\u0022:{\u0022sample\u0022:\u0022sample\u0022}}",
-    "Signatures": [
-      "$: object",
-      "$.parameters: object",
-      "$.parameters.sample: string",
-      "$.reportType: string"
-    ]
-  },
-  {
     "Name": "TransitNova.BusinessLayer.DTOs.Bundle.CreateBundleDto",
     "Json": "{\u0022bundleName\u0022:\u0022sample\u0022,\u0022totalWeight\u0022:123.45,\u0022bundlePrice\u0022:123.45,\u0022bundleDescription\u0022:\u0022sample\u0022,\u0022totalDistance\u0022:123.45,\u0022totalShipments\u0022:7}",
     "Signatures": [
@@ -178,11 +168,50 @@
     ]
   },
   {
+    "Name": "TransitNova.BusinessLayer.DTOs.Payment.PaymentHistoryFilterDto",
+    "Json": "{\u0022paymentId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022paymentStatus\u0022:\u0022Pending\u0022,\u0022paymentMethod\u0022:\u0022CreditCard\u0022,\u0022createdAt\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022createdAtFrom\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022createdAtTo\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022createdBy\u0022:\u0022sample\u0022,\u0022pageNumber\u0022:7,\u0022pageSize\u0022:7}",
+    "Signatures": [
+      "$: object",
+      "$.createdAt: string(date-time)",
+      "$.createdAtFrom: string(date-time)",
+      "$.createdAtTo: string(date-time)",
+      "$.createdBy: string",
+      "$.pageNumber: integer",
+      "$.pageSize: integer",
+      "$.paymentId: string(guid)",
+      "$.paymentMethod: string",
+      "$.paymentStatus: string"
+    ]
+  },
+  {
     "Name": "TransitNova.BusinessLayer.DTOs.RefreshToken.RefreshToken",
     "Json": "{\u0022token\u0022:\u0022sample\u0022}",
     "Signatures": [
       "$: object",
       "$.token: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Reports.DashboardReportContract",
+    "Json": "{}",
+    "Signatures": [
+      "$: object"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Reports.InvoiceReportContract",
+    "Json": "{\u0022paymentId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.paymentId: string(guid)"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.Reports.ShipmentReportContract",
+    "Json": "{\u0022shipmentId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.shipmentId: string(guid)"
     ]
   },
   {

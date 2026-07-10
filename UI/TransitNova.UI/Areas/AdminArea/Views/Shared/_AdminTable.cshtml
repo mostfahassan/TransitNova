@@ -81,6 +81,19 @@
                                     {
                                         <a href="@editUrl" class="admin-button-secondary !px-3 !py-2">Edit</a>
                                     }
+                                    @foreach (var rowAction in Model.RowActions)
+                                    {
+                                        var rowActionUrl = id is null ? null : Url.Action(rowAction.Action, Model.Controller, routeValues);
+                                        if (!string.IsNullOrWhiteSpace(rowActionUrl))
+                                        {
+                                            var buttonClass = rowAction.Style.Equals("primary", StringComparison.OrdinalIgnoreCase)
+                                                ? "admin-button !px-3 !py-2"
+                                                : rowAction.Style.Equals("danger", StringComparison.OrdinalIgnoreCase)
+                                                    ? "admin-button-danger !px-3 !py-2"
+                                                    : "admin-button-secondary !px-3 !py-2";
+                                            <a href="@rowActionUrl" class="@buttonClass">@rowAction.Label</a>
+                                        }
+                                    }
                                     @if (Model.ShowDelete && !string.IsNullOrWhiteSpace(deleteUrl))
                                     {
                                         <form method="post" action="@deleteUrl" data-confirm="Delete this record? This action cannot be undone.">

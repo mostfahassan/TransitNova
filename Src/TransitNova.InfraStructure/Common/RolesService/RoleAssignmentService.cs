@@ -13,7 +13,6 @@ namespace TransitNova.InfraStructure.Common.RolesService
             var role = await GetRoleAsync(roleId);
             await AddUserToRoleAsync(userId, role.Name!, ct);
         }
-
         public async Task RemoveUserFromRoleAsync(Guid userId, Guid roleId, CancellationToken ct)
         {
             var role = await GetRoleAsync(roleId);

@@ -71,6 +71,11 @@ public static class ApiRoutes
         public const string GetAdminDashboardUrl = $"{Prefix}/admin/dashboard";
     }
 
+    public static class AdminPaymentHistories
+    {
+        public const string GetPaymentHistoriesUrl = $"{Prefix}/admin/payment-histories";
+    }
+
     public static class AdminOperationManagers
     {
         public const string GetActiveOperationManagersUrl = $"{Prefix}/admin/operation-managers/active";
@@ -343,5 +348,6 @@ public static class ApiRoutes
         public const string GetTripsUrl = $"{Prefix}/warehouse-managers/trips/{{warehouseId}}";
     }
 }
+
 
 

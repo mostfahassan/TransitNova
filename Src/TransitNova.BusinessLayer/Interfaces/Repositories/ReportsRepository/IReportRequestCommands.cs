@@ -3,6 +3,7 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.ReportsRepository
 {
     public interface IReportRequestCommands
     {
-        Task AddReportRequstAsync(ReportRequest request, CancellationToken cancellationToken);
+        Task AddReportRequestAsync(ReportRequest request, CancellationToken cancellationToken);
+        Task ExpireReportsBulkAsync(IEnumerable<Guid> reportIds, CancellationToken cancellationToken);
     }
 }

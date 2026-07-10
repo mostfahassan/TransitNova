@@ -17,127 +17,110 @@ namespace TransitNova.InfraStructure.Common.RolesService
                 .Select(r => new RoleSummaryDto
                 {
                     RoleId = r.Id.ToString(),
-                    RoleName = r.Name
+                    RoleName = r.Name,
+                    TotalUsers = context.UserRoles.Count(ur => ur.RoleId == r.Id)
                 })
                 .ToListAsync(cancellationToken);
 
-        public async Task<RoleSummaryDto?> GetRoleByIdAsync(Guid roleId, CancellationToken cancellationToken)
-            => await roleManager.Roles
-                .AsNoTracking()
-                .Where(role => role.Id == roleId)
-                .Select(role => new RoleSummaryDto
-                {
-                    RoleId = role.Id.ToString(),
-                    RoleName = role.Name
-                })
-                .FirstOrDefaultAsync(cancellationToken);
+        public Task<RoleMembersDto?> GetRoleByIdAsync(Guid roleId, int pageNumber, int pageSize, CancellationToken cancellationToken)
+            => GetUsersInRoleAsync(roleId, pageNumber, pageSize, cancellationToken);
 
         public async Task<RoleMembersDto?> GetRoleMembersAsync(Guid roleId, CancellationToken cancellationToken)
         {
             var role = await roleManager.Roles
                 .AsNoTracking()
-                .Where(role => role.Id == roleId)
-                .Select(role => new
+                .Where(currentRole => currentRole.Id == roleId)
+                .Select(currentRole => new
                 {
-                    role.Id,
-                    role.Name
+                    currentRole.Id,
+                    currentRole.Name
                 })
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (role is null)
                 return null;
 
-            var users = await context.AppUsers
-                .AsNoTracking()
-                .OrderBy(user => user.UserName)
-                .Select(user => new
-                {
-                    user.Id,
-                    user.UserName,
-                    user.Email,
-                    user.PhoneNumber,
-                    user.UserType,
-                    IsInRole = context.UserRoles.Any(userRole =>
-                        userRole.RoleId == roleId &&
-                        userRole.UserId == user.Id),
-                    UserFullName = context.UserProfiles
-                        .Where(profile => profile.AppUserId == user.Id)
-                        .Select(profile => profile.FullName)
-                        .FirstOrDefault(),
-                    CarrierFullName = context.Carriers
-                        .Where(profile => profile.AppUserId == user.Id)
-                        .Select(profile => profile.FullName)
-                        .FirstOrDefault(),
-                    OperationManagerFullName = context.OperationManagerProfiles
-                        .Where(profile => profile.AppUserId == user.Id)
-                        .Select(profile => profile.FullName)
-                        .FirstOrDefault(),
-                    AdminFullName = context.Admins
-                        .Where(profile => profile.AppUserId == user.Id)
-                        .Select(profile => profile.FullName)
-                        .FirstOrDefault()
-                })
-                .ToListAsync(cancellationToken);
+            var utcNow = DateTimeOffset.UtcNow;
 
-            var members = users
+            var members = await context.AppUsers
+                .AsNoTracking()
+                .OrderBy(user => user.FullName ?? user.UserName)
                 .Select(user => new RoleMemberDto
                 {
                     UserId = user.Id,
-                    FullName = user.UserFullName ??
-                               user.CarrierFullName ??
-                               user.OperationManagerFullName ??
-                               user.AdminFullName ??
-                               user.UserName ??
-                               string.Empty,
+                    FullName = user.FullName ?? user.UserName ?? string.Empty,
                     Email = user.Email ?? string.Empty,
                     PhoneNumber = user.PhoneNumber ?? string.Empty,
                     UserType = user.UserType.ToString(),
-                    IsInRole = user.IsInRole
+                    Status = user.LockoutEnd.HasValue && user.LockoutEnd > utcNow ? "Locked" : "Active",
+                    IsInRole = context.UserRoles.Any(userRole =>
+                        userRole.RoleId == roleId &&
+                        userRole.UserId == user.Id)
                 })
-                .ToList();
+                .ToListAsync(cancellationToken);
 
             return new RoleMembersDto
             {
                 RoleId = role.Id,
                 RoleName = role.Name ?? string.Empty,
                 TotalUsers = members.Count,
+                PageNumber = 1,
+                PageSize = Math.Max(1, members.Count),
                 Users = members
             };
         }
 
-        public async Task<IEnumerable<RoleDetailsDto>> GetUsersInRoleAsync(CancellationToken cancellationToken)
+        public async Task<RoleMembersDto?> GetUsersInRoleAsync(Guid roleId, int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
-            var roles = await roleManager.Roles
+            pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+            pageSize = pageSize <= 0 ? 20 : pageSize;
+
+            var role = await roleManager.Roles
                 .AsNoTracking()
+                .Where(currentRole => currentRole.Id == roleId)
+                .Select(currentRole => new
+                {
+                    currentRole.Id,
+                    currentRole.Name
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (role is null)
+                return null;
+
+            var utcNow = DateTimeOffset.UtcNow;
+
+            var membersQuery =
+                from userRole in context.UserRoles.AsNoTracking()
+                where userRole.RoleId == roleId
+                join user in context.AppUsers.AsNoTracking() on userRole.UserId equals user.Id
+                orderby user.FullName ?? user.UserName
+                select new RoleMemberDto
+                {
+                    UserId = user.Id,
+                    FullName = user.FullName ?? user.UserName ?? string.Empty,
+                    Email = user.Email ?? string.Empty,
+                    PhoneNumber = user.PhoneNumber ?? string.Empty,
+                    UserType = user.UserType.ToString(),
+                    Status = user.LockoutEnd.HasValue && user.LockoutEnd > utcNow ? "Locked" : "Active",
+                    IsInRole = true
+                };
+
+            var totalUsers = await membersQuery.CountAsync(cancellationToken);
+            var members = await membersQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(cancellationToken);
 
-            var result = new List<RoleDetailsDto>();
-
-            foreach (var role in roles)
+            return new RoleMembersDto
             {
-                var roleMembers = await GetRoleMembersAsync(role.Id, cancellationToken);
-                var usersInRole = roleMembers?.Users
-                    .Where(user => user.IsInRole)
-                    .Select(user => new RoleUserDto
-                    {
-                        UserId = user.UserId,
-                        FullName = user.FullName,
-                        Email = user.Email,
-                        PhoneNumber = user.PhoneNumber,
-                        UserType = user.UserType
-                    })
-                    .ToList() ?? [];
-
-                result.Add(new RoleDetailsDto
-                {
-                    RoleId = role.Id.ToString(),
-                    RoleName = role.Name ?? string.Empty,
-                    UsersCount = usersInRole.Count,
-                    Users = usersInRole
-                });
-            }
-
-            return result;
+                RoleId = role.Id,
+                RoleName = role.Name ?? string.Empty,
+                TotalUsers = totalUsers,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Users = members
+            };
         }
     }
 }

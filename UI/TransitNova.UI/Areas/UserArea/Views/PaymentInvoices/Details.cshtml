@@ -48,10 +48,24 @@
 
         <aside class="space-y-5">
             <section class="customer-card-flat p-6">
+                <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Customer</div>
+                <p class="mt-4 text-xl font-black tracking-[-0.02em] text-[#111111]">@CustomerLabel(invoice.CustomerName)</p>
+                <p class="mt-2 text-sm leading-6 text-[#666666]">This invoice is currently linked to the customer account returned by the backend response.</p>
+            </section>
+
+            <section class="customer-card-flat p-6">
                 <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">References</div>
                 <dl class="mt-5 space-y-4 text-sm">
                     <div class="border-b border-[#EAEAEA] pb-3"><dt class="font-bold text-[#666666]">Payment ID</dt><dd class="mt-1 break-all font-black text-[#111111]">@invoice.PaymentId</dd></div>
-                    <div class="border-b border-[#EAEAEA] pb-3"><dt class="font-bold text-[#666666]">Shipment ID</dt><dd class="mt-1 break-all font-black text-[#111111]">@invoice.ShipmentId</dd></div>
+                    <div class="border-b border-[#EAEAEA] pb-3">
+                        <dt class="font-bold text-[#666666]">Shipment</dt>
+                        <dd class="mt-1">
+                            <a asp-area="UserArea" asp-controller="Shipments" asp-action="Details" asp-route-shipmentId="@invoice.ShipmentId" class="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#111111] transition-colors hover:text-[#666666]">
+                                @ShipmentReference(invoice.ShipmentTrackingNumber, invoice.ShipmentId)
+                            </a>
+                            <span class="mt-2 block break-all text-xs font-bold text-[#787774]">@invoice.ShipmentId</span>
+                        </dd>
+                    </div>
                     <div><dt class="font-bold text-[#666666]">Invoice ID</dt><dd class="mt-1 font-black text-[#111111]">@(invoice.InvoiceId ?? "Not assigned")</dd></div>
                 </dl>
             </section>
@@ -66,6 +80,8 @@
 
 @functions {
     private static string ShortId(Guid id) => id == Guid.Empty ? "-" : id.ToString()[..8].ToUpperInvariant();
+    private static string ShipmentReference(string? trackingNumber, Guid shipmentId) => string.IsNullOrWhiteSpace(trackingNumber) ? ShortId(shipmentId) : trackingNumber;
+    private static string CustomerLabel(string? customerName) => string.IsNullOrWhiteSpace(customerName) ? "Customer account" : customerName;
     private static string FormatMoney(decimal value) => value.ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
     private static string FormatDate(DateTime? value) => value is null ? "Pending confirmation" : value.Value.ToString("MMM dd, yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
 

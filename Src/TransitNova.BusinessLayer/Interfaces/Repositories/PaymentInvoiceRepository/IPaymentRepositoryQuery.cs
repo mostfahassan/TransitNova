@@ -5,10 +5,10 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.PaymentInvoiceReposi
 {
     public interface IPaymentRepositoryQuery
     {
-        Task<PaymentInvoiceDto?> GetInvoiceByPaymentId(Guid paymentId, CancellationToken cancellationToken);
-        Task<PaymentInvoiceDto?> GetUserInvoice(Guid userId, CancellationToken cancellationToken);
-        Task<PaymentInvoiceDto?> GetUserInvoiceByPaymentId(Guid userId, Guid paymentId, CancellationToken cancellationToken);
-        Task<IEnumerable<PaymentInvoiceDto>> GetUserInvoices(Guid userId, CancellationToken cancellationToken);
-        Task<PagedResult<PaymentInvoiceDto>> GetInvoicesPaged(int pageNumber, int pageSize, CancellationToken cancellationToken);
+        Task<PaymentInvoiceDto?> GetInvoiceByPaymentIdAsync(Guid paymentId, CancellationToken cancellationToken);
+        Task<PaymentInvoiceDto?> GetUserInvoiceAsync(Guid userId, CancellationToken cancellationToken);
+        Task<PaymentInvoiceDto?> GetUserInvoiceByPaymentIdAsync(Guid userId, Guid paymentId, CancellationToken cancellationToken);
+        Task<IEnumerable<PaymentInvoiceDto>> GetUserInvoicesAsync(Guid userId, CancellationToken cancellationToken);
+        Task<PagedResult<PaymentInvoiceDto>> GetInvoicesPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
     }
 }

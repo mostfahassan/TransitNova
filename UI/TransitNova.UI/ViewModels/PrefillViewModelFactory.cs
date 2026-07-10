@@ -33,9 +33,9 @@ public static class PrefillViewModelFactory
         Name = source.Name
     };
 
-    public static RoleFormViewModel Role(UiRoleSummaryDto source) => new()
+    public static RoleFormViewModel Role(UiRoleMembersDto source) => new()
     {
-        RoleName = source.RoleName ?? string.Empty
+        RoleName = source.RoleName
     };
 
     public static WarehouseFormViewModel Warehouse(UiWarehouseDto source) => new()

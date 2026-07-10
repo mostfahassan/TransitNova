@@ -16,6 +16,15 @@ namespace TransitNova.InfraStructure.ServiceRegistration.BackgroundJobsRegistrat
                                 .WithIdentity($"{nameof(ProcessOutboxMessagesJob)}-trigger")
                                             .WithSimpleSchedule(schedule => schedule.WithIntervalInMinutes(5).RepeatForever()
                                                           .WithMisfireHandlingInstructionIgnoreMisfires()));
+
+                var cleanupJobKey = new JobKey(nameof(ReportCleanupJob));
+
+                options.AddJob<ReportCleanupJob>(cleanupJobKey)
+                    .AddTrigger(trigger => trigger.ForJob(cleanupJobKey)
+                                .WithIdentity("ReportCleanupJob-trigger")
+                                            .WithCronSchedule("0 0 2 */5 * ?"));
+                                                         
+
             });
             services.AddQuartzHostedService();
 

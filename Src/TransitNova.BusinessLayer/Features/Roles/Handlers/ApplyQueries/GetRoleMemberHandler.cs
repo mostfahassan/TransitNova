@@ -4,7 +4,6 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Roles;
 using TransitNova.BusinessLayer.Features.Roles.Queries;
 using TransitNova.BusinessLayer.Interfaces.Services.RolesService;
-
 namespace TransitNova.BusinessLayer.Features.Roles.Handlers.ApplyQueries
 {
     public sealed class GetRoleMembersHandler(
@@ -14,7 +13,7 @@ namespace TransitNova.BusinessLayer.Features.Roles.Handlers.ApplyQueries
     {
         public async Task<Result<RoleMembersDto>> Handle(GetRoleMembersQuery request, CancellationToken ct)
         {
-            logger.LogInformation("Retrieving role members. RoleId: {RoleId}", request.RoleId);
+            logger.LogInformation("Retrieving editable role members. RoleId: {RoleId}", request.RoleId);
 
             var roleMembers = await rolesQueryService.GetRoleMembersAsync(request.RoleId, ct);
             if (roleMembers is null)
@@ -24,7 +23,7 @@ namespace TransitNova.BusinessLayer.Features.Roles.Handlers.ApplyQueries
             }
 
             logger.LogInformation(
-                "Role members retrieved successfully. RoleId: {RoleId}, UsersCount: {UsersCount}",
+                "Editable role members retrieved successfully. RoleId: {RoleId}, UsersCount: {UsersCount}",
                 request.RoleId,
                 roleMembers.TotalUsers);
 

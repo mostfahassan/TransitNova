@@ -5,6 +5,7 @@ namespace TransitNova.BusinessLayer.DTOs.Roles
     {
         public string? RoleId { get; set; }
         public string? RoleName { get; set; }
+        public int TotalUsers { get; set; }
     }
 
 }

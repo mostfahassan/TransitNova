@@ -85,6 +85,7 @@ namespace TransitNova.Domain.Contracts.Caching
         {
             public static string ById(Guid roleId) => $"{RolesPrefix}:id:{roleId}";
             public const string List = RolesPrefix + ":list";
+            public const string Member = RolesPrefix + ":member";
             public const string MemberList = RolesPrefix + ":member-list";
         }
 

@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TransitNova.Domain.Entities.MainEntities;
@@ -45,6 +45,13 @@ namespace TransitNova.InfraStructure.EntityConfig
 
             invoice.HasIndex(x => new { x.CustomerId, x.Status });
             invoice.HasIndex(x => new { x.ShipmentId, x.Status });
+
+            invoice.HasOne(x => x.UserProfile)
+                   .WithMany(x => x.PaymentInvoices)
+                   .HasForeignKey(x => x.CustomerId)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
+
+

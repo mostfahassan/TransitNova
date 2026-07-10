@@ -11,10 +11,9 @@ namespace TransitNova.BusinessLayer.Common.Events.ReportsEventHandler
         public Task Handle(ReportGeneratedEvent notification, CancellationToken cancellationToken)
         {
             logger.LogInformation(
-                "Report {ReportId} generated for {ReportType}. ParameterCount: {ParameterCount}",
-                notification.reportId,
-                notification.reportType,
-                notification.parameters.Count);
+                "Report {ReportId} generated for {ReportKey}.",
+                notification.ReportId,
+                notification.ReportKey);
 
             return Task.CompletedTask;
         }

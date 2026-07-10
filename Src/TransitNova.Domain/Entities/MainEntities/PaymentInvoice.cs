@@ -12,6 +12,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         public Guid PaymentId { get; private set; }
         public Guid ShipmentId { get; private set; }
         public Guid CustomerId { get; private set; }
+        public UserProfile UserProfile { get;  set; } = null!;
         public decimal ShippingCost { get; private set; }
         public decimal Commission { get; private set; }
         public decimal Amount { get; private set; }

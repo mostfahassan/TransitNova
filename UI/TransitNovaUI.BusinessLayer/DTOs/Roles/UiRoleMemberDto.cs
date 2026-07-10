@@ -8,6 +8,7 @@ public sealed class UiRoleMemberDto
     public string Email { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string UserType { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
     public bool IsInRole { get; set; }
 
     public static UiRoleMemberDto ToUiDto(RoleMemberDto source) =>
@@ -18,6 +19,7 @@ public sealed class UiRoleMemberDto
             Email = source.Email,
             PhoneNumber = source.PhoneNumber,
             UserType = source.UserType,
+            Status = source.Status,
             IsInRole = source.IsInRole
         };
 }

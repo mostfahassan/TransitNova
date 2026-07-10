@@ -51,6 +51,7 @@
                     <th>Invoice</th>
                     <th>Payment</th>
                     <th>Shipment</th>
+                    <th>Customer</th>
                     <th>Status</th>
                     <th>Paid at</th>
                     <th class="text-right">Total</th>
@@ -61,7 +62,7 @@
                 @if (invoices.Length == 0)
                 {
                     <tr>
-                        <td colspan="7" class="py-12 text-center text-sm font-semibold text-[#787774]">No invoices have been generated yet. Create a shipment to produce the first invoice.</td>
+                        <td colspan="8" class="py-12 text-center text-sm font-semibold text-[#787774]">No invoices have been generated yet. Create a shipment to produce the first invoice.</td>
                     </tr>
                 }
                 @for (var index = 0; index < invoices.Length; index++)
@@ -70,7 +71,12 @@
                     <tr style="--row-index:@index">
                         <td><span class="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#111111]">@(invoice.InvoiceId ?? ShortId(invoice.PaymentId))</span></td>
                         <td><span class="font-mono text-xs font-bold text-[#666666]">@ShortId(invoice.PaymentId)</span></td>
-                        <td><span class="font-mono text-xs font-bold text-[#666666]">@ShortId(invoice.ShipmentId)</span></td>
+                        <td>
+                            <a asp-area="UserArea" asp-controller="Shipments" asp-action="Details" asp-route-shipmentId="@invoice.ShipmentId" class="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#111111] transition-colors hover:text-[#666666]">
+                                @ShipmentReference(invoice.ShipmentTrackingNumber, invoice.ShipmentId)
+                            </a>
+                        </td>
+                        <td><span class="text-sm font-bold text-[#111111]">@CustomerLabel(invoice.CustomerName)</span></td>
                         <td><span class="@BadgeClass(invoice.Status.ToString())">@invoice.Status</span></td>
                         <td>@FormatDate(invoice.PaidAt)</td>
                         <td class="text-right font-black text-[#111111]">@FormatMoney(invoice.TotalAmount) @invoice.Currency</td>
@@ -86,6 +92,8 @@
 
 @functions {
     private static string ShortId(Guid id) => id == Guid.Empty ? "-" : id.ToString()[..8].ToUpperInvariant();
+    private static string ShipmentReference(string? trackingNumber, Guid shipmentId) => string.IsNullOrWhiteSpace(trackingNumber) ? ShortId(shipmentId) : trackingNumber;
+    private static string CustomerLabel(string? customerName) => string.IsNullOrWhiteSpace(customerName) ? "Customer account" : customerName;
     private static string FormatMoney(decimal value) => value.ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
     private static string FormatDate(DateTime? value) => value is null ? "Pending" : value.Value.ToString("MMM dd, yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
 

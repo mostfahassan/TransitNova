@@ -27,6 +27,7 @@ public sealed class AdminTableViewModel
     public string Subtitle { get; set; } = string.Empty;
     public object? Source { get; set; }
     public IReadOnlyCollection<AdminTableColumnViewModel> Columns { get; set; } = [];
+    public IReadOnlyCollection<AdminRowActionViewModel> RowActions { get; set; } = [];
     public string Controller { get; set; } = string.Empty;
     public string DetailsAction { get; set; } = "Details";
     public string EditAction { get; set; } = "Edit";

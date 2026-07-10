@@ -9,6 +9,7 @@ using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Dashboard.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Governments.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Governments.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.OperationManagers.Query;
+using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.PaymentHistories.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Roles.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Roles.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Subscriptions.Query;
@@ -38,6 +39,8 @@ using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Governments.Queries
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Governments.Segregaation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.OperationManagers.Queries;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.OperationManagers.Segregation;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.PaymentHistories.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.PaymentHistories.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Roles.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Roles.Queries;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Roles.Segregation;
@@ -117,6 +120,10 @@ public static class AdminApiClientRegistrationExtensions
         services.AddScoped<IGetOperationManagerHandledCarriersQueryService, AdminOperationManagersQuery>();
         services.AddScoped<IGetOperationManagerHandledShipmentsQueryService, AdminOperationManagersQuery>();
         services.AddScoped<IGetOperationManagersQueryService, AdminOperationManagersQuery>();
+
+        services.AddScoped<AdminPaymentHistoriesQuery>();
+        services.AddScoped<IAdminPaymentHistoriesQuery, AdminPaymentHistoriesQuery>();
+        services.AddScoped<IGetAdminPaymentHistoriesQueryService, AdminPaymentHistoriesQuery>();
 
         services.AddScoped<AdminRolesCommand>();
         services.AddScoped<IAdminRolesCommand, AdminRolesCommand>();

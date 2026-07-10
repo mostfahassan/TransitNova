@@ -15,19 +15,14 @@ namespace TransitNova.BusinessLayer.Features.Roles.Handlers.ApplyCommands
     {
         public async Task<BaseResult> Handle(UpdateRoleMembersCommand request, CancellationToken ct)
         {
-            logger.LogInformation(
-                "Updating role members. RoleId: {RoleId}, UsersCount: {UsersCount}",
-                request.RoleId,
-                request.Users.Count);
-
+            logger.LogInformation("Updating role members. RoleId: {RoleId}, UsersCount: {UsersCount}", request.RoleId, request.Users.Count);
 
             await rolesCommandsService.UpdateRoleMembersAsync(request.RoleId, request.Users, ct);
 
-            logger.LogInformation(
-                "Role members updated successfully. RoleId: {RoleId}, UsersCount: {UsersCount}",
-                request.RoleId,
-                request.Users.Count);
-            CacheInvalidationContext.Set(request, CacheKeys.Roles.List, CacheKeys.Roles.MemberList);
+            logger.LogInformation("Role members updated successfully. RoleId: {RoleId}, UsersCount: {UsersCount}", request.RoleId, request.Users.Count);
+
+
+            CacheInvalidationContext.Set(request, CacheKeys.Roles.List, CacheKeys.Roles.Member);
             return BaseResult.Success();
         }
 

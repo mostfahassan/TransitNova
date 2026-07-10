@@ -63,7 +63,7 @@ namespace TransitNova.InfraStructure.Common.RolesService
                 .Select(group => group.Last())
                 .ToList();
 
-            // convert User Ids into Hash set to be fast search for each User 
+            // convert User Ids into Hash set to be fast search for each User and prevent duplicate user Ids in the list of desired members
             var requestedUserIds = desiredMembers
                 .Select(user => user.UserId)
                 .ToHashSet();
@@ -82,7 +82,9 @@ namespace TransitNova.InfraStructure.Common.RolesService
             // if there is a missing member all process will be failed 
             if (missingUsers.Count > 0)
                 throw new KeyNotFoundException($"Users not found: {string.Join(", ", missingUsers)}");
-            // here i saved (N+1) query and avoid using Find Async for each user 
+
+
+            // here i avoid (N+1) query and avoid using Find Async for each user 
             var currentRoleUsers = await userManager.GetUsersInRoleAsync(role.Name);
             var currentRoleUserIds = currentRoleUsers
                 .Select(user => user.Id)
@@ -92,6 +94,7 @@ namespace TransitNova.InfraStructure.Common.RolesService
 
             foreach (var desiredMember in desiredMembers)
             {
+
                 // if user cancel process or close the tap to save and optimize resources
                 cancellationToken.ThrowIfCancellationRequested();
 

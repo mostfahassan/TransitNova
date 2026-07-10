@@ -566,6 +566,32 @@
   },
   {
     "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/payment-histories",
+    "EndpointName": "Get Admin Payment Histories",
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Source": "Query",
+        "ClrType": "PaymentHistoryFilterDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(PaymentHistoryFilterDto) nullable=false required=true",
+          "$.createdAt: date-time nullable=true required=false",
+          "$.createdAtFrom: date-time nullable=true required=false",
+          "$.createdAtTo: date-time nullable=true required=false",
+          "$.createdBy: string nullable=true required=false",
+          "$.pageNumber: integer nullable=false required=false",
+          "$.pageSize: integer nullable=false required=false",
+          "$.paymentId: guid nullable=true required=false",
+          "$.paymentMethod: enum(PaymentMethod)[CreditCard|PayPal|MobileWallets] serialization=string nullable=true required=false",
+          "$.paymentStatus: enum(PaymentStatus)[Pending|Success|Failed] serialization=string nullable=true required=false"
+        ]
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
     "RouteTemplate": "api/v{version:apiVersion}/admin/roles",
     "EndpointName": "Get Roles",
     "Parameters": []
@@ -624,6 +650,22 @@
     "RouteTemplate": "api/v{version:apiVersion}/admin/roles/{roleId:guid}",
     "EndpointName": "Get Role",
     "Parameters": [
+      {
+        "Name": "pageNumber",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      },
+      {
+        "Name": "pageSize",
+        "Source": "Query",
+        "ClrType": "Int32",
+        "IsNullable": false,
+        "IsOptional": true,
+        "Signatures": []
+      },
       {
         "Name": "roleId",
         "Source": "Path",
@@ -2304,22 +2346,69 @@
   },
   {
     "HttpMethod": "POST",
-    "RouteTemplate": "api/v{version:apiVersion}/reports/request",
-    "EndpointName": "Request Report",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/dashboards",
+    "EndpointName": "Request Dashboard Report",
     "Parameters": [
       {
-        "Name": "request",
+        "Name": "contract",
         "Source": "Body",
-        "ClrType": "CreateReportRequest",
+        "ClrType": "DashboardReportContract",
         "IsNullable": false,
         "IsOptional": false,
         "Signatures": [
-          "$: object(CreateReportRequest) nullable=false required=true",
-          "$.parameters: array(Dictionary\u003CString,String\u003E) nullable=false required=false",
-          "$.parameters[*]: object(KeyValuePair\u003CString,String\u003E) nullable=false required=false",
-          "$.parameters[*].key: string nullable=true required=false",
-          "$.parameters[*].value: string nullable=true required=false",
-          "$.reportType: enum(ReportType)[InvoiceReport|ShipmentAnalysisReport|DashboardReport] serialization=string nullable=false required=false"
+          "$: object(DashboardReportContract) nullable=false required=true"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/invoices",
+    "EndpointName": "Request Invoice Report",
+    "Parameters": [
+      {
+        "Name": "contract",
+        "Source": "Body",
+        "ClrType": "InvoiceReportContract",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(InvoiceReportContract) nullable=false required=true",
+          "$.paymentId: guid nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/shipments",
+    "EndpointName": "Request Shipment Report",
+    "Parameters": [
+      {
+        "Name": "contract",
+        "Source": "Body",
+        "ClrType": "ShipmentReportContract",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(ShipmentReportContract) nullable=false required=true",
+          "$.shipmentId: guid nullable=false required=false"
         ]
       },
       {

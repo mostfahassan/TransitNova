@@ -1,4 +1,4 @@
-﻿namespace TransitNova.Domain.Contracts.Permissions
+namespace TransitNova.Domain.Contracts.Permissions
 {
     public static class AdminPermissions
     {
@@ -7,6 +7,7 @@
         public const string ViewDashboard = "Admin.ViewDashboard";
         public const string ViewStatistics = "Admin.ViewStatistics";
         public const string ViewReports = "Admin.ViewReports";
+        public const string ViewPaymentHistories = "Admin.ViewPaymentHistories";
 
         // User Management
 
@@ -90,6 +91,7 @@
             ViewDashboard,
             ViewStatistics,
             ViewReports,
+            ViewPaymentHistories,
 
             // Users
 

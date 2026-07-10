@@ -6,8 +6,8 @@ using TransitNova.Domain.Contracts.Caching;
 
 namespace TransitNova.BusinessLayer.Features.Roles.Queries
 {
-    public sealed record GetRoleByIdQuery(Guid RoleId) : IQuery<Result<RoleSummaryDto>>, ICachable
+    public sealed record GetRoleByIdQuery(Guid RoleId, int PageNumber = 1, int PageSize = 20) : IQuery<Result<RoleMembersDto>>, ICachable
     {
-        public string CacheKey => CacheKeys.Roles.ById(RoleId);
+        public string CacheKey => $"{CacheKeys.Roles.ById(RoleId)}:page:{PageNumber}:size:{PageSize}";
     };
 }

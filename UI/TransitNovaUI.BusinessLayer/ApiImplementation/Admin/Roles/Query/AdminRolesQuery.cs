@@ -6,17 +6,15 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Roles.Query
 {
     public class AdminRolesQuery(IHttpHandler httpHandler, HttpClient httpClient) : ApiServiceBase(httpHandler, httpClient), IAdminRolesQuery
     {
-        public Task<ApiResponse<UiRoleSummaryDto>> GetRoleByIdAsync(Guid roleId, string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<UiRoleMembersDto>> GetRoleByIdAsync(Guid roleId, string bearerToken, int pageNumber = 1, int pageSize = 20, CancellationToken cancellationToken = default)
         {
-           
-            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Roles.GetRoleByIdUrl, ("roleId", roleId)));
+            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Roles.GetRoleByIdUrl, ("roleId", roleId), ("pageNumber", pageNumber), ("pageSize", pageSize)));
 
-            return SendQueryRequestAsync<UiRoleSummaryDto>(HttpMethod.Get, url, bearerToken, cancellationToken);
+            return SendQueryRequestAsync<UiRoleMembersDto>(HttpMethod.Get, url, bearerToken, cancellationToken);
         }
 
         public Task<ApiResponse<UiRoleMembersDto>> GetRoleMembersAsync(Guid roleId, string bearerToken, CancellationToken cancellationToken = default)
         {
-           
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Roles.GetRoleMembersUrl, ("roleId", roleId)));
 
             return SendQueryRequestAsync<UiRoleMembersDto>(HttpMethod.Get, url, bearerToken, cancellationToken);
@@ -24,7 +22,6 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Roles.Query
 
         public Task<ApiResponse<List<UiRoleSummaryDto>>> GetRolesAsync(string bearerToken, CancellationToken cancellationToken = default)
         {
-            
             var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Roles.GetRolesUrl));
 
             return SendQueryRequestAsync<List<UiRoleSummaryDto>>(HttpMethod.Get, url, bearerToken, cancellationToken);

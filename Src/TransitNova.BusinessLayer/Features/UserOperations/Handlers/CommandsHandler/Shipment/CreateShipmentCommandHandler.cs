@@ -27,12 +27,14 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
 
             logger.LogInformation("Starting shipment creation for User {SenderId}", request.AppUserId);
             var (createdShipment, trackingNumber) = await shipmentService.HandleShipmentCreation(request.Dto,request.AppUserId, cancellationToken);
+            
+            
             if (createdShipment == null || createdShipment.Data == null || string.IsNullOrWhiteSpace(trackingNumber))
             {
                 logger.LogError("Shipment creation failed for User {SenderId}", request.AppUserId);
                 return Result<PaymentInvoiceDto>.Failure(Errors.ShipmentCreationFailed("Failed to create shipment."));
             }
-          
+
             var performedByName = !string.IsNullOrWhiteSpace(await userQuery.GetUserFullName(request.AppUserId, cancellationToken))
                 ? await userQuery.GetUserFullName(request.AppUserId, cancellationToken)
                 : request.AppUserId.ToString();
@@ -64,6 +66,8 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             {
                 InvoiceId = $"INV-{createdShipment.Data.PaymentId.ToString()[..8]}",
                 PaymentId = createdShipment.Data.PaymentId,
+                ShipmentTrackingNumber = trackingNumber,
+                CustomerName = performedByName,
                 ShippingCost = createdShipment.Data.ShippingCost,
                 ShipmentId = createdShipment.Data.ShipmentId,
                 Commission = createdShipment.Data.Commission,
@@ -74,7 +78,6 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
                 Currency = request.Dto.Currency,
                 Notes = createdShipment.Data.Notes
             };
-
             return Result<PaymentInvoiceDto>.Created(paymentInvoiceDto);
         }
     }

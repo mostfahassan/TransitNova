@@ -13,6 +13,8 @@ namespace TransitNova.BusinessLayer.DTOs.Roles
 
         public string UserType { get; set; } = string.Empty;
 
+        public string Status { get; set; } = string.Empty;
+
         public bool IsInRole { get; set; }
     }
 
