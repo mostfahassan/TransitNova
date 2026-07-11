@@ -1,0 +1,29 @@
+{
+  "layers": [
+    {
+      "name": "Domain",
+      "threshold": 70,
+      "report": "artifacts/coverage/domain/Cobertura.xml"
+    },
+    {
+      "name": "Application",
+      "threshold": 60,
+      "report": "artifacts/coverage/application/Cobertura.xml"
+    },
+    {
+      "name": "Infrastructure",
+      "threshold": 55,
+      "report": "artifacts/coverage/infrastructure/Cobertura.xml"
+    },
+    {
+      "name": "API",
+      "threshold": 35,
+      "report": "artifacts/coverage/api/Cobertura.xml"
+    },
+    {
+      "name": "Payment",
+      "threshold": 65,
+      "report": "artifacts/coverage/payment/Cobertura.xml"
+    }
+  ]
+}
