@@ -73,8 +73,7 @@ namespace TransitNova.MappingTests
             {
                 base.OnModelCreating(modelBuilder);
                 modelBuilder.Entity<IdempotentTable>().HasKey(x => x.RequestId);
-                modelBuilder.Entity<Shipment>().Ignore(x => x.PackageBundle);
-                modelBuilder.Entity<Bundle>().Ignore(x => x.Shipments);
+             
             }
         }
     }

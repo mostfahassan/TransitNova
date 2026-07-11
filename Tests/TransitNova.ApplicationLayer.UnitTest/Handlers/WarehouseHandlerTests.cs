@@ -10,6 +10,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.AdminRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.SystemLogRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Result;
 using TransitNova.Domain.Enums.SystemLogs;
@@ -107,7 +108,7 @@ public sealed class WarehouseHandlerTests
     public async Task UpdateWarehouseHandler_Should_ReturnValidationAndSkipWrites_When_AnyZoneIsMissingAsync()
     {
         var fixture = new Fixture();
-        var warehouse = Warehouse.Create("Old", WarehouseType.MainWarehouse, 100, 20, 8, "Cairo", Guid.NewGuid(), Guid.NewGuid());
+        var warehouse = Warehouse.Create("Old", WarehouseType.MainWarehouse, 100, 20, 8,Address.Create("Cairo", null, "Main Street"), Guid.NewGuid(), Guid.NewGuid());
         fixture.Queries.Setup(x => x.GetWarehouseForUpdateAsync(warehouse.Id, It.IsAny<CancellationToken>())).ReturnsAsync(warehouse);
         fixture.Queries.Setup(x => x.GetZonesByIdsAsync(It.IsAny<IReadOnlyCollection<Guid>>(), It.IsAny<CancellationToken>())).ReturnsAsync([]);
 
@@ -126,7 +127,7 @@ public sealed class WarehouseHandlerTests
         var fixture = new Fixture();
         var adminId = Guid.NewGuid();
         var managerId = Guid.NewGuid();
-        var warehouse = Warehouse.Create("Old", WarehouseType.MainWarehouse, 100, 20, 8, "Old Address", adminId, managerId);
+        var warehouse = Warehouse.Create("Old", WarehouseType.MainWarehouse, 100, 20, 8, Address.Create("Old Address", null, "Main Street"), adminId, managerId);
         var zone = Zone.Create("North", 1);
         fixture.Queries.Setup(x => x.GetWarehouseForUpdateAsync(warehouse.Id, It.IsAny<CancellationToken>())).ReturnsAsync(warehouse);
         fixture.Queries.Setup(x => x.GetZonesByIdsAsync(It.IsAny<IReadOnlyCollection<Guid>>(), It.IsAny<CancellationToken>())).ReturnsAsync([zone]);
@@ -237,7 +238,7 @@ public sealed class WarehouseHandlerTests
         Capacity = 1000,
         CurrentUsage = 100,
         OperatingHours = 12,
-        Address = "Cairo",
+        Address =Address.Create("Cairo", null, "Main Street"),
         ZoneIds = zoneIds
     };
 
@@ -248,7 +249,7 @@ public sealed class WarehouseHandlerTests
         Capacity = 2000,
         CurrentUsage = 200,
         OperatingHours = 16,
-        Address = "Giza",
+        Address = Address.Create("Giza", null, "Main Street"),
         ZoneIds = zoneIds
     };
 

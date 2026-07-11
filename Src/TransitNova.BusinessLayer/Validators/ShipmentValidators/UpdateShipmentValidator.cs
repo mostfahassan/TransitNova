@@ -1,29 +1,34 @@
-﻿using FluentValidation;
+using FluentValidation;
 using TransitNova.BusinessLayer.DTOs.Shipment;
+using TransitNova.BusinessLayer.Validators.AddressValidator;
+
 namespace TransitNova.BusinessLayer.Validators.ShipmentValidators
 {
-    public class UpdateShipmentValidator: AbstractValidator<UpdateShipmentDto>
+    public class UpdateShipmentValidator : AbstractValidator<UpdateShipmentDto>
     {
-        public UpdateShipmentValidator(IValidator <PackageSpecificationDto> PackageSpecification)
+        public UpdateShipmentValidator(IValidator<PackageSpecificationDto> packageSpecification)
         {
             RuleFor(x => x.ReceiverId)
                 .NotEmpty().WithMessage("ReceiverId is required");
 
-
-            RuleFor(x => x.DeliveryAddress)
-                .NotEmpty().WithMessage("Delivery address is required")
-                .MaximumLength(250);
-
-            RuleFor(x => x.ShipmentType)
-                .IsInEnum().WithMessage("Invalid shipment type");
-            When(x => x.ShipmentType != null, () =>
+            When(x => x.DeliveryAddress is not null, () =>
             {
-                RuleFor(x => x.ShipmentType!)
-               .NotEmpty()
-               .IsInEnum()
-               .WithMessage("Shipment Type Must Be Not Empty");
+                RuleFor(x => x.DeliveryAddress!)
+                    .SetValidator(new AddressDtoValidator());
             });
 
+            When(x => x.PickupAddress is not null, () =>
+            {
+                RuleFor(x => x.PickupAddress!)
+                    .SetValidator(new AddressDtoValidator());
+            });
+
+            When(x => x.ShipmentType.HasValue, () =>
+            {
+                RuleFor(x => x.ShipmentType!)
+                    .IsInEnum()
+                    .WithMessage("Invalid shipment type");
+            });
 
             When(x => x.TransportationMode.HasValue, () =>
             {
@@ -32,33 +37,11 @@ namespace TransitNova.BusinessLayer.Validators.ShipmentValidators
                     .WithMessage("Invalid transportation mode");
             });
 
-
-            When(x => !string.IsNullOrEmpty(x.PickupAddress), () =>
-            {
-                RuleFor(x => x.PickupAddress)
-                    .MaximumLength(250).WithMessage("Pickup address must not exceed 250 characters");
-            });
-
-            When(x => !string.IsNullOrEmpty(x.DeliveryAddress), () =>
-            {
-                RuleFor(x => x.DeliveryAddress)
-                    .MaximumLength(250).WithMessage("Delivery address must not exceed 250 characters");
-            });
-
-
             When(x => x.PackageSpecification is not null, () =>
             {
-                RuleFor(x => x.PackageSpecification)
-                    .SetValidator(PackageSpecification!);
-            });
-            When(x => x.TransportationMode != null, () =>
-            {
-                 RuleFor(x => x.TransportationMode!)
-                .NotEmpty()
-                .IsInEnum()
-                .WithMessage("Shipment Type Must Be Not Empty");
+                RuleFor(x => x.PackageSpecification!)
+                    .SetValidator(packageSpecification);
             });
         }
     }
-    }
-
+}

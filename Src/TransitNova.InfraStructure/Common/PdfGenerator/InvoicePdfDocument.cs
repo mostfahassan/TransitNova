@@ -5,7 +5,7 @@ using TransitNova.BusinessLayer.DTOs.Payment;
 using TransitNova.InfraStructure.Common.PdfGenerator.Helpers;
 namespace TransitNova.InfraStructure.Common.PdfGenerator
 {
-    internal class InvoicePdfDocument(PaymentInvoiceDto invoice) : IDocument
+    internal class InvoicePdfDocument(ShipmentPaymentInvoiceDto invoice) : IDocument
     {
         public void Compose(IDocumentContainer container)
         {

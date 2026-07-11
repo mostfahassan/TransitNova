@@ -1,5 +1,4 @@
-﻿
-using TransitNovaPayment.Busieness.Common.DTO.PaymentDto;
+﻿using TransitNovaPayment.Busieness.DTO.PaymentDto;
 using TransitNovaPayment.Busieness.Models.PaymentEntity;
 using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
 namespace TransitNovaPayment.Busieness.Common.Mapping
@@ -12,7 +11,8 @@ namespace TransitNovaPayment.Busieness.Common.Mapping
             return new PaymentDetailsDto
             {
                 PaymentId = payment.Id,
-                ShipmentId = payment.ShipmentId,
+                ReferenceId = payment.ReferenceId,
+                ReferenceType = payment.ReferenceType.ToString(),
                 TotalAmount = payment.TotalAmount,
                 PaymentMethod = payment.PaymentMethod.ToString(),
                 Status = payment.Status.ToString(),

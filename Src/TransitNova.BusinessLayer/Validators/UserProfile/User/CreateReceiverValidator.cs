@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TransitNova.BusinessLayer.Common.CommonData;
+using TransitNova.BusinessLayer.Validators.AddressValidator;
 
 namespace TransitNova.BusinessLayer.Validators.UserProfile.User
 {
@@ -48,8 +49,8 @@ namespace TransitNova.BusinessLayer.Validators.UserProfile.User
             // Address validation rules:
 
             RuleFor(u => u.Address)
-                .NotEmpty()
-                .WithMessage("Address Field Is Required");
+                .NotNull().WithMessage("Address Field Is Required")
+                .SetValidator(new AddressDtoValidator());
 
         }
     }

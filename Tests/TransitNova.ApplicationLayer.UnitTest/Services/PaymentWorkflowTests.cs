@@ -30,7 +30,8 @@ public sealed class PaymentWorkflowTests
           "message": "PaymentProcess completed successfully.",
           "data": {
             "paymentId": "{{paymentId}}",
-            "shipmentId": "{{shipmentId}}",
+            "referenceId": "{{shipmentId}}",
+            "referenceType": "Shipment",
             "amount": 125,
             "commission": 12.5,
             "totalAmount": 137.5,
@@ -48,11 +49,11 @@ public sealed class PaymentWorkflowTests
         result.IsSuccess.Should().BeTrue();
         result.Data.Should().NotBeNull();
         result.Data!.PaymentId.Should().Be(paymentId);
-        result.Data.ShipmentId.Should().Be(shipmentId);
-        result.Data.ShippingCost.Should().Be(125m);
+        result.Data.ReferenceId.Should().Be(shipmentId);
+        result.Data.Amount.Should().Be(125m);
         result.Data.Commission.Should().Be(12.5m);
         result.Data.TotalAmount.Should().Be(137.5m);
-        result.Data.Status.Should().Be(PaymentStatus.Success);
+        result.Data.Status.Should().Be(PaymentStatus.Success.ToString());
         service.Handler.Requests.Should().ContainSingle();
         service.Handler.Requests[0].Headers.GetValues("X-PaymentKey").Should().ContainSingle("public-key");
         service.Handler.Requests[0].RequestUri!.ToString().Should().Be("https://payments.test/api/v1/payments/pay");
@@ -89,7 +90,8 @@ public sealed class PaymentWorkflowTests
           "statusCode": 200,
           "data": {
             "paymentId": "{{paymentId}}",
-            "shipmentId": "{{shipmentId}}",
+            "referenceId": "{{shipmentId}}",
+            "referenceType": "Shipment",
             "amount": 125,
             "commission": 12.5,
             "totalAmount": 137.5,
@@ -145,23 +147,23 @@ public sealed class PaymentWorkflowTests
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    [InlineData(100001)]
-    public async Task CreatePaymentDtoValidator_Should_RejectInvalidShippingCostsAsync(decimal shippingCost)
+    public async Task CreatePaymentDtoValidator_Should_RejectInvalidCostsAsync(decimal cost)
     {
         var validator = new CratePaymentDtoValidator();
 
-        var result = await validator.ValidateAsync(CreatePaymentRequest(Guid.NewGuid(), shippingCost));
+        var result = await validator.ValidateAsync(CreatePaymentRequest(Guid.NewGuid(), cost));
 
         result.IsValid.Should().BeFalse();
     }
 
-    private static CreatePaymentDto CreatePaymentRequest(Guid shipmentId, decimal shippingCost)
+    private static CreatePaymentDto CreatePaymentRequest(Guid referenceId, decimal cost)
     {
         return new CreatePaymentDto
         {
-            ShipmentId = shipmentId,
+            ReferenceId = referenceId,
             PaymentMethod = PaymentMethod.CreditCard,
-            ShippingCost = shippingCost
+            Currency = TransitNova.Domain.Enums.Shipment.Currency.EGP,
+            Cost = cost
         };
     }
 
@@ -226,4 +228,6 @@ public sealed class PaymentWorkflowTests
         }
     }
 }
+
+
 

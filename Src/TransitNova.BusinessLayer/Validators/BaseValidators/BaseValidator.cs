@@ -1,5 +1,6 @@
-﻿using FluentValidation;
+using FluentValidation;
 using TransitNova.BusinessLayer.Common.CommonData;
+using TransitNova.BusinessLayer.Validators.AddressValidator;
 
 namespace TransitNova.BusinessLayer.Validators.BaseValidators
 {
@@ -32,9 +33,9 @@ namespace TransitNova.BusinessLayer.Validators.BaseValidators
                 .NotEmpty()
                 .WithMessage("Must Enter Your City");
 
-            RuleFor(u => u.Address)
-                .MaximumLength(100)
-                .WithMessage("Address must be less than 100 characters long");
+            RuleFor(u => u.Address!)
+                .SetValidator(new AddressDtoValidator())
+                .When(u => u.Address is not null);
         }
     }
     }

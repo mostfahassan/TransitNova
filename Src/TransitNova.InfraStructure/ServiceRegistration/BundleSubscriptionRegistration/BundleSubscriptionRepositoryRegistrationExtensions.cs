@@ -15,7 +15,9 @@ namespace TransitNova.InfraStructure.ServiceRegistration.BundleSubscriptionRegis
         {
 
             services.AddScoped<IBundleSubscriptionQueryRepository, BundleSubscriptionQueryRepository>();
+            services.AddScoped<IBundleSubscriptionCommandRepository, BundleSubscriptionCommandRepository>();
             return services;
         }
     }
 }
+

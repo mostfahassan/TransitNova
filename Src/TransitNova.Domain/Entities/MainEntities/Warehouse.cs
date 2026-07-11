@@ -13,7 +13,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         public string Name { get; private set; } = string.Empty;
         public WarehouseType Type { get; private set; }
         public bool HasManager { get; private set; } = false;
-        public string Address { get; private set; } = string.Empty;
+        public Address Address { get; private set; } = null!;
         public byte[] RowVersion { get; private set; } = default!;
         public virtual ICollection<Trip> Trips { get; set; } = new List<Trip>();
         public decimal Capacity { get; private set; }
@@ -28,7 +28,7 @@ namespace TransitNova.Domain.Entities.MainEntities
 
         }
 
-        private Warehouse(string name, WarehouseType type, decimal capacity, decimal currentUsage, int operatingHours, string address, Guid createdBy,Guid managerId)
+        private Warehouse(string name, WarehouseType type, decimal capacity, decimal currentUsage, int operatingHours, Address address, Guid createdBy,Guid managerId)
         {
             Validate(name, capacity, currentUsage, operatingHours, address);
             EnsureNoManager();
@@ -46,10 +46,10 @@ namespace TransitNova.Domain.Entities.MainEntities
         }
 
        
-        public static Warehouse Create(string name, WarehouseType type, decimal capacity, decimal currentUsage, int operatingHours, string address, Guid createdBy, Guid managerId)
+        public static Warehouse Create(string name, WarehouseType type, decimal capacity, decimal currentUsage, int operatingHours, Address address, Guid createdBy, Guid managerId)
             => new (name, type, capacity, currentUsage, operatingHours, address, createdBy, managerId);
 
-        public void Update(Guid updatedBy, string? name = null, WarehouseType? type =null ,decimal? capacity = null, decimal? currentUsage = null, int? operatingHours = null, string? address = null, Guid? managerId = null)
+        public void Update(Guid updatedBy, string? name = null, WarehouseType? type =null ,decimal? capacity = null, decimal? currentUsage = null, int? operatingHours = null, Address? address = null, Guid? managerId = null)
         {
             Validate(name, capacity, currentUsage, operatingHours, address);
             EnsureNotSameManager(managerId);
@@ -58,7 +58,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             Capacity = capacity ?? Capacity;
             CurrentUsage = currentUsage ?? CurrentUsage;
             OperatingHours = operatingHours ?? OperatingHours;
-            Address = address?.Trim() ?? Address;
+            Address = address ?? Address;
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = updatedBy.ToString();
             ManagerId = managerId ?? ManagerId;
@@ -111,12 +111,12 @@ namespace TransitNova.Domain.Entities.MainEntities
         }
 
         // Validations
-        private static void Validate(string? name =null, decimal? capacity = null , decimal? currentUsage = null, int? operatingHours = null, string? address = null)
+        private static void Validate(string? name =null, decimal? capacity = null , decimal? currentUsage = null, int? operatingHours = null, Address? address = null)
         {
             if (name is not null && string.IsNullOrWhiteSpace(name) )
                 throw new DomainArgumentException(nameof(name), "Warehouse name is required.", "WAREHOUSE_NAME_REQUIRED", "Warehouse");
 
-            if (address is not null&& string.IsNullOrWhiteSpace(address))
+            if (address is null)
                 throw new DomainArgumentException(nameof(address), "Warehouse address is required.", "WAREHOUSE_ADDRESS_REQUIRED", "Warehouse");
 
             if (capacity is not null && capacity <= 0)

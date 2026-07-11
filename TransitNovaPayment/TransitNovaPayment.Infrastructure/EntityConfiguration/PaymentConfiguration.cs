@@ -21,7 +21,7 @@ namespace TransitNovaPayment.Infrastructure.EntityConfiguration
                 .HasForeignKey(p => p.PaymentId)
                 .OnDelete(DeleteBehavior.Restrict); 
  
-            payment.HasIndex(p => p.ShipmentId).IsUnique();
+            payment.HasIndex(p => p.ReferenceId).IsUnique();
             payment.HasIndex(p => p.PaymentMethod);
             payment.HasIndex(p => p.Status);
             payment.HasIndex(p => p.CreatedAt);

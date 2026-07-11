@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Concurrent;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces;
+using TransitNovaPayment.Busieness.Interfaces.Common;
 namespace TransitNovaPayment.Infrastructure.Service.Caching
 {
     internal class MemoryCacheService(IMemoryCache cache) : ICacheService

@@ -1,12 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using TransitNovaPayment.Busieness.Common.DTO.PaymentDto;
-using TransitNovaPayment.Busieness.Common.DTO.PaymentHistoryDto;
+using TransitNovaPayment.Busieness.DTO.PaymentDto;
+using TransitNovaPayment.Busieness.DTO.PaymentHistoryDto;
 using TransitNovaPayment.Busieness.Services.Payment.Command;
 using TransitNovaPayment.Busieness.Services.Payment.Query;
 namespace TransitNovaPayment.API.Controllers.Payment
 {
+
     [Route("api/v{version:apiVersion}/payments")]
     [ApiController]
     [ApiVersion("1.0")]
@@ -29,7 +30,27 @@ namespace TransitNovaPayment.API.Controllers.Payment
         public async Task<IActionResult> Pay([FromHeader(Name ="X-PaymentKey")] string PublicKey , [FromBody]CreatePaymentDto dto, CancellationToken cancellationToken)
         {
           
-            var response = await mediator.Send(new CreatePaymentCommand(dto, PublicKey), cancellationToken);
+            var response = await mediator.Send(new CreateShipmentPaymentCommand(dto, PublicKey), cancellationToken);
+            return StatusCode(response.StatusCode, response);
+        }
+
+
+        [HttpPost("subscribe")]
+        [EnableRateLimiting("CommandsLimiter")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Consumes("application/json")]
+        [EndpointName("Bundle Subscription")]
+        [EndpointSummary("Initiate Simulated Bundle Subscription Process")]
+        [EndpointDescription("Processes a simulated bundle subscription transaction for a specific user. \n\nSecurity Requirement: Requires a valid 'X-PaymentKey' in the header to authenticate the client request (simulating Public/Private key gateway validation)." +
+            "Note: This endpoint simulates network latency and returns randomized Success/Failure outcomes for testing purposes.")]
+        public async Task<IActionResult> Subscribe([FromHeader(Name ="X-PaymentKey")] string PublicKey , [FromBody] CreatePaymentDto dto, CancellationToken cancellationToken)
+        {
+            var response = await mediator.Send(new CreateBundlePaymentCommand(dto, PublicKey), cancellationToken);
             return StatusCode(response.StatusCode, response);
         }
 
@@ -51,4 +72,5 @@ namespace TransitNovaPayment.API.Controllers.Payment
         }
     }
 }
+
 

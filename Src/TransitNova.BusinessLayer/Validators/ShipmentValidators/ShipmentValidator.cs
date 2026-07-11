@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+using FluentValidation;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums;
 
@@ -7,12 +8,12 @@ public class ShipmentValidator : AbstractValidator<Shipment>
     public ShipmentValidator()
     {
         RuleFor(x => x.DeliveryAddress)
-            .NotEmpty().WithMessage("DeliveryAddress is required.")
-            .MaximumLength(500).WithMessage("DeliveryAddress must not exceed 500 characters.");
+            .NotNull()
+            .ChildRules(ValidateAddress);
 
         RuleFor(x => x.PickupAddress)
-            .NotEmpty().WithMessage("PickupAddress is required.")
-            .MaximumLength(500).WithMessage("PickupAddress must not exceed 500 characters.");
+            .NotNull()
+            .ChildRules(ValidateAddress);
 
         RuleFor(x => x.TrackingNumber)
             .NotEmpty().WithMessage("TrackingNumber is required.")
@@ -79,7 +80,20 @@ public class ShipmentValidator : AbstractValidator<Shipment>
 
         RuleFor(x => x.CurrentStatus)
             .IsInEnum().WithMessage("CurrentStatus is invalid.");
+    }
 
+    private static void ValidateAddress(InlineValidator<Address> validator)
+    {
+        validator.RuleFor(address => address.MainAddress)
+            .NotEmpty()
+            .MaximumLength(Address.MainAddressMaxLength);
+
+        validator.RuleFor(address => address.SecondaryAddress)
+            .MaximumLength(Address.SecondaryAddressMaxLength)
+            .When(address => !string.IsNullOrWhiteSpace(address.SecondaryAddress));
+
+        validator.RuleFor(address => address.Street)
+            .NotEmpty()
+            .MaximumLength(Address.StreetMaxLength);
     }
 }
-

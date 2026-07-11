@@ -12,25 +12,27 @@ namespace TransitNovaPayment.Busieness.Models.PaymentEntity
         public DateTime? PaidAt { get; private set; }
         public DateTime? FailedAt { get; private set; }
         public string? FailedReason { get; private set; }
-        public Guid ShipmentId { get; private set; }
+        public Guid ReferenceId { get; private set; }
+        public ReferenceType ReferenceType { get; private set; }
         public IReadOnlyCollection<PaymentHistory> Histories => PaymentHistories;      
 
         private Payment()
         {
         }
 
-        private Payment(decimal amount, Guid shipmentId, PaymentMethod paymentMethod)
+        private Payment(decimal amount, Guid shipmentId, PaymentMethod paymentMethod, ReferenceType referenceType)
         {
             Id = Guid.CreateVersion7();
             TotalAmount = amount;
             PaymentMethod = paymentMethod;
             Status = PaymentStatus.Pending;
-            ShipmentId = shipmentId;
+            ReferenceId = shipmentId;
+            ReferenceType = referenceType;
         }
 
-        public static Payment Create(decimal amount, Guid shipmentId,  PaymentMethod paymentMethod)
+        public static Payment Create(decimal amount, Guid shipmentId,  PaymentMethod paymentMethod, ReferenceType referenceType)
         {
-            return new Payment(amount, shipmentId, paymentMethod);
+            return new Payment(amount, shipmentId, paymentMethod, referenceType);
         }
 
         PaymentHistory AddPaymentHistory(PaymentStatus status)

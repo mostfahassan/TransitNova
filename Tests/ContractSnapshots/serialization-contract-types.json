@@ -1,28 +1,45 @@
 [
   {
     "Name": "TransitNova.BusinessLayer.DTOs.Bundle.CreateBundleDto",
-    "Json": "{\u0022bundleName\u0022:\u0022sample\u0022,\u0022totalWeight\u0022:123.45,\u0022bundlePrice\u0022:123.45,\u0022bundleDescription\u0022:\u0022sample\u0022,\u0022totalDistance\u0022:123.45,\u0022totalShipments\u0022:7}",
+    "Json": "{\u0022bundleName\u0022:\u0022sample\u0022,\u0022bundleDescription\u0022:\u0022sample\u0022,\u0022bundlePrice\u0022:123.45,\u0022tier\u0022:\u0022Standard\u0022,\u0022bundleDurationMonths\u0022:7,\u0022maxShipmentsPerMonth\u0022:7,\u0022maxWeightPerShipment\u0022:123.45,\u0022maxDistancePerShipment\u0022:123.45,\u0022discountPercentage\u0022:123.45,\u0022minimumShipmentValueForDiscount\u0022:123.45}",
     "Signatures": [
       "$: object",
       "$.bundleDescription: string",
+      "$.bundleDurationMonths: integer",
       "$.bundleName: string",
       "$.bundlePrice: number(decimal)",
-      "$.totalDistance: number(decimal)",
-      "$.totalShipments: integer",
-      "$.totalWeight: number(decimal)"
+      "$.discountPercentage: number(decimal)",
+      "$.maxDistancePerShipment: number(decimal)",
+      "$.maxShipmentsPerMonth: integer",
+      "$.maxWeightPerShipment: number(decimal)",
+      "$.minimumShipmentValueForDiscount: number(decimal)",
+      "$.tier: string"
     ]
   },
   {
     "Name": "TransitNova.BusinessLayer.DTOs.Bundle.UpdateBundleDto",
-    "Json": "{\u0022bundleName\u0022:\u0022sample\u0022,\u0022totalWeight\u0022:123.45,\u0022bundlePrice\u0022:123.45,\u0022bundleDescription\u0022:\u0022sample\u0022,\u0022totalDistance\u0022:123.45,\u0022totalShipments\u0022:7}",
+    "Json": "{\u0022id\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022bundleName\u0022:\u0022sample\u0022,\u0022bundleDescription\u0022:\u0022sample\u0022,\u0022bundlePrice\u0022:123.45,\u0022tier\u0022:\u0022Standard\u0022,\u0022bundleDurationMonths\u0022:7,\u0022maxShipmentsPerMonth\u0022:7,\u0022maxWeightPerShipment\u0022:123.45,\u0022maxDistancePerShipment\u0022:123.45,\u0022discountPercentage\u0022:123.45,\u0022minimumShipmentValueForDiscount\u0022:123.45}",
     "Signatures": [
       "$: object",
       "$.bundleDescription: string",
+      "$.bundleDurationMonths: integer",
       "$.bundleName: string",
       "$.bundlePrice: number(decimal)",
-      "$.totalDistance: number(decimal)",
-      "$.totalShipments: integer",
-      "$.totalWeight: number(decimal)"
+      "$.discountPercentage: number(decimal)",
+      "$.id: string(guid)",
+      "$.maxDistancePerShipment: number(decimal)",
+      "$.maxShipmentsPerMonth: integer",
+      "$.maxWeightPerShipment: number(decimal)",
+      "$.minimumShipmentValueForDiscount: number(decimal)",
+      "$.tier: string"
+    ]
+  },
+  {
+    "Name": "TransitNova.BusinessLayer.DTOs.BundleSubscription.SubscribeToBundleDto",
+    "Json": "{\u0022paymentMethod\u0022:\u0022CreditCard\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.paymentMethod: string"
     ]
   },
   {
@@ -235,12 +252,11 @@
   },
   {
     "Name": "TransitNova.BusinessLayer.DTOs.Shipment.CreateShipmentDto",
-    "Json": "{\u0022receiver\u0022:{\u0022firstName\u0022:\u0022sample\u0022,\u0022senderId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022address\u0022:\u0022sample\u0022,\u0022cityId\u0022:7},\u0022packageSpecification\u0022:{\u0022weight\u0022:123.45,\u0022width\u0022:123.45,\u0022height\u0022:123.45,\u0022length\u0022:123.45},\u0022currency\u0022:\u0022EGP\u0022,\u0022pickUpDate\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022transportationMode\u0022:\u0022Air\u0022,\u0022shipmentDeliveryType\u0022:\u0022Standard\u0022,\u0022deliveryAddress\u0022:\u0022sample\u0022,\u0022pickupAddress\u0022:\u0022sample\u0022,\u0022packageBundleId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022paymentId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022paymentMethod\u0022:\u0022CreditCard\u0022}",
+    "Json": "{\u0022receiver\u0022:{\u0022firstName\u0022:\u0022sample\u0022,\u0022senderId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022address\u0022:\u0022sample\u0022,\u0022cityId\u0022:7},\u0022packageSpecification\u0022:{\u0022weight\u0022:123.45,\u0022width\u0022:123.45,\u0022height\u0022:123.45,\u0022length\u0022:123.45},\u0022currency\u0022:\u0022EGP\u0022,\u0022pickUpDate\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022transportationMode\u0022:\u0022Air\u0022,\u0022shipmentDeliveryType\u0022:\u0022Standard\u0022,\u0022deliveryAddress\u0022:\u0022sample\u0022,\u0022pickupAddress\u0022:\u0022sample\u0022,\u0022paymentId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022paymentMethod\u0022:\u0022CreditCard\u0022}",
     "Signatures": [
       "$: object",
       "$.currency: string",
       "$.deliveryAddress: string",
-      "$.packageBundleId: string(guid)",
       "$.packageSpecification: object",
       "$.packageSpecification.height: number(decimal)",
       "$.packageSpecification.length: number(decimal)",

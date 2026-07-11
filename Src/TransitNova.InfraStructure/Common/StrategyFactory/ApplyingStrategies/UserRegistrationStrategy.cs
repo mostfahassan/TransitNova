@@ -12,7 +12,7 @@ namespace TransitNova.InfraStructure.Common.StrategyFactory.ApplyingStrategies
         public UserType UserType => UserType.User;
         public async Task ExecuteAsync(Guid userId, RegisterDto dto, CancellationToken cancellationToken)
         {
-            var user = UserProfile.Create(userId, dto.FirstName, dto.LastName, dto.Email, dto.PhoneNumber, dto.Address, dto.CityId);
+            var user = UserProfile.Create(userId, dto.FirstName, dto.LastName, dto.Email, dto.PhoneNumber, dto.Address.ToDomain(), dto.CityId);
             await context.UserProfiles.AddAsync(user, cancellationToken);
         }
     }

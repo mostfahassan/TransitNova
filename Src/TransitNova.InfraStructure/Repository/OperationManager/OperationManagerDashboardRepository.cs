@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepository;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.InfraStructure.Context;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace TransitNova.InfraStructure.Repository.OperationManager
 {
     internal class OperationManagerDashboardRepository(IDbContextFactory<AppDbContext> dbContextFactory) : IOperationManagerDashboardRepository
@@ -15,9 +14,9 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
             var shipments = context.Shipments.AsQueryable()
                 .AsNoTracking()
                 .Where(sh => sh.CurrentStatus != ShipmentStatuses.Delivered && sh.CurrentStatus != ShipmentStatuses.Cancelled);
-               
-             var totalCount = await shipments.CountAsync(ct);
-            
+
+            var totalCount = await shipments.CountAsync(ct);
+
             var shipmentDtos = await shipments.Select(sh => new RetrieveShipmentSummaryDto
                 {
                     Id = sh.Id,
@@ -38,24 +37,27 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
                 .ToListAsync(ct);
 
             return PagedResult<RetrieveShipmentSummaryDto>.From(shipmentDtos, totalCount, pageNumber, pageSize);
-
         }
 
-        public async Task<int> TotalHandledCarriersAsync(Guid operationManagerId, CancellationToken cancellationToken)
+        public async Task<(int TotalHandledShipments, int TotalHandledCarriers)> GetHandledSummaryAsync(Guid operationManagerId, CancellationToken cancellationToken)
         {
             await using var context = await dbContextFactory.CreateDbContextAsync(cancellationToken);
-            return await context.Carriers
+
+            var handledSummary = await context.OperationManagerProfiles
                 .AsNoTracking()
-                .CountAsync(c => c.HandlerId == operationManagerId, cancellationToken);
+                .Where(op => op.AppUserId == operationManagerId || op.Id == operationManagerId)
+                .Select(op => new
+                {
+                    TotalHandledShipments = op.HandledShipments.Count,
+                    TotalHandledCarriers = op.HandledCarriers.Count
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return handledSummary is null
+                ? (0, 0)
+                : (handledSummary.TotalHandledShipments, handledSummary.TotalHandledCarriers);
         }
 
-        public async Task<int> TotalHandledShipmentsAsync(Guid operationManagerId, CancellationToken cancellationToken)
-        {
-            await using var context = await dbContextFactory.CreateDbContextAsync(cancellationToken);
-            return await context.Shipments
-                .AsNoTracking()
-                .CountAsync(s => s.HandlerId == operationManagerId, cancellationToken);
-        }
         public async Task<Dictionary<ShipmentStatuses, int>> GetShipmentCountInStatusAsync(CancellationToken cancellationToken)
         {
             await using var context = await dbContextFactory.CreateDbContextAsync(cancellationToken);
@@ -68,7 +70,6 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
                          Count = g.Count()
                      })
                     .ToDictionaryAsync(g => g.Status, g => g.Count, cancellationToken);
-
         }
     }
 }

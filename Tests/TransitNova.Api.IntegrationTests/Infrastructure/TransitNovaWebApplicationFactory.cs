@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System.Data;
 using TransitNova.Domain.Contracts.Roles;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Users;
 using TransitNova.Domain.Enums.Warehouse;
@@ -289,7 +290,7 @@ public sealed class TransitNovaWebApplicationFactory : WebApplicationFactory<Pro
                 "Warehouse Manager",
                 "integration-warehouse-manager@transitnova.test",
                 "01000000000",
-                "Integration Address",
+                Address.Create("Integration Address", null, "Integration Street"),
                 cityId.Value);
 
             context.WarehouseManagersProfiles.Add(manager);
@@ -304,7 +305,7 @@ public sealed class TransitNovaWebApplicationFactory : WebApplicationFactory<Pro
                 "Operation Manager",
                 "integration-operation-manager@transitnova.test",
                 "01000000001",
-                "Integration Address",
+                Address.Create("Integration Address", null, "Integration Street"),
                 cityId.Value);
 
             context.OperationManagerProfiles.Add(operationManager);
@@ -338,7 +339,7 @@ public sealed class TransitNovaWebApplicationFactory : WebApplicationFactory<Pro
                 "Manager",
                 "available-warehouse-manager@transitnova.test",
                 "01000000002",
-                "Integration Address",
+                Address.Create("Available Warehouse Address", null, "Available Warehouse Street"),
                 cityId.Value);
 
             context.WarehouseManagersProfiles.Add(availableManager);
@@ -358,7 +359,7 @@ public sealed class TransitNovaWebApplicationFactory : WebApplicationFactory<Pro
                 1000,
                 0,
                 24,
-                "Integration Warehouse Address",
+                Address.Create("Integration Warehouse Address", null, "Integration Warehouse Street"),
                 TestAuthenticationHandler.UserId,
                 assignedManagerId);
 
@@ -384,7 +385,7 @@ public sealed class TransitNovaWebApplicationFactory : WebApplicationFactory<Pro
             "Admin",
             "integration-admin@transitnova.test",
             "+201055555555",
-            "Integration Address",
+            Address.Create("Integration Address", null, "Integration Street"),
             cityId);
 
         context.Admins.Add(admin);

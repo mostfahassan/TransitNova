@@ -1,86 +1,61 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using TransitNova.BusinessLayer.Features.UserOperations.Commands;
+using TransitNova.BusinessLayer.Common.ResultPattern;
+using TransitNova.BusinessLayer.DTOs.BundleSubscription;
+using TransitNova.BusinessLayer.DTOs.Payment;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Bundles;
 using TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler.Bundles;
 using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
+using TransitNova.BusinessLayer.Interfaces.Services.BundleService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
-using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums.Bundle;
+using TransitNova.Domain.Enums.Payment;
+using TransitNova.Domain.Enums.Shipment;
 
 namespace TransitNova.ApplicationLayer.Tests.Commands.Bundles;
 
 public sealed class BundleSubscriptionCommandHandlerTests
 {
     [Fact]
-    public async Task SubscribeToBundleHandler_MissingUser_Should_ReturnNotFoundWithoutLoadingBundleAsync()
+    public async Task SubscribeToBundleHandler_ServiceSuccess_Should_ReturnBundleInvoiceAsync()
     {
         var fixture = new SubscriptionFixture();
-        fixture.Users.Setup(x => x.GetAppUserIdAsync(fixture.UserId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Guid.Empty);
+        var command = fixture.CreateSubscribeCommand();
+        var invoice = fixture.CreateBundleInvoice();
 
-        var result = await fixture.CreateSubscribeHandler().Handle(
-            new SubscribeToBundleCommand(Guid.NewGuid(), fixture.UserId, fixture.Bundle.Id),
-            CancellationToken.None);
+        fixture.BundleSubscription
+            .Setup(x => x.HandleBundleSubscription(command.UserId, command.BundleId, command.Dto.PaymentMethod, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<BundlePaymentInvoiceDto>.Success(invoice));
 
-        result.IsFailure.Should().BeTrue();
-        fixture.Bundles.Verify(
-            x => x.GetByIdAsync<Bundle>(It.IsAny<Guid>(), It.IsAny<CancellationToken>()),
-            Times.Never);
-        fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task SubscribeToBundleHandler_MissingBundle_Should_ReturnNotFoundWithoutSavingAsync()
-    {
-        var fixture = new SubscriptionFixture();
-        fixture.ArrangeExistingUser();
-        fixture.Bundles.Setup(x => x.GetByIdAsync<Bundle>(fixture.Bundle.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Bundle?)null);
-
-        var result = await fixture.CreateSubscribeHandler().Handle(
-            new SubscribeToBundleCommand(Guid.NewGuid(), fixture.UserId, fixture.Bundle.Id),
-            CancellationToken.None);
-
-        result.IsFailure.Should().BeTrue();
-        fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-        fixture.Cache.VerifyNoOtherCalls();
-    }
-
-    [Fact]
-    public async Task SubscribeToBundleHandler_ValidRequest_Should_SubscribeSaveAndInvalidateCachesAsync()
-    {
-        var fixture = new SubscriptionFixture();
-        fixture.ArrangeExistingUserAndBundle();
-
-        var result = await fixture.CreateSubscribeHandler().Handle(
-            new SubscribeToBundleCommand(Guid.NewGuid(), fixture.UserId, fixture.Bundle.Id),
-            CancellationToken.None);
+        var result = await fixture.CreateSubscribeHandler().Handle(command, CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        fixture.Bundle.Subscriptions.Should().ContainSingle(x =>
-            x.SubscribedUserId == fixture.UserId && x.IsActive);
-        fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.VerifyAllCachesInvalidated();
+        result.Data.Should().BeEquivalentTo(invoice);
+        fixture.BundleSubscription.Verify(
+            x => x.HandleBundleSubscription(command.UserId, command.BundleId, PaymentMethod.CreditCard, CancellationToken.None),
+            Times.Once);
     }
 
     [Fact]
-    public async Task SubscribeToBundleHandler_AlreadySubscribedUser_Should_PropagateDomainExceptionWithoutSavingAsync()
+    public async Task SubscribeToBundleHandler_ServiceFailure_Should_ReturnFailureAsync()
     {
         var fixture = new SubscriptionFixture();
-        fixture.Bundle.Subscribe(fixture.UserId);
-        fixture.ArrangeExistingUserAndBundle();
+        var command = fixture.CreateSubscribeCommand();
 
-        var act = () => fixture.CreateSubscribeHandler().Handle(
-            new SubscribeToBundleCommand(Guid.NewGuid(), fixture.UserId, fixture.Bundle.Id),
-            CancellationToken.None);
+        fixture.BundleSubscription
+            .Setup(x => x.HandleBundleSubscription(command.UserId, command.BundleId, command.Dto.PaymentMethod, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<BundlePaymentInvoiceDto>.Failure(Errors.FailedOperation("Payment failed")));
 
-        await act.Should().ThrowAsync<DomainOperationException>();
-        fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        var result = await fixture.CreateSubscribeHandler().Handle(command, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        fixture.BundleSubscription.Verify(
+            x => x.HandleBundleSubscription(command.UserId, command.BundleId, PaymentMethod.CreditCard, CancellationToken.None),
+            Times.Once);
     }
 
     [Fact]
@@ -128,7 +103,6 @@ public sealed class BundleSubscriptionCommandHandlerTests
 
         result.IsFailure.Should().BeTrue();
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-        fixture.Cache.VerifyNoOtherCalls();
     }
 
     [Fact]
@@ -146,22 +120,62 @@ public sealed class BundleSubscriptionCommandHandlerTests
         fixture.Bundle.Subscriptions.Should().ContainSingle(x =>
             x.SubscribedUserId == fixture.UserId && !x.IsActive && x.CancelledAt.HasValue);
         fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        fixture.VerifyAllCachesInvalidated();
+    }
+
+    [Fact]
+    public async Task UnsubscribeFromBundleHandler_AlreadyInactiveSubscription_Should_ReturnNotFoundWithoutSavingAsync()
+    {
+        var fixture = new SubscriptionFixture();
+        fixture.Bundle.Subscribe(fixture.UserId);
+        fixture.Bundle.Unsubscribe(fixture.UserId);
+        fixture.ArrangeExistingUserAndBundle();
+
+        var result = await fixture.CreateUnsubscribeHandler().Handle(
+            new UnsubscribeFromBundleCommand(Guid.NewGuid(), fixture.UserId, fixture.Bundle.Id),
+            CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        fixture.UnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     private sealed class SubscriptionFixture
     {
         public Guid UserId { get; } = Guid.NewGuid();
-        public Bundle Bundle { get; } = Bundle.Create(
-            "operation-manager", "Business", 500m, "Business bundle", 200m, 1_000m, 20);
+        public Bundle Bundle { get; } = Bundle.Create("operation-manager", "Business", "Business bundle", 500m, BundleTier.Pro, 1, 20, 200m, 1_000m, 0m, 0m);
         public Mock<IGenericRepository<Bundle, Guid>> Bundles { get; } = new();
         public Mock<IUserQueryRepository> Users { get; } = new();
         public Mock<IUnitOfWork> UnitOfWork { get; } = new();
-        public Mock<ICacheService> Cache { get; } = new();
+        public Mock<IBundleSubscription> BundleSubscription { get; } = new();
+
+        public SubscribeToBundleCommand CreateSubscribeCommand() => new(
+            Guid.NewGuid(),
+            UserId,
+            Bundle.Id,
+            new SubscribeToBundleDto { PaymentMethod = PaymentMethod.CreditCard });
+
+        public BundlePaymentInvoiceDto CreateBundleInvoice() => new()
+        {
+            InvoiceId = "INV-TEST",
+            PaymentId = Guid.NewGuid(),
+            ReferenceId = Bundle.Id,
+            BundleId = Bundle.Id,
+            BundleName = Bundle.BundleName,
+            FullName = "Mostafa Customer",
+            BundlePrice = Bundle.BundlePrice,
+            Commission = 10m,
+            TotalAmount = 510m,
+            PaymentMethod = PaymentMethod.CreditCard.ToString(),
+            Status = PaymentStatus.Success.ToString(),
+            Currency = Currency.EGP,
+            PaidAt = DateTime.UtcNow,
+            EndDate = DateTime.UtcNow.AddMonths(1),
+            SubscribedAt = DateTime.UtcNow,
+            Notes = "Payment processed successfully."
+        };
 
         public void ArrangeExistingUser() =>
             Users.Setup(x => x.GetAppUserIdAsync(UserId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Guid.NewGuid());
+                .ReturnsAsync(UserId);
 
         public void ArrangeExistingUserAndBundle()
         {
@@ -172,9 +186,7 @@ public sealed class BundleSubscriptionCommandHandlerTests
         }
 
         public SubscribeToBundleHandler CreateSubscribeHandler() => new(
-            Bundles.Object,
-            Users.Object,
-            UnitOfWork.Object,
+            BundleSubscription.Object,
             Mock.Of<ILogger<SubscribeToBundleHandler>>());
 
         public UnsubscribeFromBundleHandler CreateUnsubscribeHandler() => new(
@@ -182,11 +194,6 @@ public sealed class BundleSubscriptionCommandHandlerTests
             Users.Object,
             UnitOfWork.Object,
             Mock.Of<ILogger<UnsubscribeFromBundleHandler>>());
-
-        public void VerifyAllCachesInvalidated()
-        {
-        }
     }
 }
-
 

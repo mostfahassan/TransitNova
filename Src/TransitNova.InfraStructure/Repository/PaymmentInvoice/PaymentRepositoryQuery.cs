@@ -8,7 +8,7 @@ namespace TransitNova.InfraStructure.Repository.PaymmentInvoice
 {
     internal sealed class PaymentRepositoryQuery(AppDbContext context) : IPaymentRepositoryQuery
     {
-        public async Task<PaymentInvoiceDto?> GetInvoiceByPaymentIdAsync(Guid paymentId, CancellationToken cancellationToken)
+        public async Task<ShipmentPaymentInvoiceDto?> GetInvoiceByPaymentIdAsync(Guid paymentId, CancellationToken cancellationToken)
         {
             var query = context.PaymentInvoices
                 .AsNoTracking()
@@ -18,7 +18,7 @@ namespace TransitNova.InfraStructure.Repository.PaymmentInvoice
             return await ProjectInvoices(query).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<PaymentInvoiceDto?> GetUserInvoiceAsync(Guid userId, CancellationToken cancellationToken)
+        public async Task<ShipmentPaymentInvoiceDto?> GetUserInvoiceAsync(Guid userId, CancellationToken cancellationToken)
         {
             var query = context.PaymentInvoices
                 .AsNoTracking()
@@ -26,10 +26,9 @@ namespace TransitNova.InfraStructure.Repository.PaymmentInvoice
                 .OrderByDescending(invoice => invoice.CreatedAt);
 
             return await ProjectInvoices(query).FirstOrDefaultAsync(cancellationToken);
-       
         }
 
-        public async Task<PaymentInvoiceDto?> GetUserInvoiceByPaymentIdAsync(Guid userId, Guid paymentId, CancellationToken cancellationToken)
+        public async Task<ShipmentPaymentInvoiceDto?> GetUserInvoiceByPaymentIdAsync(Guid userId, Guid paymentId, CancellationToken cancellationToken)
         {
             var query = context.PaymentInvoices
                 .AsNoTracking()
@@ -39,7 +38,7 @@ namespace TransitNova.InfraStructure.Repository.PaymmentInvoice
             return await ProjectInvoices(query).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<PaymentInvoiceDto>> GetUserInvoicesAsync(Guid userId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ShipmentPaymentInvoiceDto>> GetUserInvoicesAsync(Guid userId, CancellationToken cancellationToken)
         {
             var query = context.PaymentInvoices
                 .AsNoTracking()
@@ -49,7 +48,7 @@ namespace TransitNova.InfraStructure.Repository.PaymmentInvoice
             return await ProjectInvoices(query).ToListAsync(cancellationToken);
         }
 
-        public async Task<PagedResult<PaymentInvoiceDto>> GetInvoicesPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+        public async Task<PagedResult<ShipmentPaymentInvoiceDto>> GetInvoicesPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
             pageNumber = Math.Max(1, pageNumber);
             pageSize = Math.Clamp(pageSize, 1, 100);
@@ -63,26 +62,28 @@ namespace TransitNova.InfraStructure.Repository.PaymmentInvoice
                 .Take(pageSize);
 
             var invoices = await ProjectInvoices(pageQuery).ToListAsync(cancellationToken);
-            return PagedResult<PaymentInvoiceDto>.From(invoices, totalCount, pageNumber, pageSize);
+            return PagedResult<ShipmentPaymentInvoiceDto>.From(invoices, totalCount, pageNumber, pageSize);
         }
 
-        private IQueryable<PaymentInvoiceDto> ProjectInvoices(IQueryable<PaymentInvoice> invoices)
+        private IQueryable<ShipmentPaymentInvoiceDto> ProjectInvoices(IQueryable<PaymentInvoice> invoices)
         {
             return from invoice in invoices
                    join shipment in context.Shipments.AsNoTracking()
                        on invoice.ShipmentId equals shipment.Id
-                   select new PaymentInvoiceDto
+                   select new ShipmentPaymentInvoiceDto
                    {
                        InvoiceId = "INV-" + invoice.Id.ToString().Substring(0, 8),
                        PaymentId = invoice.PaymentId,
+                       ReferenceId = invoice.ShipmentId,
+                       ReferenceType = "Shipment",
                        ShipmentId = invoice.ShipmentId,
                        ShipmentTrackingNumber = shipment.TrackingNumber,
                        CustomerName = invoice.UserProfile != null ? $"{invoice.UserProfile.FullName}" : string.Empty,
                        ShippingCost = invoice.ShippingCost,
                        Commission = invoice.Commission,
                        TotalAmount = invoice.Amount,
-                       PaymentMethod = invoice.PaymentMethod,
-                       Status = invoice.Status,
+                       PaymentMethod = invoice.PaymentMethod.ToString(),
+                       Status = invoice.Status.ToString(),
                        PaidAt = invoice.PaidAt,
                        Currency = shipment.Currency,
                        Notes = invoice.Notes

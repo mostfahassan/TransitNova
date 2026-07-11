@@ -15,7 +15,7 @@ public sealed class CreatePaymenetDtoValidatorTests
         var result = _validator.Validate(PaymentTestData.CreatePaymentDto(shipmentId: Guid.Empty));
 
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().ContainSingle(error => error.PropertyName == "ShipmentId");
+        result.Errors.Should().ContainSingle(error => error.PropertyName == "ReferenceId");
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public sealed class CreatePaymenetDtoValidatorTests
         var result = _validator.Validate(PaymentTestData.CreatePaymentDto(shippingCost: 12.345m));
 
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(error => error.PropertyName == "ShippingCost");
+        result.Errors.Should().Contain(error => error.PropertyName == "Cost");
     }
 
     [Fact]

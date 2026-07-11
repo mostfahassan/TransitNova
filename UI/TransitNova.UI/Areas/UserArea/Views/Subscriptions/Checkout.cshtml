@@ -1,0 +1,145 @@
+@using TransitNovaUI.BusinessLayer.DTOs.Bundle
+@model BundleSubscriptionPaymentViewModel
+@{
+    ViewData["Title"] = "Bundle Checkout";
+    var bundle = Model.Bundle;
+    var hasBundle = bundle is not null;
+}
+
+<section class="customer-fade-up">
+    <div class="mx-auto max-w-3xl text-center">
+        <div class="customer-badge customer-badge-info justify-center">Bundle checkout</div>
+        <h1 class="mt-5 text-4xl font-black leading-[1.03] tracking-[-0.04em] text-[#111111] md:text-6xl">Upgrade your shipping rhythm.</h1>
+        <p class="mt-5 text-base leading-7 text-[#666666]">Review the bundle, choose a payment method, and activate the subscription without leaving your customer workspace.</p>
+    </div>
+
+    <form asp-area="UserArea" asp-controller="Subscriptions" asp-action="Checkout" method="post" class="mx-auto mt-10 max-w-5xl space-y-6" data-bundle-checkout-form>
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="BundleId" />
+
+        <div class="hidden mx-auto max-w-5xl" data-bundle-alert role="alert" aria-live="polite">
+            <div class="rounded-[28px] border border-[#F3D1D1] bg-[#FDEBEC] p-5 text-[#9F2F2D] shadow-[0_1px_0_rgba(17,17,17,0.03),0_24px_60px_rgba(17,17,17,0.08)] md:p-6">
+                <div class="text-[11px] font-black uppercase tracking-[0.18em] text-[#B04443]">Subscription update</div>
+                <h2 class="mt-2 text-2xl font-black tracking-[-0.03em] text-[#7C1F1E]" data-bundle-alert-title>Payment couldn't be completed</h2>
+                <div class="mt-3 space-y-2 text-sm leading-6 text-[#8E2C2A]" data-bundle-alert-message></div>
+            </div>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-[1fr_380px]">
+            <section class="customer-card overflow-hidden">
+                <div class="border-b border-[#EAEAEA] p-6 md:p-8">
+                    <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">01 / Bundle</div>
+                    <h2 class="mt-3 text-2xl font-black tracking-[-0.03em] text-[#111111]">@BundleName(bundle)</h2>
+                    <p class="mt-3 text-sm leading-6 text-[#666666]">@BundleDescription(bundle)</p>
+                </div>
+
+                <div class="grid gap-0 md:grid-cols-2">
+                    @InfoTile("Tier", bundle?.Tier.ToString() ?? "Not available", "PLAN", "00")
+                    @InfoTile("Duration", hasBundle ? $"{bundle!.BundleDurationMonths} months" : "Not available", "ACTIVE WINDOW", "01")
+                    @InfoTile("Max shipments", hasBundle ? $"{bundle!.MaxShipmentsPerMonth} / month" : "Not available", "OPERATIONS", "02")
+                    @InfoTile("Max weight", hasBundle ? $"{FormatMoney(bundle!.MaxWeightPerShipment)} kg" : "Not available", "PACKAGE", "03")
+                    @InfoTile("Max distance", hasBundle ? $"{FormatMoney(bundle!.MaxDistancePerShipment)} km" : "Not available", "COVERAGE", "04")
+                    @InfoTile("Discount", hasBundle ? $"{FormatMoney(bundle!.DiscountPercentage)}%" : "Not available", "BENEFIT", "05")
+                </div>
+
+                <div class="border-t border-[#EAEAEA] bg-[#FBFBFA] p-6 md:p-8">
+                    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                        <div>
+                            <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">TOTAL DUE</div>
+                            <div class="mt-2 text-5xl font-black tracking-[-0.05em] text-[#111111]">@(hasBundle ? FormatMoney(bundle!.BundlePrice) : "0.00")</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-black text-[#111111]">EGP</div>
+                            <div class="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-[#787774]">settlement currency</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="customer-card-flat p-6 md:p-8">
+                <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">02 / Payment</div>
+                <h2 class="mt-3 text-2xl font-black tracking-[-0.03em] text-[#111111]">Choose payment method</h2>
+                <p class="mt-3 text-sm leading-6 text-[#666666]">The payment service will return a bundle invoice when the transaction succeeds.</p>
+
+                <div class="mt-6">
+                    <label class="customer-label" asp-for="PaymentMethod">Payment method</label>
+                    <select class="customer-select" asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()" data-bundle-payment-method></select>
+                    <span class="customer-field-error" asp-validation-for="PaymentMethod"></span>
+                </div>
+
+                <button type="submit" class="customer-button mt-6 min-h-[52px] w-full" data-bundle-submit-button disabled="@(!hasBundle)">
+                    <span class="customer-spinner hidden" data-button-spinner></span>
+                    <span data-button-text>Pay and subscribe</span>
+                </button>
+
+                <a asp-area="UserArea" asp-controller="Dashboard" asp-action="Index" class="customer-button-secondary mt-3 min-h-[48px] w-full justify-center">Back to dashboard</a>
+                <p class="mt-4 text-center text-xs font-semibold leading-5 text-[#787774]">Your subscription activates only after a successful payment response.</p>
+            </aside>
+        </div>
+    </form>
+
+    <div class="fixed inset-0 z-50 hidden bg-[#111111]/55 px-4 py-8 backdrop-blur-sm" data-bundle-payment-overlay aria-hidden="true" role="status" aria-live="polite">
+        <div class="flex min-h-full items-center justify-center">
+            <div class="w-full max-w-md rounded-[32px] bg-[#111111] p-8 text-white shadow-[0_24px_80px_rgba(17,17,17,0.35)]">
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5">
+                    <div class="h-12 w-12 animate-spin rounded-full border-[3px] border-white/20 border-t-white"></div>
+                </div>
+                <h2 class="mt-6 text-center text-2xl font-black tracking-[-0.03em]">Processing subscription</h2>
+                <p class="mt-3 text-center text-sm leading-6 text-white/70">The payment service is confirming your bundle invoice.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed inset-0 z-[60] hidden bg-[#111111]/55 px-4 py-8 backdrop-blur-sm" data-bundle-invoice-modal aria-hidden="true">
+        <div class="flex min-h-full items-center justify-center">
+            <div class="w-full max-w-3xl rounded-[32px] border border-[#EAEAEA] bg-white shadow-[0_24px_80px_rgba(17,17,17,0.18)]" role="dialog" aria-modal="true" aria-labelledby="bundle-invoice-modal-title">
+                <div class="flex items-start justify-between gap-4 border-b border-[#EFEFED] px-6 py-6 md:px-8">
+                    <div>
+                        <div class="customer-badge customer-badge-success">Subscription active</div>
+                        <h2 id="bundle-invoice-modal-title" class="mt-4 text-3xl font-black tracking-[-0.03em] text-[#111111]">Bundle invoice ready</h2>
+                        <p class="mt-3 max-w-2xl text-sm leading-6 text-[#666666]">Your bundle is active. The invoice details below are returned from the API response.</p>
+                    </div>
+                    <button type="button" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#EAEAEA] text-xl font-semibold text-[#444444] transition hover:border-[#D8D8D5] hover:bg-[#F7F7F6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111]" data-bundle-invoice-close aria-label="Close invoice">×</button>
+                </div>
+                <div class="space-y-8 px-6 py-6 md:px-8">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="rounded-full bg-[#F3F7F3] px-4 py-2 text-sm font-bold text-[#14532D]" data-bundle-invoice-status-badge>Paid</div>
+                        <div class="text-sm font-semibold text-[#666666]">Payment method: <span class="text-[#111111]" data-bundle-invoice-payment-method>Not available</span></div>
+                    </div>
+                    <dl class="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Invoice ID</dt><dd class="mt-2 break-all text-sm font-semibold leading-6 text-[#111111]" data-bundle-invoice-id>Not available</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Payment ID</dt><dd class="mt-2 break-all text-sm font-semibold leading-6 text-[#111111]" data-bundle-invoice-payment-id>Not available</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Bundle</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-bundle-invoice-name>Not available</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Subscriber</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-bundle-invoice-customer>Not available</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Subscribed at</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-bundle-invoice-subscribed-at>Pending confirmation</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">End date</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-bundle-invoice-end-date>Pending confirmation</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Commission</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-bundle-invoice-commission>0.00</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Bundle price</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-bundle-invoice-price>0.00</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4 sm:col-span-2"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Total amount</dt><dd class="mt-2 text-2xl font-black tracking-[-0.03em] text-[#111111]" data-bundle-invoice-amount>0.00</dd></div>
+                        <div class="sm:col-span-2"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Notes</dt><dd class="mt-2 text-sm leading-6 text-[#444444]" data-bundle-invoice-notes>No additional notes.</dd></div>
+                    </dl>
+                </div>
+                <div class="flex flex-col-reverse gap-3 border-t border-[#EFEFED] px-6 py-6 md:flex-row md:justify-end md:px-8">
+                    <button type="button" class="customer-button-secondary min-h-[48px] justify-center" data-bundle-invoice-close>Close</button>
+                    <a asp-area="UserArea" asp-controller="Dashboard" asp-action="Index" class="customer-button min-h-[48px] justify-center">Back to dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/User/bundle-subscription.js" asp-append-version="true"></script>
+}
+
+@functions {
+    private static string BundleName(UiRetrieveBundleDto? bundle) => bundle?.BundleName ?? "Bundle unavailable";
+    private static string BundleDescription(UiRetrieveBundleDto? bundle) => bundle?.BundleDescription ?? "This bundle could not be loaded. Return to the dashboard and try again.";
+    private static string FormatMoney(decimal value) => value.ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
+
+    private IHtmlContent InfoTile(string label, string value, string meta, string index)
+    {
+        return new HtmlString($"<div class='border-b border-[#EAEAEA] p-6 md:border-r'><div class='font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]'>[{index}] {label}</div><div class='mt-3 text-2xl font-black tracking-[-0.03em] text-[#111111]'>{System.Net.WebUtility.HtmlEncode(value)}</div><div class='mt-2 text-xs font-bold uppercase tracking-[0.12em] text-[#787774]'>{System.Net.WebUtility.HtmlEncode(meta)}</div></div>");
+    }
+}
+

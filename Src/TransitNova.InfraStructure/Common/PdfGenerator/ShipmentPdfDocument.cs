@@ -59,8 +59,8 @@ namespace TransitNova.InfraStructure.Common.PdfGenerator
                 row.RelativeItem().Element(PdfDocumentDesign.Card).Column(column =>
                 {
                     column.Item().Text("Route").FontSize(13).Bold().FontColor(PdfPalette.Navy);
-                    column.Item().PaddingTop(10).ComposeInfoLine("Pickup Address", shipment.PickupAddress);
-                    column.Item().PaddingTop(7).ComposeInfoLine("Delivery Address", shipment.DeliveryAddress);
+                    column.Item().PaddingTop(10).ComposeInfoLine("Pickup Address", shipment.PickupAddress.ToString());
+                    column.Item().PaddingTop(7).ComposeInfoLine("Delivery Address", shipment.DeliveryAddress.ToString());
                     column.Item().PaddingTop(7).ComposeInfoLine("Transportation", shipment.TransportationMode.ToString());
                     column.Item().PaddingTop(7).ComposeInfoLine("Shipment Type", shipment.ShipmentType.ToString());
                 });
@@ -117,7 +117,6 @@ namespace TransitNova.InfraStructure.Common.PdfGenerator
                     table.Cell().Element(cell => PdfDocumentDesign.TableCell(cell, 0)).Text($"{shipment.PackageSpecification.Length:N2} cm");
                     table.Cell().Element(cell => PdfDocumentDesign.TableCell(cell, 0)).Text($"{shipment.PackageSpecification.Width:N2} cm");
                     table.Cell().Element(cell => PdfDocumentDesign.TableCell(cell, 0)).Text($"{shipment.PackageSpecification.Height:N2} cm");
-                    table.Cell().Element(cell => PdfDocumentDesign.TableCell(cell, 0)).Text(shipment.PackageBundleId?.ToString() ?? "Standard billing");
                 });
             });
         }

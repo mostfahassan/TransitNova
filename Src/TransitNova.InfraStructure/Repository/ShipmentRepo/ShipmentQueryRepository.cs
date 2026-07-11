@@ -29,8 +29,12 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
                 var pattern = $"%{filter.SearchTerm.Trim()}%";
                 query = query.Where(sh =>
                     EF.Functions.Like(sh.TrackingNumber, pattern) ||
-                    EF.Functions.Like(sh.PickupAddress, pattern) ||
-                    EF.Functions.Like(sh.DeliveryAddress, pattern) ||
+                    EF.Functions.Like(sh.PickupAddress.MainAddress, pattern) ||
+                    (sh.PickupAddress.SecondaryAddress != null && EF.Functions.Like(sh.PickupAddress.SecondaryAddress, pattern)) ||
+                    EF.Functions.Like(sh.PickupAddress.Street, pattern) ||
+                    EF.Functions.Like(sh.DeliveryAddress.MainAddress, pattern) ||
+                    (sh.DeliveryAddress.SecondaryAddress != null && EF.Functions.Like(sh.DeliveryAddress.SecondaryAddress, pattern)) ||
+                    EF.Functions.Like(sh.DeliveryAddress.Street, pattern) ||
                     EF.Functions.Like(sh.Sender.FirstName + " " + sh.Sender.LastName, pattern) ||
                     EF.Functions.Like(sh.Receiver.FirstName + " " + sh.Receiver.LastName, pattern) ||
                     EF.Functions.Like(sh.Sender.City.Name, pattern) ||

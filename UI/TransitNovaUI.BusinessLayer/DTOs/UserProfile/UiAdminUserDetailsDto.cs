@@ -2,6 +2,7 @@ using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
 using TransitNova.Domain.Enums.Users;
 using TransitNovaUI.BusinessLayer.Common.ResultPattern;
+using TransitNovaUI.BusinessLayer.Common.CommonData;
 namespace TransitNovaUI.BusinessLayer.DTOs.UserProfile;
 
 public sealed class UiAdminUserDetailsDto : UiUserProfileDto
@@ -20,7 +21,7 @@ public sealed class UiAdminUserDetailsDto : UiUserProfileDto
             FullName = source.FullName,
             Email = source.Email,
             PhoneNumber = source.PhoneNumber,
-            Address = source.Address,
+            Address = UiAddressDto.ToUiDto(source.Address),
             UserType = source.UserType,
             CityName = source.CityName,
             GovernmentName = source.GovernmentName,

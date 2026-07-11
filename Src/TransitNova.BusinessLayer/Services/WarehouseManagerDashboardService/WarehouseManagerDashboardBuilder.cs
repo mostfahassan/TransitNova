@@ -2,8 +2,6 @@
 using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseManagerRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.WarehouseManagerDashboardService;
 using TransitNova.Domain.DomainExceptions;
-using TransitNova.Domain.Enums.Shipment;
-using TransitNova.Domain.Enums.Trip;
 namespace TransitNova.BusinessLayer.Services.WarehouseManagerDashboardService
 {
     public sealed class WarehouseManagerDashboardBuilder(IWarehouseManagerDashboardRepository dashboardRepository)
@@ -20,44 +18,18 @@ namespace TransitNova.BusinessLayer.Services.WarehouseManagerDashboardService
 
             var recentShipmentsTask = dashboardRepository.GetRecentShipmentSummaryAsync(warehouseId, cancellationToken);
 
-            var totalCarriersTask = dashboardRepository.TotalCarriersAsync(warehouseId, cancellationToken);
-
-            var activeCarriersTask = dashboardRepository.ActiveCarriersAsync(warehouseId, cancellationToken);
-
-            var totalShipmentsTask = dashboardRepository.TotalShipmentAsync(warehouseId, cancellationToken);
-
-            var totalTripsTask = dashboardRepository.TotalTripsAsync(warehouseId, cancellationToken);
-
-            var shipmentStatsTask = dashboardRepository.GetShipmentCountInStatusAsync(warehouseId, cancellationToken);
-
-            var tripStatsTask = dashboardRepository.GetTripsCountInStatusAsync(warehouseId, cancellationToken);
-
+            var warehouseStatTask = dashboardRepository.GetWarehouseStatsAsync(warehouseId, cancellationToken);
 
             await Task.WhenAll(
                 recentTripsTask,
                 recentShipmentsTask,
-                totalCarriersTask,
-                activeCarriersTask,
-                totalShipmentsTask,
-                totalTripsTask,
-                shipmentStatsTask,
-                tripStatsTask);
+                warehouseStatTask);
 
-            var shipmentStats = shipmentStatsTask.Result;
-            var tripStats =  tripStatsTask.Result;
 
-            var Kpi = new WarehouseManagerKpiDto
-            {
-                TotalShipments = totalShipmentsTask.Result,
-                InTransitShipments = GetShipmentCount(shipmentStats, ShipmentStatuses.InTransit),
-                DeliveredShipments = GetShipmentCount(shipmentStats, ShipmentStatuses.Delivered),
-                TotalCarriers = totalCarriersTask.Result,
-                ActiveCarriers = activeCarriersTask.Result,
-                TotalTrips = totalTripsTask.Result,
-                ActiveTrips = GetTripCount(tripStats, TripStatus.Active),
-                CompletedTrips = GetTripCount(tripStats, TripStatus.Completed),
 
-            };
+            var warehouseStats = warehouseStatTask.Result;
+
+            var Kpi = warehouseStats;
 
             var dashboard = new WarehouseManagerDashboardDto
             {
@@ -67,15 +39,6 @@ namespace TransitNova.BusinessLayer.Services.WarehouseManagerDashboardService
                 RecentTrips = [.. recentTripsTask.Result]
             };
             return dashboard;
-        }
-        private static int GetShipmentCount(Dictionary<ShipmentStatuses, int> stats, ShipmentStatuses status)
-        {
-            return stats.GetValueOrDefault(status);
-        }
-
-        private static int GetTripCount(Dictionary<TripStatus, int> stats, TripStatus status)
-        {
-            return stats.GetValueOrDefault(status);
         }
 
     }

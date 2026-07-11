@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using TransitNova.Domain.Contracts.DomainEvents.Events.ShipmentEvents;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.Common;
@@ -24,12 +24,10 @@ public sealed class ShipmentTests
             package,
             Currency.USD,
             DateTime.UtcNow.AddDays(1),
-            "Alexandria",
-            "Cairo",
+            Address.FromLegacy("Alexandria"),
+            Address.FromLegacy("Cairo"),
             enShipmentType.Express,
             TransportationMode.Land,
-            Guid.NewGuid(),
-            Guid.NewGuid(),
             PaymentMethod.MobileWallets);
 
         shipment.Id.Should().NotBeEmpty();
@@ -49,10 +47,10 @@ public sealed class ShipmentTests
         var package = new PackageSpecification(25m, 5m, 6m, 7m);
         var deliveryDate = DateTime.UtcNow.AddDays(10);
 
-        shipment.UpdateShipmentDetails(null, "New delivery", null, TransportationMode.Air, null, package, 900m, deliveryDate);
+        shipment.UpdateShipmentDetails(null, Address.FromLegacy("New delivery"), null, TransportationMode.Air, null, package, 900m, deliveryDate);
 
-        shipment.DeliveryAddress.Should().Be("New delivery");
-        shipment.PickupAddress.Should().Be("Pickup address");
+        shipment.DeliveryAddress.MainAddress.Should().Be("New delivery");
+        shipment.PickupAddress.MainAddress.Should().Be("Pickup address");
         shipment.Mode.Should().Be(TransportationMode.Air);
         shipment.PackageSpecification.Should().Be(package);
         shipment.ShipmentCost.Should().Be(900m);
@@ -287,7 +285,7 @@ public sealed class ShipmentTests
         var shipment = DomainTestData.CreateShipment();
         shipment.RejectShipment(Guid.NewGuid(), "Rejected");
 
-        var act = () => shipment.UpdateShipmentDetails(null, "Address", null, null, null, null);
+        var act = () => shipment.UpdateShipmentDetails(null, Address.FromLegacy("Address"), null, null, null, null);
 
         act.Should().Throw<InvalidShipmentStateException>();
     }

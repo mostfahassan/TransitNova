@@ -10,6 +10,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.DomainExceptions;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Result;
@@ -247,7 +248,7 @@ public sealed class CarrierWorkflowPhase2Tests
         public CarrierInfoFixture()
         {
             Carrier = Carrier.Create(
-                UserId, "Ahmed", "Ali", "carrier@example.com", "01000000000", "Cairo", 1);
+                UserId, "Ahmed", "Ali", "carrier@example.com", "01000000000", Address.Create("Cairo", null, "Main Street"), 1);
             Command = new AddingCarrierAdditionalInfoCommand(Guid.NewGuid(), Dto, UserId);
             Repository.Setup(x => x.GetCarrierAsync(
                     It.IsAny<Expression<Func<Carrier, bool>>>(), It.IsAny<CancellationToken>()))

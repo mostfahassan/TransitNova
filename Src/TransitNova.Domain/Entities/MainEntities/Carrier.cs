@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using TransitNova.Domain.Contracts.DomainEvents.Events.CarrierEvents;
 using TransitNova.Domain.DomainExceptions;
@@ -54,7 +54,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         public Guid TripId { get; private set; }
         private Carrier() { }
 
-        private Carrier(Guid appUserId, string firstName, string lastName, string email, string phone, string address, int cityId)
+        private Carrier(Guid appUserId, string firstName, string lastName, string email, string phone, Address address, int cityId)
         {
             Id = Guid.CreateVersion7();
             AppUserId = appUserId;
@@ -74,7 +74,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             CurrentState = true;
         }
 
-        public static Carrier Create(Guid appUserId, string firstName, string lastName, string email, string phone, string address, int cityId)
+        public static Carrier Create(Guid appUserId, string firstName, string lastName, string email, string phone, Address address, int cityId)
         {
             var carrier = new Carrier(appUserId, firstName, lastName, email, phone, address, cityId);
 
@@ -148,12 +148,12 @@ namespace TransitNova.Domain.Entities.MainEntities
             RaiseDomainEvent(new CarrierAdditionalInfoAddedDomainEvent(Id, LicenseNumber, MaxDailyShipments));
         }
 
-        public void UpdateProfile(Guid userId, string? firstName, string? lastName, string? phoneNumber, string? address)
+        public void UpdateProfile(Guid userId, string? firstName, string? lastName, string? phoneNumber, Address? address)
         {
             FirstName = firstName?.Trim() ?? FirstName;
             LastName = lastName?.Trim() ?? LastName;
             PhoneNumber = phoneNumber?.Trim() ?? PhoneNumber;
-            Address = address?.Trim() ?? Address;
+            Address = address ?? Address;
 
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = userId.ToString();

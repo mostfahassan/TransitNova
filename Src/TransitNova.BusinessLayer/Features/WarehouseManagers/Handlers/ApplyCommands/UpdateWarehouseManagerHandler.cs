@@ -19,7 +19,7 @@ namespace TransitNova.BusinessLayer.Features.WarehouseManagers.Handlers.ApplyCom
             if (manager is null)
                 return BaseResult.NotFound(Errors.NotFound("Warehouse manager not found."));
 
-            manager.Update(request.Dto.FirstName, request.Dto.LastName, request.Dto.PhoneNumber, request.Dto.Email, request.Dto.CityId, request.Dto.Address);
+            manager.Update(request.Dto.FirstName, request.Dto.LastName, request.Dto.PhoneNumber, request.Dto.Email, request.Dto.CityId, request.Dto.Address?.ToDomain());
             await unitOfWork.SaveChangesAsync(ct);
 
             CacheInvalidationContext.Set(request,CacheKeys.WarehouseManagers.Details(request.Dto.Id), CacheKeys.WarehouseManagers.Dashboard(request.Dto.Id));

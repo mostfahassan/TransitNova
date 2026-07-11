@@ -10,9 +10,8 @@ namespace TransitNova.InfraStructure.ServiceRegistration.AdminRegistration
         {
             services.AddScoped<IAdminRulesRepository, AdminRulesRepository>()
                     .AddScoped<IAdminQueryRepository, AdminRulesRepository>()
-                    .AddScoped<IAdminActivityQueryRepository, AdminActivityQueryRepository>()
-                    .AddScoped<IAdminOperationalHealth, AdminOperationalHealth>()
-                    .AddScoped<IAdminStatisticsQueryRepository, AdminStatisticsQueryRepository>();
+                    .AddScoped<IAdminDashboardBuilder, AdminDashboard>();
+                    
 
             return services;
         }

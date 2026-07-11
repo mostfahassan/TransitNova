@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.AppUser;
 using TransitNova.BusinessLayer.DTOs.UserProfile.Auth;
 using TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.Commands;
@@ -12,6 +13,7 @@ using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.BusinessLayer.Interfaces.Services.Users.RegistrationStrategy;
 using TransitNova.BusinessLayer.Interfaces.Token;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.SystemLogs;
 using TransitNova.Domain.Enums.Users;
@@ -200,7 +202,7 @@ public sealed class RegisterUserCommandHandlerTests
                 PhoneNumber = "+201001234567",
                 FirstName = "Mona",
                 LastName = "Ali",
-                Address = "Cairo",
+                Address = AddressDto.FromDomain(Address.Create("Cairo", null, "Main Street")),
                 CityId = 1,
                 UserType = userType
             };

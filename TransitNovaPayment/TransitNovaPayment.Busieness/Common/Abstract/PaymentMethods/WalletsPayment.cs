@@ -1,4 +1,5 @@
-﻿using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
+﻿using TransitNovaPayment.Busieness.Common.Abstract.Abstraction;
+using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
 namespace TransitNovaPayment.Busieness.Common.Abstract.PaymentMethods
 {
     internal class WalletsPayment : PaymentMethodService

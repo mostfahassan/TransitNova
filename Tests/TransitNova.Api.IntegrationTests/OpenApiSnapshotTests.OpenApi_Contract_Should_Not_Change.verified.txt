@@ -16526,6 +16526,9 @@
           }
         }
       },
+      "BundleTier": {
+        "type": "integer"
+      },
       "CarrierSortBy": {
         "type": "integer"
       },
@@ -16568,13 +16571,8 @@
           "bundleName": {
             "type": "string"
           },
-          "totalWeight": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
-            "format": "double"
+          "bundleDescription": {
+            "type": "string"
           },
           "bundlePrice": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
@@ -16584,10 +16582,26 @@
             ],
             "format": "double"
           },
-          "bundleDescription": {
-            "type": "string"
+          "tier": {
+            "$ref": "#/components/schemas/BundleTier"
           },
-          "totalDistance": {
+          "bundleDurationMonths": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maxShipmentsPerMonth": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maxWeightPerShipment": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "number",
@@ -16595,13 +16609,29 @@
             ],
             "format": "double"
           },
-          "totalShipments": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
+          "maxDistancePerShipment": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
-              "integer",
+              "number",
               "string"
             ],
-            "format": "int32"
+            "format": "double"
+          },
+          "discountPercentage": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "minimumShipmentValueForDiscount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -16679,7 +16709,6 @@
           "shipmentDeliveryType",
           "deliveryAddress",
           "pickupAddress",
-          "packageBundleId",
           "paymentId",
           "paymentMethod"
         ],
@@ -16712,13 +16741,6 @@
           },
           "pickupAddress": {
             "type": "string"
-          },
-          "packageBundleId": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "uuid"
           },
           "paymentId": {
             "type": "string",
@@ -17093,16 +17115,15 @@
       "UpdateBundleDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
           "bundleName": {
             "type": "string"
           },
-          "totalWeight": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
-            "format": "double"
+          "bundleDescription": {
+            "type": "string"
           },
           "bundlePrice": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
@@ -17112,10 +17133,26 @@
             ],
             "format": "double"
           },
-          "bundleDescription": {
-            "type": "string"
+          "tier": {
+            "$ref": "#/components/schemas/BundleTier"
           },
-          "totalDistance": {
+          "bundleDurationMonths": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maxShipmentsPerMonth": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "maxWeightPerShipment": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "number",
@@ -17123,13 +17160,29 @@
             ],
             "format": "double"
           },
-          "totalShipments": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
+          "maxDistancePerShipment": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
-              "integer",
+              "number",
               "string"
             ],
-            "format": "int32"
+            "format": "double"
+          },
+          "discountPercentage": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "minimumShipmentValueForDiscount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },

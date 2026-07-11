@@ -15,11 +15,15 @@ public static class PrefillViewModelFactory
     {
         BundleId = bundleId,
         BundleName = source.BundleName,
-        TotalWeight = source.TotalWeight,
-        BundlePrice = source.BundlePrice,
         BundleDescription = source.BundleDescription,
-        TotalDistance = source.TotalDistance,
-        TotalShipments = source.TotalShipments
+        BundlePrice = source.BundlePrice,
+        Tier = source.Tier,
+        BundleDurationMonths = source.BundleDurationMonths,
+        MaxShipmentsPerMonth = source.MaxShipmentsPerMonth,
+        MaxWeightPerShipment = source.MaxWeightPerShipment,
+        MaxDistancePerShipment = source.MaxDistancePerShipment,
+        DiscountPercentage = source.DiscountPercentage,
+        MinimumShipmentValueForDiscount = source.MinimumShipmentValueForDiscount
     };
 
     public static CityFormViewModel City(UiCityDto source) => new()
@@ -52,8 +56,8 @@ public static class PrefillViewModelFactory
     public static UpdateShipmentViewModel Shipment(UiRetrieveShipmentDto source) => new()
     {
         ReceiverId = source.ReceiverId,
-        DeliveryAddress = source.DeliveryAddress,
-        PickupAddress = source.PickupAddress,
+        DeliveryAddress = AddressViewModel.FromDto(source.DeliveryAddress),
+        PickupAddress = AddressViewModel.FromDto(source.PickupAddress),
         PackageSpecification = new PackageSpecificationViewModel
         {
             Weight = source.PackageSpecification.Weight,
@@ -76,7 +80,7 @@ public static class PrefillViewModelFactory
             LastName = names.LastName,
             PhoneNumber = source.PhoneNumber,
             Email = source.Email,
-            Address = source.Address
+            Address = AddressViewModel.FromDto(source.Address)
         };
     }
 

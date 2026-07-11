@@ -6,6 +6,6 @@ using TransitNova.BusinessLayer.DTOs.Payment;
 namespace TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment
 {
     public record CreateShipmentCommand(Guid RequestId , CreateShipmentDto Dto ,Guid AppUserId)
-        : IdempotentCommand<Result<PaymentInvoiceDto>>(RequestId), ICacheInvalidator;
+        : IdempotentCommand<Result<ShipmentPaymentInvoiceDto>>(RequestId), ICacheInvalidator;
 }
 

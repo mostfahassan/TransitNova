@@ -12,9 +12,8 @@ namespace TransitNova.BusinessLayer.DTOs.Shipment
         DateTime? PickUpDate,
         TransportationMode TransportationMode,
         enShipmentType ShipmentDeliveryType,
-        string DeliveryAddress,
-        string PickupAddress,
-        Guid? PackageBundleId,
+        AddressDto DeliveryAddress,
+        AddressDto PickupAddress,
         Guid PaymentId ,
         PaymentMethod PaymentMethod
 

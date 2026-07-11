@@ -1,10 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
+using TransitNovaUI.BusinessLayer.ApiImplementation.User.Bundles.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.CarrierRatings.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.Profile.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.PaymentInvoices.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.Shipments.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.Shipments.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.User.Subscriptions.Command;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Bundles.Queries;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Bundles.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.CarrierRatings.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.Profile.Queries;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.PaymentInvoices.Queries;
@@ -40,6 +43,11 @@ public static class UserApiClientRegistrationExtensions
         services.AddScoped<IIssueShipmentCommandService, UserShipmentsCommand>();
         services.AddScoped<IUpdateShipmentCommandService, UserShipmentsCommand>();
 
+        services.AddScoped<UserBundlesQuery>();
+        services.AddScoped<IUserBundlesQuery, UserBundlesQuery>();
+        services.AddScoped<IGetUserBundleByIdQueryService, UserBundlesQuery>();
+        services.AddScoped<IGetUserBundlesQueryService, UserBundlesQuery>();
+
         services.AddScoped<UserPaymentInvoicesQuery>();
         services.AddScoped<IUserPaymentInvoicesQuery, UserPaymentInvoicesQuery>();
         services.AddScoped<IGetUserPaymentInvoiceQueryService, UserPaymentInvoicesQuery>();
@@ -59,5 +67,6 @@ public static class UserApiClientRegistrationExtensions
         return services;
     }
 }
+
 
 

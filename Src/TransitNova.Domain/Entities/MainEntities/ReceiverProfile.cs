@@ -13,7 +13,7 @@ namespace TransitNova.Domain.Entities.MainEntities
 
         }
 
-        private ReceiverProfile(string firstName, string lastName, string email, string phone, string address, int cityId, Guid senderId)
+        private ReceiverProfile(string firstName, string lastName, string email, string phone, Address address, int cityId, Guid senderId)
         {
             Id  = Guid.CreateVersion7();
             FirstName = firstName;
@@ -27,7 +27,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             CurrentState = true;
         }
 
-        public static ReceiverProfile Create(string firstName, string lastName, string email, string phone, string address, int cityId, Guid senderId)
+        public static ReceiverProfile Create(string firstName, string lastName, string email, string phone, Address address, int cityId, Guid senderId)
         {
             return new ReceiverProfile(firstName, lastName, email, phone, address, cityId, senderId);
 

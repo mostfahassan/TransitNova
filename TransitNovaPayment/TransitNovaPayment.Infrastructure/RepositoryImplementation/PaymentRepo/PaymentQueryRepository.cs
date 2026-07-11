@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Repositories.PaymentRepository;
-using TransitNovaPayment.Busieness.Common.DTO.PaymentHistoryDto;
 using TransitNovaPayment.Busieness.Common.ResultResponse.PagedResults;
+using TransitNovaPayment.Busieness.DTO.PaymentHistoryDto;
 using TransitNovaPayment.Busieness.Models.PaymentHistoryEntity;
+using TransitNovaPayment.Busieness.Repositories.PaymentRepository;
 using TransitNovaPayment.Infrastructure.Context;
 namespace TransitNovaPayment.Infrastructure.RepositoryImplementation.PaymentRepo
 {

@@ -1,4 +1,4 @@
-﻿namespace TransitNova.Domain.Contracts.Permissions
+namespace TransitNova.Domain.Contracts.Permissions
 {
     public static class UserPermissions
     {
@@ -13,6 +13,7 @@
         public const string UserCanIssueShipment = "User.IssueShipment";
         public const string UserCanUpdateProfile = "User.UpdateProfile";
         public const string UserCanViewProfile = "User.ViewProfile";
+        public const string UserCanViewBundles = "User.ViewBundles";
         public const string UserCanSubscribeBundle = "User.SubscribeBundle";
         public const string UserCanUnsubscribeFromBundle = "User.UnSubscribeBundle";
         public const string UserCanRateCarrier = "User.ReviewCarrier";
@@ -31,6 +32,7 @@
                     UserCanIssueShipment,
                     UserCanUpdateProfile,
                     UserCanViewProfile,
+                    UserCanViewBundles,
                     UserCanSubscribeBundle,
                     UserCanUnsubscribeFromBundle,
                     UserCanRateCarrier,
@@ -39,3 +41,4 @@
                 ];
     }
 }
+

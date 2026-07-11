@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Logging;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Repositories.PaymentRepository;
 using TransitNovaPayment.Busieness.Common.CQRS;
-using TransitNovaPayment.Busieness.Common.DTO.PaymentHistoryDto;
 using TransitNovaPayment.Busieness.Common.ResultResponse.PagedResults;
+using TransitNovaPayment.Busieness.DTO.PaymentHistoryDto;
+using TransitNovaPayment.Busieness.Repositories.PaymentRepository;
 using TransitNovaPayment.Busieness.Services.Payment.Query;
+
 namespace TransitNovaPayment.Busieness.Services.Payment.Handler.QueriesHandler
 {
     internal sealed class FilterPaymentsHandler(

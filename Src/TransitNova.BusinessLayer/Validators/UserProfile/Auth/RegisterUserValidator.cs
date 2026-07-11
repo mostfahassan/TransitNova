@@ -1,6 +1,7 @@
-﻿using FluentValidation;
+using FluentValidation;
 using System.Text.RegularExpressions;
 using TransitNova.BusinessLayer.DTOs.UserProfile.Auth;
+using TransitNova.BusinessLayer.Validators.AddressValidator;
 namespace TransitNova.BusinessLayer.Validators.UserProfile.Auth
 {
     public class RegisterUserValidator : AbstractValidator<RegisterDto>
@@ -99,6 +100,10 @@ namespace TransitNova.BusinessLayer.Validators.UserProfile.Auth
                 .WithMessage("Last Name can only contain letters and spaces.");
 
 
+
+            RuleFor(u => u.Address)
+                .NotNull().WithMessage("Address is required.")
+                .SetValidator(new AddressDtoValidator());
 
             // CityId validation rules:
             RuleFor(u => u.CityId)

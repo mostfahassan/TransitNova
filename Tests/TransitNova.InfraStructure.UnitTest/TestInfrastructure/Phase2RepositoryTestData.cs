@@ -53,8 +53,13 @@ internal static class Phase2RepositoryTestData
     {
         await EnsureSqliteRowVersionDefaultAsync(fixture, "Warehouses");
         var manager = await AddWarehouseManagerAsync(fixture);
+
+        // تعديل هنا: إنشاء Address للـ Warehouse
+        var warehouseAddress = Address.Create("Cairo Hub Main Address", null, "Central Hub Street");
+
         var warehouse = Warehouse.Create(
-            name, WarehouseType.MainWarehouse, 1_000m, 100m, 24, "Cairo", Guid.NewGuid(), manager.Id);
+            name, WarehouseType.MainWarehouse, 1_000m, 100m, 24, warehouseAddress, Guid.NewGuid(), manager.Id);
+
         typeof(Warehouse).GetProperty(nameof(Warehouse.RowVersion))!.SetValue(warehouse, new byte[] { 1 });
         if (zone is not null)
             warehouse.AddZone(zone);
@@ -83,13 +88,16 @@ internal static class Phase2RepositoryTestData
         fixture.Context.AppUsers.Add(appUser);
         await fixture.Context.SaveChangesAsync();
 
+        // تعديل هنا: إنشاء Address للـ Warehouse Manager
+        var managerAddress = Address.Create($"Cairo Manager HQ {suffix}", null, "Manager Street");
+
         var manager = WarehouseManagerProfile.Create(
             appUser.Id,
             "Warehouse",
             $"Manager {suffix}",
             appUser.Email!,
             "01000000001",
-            "Cairo",
+            managerAddress,
             location.City.Id);
 
         fixture.Context.WarehouseManagersProfiles.Add(manager);
@@ -114,8 +122,11 @@ internal static class Phase2RepositoryTestData
         fixture.Context.AppUsers.Add(appUser);
         await fixture.Context.SaveChangesAsync();
 
+        // تعديل هنا: إنشاء Address للـ User
+        var userAddress = Address.Create($"Cairo User Block {suffix}", null, "User Main Street");
+
         var profile = UserProfile.Create(
-            appUser.Id, "Amina", suffix, appUser.Email!, "01000000000", "Cairo", city.Id);
+            appUser.Id, "Amina", suffix, appUser.Email!, "01000000000", userAddress, city.Id);
         fixture.Context.UserProfiles.Add(profile);
         await fixture.Context.SaveChangesAsync();
         return (appUser, profile);
@@ -138,8 +149,13 @@ internal static class Phase2RepositoryTestData
         };
         fixture.Context.AppUsers.Add(appUser);
         await fixture.Context.SaveChangesAsync();
+
+        // تعديل هنا: إنشاء Address للـ Carrier
+        var carrierAddress = Address.Create($"Cairo Carrier Hub {suffix}", null, "Carrier Logistics Street");
+
         var carrier = Carrier.Create(
-            appUser.Id, "Omar", suffix, appUser.Email!, "01100000000", "Cairo", city.Id);
+            appUser.Id, "Omar", suffix, appUser.Email!, "01100000000", carrierAddress, city.Id);
+
         carrier.AddAdditionalData(
             appUser.Id, $"LIC-{suffix}", 20, 12.5m, 5, DateTime.UtcNow.Date, 1, null);
         typeof(Carrier).GetProperty(nameof(Carrier.RowVersion))!.SetValue(carrier, new byte[] { 1 });
@@ -152,21 +168,26 @@ internal static class Phase2RepositoryTestData
         SqliteAppDbContextFixture fixture, UserProfile sender, City city)
     {
         await EnsureSqliteRowVersionDefaultAsync(fixture, "Shipments");
+
+        // تعديل هنا: إنشاء Address للـ Receiver، والـ Delivery والـ Pickup
+        var receiverAddress = Address.Create("Giza Main District", null, "Receiver Street");
+        var deliveryAddress = Address.Create("123 Delivery St", "Floor 4", "Delivery Main Highway");
+        var pickupAddress = Address.Create("456 Pickup Hub", null, "Pickup Warehouse Road");
+
         var receiver = ReceiverProfile.Create(
-            "Mona", "Ali", "mona@example.com", "01200000000", "Giza", city.Id, sender.Id);
+            "Mona", "Ali", "mona@example.com", "01200000000", receiverAddress, city.Id, sender.Id);
         receiver.Sender = sender;
+
         var shipment = Shipment.Create(
             sender.Id,
             receiver,
             new PackageSpecification(10, 10, 10, 5),
             Currency.EGP,
             DateTime.UtcNow.AddDays(1),
-            "Delivery Address",
-            "Pickup Address",
+            deliveryAddress,
+            pickupAddress,
             enShipmentType.Standard,
             TransportationMode.Land,
-            null,
-            Guid.NewGuid(),
             PaymentMethod.CreditCard);
 
         typeof(Shipment).GetProperty(nameof(Shipment.Sender))!.SetValue(shipment, sender);

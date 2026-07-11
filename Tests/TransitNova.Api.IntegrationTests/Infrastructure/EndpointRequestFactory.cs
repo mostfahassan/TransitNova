@@ -1,7 +1,9 @@
 using System.Net.Http.Json;
 using System.Threading;
+using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.DTOs.UserProfile.Auth;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Users;
 
@@ -74,7 +76,7 @@ internal static class EndpointRequestFactory
             PhoneNumber = $"+20100{sequence:0000000}",
             FirstName = "Contract",
             LastName = "User",
-            Address = "Integration Address",
+            Address = AddressDto.FromDomain(Address.Create("Integration Address", null, "Integration Street")),
             UserType = UserType.User,
             CityId = cityId
         };

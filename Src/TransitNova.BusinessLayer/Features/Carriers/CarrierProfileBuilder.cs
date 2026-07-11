@@ -1,4 +1,5 @@
-﻿using TransitNova.BusinessLayer.DTOs.Carrier;
+using TransitNova.BusinessLayer.Common.CommonData;
+using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.Domain.Entities.MainEntities;
 
 namespace TransitNova.BusinessLayer.Features.Carriers
@@ -13,7 +14,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers
                 FullName = carrier.FullName,
                 Email = carrier.Email,
                 PhoneNumber = carrier.PhoneNumber,
-                Address = carrier.Address,
+                Address = AddressDto.FromDomain(carrier.Address),
                 UserType = carrier.UserType,
                 CityName = carrier.City?.Name ?? string.Empty,
                 GovernmentName = carrier.City?.Government?.Name ?? string.Empty,

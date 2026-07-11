@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Repositories.PaymentRepository;
+using TransitNovaPayment.Busieness.Interfaces.Common;
+using TransitNovaPayment.Busieness.Repositories.PaymentRepository;
 using TransitNovaPayment.Infrastructure.Context;
 using TransitNovaPayment.Infrastructure.RepositoryImplementation;
 using TransitNovaPayment.Infrastructure.RepositoryImplementation.PaymentRepo;

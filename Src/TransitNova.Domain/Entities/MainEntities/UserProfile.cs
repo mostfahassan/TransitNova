@@ -16,7 +16,7 @@ namespace TransitNova.Domain.Entities.MainEntities
 
         }
 
-        private UserProfile(Guid Id, string firstName, string lastName, string email, string phone, string address, int cityId)
+        private UserProfile(Guid Id, string firstName, string lastName, string email, string phone, Address address, int cityId)
         {
             this.Id = Guid.CreateVersion7();
             FirstName = firstName;
@@ -29,14 +29,12 @@ namespace TransitNova.Domain.Entities.MainEntities
             CityId = cityId;
             CurrentState = true;
         }
-        public static UserProfile Create(Guid Id, string firstName, string lastName, string email, string phone, string address, int cityId)
+        public static UserProfile Create(Guid Id, string firstName, string lastName, string email, string phone, Address address, int cityId)
         {
             var user = new UserProfile(Id, firstName, lastName, email, phone, address, cityId);
             user.RaiseDomainEvent(new UserRegisteredDomainEvent(user.Id, email, user.FullName,phone, user.UserType));
             return user;
         }
-
-
     }
 }
 

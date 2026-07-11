@@ -8,7 +8,7 @@ namespace TransitNova.BusinessLayer.Validators.PaymentValidators
 
         public CratePaymentDtoValidator()
         {
-            RuleFor(x => x.ShipmentId)
+            RuleFor(x => x.ReferenceId)
                 .NotEmpty()
                 .WithErrorCode($"{ErrorCode.REQUIRED_FIELD}");
 
@@ -16,13 +16,14 @@ namespace TransitNova.BusinessLayer.Validators.PaymentValidators
                 .IsInEnum()
                 .WithErrorCode($"{ErrorCode.REQUIRED_FIELD}");
 
-            RuleFor(x => x.ShippingCost)
+            RuleFor(x => x.Cost)
                 .GreaterThan(0)
-                .WithMessage("Shipping cost must be greater than zero.");
+                .WithMessage("Cost must be greater than zero.");
 
-            RuleFor(x => x.ShippingCost)
-                .LessThanOrEqualTo(100_000)
-                .WithMessage("Shipping cost exceeds the allowed limit.");
+            RuleFor(x => x.Currency)
+                .IsInEnum()
+                .WithMessage("Currency must be a valid enum value.");
+
         }
 
     }

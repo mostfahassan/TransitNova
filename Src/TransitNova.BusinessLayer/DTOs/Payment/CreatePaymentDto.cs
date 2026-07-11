@@ -5,10 +5,10 @@ namespace TransitNova.BusinessLayer.DTOs.Payment
 {
     public sealed record CreatePaymentDto
     {
-        public Guid ShipmentId { get; init; }
+        public Guid ReferenceId { get; init; }
         public PaymentMethod PaymentMethod { get; init; }
         public Currency Currency { get; init; }
-        public decimal ShippingCost { get; init; }
+        public decimal Cost { get; init; }
     }
 
 }

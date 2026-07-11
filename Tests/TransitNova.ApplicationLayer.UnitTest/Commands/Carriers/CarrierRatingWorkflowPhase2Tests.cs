@@ -1,7 +1,7 @@
-using System.Linq.Expressions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Linq.Expressions;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Carrier;
 using TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler.Carrier;
@@ -10,6 +10,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Result;
 
@@ -145,7 +146,7 @@ public sealed class CarrierRatingWorkflowPhase2Tests
     private sealed class PickupRatingFixture
     {
         public Carrier Carrier { get; } = Carrier.Create(
-            Guid.NewGuid(), "Ahmed", "Ali", "carrier@example.com", "01000000000", "Cairo", 1);
+             Guid.NewGuid(), "Ahmed", "Ali", "carrier@example.com", "01000000000", Address.Create("Cairo", null, "Carrier Street"), 1);
         public RatingCarrierDto Dto { get; }
         public RatePickupCarrierCommand Command { get; }
         public Mock<IShipmentRulesRepository> ShipmentRules { get; } = new();
@@ -174,7 +175,7 @@ public sealed class CarrierRatingWorkflowPhase2Tests
     private sealed class DeliveryRatingFixture
     {
         public Carrier Carrier { get; } = Carrier.Create(
-            Guid.NewGuid(), "Ahmed", "Ali", "carrier@example.com", "01000000000", "Cairo", 1);
+            Guid.NewGuid(), "Ahmed", "Ali", "carrier@example.com", "01000000000", Address.Create("Cairo", null, "Main Street")  , 1);
         public RatingCarrierDto Dto { get; }
         public RateDeliveryCarrierCommand Command { get; }
         public Mock<IShipmentRulesRepository> ShipmentRules { get; } = new();

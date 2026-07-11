@@ -10,6 +10,7 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.DomainExceptions;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Result;
@@ -156,7 +157,7 @@ public sealed class CarrierCommandHandlerTests
     }
 
     private static Carrier CreateCarrier(Guid userId) =>
-        Carrier.Create(userId, "Ahmed", "Ali", "carrier@example.com", "01000000000", "Cairo", 1);
+        Carrier.Create(userId, "Ahmed", "Ali", "carrier@example.com", "01000000000", Address.Create("Cairo", null, "Main Street"), 1);
 
     private static AdditionalInfoDto ValidInfo() => new()
     {

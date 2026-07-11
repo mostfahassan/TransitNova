@@ -17,7 +17,7 @@ namespace TransitNova.InfraStructure.Common.StrategyFactory.ApplyingStrategies
                 dto.LastName,
                 dto.Email,
                 dto.PhoneNumber,
-                dto.Address,
+                dto.Address.ToDomain(),
                 dto.CityId);
             await context.Carriers.AddAsync(carrier, cancellationToken);
         }

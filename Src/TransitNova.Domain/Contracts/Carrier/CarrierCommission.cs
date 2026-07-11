@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TransitNova.Domain.Contracts.Carrier
+﻿namespace TransitNova.Domain.Contracts.Carrier
 {
     public static class CarrierCommission
     {

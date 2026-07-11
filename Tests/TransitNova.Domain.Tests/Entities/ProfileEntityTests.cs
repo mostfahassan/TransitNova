@@ -1,4 +1,5 @@
 using FluentAssertions;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Users;
 
@@ -11,7 +12,7 @@ public sealed class ProfileEntityTests
     {
         var appUserId = Guid.NewGuid();
 
-        var profile = UserProfile.Create(appUserId, "Omar", "Ali", "omar@example.com", "0100", "Cairo", 1);
+        var profile = UserProfile.Create(appUserId, "Omar", "Ali", "omar@example.com", "0100", Address.FromLegacy("Cairo"), 1);
 
         profile.Id.Should().NotBeEmpty();
         profile.AppUserId.Should().Be(appUserId);
@@ -25,7 +26,7 @@ public sealed class ProfileEntityTests
     {
         var senderId = Guid.NewGuid();
 
-        var profile = ReceiverProfile.Create("Mona", "Ali", "mona@example.com", "0101", "Giza", 2, senderId);
+        var profile = ReceiverProfile.Create("Mona", "Ali", "mona@example.com", "0101", Address.FromLegacy("Giza"), 2, senderId);
 
         profile.Id.Should().NotBeEmpty();
         profile.SenderId.Should().Be(senderId);
@@ -38,7 +39,7 @@ public sealed class ProfileEntityTests
     {
         var appUserId = Guid.NewGuid();
 
-        var profile = AdminProfile.Create(appUserId, "Aya", "Hassan", "aya@example.com", "0102", "Cairo", 1);
+        var profile = AdminProfile.Create(appUserId, "Aya", "Hassan", "aya@example.com", "0102", Address.FromLegacy("Cairo"), 1);
 
         profile.AppUserId.Should().Be(appUserId);
         profile.UserType.Should().Be(UserType.Admin);
@@ -51,7 +52,7 @@ public sealed class ProfileEntityTests
     {
         var appUserId = Guid.NewGuid();
 
-        var profile = OperationManagerProfile.Create(appUserId, "Ali", "Samir", "ali@example.com", "0103", "Cairo", 1);
+        var profile = OperationManagerProfile.Create(appUserId, "Ali", "Samir", "ali@example.com", "0103", Address.FromLegacy("Cairo"), 1);
 
         profile.Id.Should().NotBeEmpty();
         profile.AppUserId.Should().Be(appUserId);

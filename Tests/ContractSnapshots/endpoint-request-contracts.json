@@ -19,11 +19,15 @@
         "Signatures": [
           "$: object(CreateBundleDto) nullable=false required=true",
           "$.bundleDescription: string nullable=false required=false",
+          "$.bundleDurationMonths: integer nullable=false required=false",
           "$.bundleName: string nullable=false required=false",
           "$.bundlePrice: number(decimal) nullable=false required=false",
-          "$.totalDistance: number(decimal) nullable=false required=false",
-          "$.totalShipments: integer nullable=false required=false",
-          "$.totalWeight: number(decimal) nullable=false required=false"
+          "$.discountPercentage: number(decimal) nullable=false required=false",
+          "$.maxDistancePerShipment: number(decimal) nullable=false required=false",
+          "$.maxShipmentsPerMonth: integer nullable=false required=false",
+          "$.maxWeightPerShipment: number(decimal) nullable=false required=false",
+          "$.minimumShipmentValueForDiscount: number(decimal) nullable=false required=false",
+          "$.tier: enum(BundleTier)[Standard|Pro|Plus|Enterprise] serialization=string nullable=false required=false"
         ]
       },
       {
@@ -96,11 +100,16 @@
         "Signatures": [
           "$: object(UpdateBundleDto) nullable=false required=true",
           "$.bundleDescription: string nullable=false required=false",
+          "$.bundleDurationMonths: integer nullable=false required=false",
           "$.bundleName: string nullable=false required=false",
           "$.bundlePrice: number(decimal) nullable=false required=false",
-          "$.totalDistance: number(decimal) nullable=false required=false",
-          "$.totalShipments: integer nullable=false required=false",
-          "$.totalWeight: number(decimal) nullable=false required=false"
+          "$.discountPercentage: number(decimal) nullable=false required=false",
+          "$.id: guid nullable=false required=false",
+          "$.maxDistancePerShipment: number(decimal) nullable=false required=false",
+          "$.maxShipmentsPerMonth: integer nullable=false required=false",
+          "$.maxWeightPerShipment: number(decimal) nullable=false required=false",
+          "$.minimumShipmentValueForDiscount: number(decimal) nullable=false required=false",
+          "$.tier: enum(BundleTier)[Standard|Pro|Plus|Enterprise] serialization=string nullable=false required=false"
         ]
       },
       {
@@ -2569,8 +2578,40 @@
         "Signatures": []
       },
       {
+        "Name": "dto",
+        "Source": "Body",
+        "ClrType": "SubscribeToBundleDto",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(SubscribeToBundleDto) nullable=false required=true",
+          "$.paymentMethod: enum(PaymentMethod)[CreditCard|PayPal|MobileWallets] serialization=string nullable=false required=false"
+        ]
+      },
+      {
         "Name": "requestId",
         "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/bundles",
+    "EndpointName": "Get User Bundles",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/users/bundles/{bundleId:guid}",
+    "EndpointName": "Get User Bundle",
+    "Parameters": [
+      {
+        "Name": "bundleId",
+        "Source": "Path",
         "ClrType": "Guid",
         "IsNullable": false,
         "IsOptional": false,
@@ -2626,7 +2667,6 @@
           "$: object(CreateShipmentDto) nullable=false required=true",
           "$.currency: enum(Currency)[EGP|USD|EUR] serialization=string nullable=false required=false",
           "$.deliveryAddress: string nullable=false required=false",
-          "$.packageBundleId: guid nullable=true required=false",
           "$.packageSpecification: object(PackageSpecificationDto) nullable=false required=false",
           "$.packageSpecification.height: number(decimal) nullable=false required=false",
           "$.packageSpecification.length: number(decimal) nullable=false required=false",

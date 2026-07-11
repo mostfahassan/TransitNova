@@ -18,9 +18,8 @@ namespace TransitNova.BusinessLayer.Validators.WarehouseValidators
                 .WithMessage("Warehouse type is invalid.");
 
             RuleFor(w => w.Address)
-                .NotEmpty()
+                .NotNull()
                 .WithMessage("Warehouse address is required.")
-                .MaximumLength(200)
                 .WithMessage("Warehouse address must not exceed 200 characters.");
 
             RuleFor(w => w.Capacity)

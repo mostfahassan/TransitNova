@@ -1,15 +1,17 @@
 
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using Bogus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
+using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.Domain.Contracts.DomainEvents;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums.Bundle;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
@@ -180,14 +182,14 @@ namespace TransitNova.InfraStructure.Context.Seeder
                 return created;
             }
 
-            private List<Bundle> CreateBundles(Guid adminId)
+            static List<Bundle> CreateBundles(Guid adminId)
             {
                 var bundles = new List<Bundle>
-                {
-                    Bundle.Create(adminId.ToString(), "Starter Shipping Bundle", 1499m, "25 standard shipments, city-to-city support, basic tracking, and email notifications.", 250m, 1200m, 25),
-                    Bundle.Create(adminId.ToString(), "Growth Logistics Bundle", 3999m, "80 mixed shipments, priority pickup windows, warehouse handoff support, and operational reporting.", 950m, 4500m, 80),
-                    Bundle.Create(adminId.ToString(), "Enterprise Express Bundle", 8999m, "220 express/fragile shipments, dedicated review, premium support, analytics, and SLA monitoring.", 3200m, 15000m, 220)
-                };
+                 {
+                    Bundle.Create(adminId.ToString(), "Starter Shipping Bundle", "25 standard shipments, city-to-city support, basic tracking, and email notifications.", 1499m, BundleTier.Standard, 1, 25, 250m, 1200m, 5m, 100m),
+                    Bundle.Create(adminId.ToString(), "Growth Logistics Bundle", "80 mixed shipments, priority pickup windows, warehouse handoff support, and operational reporting.", 3999m, BundleTier.Pro, 3, 80, 950m, 4500m, 10m, 500m),
+                    Bundle.Create(adminId.ToString(), "Enterprise Express Bundle", "220 express/fragile shipments, dedicated review, premium support, analytics, and SLA monitoring.", 8999m, BundleTier.Plus, 6, 220, 3200m, 15000m, 15m, 1000m)
+                 };
 
                 for (var i = 0; i < bundles.Count; i++)
                 {
@@ -395,7 +397,7 @@ namespace TransitNova.InfraStructure.Context.Seeder
 
             private static string First(AppUser user) => (user.FullName ?? "Transit Nova").Split(' ', StringSplitOptions.RemoveEmptyEntries).First();
             private static string Last(AppUser user) => (user.FullName ?? "Transit Nova").Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1).FirstOrDefault() ?? "Transit";
-            private string Addr(City city) => $"{_faker.Address.StreetAddress()}, {city.Name}";
+            private Address Addr(City city) => Address.Create($"{city.Name} Logistics District", null, _faker.Address.StreetAddress());
         }
 
         private sealed class ZoneFaker : Faker<Zone>
@@ -417,7 +419,16 @@ namespace TransitNova.InfraStructure.Context.Seeder
             {
                 var type = index < 3 ? WarehouseType.MainWarehouse : WarehouseType.BranchWarehouse;
                 var capacity = type == WarehouseType.MainWarehouse ? _faker.Random.Decimal(25000, 50000) : _faker.Random.Decimal(6000, 18000);
-                var warehouse = Warehouse.Create($"{city.Name} {(type == WarehouseType.MainWarehouse ? "Main Hub" : "Branch")}", type, Math.Round(capacity, 2), Math.Round(capacity * _faker.Random.Decimal(0.35m, 0.88m), 2), _faker.Random.Int(10, 24), $"{_faker.Address.StreetAddress()}, {city.Name}", admin.Id, manager.Id);
+                var warehouse = Warehouse.Create(
+                        $"{city.Name} {(type == WarehouseType.MainWarehouse ? "Main Hub" : "Branch")}",
+                        type,
+                        Math.Round(capacity, 2),
+                        Math.Round(capacity * _faker.Random.Decimal(0.35m, 0.88m), 2),
+                        _faker.Random.Int(10, 24),
+                        Address.Create(_faker.Address.StreetAddress(), "Cairo City", city.Name),
+                        admin.Id,
+                        manager.Id
+                        );
                 Reflect.Set(warehouse, nameof(Warehouse.Id), Reflect.Guid("warehouse", index));
                 Reflect.Dates(warehouse, SeedClock.AddDays(-(index % 80)), admin.Id);
                 return warehouse;
@@ -429,7 +440,7 @@ namespace TransitNova.InfraStructure.Context.Seeder
             private readonly Faker _faker = new("en");
             public Carrier Create(AppUser user, City city, Warehouse warehouse, int index)
             {
-                var carrier = Carrier.Create(user.Id, First(user), Last(user), user.Email!, user.PhoneNumber!, $"{_faker.Address.StreetAddress()}, {city.Name}", city.Id);
+                var carrier = Carrier.Create(user.Id, First(user), Last(user), user.Email!, user.PhoneNumber!, Address.Create($"{city.Name} Carrier Address", null, _faker.Address.StreetAddress()), city.Id);
                 Reflect.Set(carrier, nameof(Carrier.Id), Reflect.Guid("carrier", index));
                 Reflect.Set(carrier, nameof(Carrier.Code), $"CR-SEED-{index:000}");
                 Reflect.Dates(carrier, SeedClock.AddDays(-(index % 70)), user.Id);
@@ -458,7 +469,7 @@ namespace TransitNova.InfraStructure.Context.Seeder
             private readonly Faker _faker = new("en");
             public ReceiverProfile Create(UserProfile sender, City city, int index)
             {
-                var receiver = ReceiverProfile.Create(_faker.Name.FirstName(), _faker.Name.LastName(), $"receiver.{index:00000}@{SeedEmailDomain}", Reflect.Phone(5000 + index), $"{_faker.Address.StreetAddress()}, {city.Name}", city.Id, sender.Id);
+                var receiver = ReceiverProfile.Create(_faker.Name.FirstName(), _faker.Name.LastName(), $"receiver.{index:00000}@{SeedEmailDomain}", Reflect.Phone(5000 + index), Address.Create($"{city.Name} Receiver Address", null, _faker.Address.StreetAddress()), city.Id, sender.Id);
                 Reflect.Set(receiver, nameof(ReceiverProfile.Id), Reflect.Guid("receiver", index));
                 Reflect.Dates(receiver, SeedClock.AddDays(-(index % 90)), sender.Id);
                 return receiver;
@@ -474,7 +485,7 @@ namespace TransitNova.InfraStructure.Context.Seeder
                 var mode = index % 13 == 0 ? TransportationMode.Air : TransportationMode.Land;
                 var weight = type == enShipmentType.Fragile ? _faker.Random.Decimal(1.2m, 14m) : _faker.Random.Decimal(0.5m, 38m);
                 var package = new PackageSpecification(Math.Round(weight, 2), Math.Round(_faker.Random.Decimal(15, 90), 2), Math.Round(_faker.Random.Decimal(10, 75), 2), Math.Round(_faker.Random.Decimal(10, 110), 2));
-                var shipment = Shipment.Create(sender.Id, receiver, package, Currency.EGP, SeedClock.AddDays(index % 21).AddHours(index % 9), $"{_faker.Address.StreetAddress()}, {receiverCity.Name}", $"{_faker.Address.StreetAddress()}, {senderCity.Name}", type, mode, bundle?.Id, Reflect.Guid("payment", index), (PaymentMethod)(index % 3));
+                var shipment = Shipment.Create(sender.Id, receiver, package, Currency.EGP, SeedClock.AddDays(index % 21).AddHours(index % 9), Address.Create($"{receiverCity.Name} Delivery Point", null, _faker.Address.StreetAddress()), Address.Create($"{senderCity.Name} Pickup Point", null, _faker.Address.StreetAddress()), type, mode,(PaymentMethod)(index % 3));
                 var cost = package.Weight * (type == enShipmentType.Express ? 32m : 18m) + (type == enShipmentType.Fragile ? 85m : 0m) + _faker.Random.Decimal(25, 160);
                 shipment.SetShipmentCost(Math.Round(cost, 2), SeedClock.AddDays(2 + index % 12));
                 Reflect.Set(shipment, nameof(Shipment.Id), Reflect.Guid("shipment", index));

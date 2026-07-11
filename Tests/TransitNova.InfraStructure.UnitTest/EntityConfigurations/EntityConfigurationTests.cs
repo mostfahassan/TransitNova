@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using TransitNova.Domain.Entities.MainEntities;
@@ -122,7 +122,7 @@ public sealed class EntityConfigurationTests
         await using var fixture = await SqliteAppDbContextFixture.CreateAsync();
         var entity = Entity<Bundle>(fixture);
 
-        entity.FindProperty(nameof(Bundle.BundleName))!.GetMaxLength().Should().Be(50);
+        entity.FindProperty(nameof(Bundle.BundleName))!.GetMaxLength().Should().Be(150);
         FindIndex(entity, nameof(Bundle.BundleName))!.IsUnique.Should().BeTrue();
         FindIndex(entity, nameof(Bundle.CurrentState), nameof(Bundle.CreatedAt)).Should().NotBeNull();
         FindIndex(entity, nameof(Bundle.BundlePrice), nameof(Bundle.CurrentState)).Should().NotBeNull();
@@ -136,3 +136,4 @@ public sealed class EntityConfigurationTests
         entity.GetIndexes().SingleOrDefault(index =>
             index.Properties.Select(property => property.Name).SequenceEqual(propertyNames));
 }
+

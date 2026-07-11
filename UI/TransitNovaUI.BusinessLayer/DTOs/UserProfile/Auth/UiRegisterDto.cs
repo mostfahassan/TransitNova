@@ -1,5 +1,6 @@
 using TransitNova.BusinessLayer.DTOs.UserProfile.Auth;
 using TransitNova.Domain.Enums.Users;
+using TransitNovaUI.BusinessLayer.Common.CommonData;
 namespace TransitNovaUI.BusinessLayer.DTOs.UserProfile.Auth;
 
 public sealed class UiRegisterDto
@@ -11,7 +12,7 @@ public sealed class UiRegisterDto
     public string PhoneNumber { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public string Address { get; set; } = string.Empty;
+    public UiAddressDto Address { get; set; } = new();
     public UserType UserType { get; set; }
     public int CityId { get; set; }
 
@@ -25,7 +26,7 @@ public sealed class UiRegisterDto
             PhoneNumber = source.PhoneNumber,
             FirstName = source.FirstName,
             LastName = source.LastName,
-            Address = source.Address,
+            Address = UiAddressDto.ToDto(source.Address),
             UserType = source.UserType,
             CityId = source.CityId
         };

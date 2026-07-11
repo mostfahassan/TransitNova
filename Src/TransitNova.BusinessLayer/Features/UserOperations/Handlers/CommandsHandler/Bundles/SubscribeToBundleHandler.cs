@@ -1,55 +1,35 @@
 using Microsoft.Extensions.Logging;
-using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.Caching;
+using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
+using TransitNova.BusinessLayer.DTOs.Payment;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Bundles;
-using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
-using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
-using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.BusinessLayer.Interfaces.Services.BundleService;
 using TransitNova.Domain.Contracts.Caching;
-using TransitNova.Domain.Entities.MainEntities;
+
 namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler.Bundles
 {
     public sealed class SubscribeToBundleHandler(
-        IGenericRepository<Bundle, Guid> bundleRepository,
-        IUserQueryRepository userRepository,
-        IUnitOfWork unitOfWork,
+        IBundleSubscription bundleSubscription,
         ILogger<SubscribeToBundleHandler> logger)
-        : ICommandHandler<SubscribeToBundleCommand, BaseResult>
+        : ICommandHandler<SubscribeToBundleCommand, Result<BundlePaymentInvoiceDto>>
     {
-        public async Task<BaseResult> Handle(SubscribeToBundleCommand request, CancellationToken cancellationToken)
+        public async Task<Result<BundlePaymentInvoiceDto>> Handle(SubscribeToBundleCommand request, CancellationToken cancellationToken)
         {
-            //====== Verify User Exists ======
-            var userId = await userRepository.GetAppUserIdAsync(request.UserId, cancellationToken);
-            if (userId == Guid.Empty)
+            var result = await bundleSubscription.HandleBundleSubscription(request.UserId, request.BundleId, request.Dto.PaymentMethod, cancellationToken);
+
+            if (result.IsSuccess)
             {
-                logger.LogWarning("User with ID {UserId} not found for bundle subscription", request.UserId);
-                return BaseResult.NotFound(Errors.UserNotFound($"User with ID {request.UserId} not found"));
+                logger.LogInformation("User {UserId} successfully subscribed to Bundle {BundleId}", request.UserId, request.BundleId);
+                CacheInvalidationContext.Set(
+                    request,
+                    CacheKeys.Users.Profile(request.UserId),
+                    CacheKeys.Users.AdminDetails(request.UserId),
+                    CacheKeys.Bundles.List,
+                    CacheKeys.Bundles.ById(request.BundleId));
             }
 
-            //====== Retrieve Bundle ======
-            var bundle = await bundleRepository.GetByIdAsync<Bundle>(request.BundleId, cancellationToken);
-            if (bundle is null)
-            {
-                logger.LogWarning("Bundle with ID {BundleId} not found for subscription", request.BundleId);
-                return BaseResult.NotFound(Errors.NotFound($"Bundle with ID {request.BundleId} not found"));
-            }
-
-            //====== Subscribe User to Bundle ======
-
-            bundle.Subscribe(request.UserId);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-
-            logger.LogInformation("User {UserId} successfully subscribed to Bundle {BundleId}", request.UserId, request.BundleId);
-            CacheInvalidationContext.Set(request, CacheKeys.Users.Profile(request.UserId), CacheKeys.Users.AdminDetails(request.UserId),
-                CacheKeys.Bundles.List, CacheKeys.Bundles.ById(request.BundleId));
-
-            return BaseResult.Success();
+            return result;
         }
-
-
     }
 }
-
-
-

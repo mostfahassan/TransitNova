@@ -12,7 +12,7 @@ namespace TransitNova.InfraStructure.Common.StrategyFactory.ApplyingStrategies
         public UserType UserType => UserType.OperationManager;
         public async Task ExecuteAsync(Guid userId, RegisterDto dto, CancellationToken cancellationToken)
         {
-            var op = OperationManagerProfile.Create(userId, dto.FirstName, dto.LastName, dto.Email, dto.PhoneNumber, dto.Address, dto.CityId);
+            var op = OperationManagerProfile.Create(userId, dto.FirstName, dto.LastName, dto.Email, dto.PhoneNumber, dto.Address.ToDomain(), dto.CityId);
             await context.OperationManagerProfiles.AddAsync(op, cancellationToken);
         }
     }

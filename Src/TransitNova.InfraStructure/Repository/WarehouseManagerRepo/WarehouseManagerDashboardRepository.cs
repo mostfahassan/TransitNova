@@ -4,20 +4,10 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseManagerReposito
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Trip;
 using TransitNova.InfraStructure.Context;
-
 namespace TransitNova.InfraStructure.Repository.WarehouseManagerRepo
 {
     internal sealed class WarehouseManagerDashboardRepository(IDbContextFactory<AppDbContext> contextFactory) : IWarehouseManagerDashboardRepository
     {
-        public async Task<int> ActiveCarriersAsync(Guid warehouseId, CancellationToken cancellationToken)
-        {
-            await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
-            return await context.Carriers
-                 .AsNoTracking()
-                 .Where(carrier => carrier.HomeWarehouseId == warehouseId && carrier.CurrentState)
-                 .CountAsync(cancellationToken);
-        }
-
         public async Task<IEnumerable<RecentShipmentSummary>> GetRecentShipmentSummaryAsync(Guid warehouseId, CancellationToken cancellationToken)
         {
             await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
@@ -53,38 +43,6 @@ namespace TransitNova.InfraStructure.Repository.WarehouseManagerRepo
                 })
                 .ToListAsync(cancellationToken);
         }
-
-        public async Task<Dictionary<ShipmentStatuses, int>> GetShipmentCountInStatusAsync(Guid warehouseId, CancellationToken cancellationToken)
-        {
-            await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
-
-            return await context.Shipments
-                    .AsNoTracking()
-                    .Where(shipment => shipment.Trip != null && shipment.Trip.WarehouseId == warehouseId)
-                    .GroupBy(st => st.CurrentStatus)
-                    .Select(g => new
-                    {
-                        Status = g.Key,
-                        Count = g.Count()
-                    })
-                    .ToDictionaryAsync(g => g.Status, g => g.Count, cancellationToken);
-        }
-        public async Task<Dictionary<TripStatus, int>> GetTripsCountInStatusAsync(Guid warehouseId, CancellationToken cancellationToken)
-        {
-            await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
-
-            return await context.Trips
-                    .AsNoTracking()
-                    .Where(trip => trip.WarehouseId == warehouseId)
-                    .GroupBy(st => st.Status)
-                    .Select(g => new
-                    {
-                        Status = g.Key,
-                        Count = g.Count()
-                    })
-                    .ToDictionaryAsync(g => g.Status, g => g.Count, cancellationToken);
-        }
-
         public async Task<WarehouseManagerSummary?> GetWarehouseManagerSummaryAsync(Guid managerId, CancellationToken cancellationToken)
         {
             await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
@@ -101,34 +59,27 @@ namespace TransitNova.InfraStructure.Repository.WarehouseManagerRepo
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<int> TotalCarriersAsync(Guid warehouseId, CancellationToken cancellationToken)
+    
+        public async Task<WarehouseManagerKpiDto> GetWarehouseStatsAsync(Guid warehouseId, CancellationToken cancellationToken)
         {
             await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
-            var carriers = await context.Carriers
-                 .AsNoTracking()
-                 .Where(carrier => carrier.HomeWarehouseId == warehouseId)
-                 .CountAsync(cancellationToken);
-            return carriers;
-        }
 
-        public async Task<int> TotalShipmentAsync(Guid warehouseId, CancellationToken cancellationToken)
-        {
-            await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
-            var shipments = await context.Shipments
-               .AsNoTracking()
-               .Where(shipment => shipment.Trip != null && shipment.Trip.WarehouseId == warehouseId)
-               .CountAsync (cancellationToken);
-            return shipments;
-        }
-
-        public async Task<int> TotalTripsAsync(Guid warehouseId, CancellationToken cancellationToken)
-        {
-            await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
-            var trips = await context.Trips
+            return await context.Warehouses
                 .AsNoTracking()
-                .Where(trip => trip.WarehouseId == warehouseId)
-                .CountAsync(cancellationToken);
-            return trips;
+                .Where(w => w.Id == warehouseId)
+                .Select(w => new WarehouseManagerKpiDto
+                {
+                    TotalCarriers = context.Carriers.Count(c => c.HomeWarehouseId == warehouseId),
+                    ActiveCarriers = context.Carriers.Count(c => c.HomeWarehouseId == warehouseId && c.CurrentState),
+                    TotalShipments = context.Shipments.Count(s => s.Trip != null && s.Trip.WarehouseId == warehouseId),
+                    DeliveredShipments = context.Shipments.Count(s => s.Trip != null && s.Trip.WarehouseId == warehouseId && s.CurrentStatus == ShipmentStatuses.Delivered),
+                    InTransitShipments = context.Shipments.Count(s => s.Trip != null && s.Trip.WarehouseId == warehouseId && s.CurrentStatus == ShipmentStatuses.InTransit),
+                    TotalTrips = context.Trips.Count(t => t.WarehouseId == warehouseId),
+                    ActiveTrips = context.Trips.Count(t => t.WarehouseId == warehouseId && t.Status == TripStatus.Active),
+                    CompletedTrips = context.Trips.Count(t => t.WarehouseId == warehouseId && t.Status == TripStatus.Completed)
+
+                })
+                .FirstOrDefaultAsync(cancellationToken) ?? new WarehouseManagerKpiDto();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using TransitNova.Domain.Entities.Common;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
@@ -13,7 +13,7 @@ internal static class DomainTestData
             "Ali",
             "mona@example.com",
             "+201000000001",
-            "Cairo",
+            Address.Create("Cairo", null, "Main Street"),
             1,
             senderId ?? Guid.NewGuid());
 
@@ -24,12 +24,10 @@ internal static class DomainTestData
             new PackageSpecification(10m, 2m, 3m, 4m),
             Currency.EGP,
             DateTime.UtcNow.AddDays(1),
-            "Delivery address",
-            "Pickup address",
+            Address.Create("Delivery address", null, "Delivery Street"),
+            Address.Create("Pickup address", null, "Pickup Street"),
             enShipmentType.Standard,
-            TransportationMode.Land,
-            null,
-            Guid.NewGuid(),
+            TransportationMode.Land, 
             PaymentMethod.PayPal);
 
     internal static Shipment CreatePickupAssignedShipment()

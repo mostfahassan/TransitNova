@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
-using TransitNovaPayment.Busieness.Common.Abstract;
-using TransitNovaPayment.Busieness.Common.DTO.PaymentDto;
+using TransitNovaPayment.Busieness.Common.Abstract.Abstraction;
 using TransitNovaPayment.Busieness.Common.Options;
+using TransitNovaPayment.Busieness.DTO.PaymentDto;
 using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
 using PaymentEntity = TransitNovaPayment.Busieness.Models.PaymentEntity.Payment;
 using PaymentHistoryEntity = TransitNovaPayment.Busieness.Models.PaymentHistoryEntity.PaymentHistory;
@@ -17,9 +17,9 @@ internal static class PaymentTestData
     {
         return new CreatePaymentDto
         {
-            ShipmentId = shipmentId ?? Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            ReferenceId = shipmentId ?? Guid.Parse("11111111-1111-1111-1111-111111111111"),
             PaymentMethod = paymentMethod,
-            ShippingCost = shippingCost
+            Cost = shippingCost
         };
     }
 
@@ -29,12 +29,13 @@ internal static class PaymentTestData
     internal static PaymentEntity CreatePayment(
         PaymentMethod paymentMethod = PaymentMethod.CreditCard,
         decimal totalAmount = 100m,
-        Guid? shipmentId = null)
+        Guid? ReferenceId = null,ReferenceType referenceType = ReferenceType.Shipment)
     {
         var payment = PaymentEntity.Create(
             totalAmount,
-            shipmentId ?? Guid.Parse("22222222-2222-2222-2222-222222222222"),
-            paymentMethod);
+            ReferenceId ?? Guid.Parse("22222222-2222-2222-2222-222222222222"),
+            paymentMethod,
+            referenceType);
 
         typeof(PaymentEntity)
             .GetProperty("RowVersion")!

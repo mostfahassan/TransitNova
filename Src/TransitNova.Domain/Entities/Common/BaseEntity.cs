@@ -9,6 +9,6 @@ namespace TransitNova.Domain.Entities.Common
         public string? CreatedBy { get; protected set; }
         public DateTime? UpdatedAt { get; protected set; }
         public string? UpdatedBy { get; protected set; }
-        public bool CurrentState { get;  set; }
+        public bool CurrentState { get; set; } = true;
     }
 }

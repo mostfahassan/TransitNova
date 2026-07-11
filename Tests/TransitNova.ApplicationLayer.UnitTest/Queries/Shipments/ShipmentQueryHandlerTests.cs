@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Features.Shipments.Handlers.ApplyQueries;
 using TransitNova.BusinessLayer.Features.Shipments.Queries;
@@ -8,6 +9,7 @@ using TransitNova.BusinessLayer.Features.UserOperations.Handlers.QueriesHandler;
 using TransitNova.BusinessLayer.Features.UserOperations.Queries;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Result;
 using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.ApplicationLayer.Tests.Queries.Shipments;
@@ -127,8 +129,8 @@ public sealed class ShipmentQueryHandlerTests
     {
         Id = id,
         TrackingNumber = trackingNumber,
-        DeliveryAddress = "Cairo",
-        PickupAddress = "Giza",
+        DeliveryAddress = AddressDto.FromDomain(Address.Create("Cairo", null, "Main Street")),
+        PickupAddress = AddressDto.FromDomain(Address.Create("Giza", null, "Main Street")),
         ShippingCost = 125,
         CurrentStatus = ShipmentStatuses.Pending
     };

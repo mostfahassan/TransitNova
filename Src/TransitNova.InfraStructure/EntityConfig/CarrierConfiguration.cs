@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TransitNova.Domain.Entities.MainEntities;
 
@@ -30,9 +30,7 @@ namespace TransitNova.InfraStructure.EntityConfig
                 .HasMaxLength(50)
                 .IsRequired();
 
-            carrier.Property(c => c.Address)
-                .HasMaxLength(100)
-                .IsRequired();
+            carrier.OwnsAddress(c => c.Address, "Address");
 
             carrier.Property(c => c.MaxDailyShipments)
                 .IsRequired();

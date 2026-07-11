@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces;
+using TransitNovaPayment.Busieness.Interfaces.Common;
 using TransitNovaPayment.Infrastructure.Context;
 
 namespace TransitNovaPayment.Infrastructure.RepositoryImplementation

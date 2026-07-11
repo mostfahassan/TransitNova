@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TransitNova.Domain.Entities.MainEntities;
 namespace TransitNova.InfraStructure.EntityConfig
@@ -29,6 +29,9 @@ namespace TransitNova.InfraStructure.EntityConfig
                  nav.Property(p => p.Height).HasColumnName("Height");
                  nav.Property(p => p.Length).HasColumnName("Length");
              });
+
+            shipment.OwnsAddress(s => s.DeliveryAddress, "DeliveryAddress");
+            shipment.OwnsAddress(s => s.PickupAddress, "PickupAddress");
 
             shipment.HasIndex(s => s.TrackingNumber).IsUnique();
             shipment.HasIndex(s => s.CurrentStatus);

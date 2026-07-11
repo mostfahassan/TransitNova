@@ -1,7 +1,11 @@
 ﻿using FluentAssertions;
+using System;
+using System.Linq;
 using TransitNova.Domain.Contracts.DomainEvents.Events.BundleEvents;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums;
+using TransitNova.Domain.Enums.Bundle;
 
 namespace TransitNova.Domain.Tests.Entities;
 
@@ -10,13 +14,18 @@ public sealed class BundleTests
     [Fact]
     public void CreateBundle_Should_Create_ActiveBundle_When_DataIsValid()
     {
-        var bundle = Bundle.Create("admin", "Starter", 100m, "Basic", 50m, 100m, 10);
+        var bundle = Bundle.Create("admin", "Starter", "Basic", 100m, BundleTier.Standard, 1, 10, 50m, 100m, 10m, 2000m);
 
         bundle.BundleName.Should().Be("Starter");
+        bundle.BundleDescription.Should().Be("Basic");
         bundle.BundlePrice.Should().Be(100m);
-        bundle.TotalWeight.Should().Be(50m);
-        bundle.TotalDistance.Should().Be(100m);
-        bundle.TotalShipments.Should().Be(10);
+        bundle.Tier.Should().Be(BundleTier.Standard);
+        bundle.BundleDurationMonths.Should().Be(1);
+        bundle.MaxShipmentsPerMonth.Should().Be(10);
+        bundle.MaxWeightPerShipment.Should().Be(50m);
+        bundle.MaxDistancePerShipment.Should().Be(100m);
+        bundle.DiscountPercentage.Should().Be(10m);
+        bundle.MinimumShipmentValueForDiscount.Should().Be(2000m);
         bundle.CreatedBy.Should().Be("admin");
         bundle.CurrentState.Should().BeTrue();
     }
@@ -26,11 +35,12 @@ public sealed class BundleTests
     {
         var bundle = CreateBundle();
 
-        bundle.Update("admin-2", 200m, 80m, 20);
+        bundle.Update("admin-2", 200m, "Updated Description", 15m, 2500m);
 
         bundle.BundlePrice.Should().Be(200m);
-        bundle.TotalWeight.Should().Be(80m);
-        bundle.TotalShipments.Should().Be(20);
+        bundle.BundleDescription.Should().Be("Updated Description");
+        bundle.DiscountPercentage.Should().Be(15m);
+        bundle.MinimumShipmentValueForDiscount.Should().Be(2500m);
         bundle.UpdatedBy.Should().Be("admin-2");
         bundle.GetDomainEvents().Should().ContainSingle(e => e is BundleUpdatedDomainEvent);
     }
@@ -46,7 +56,7 @@ public sealed class BundleTests
         var subscription = bundle.Subscriptions.Should().ContainSingle().Subject;
         subscription.SubscribedUserId.Should().Be(userId);
         subscription.IsActive.Should().BeTrue();
-        subscription.EndDate.Should().BeCloseTo(subscription.SubscriptionDate.AddMonths(1), TimeSpan.FromSeconds(1));
+        subscription.EndDate.Should().BeCloseTo(subscription.SubscriptionDate.AddMonths(bundle.BundleDurationMonths), TimeSpan.FromSeconds(1));
         bundle.GetDomainEvents().Should().Contain(e => e is UserSubscribedToBundleDomainEvent);
     }
 
@@ -102,5 +112,5 @@ public sealed class BundleTests
     }
 
     private static Bundle CreateBundle() =>
-        Bundle.Create("admin", "Starter", 100m, "Basic", 50m, 100m, 10);
+        Bundle.Create("admin", "Starter", "Basic", 100m, BundleTier.Standard, 1, 10, 50m, 100m, 10m, 2000m);
 }

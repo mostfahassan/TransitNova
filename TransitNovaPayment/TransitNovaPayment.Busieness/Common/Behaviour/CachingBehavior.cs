@@ -1,6 +1,6 @@
 using MediatR;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces;
-using TransitNovaPayment.Busieness.Contracts.Keys;
+using TransitNovaPayment.Busieness.Common.Contracts.Keys;
+using TransitNovaPayment.Busieness.Interfaces.Common;
 
 namespace TransitNovaPayment.Busieness.Common.Behaviour
 {

@@ -17,6 +17,7 @@ using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.BusinessLayer.Interfaces.Services.ShipmentServices;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Result;
@@ -35,13 +36,13 @@ public sealed class ShipmentCommandHandlerTests
         var shipmentId = Guid.NewGuid();
         var invoice = new InvoiceDto
         {
-            ShipmentId = shipmentId,
+            ReferenceId = shipmentId,
             PaymentId = Guid.NewGuid(),
-            ShippingCost = 125,
+            Amount = 125,
             Commission = 12.5m,
             TotalAmount = 137.5m,
-            PaymentMethod = PaymentMethod.PayPal,
-            Status = PaymentStatus.Success,
+            PaymentMethod = PaymentMethod.PayPal.ToString(),
+            Status = PaymentStatus.Success.ToString(),
             PaidAt = DateTime.UtcNow
         };
 
@@ -63,8 +64,8 @@ public sealed class ShipmentCommandHandlerTests
         result.Data!.ShipmentId.Should().Be(shipmentId);
         result.Data.PaymentId.Should().Be(invoice.PaymentId);
         result.Data.TotalAmount.Should().Be(invoice.TotalAmount);
-        result.Data.PaymentMethod.Should().Be(PaymentMethod.PayPal);
-        result.Data.Status.Should().Be(PaymentStatus.Success);
+        result.Data.PaymentMethod.Should().Be(PaymentMethod.PayPal.ToString());
+        result.Data.Status.Should().Be(PaymentStatus.Success.ToString());
         capturedLog.Should().NotBeNull();
         capturedLog!.Action.Should().Be(ActivityAction.Created);
         capturedLog.PerformedByUserId.Should().Be(userId);
@@ -99,7 +100,7 @@ public sealed class ShipmentCommandHandlerTests
         using var source = new CancellationTokenSource();
         var token = source.Token;
         var userId = Guid.NewGuid();
-        var invoice = new InvoiceDto { ShipmentId = Guid.NewGuid(), ShippingCost = 125 };
+        var invoice = new InvoiceDto { ReferenceId = Guid.NewGuid(), Amount = 125 };
         fixture.Service.Setup(x => x.HandleShipmentCreation(It.IsAny<CreateShipmentDto>(), userId, token))
             .ReturnsAsync((Result<InvoiceDto>.Success(invoice), "TN-100"));
         fixture.Users.Setup(x => x.GetUserFullName(userId, token))
@@ -256,7 +257,7 @@ public sealed class ShipmentCommandHandlerTests
             LastName = "Ali",
             Email = "mona@example.com",
             PhoneNumber = "01000000000",
-            Address = "Cairo",
+            Address = AddressDto.FromDomain(Address.Create("Cairo", null, "Main Street")),
             CityId = 1
         },
         new PackageSpecificationDto { Weight = 5, Width = 10, Height = 10, Length = 10 },
@@ -264,17 +265,16 @@ public sealed class ShipmentCommandHandlerTests
         DateTime.UtcNow.AddDays(1),
         TransitNova.Domain.Enums.Shipment.TransportationMode.Land,
         TransitNova.Domain.Enums.Shipment.enShipmentType.Standard,
-        "Delivery Address",
-        "Pickup Address",
-        null,
+        AddressDto.FromDomain(Address.Create("Delivery Address", null, "Delivery Street")),
+        AddressDto.FromDomain(Address.Create("Pickup Address", null, "Pickup Street")),
         Guid.NewGuid(),
         PaymentMethod.PayPal
         );
 
     private static UpdateShipmentDto ValidUpdateDto() => new(
         null,
-        "New Delivery Address",
-        "New Pickup Address",
+        AddressDto.FromDomain(Address.Create("New Delivery Address", null, "New Delivery Street")),
+        AddressDto.FromDomain(Address.Create("New Pickup Address", null, "New Pickup Street")),
         null,
         null,
         null);
@@ -300,6 +300,7 @@ public sealed class ShipmentCommandHandlerTests
         }
     }
 }
+
 
 
 

@@ -1,4 +1,5 @@
-﻿using TransitNova.BusinessLayer.DTOs.ShipmentStatusDto;
+using TransitNova.BusinessLayer.Common.CommonData;
+using TransitNova.BusinessLayer.DTOs.ShipmentStatusDto;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
 using TransitNova.Domain.Enums.Shipment;
 namespace TransitNova.BusinessLayer.DTOs.Shipment
@@ -10,8 +11,8 @@ namespace TransitNova.BusinessLayer.DTOs.Shipment
         public Guid SenderId { get; set; }
         public UserSummaryDto Receiver { get; set; } = null!;
         public UserSummaryDto? Sender { get; set; } = null!;
-        public string DeliveryAddress { get; set; } = string.Empty;
-        public string PickupAddress { get; set; } = string.Empty;
+        public AddressDto DeliveryAddress { get; set; } = new();
+        public AddressDto PickupAddress { get; set; } = new();
         public string? RejectionReason { get; set; }
         public PackageSpecificationDto PackageSpecification { get; set; } = new();
         public Currency Currency { get; set; }
@@ -22,7 +23,6 @@ namespace TransitNova.BusinessLayer.DTOs.Shipment
         public string TrackingNumber { get; set; } = string.Empty;
         public List<RetrieveShipmentStatusDto> ShipmentStates { get; set; } = new();
         public enShipmentType ShipmentType { get; set; }
-        public Guid? PackageBundleId { get; set; }
         public DateTime CreatedAt { get; set; }
         
     }

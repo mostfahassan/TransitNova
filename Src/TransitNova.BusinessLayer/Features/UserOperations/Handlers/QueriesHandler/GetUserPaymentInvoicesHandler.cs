@@ -9,9 +9,9 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.QueriesHand
     public sealed class GetUserPaymentInvoiceHandler(
         IPaymentRepositoryQuery paymentRepositoryQuery,
         ILogger<GetUserPaymentInvoiceHandler> logger)
-        : IQueryHandler<GetUserPaymentInvoiceQuery, Result<PaymentInvoiceDto>>
+        : IQueryHandler<GetUserPaymentInvoiceQuery, Result<ShipmentPaymentInvoiceDto>>
     {
-        public async Task<Result<PaymentInvoiceDto>> Handle(GetUserPaymentInvoiceQuery request, CancellationToken cancellationToken)
+        public async Task<Result<ShipmentPaymentInvoiceDto>> Handle(GetUserPaymentInvoiceQuery request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Retrieving payment invoice {PaymentId} for User {UserId}", request.PaymentId, request.AppUserId);
 
@@ -19,24 +19,24 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.QueriesHand
             if (invoice is null)
             {
                 logger.LogWarning("Payment invoice {PaymentId} was not found for User {UserId}", request.PaymentId, request.AppUserId);
-                return Result<PaymentInvoiceDto>.NotFound(Errors.NotFound("Payment invoice was not found."));
+                return Result<ShipmentPaymentInvoiceDto>.NotFound(Errors.NotFound("Payment invoice was not found."));
             }
 
-            return Result<PaymentInvoiceDto>.Success(invoice);
+            return Result<ShipmentPaymentInvoiceDto>.Success(invoice);
         }
     }
 
     public sealed class GetUserPaymentInvoicesHandler(
         IPaymentRepositoryQuery paymentRepositoryQuery,
         ILogger<GetUserPaymentInvoicesHandler> logger)
-        : IQueryHandler<GetUserPaymentInvoicesQuery, Result<IEnumerable<PaymentInvoiceDto>>>
+        : IQueryHandler<GetUserPaymentInvoicesQuery, Result<IEnumerable<ShipmentPaymentInvoiceDto>>>
     {
-        public async Task<Result<IEnumerable<PaymentInvoiceDto>>> Handle(GetUserPaymentInvoicesQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<ShipmentPaymentInvoiceDto>>> Handle(GetUserPaymentInvoicesQuery request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Retrieving payment invoices for User {UserId}", request.AppUserId);
 
             var invoices = await paymentRepositoryQuery.GetUserInvoicesAsync(request.AppUserId, cancellationToken);
-            return Result<IEnumerable<PaymentInvoiceDto>>.Success(invoices);
+            return Result<IEnumerable<ShipmentPaymentInvoiceDto>>.Success(invoices);
         }
     }
 }

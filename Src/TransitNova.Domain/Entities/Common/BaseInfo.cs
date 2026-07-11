@@ -1,4 +1,4 @@
-﻿using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Users;
 namespace TransitNova.Domain.Entities.Common
 {
@@ -9,7 +9,7 @@ namespace TransitNova.Domain.Entities.Common
         public string FullName => $"{FirstName} {LastName}".Trim();
         public string Email { get; protected set; } = string.Empty;
         public string PhoneNumber { get; protected set; } = string.Empty;
-        public string Address { get; protected set; } = string.Empty;
+        public Address Address { get; protected set; } = null!;
         public UserType UserType { get; protected set; }
         public int CityId { get; protected set; }
         public City City { get;} = null!;

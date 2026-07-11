@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TransitNova.Payment.Tests.TestInfrastructure;
 using TransitNovaPayment.API.Controllers.Payment;
-using TransitNovaPayment.Busieness.Common.DTO.PaymentHistoryDto;
 using TransitNovaPayment.Busieness.Common.ResultResponse.PagedResults;
 using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ResultPattern;
+using TransitNovaPayment.Busieness.DTO.PaymentHistoryDto;
 using TransitNovaPayment.Busieness.Services.Payment.Command;
 using TransitNovaPayment.Busieness.Services.Payment.Query;
 
@@ -19,8 +19,8 @@ public sealed class PaymentControllerTests
     {
         var mediator = new Mock<IMediator>();
         var dto = PaymentTestData.CreatePaymentDto();
-        var expected = BaseResult.Success(new TransitNovaPayment.Busieness.Common.DTO.PaymentDto.PaymentDetailsDto());
-        mediator.Setup(x => x.Send(It.IsAny<CreatePaymentCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(expected);
+        var expected = BaseResult.Success(new TransitNovaPayment.Busieness.DTO.PaymentDto.PaymentDetailsDto());
+        mediator.Setup(x => x.Send(It.IsAny<CreateShipmentPaymentCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(expected);
         var controller = new PaymentController(mediator.Object);
 
         var result = await controller.Pay("payment-private-key", dto, CancellationToken.None);
@@ -46,3 +46,4 @@ public sealed class PaymentControllerTests
         okResult.Value.Should().BeSameAs(expected);
     }
 }
+

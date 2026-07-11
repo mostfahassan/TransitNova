@@ -2,11 +2,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using TransitNova.Api.Infrastructure.Idempotency;
+using TransitNova.BusinessLayer.DTOs.BundleSubscription;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Bundles;
 using TransitNova.Domain.Contracts.Permissions;
 using TransitNova.Domain.Contracts.Roles;
-using TransitNova.Api.Infrastructure.Idempotency;
+
 namespace TransitNova.Api.Controllers.User.UserSubscriptions
 {
     [Authorize(Roles = Role.User)]
@@ -20,6 +22,7 @@ namespace TransitNova.Api.Controllers.User.UserSubscriptions
         [EnableRateLimiting("CommandsLimiter")]
         [HttpPost("bundles/{bundleId:guid}/subscription")]
         [MapToApiVersion("1.0")]
+        [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -29,11 +32,11 @@ namespace TransitNova.Api.Controllers.User.UserSubscriptions
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [EndpointName("Subscribe To Bundle")]
         [EndpointSummary("Subscribe the authenticated user to a bundle")]
-        [EndpointDescription("Allows the authenticated user to subscribe to a bundle. The operation validates bundle availability, subscription eligibility, and applies the selected bundle to the user's account.")]
-        public async Task<IActionResult> SubscribeToBundleAsync([IdempotencyKey] Guid requestId, Guid bundleId, CancellationToken ct)
+        [EndpointDescription("Allows the authenticated user to subscribe to a bundle after selecting a payment method. The operation validates bundle availability, subscription eligibility, and applies the selected bundle to the user's account after payment succeeds.")]
+        public async Task<IActionResult> SubscribeToBundleAsync([IdempotencyKey] Guid requestId, Guid bundleId, [FromBody] SubscribeToBundleDto dto, CancellationToken ct)
         {
             var userId = User.GetUserId();
-            var response = await mediator.Send(new SubscribeToBundleCommand(requestId, userId, bundleId), ct);
+            var response = await mediator.Send(new SubscribeToBundleCommand(requestId, userId, bundleId, dto), ct);
             return response.ToActionResult();
         }
 
@@ -57,6 +60,5 @@ namespace TransitNova.Api.Controllers.User.UserSubscriptions
             var response = await mediator.Send(new UnsubscribeFromBundleCommand(requestId, userId, bundleId), ct);
             return response.ToActionResult();
         }
-
     }
 }

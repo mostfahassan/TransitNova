@@ -18,16 +18,19 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingCommands
     {
         public async Task<BaseResult> Handle(CreateBundleCommand request, CancellationToken ct)
         {
-            
-            var bundle = Bundle.Create
-                (
-                request.UserId.ToString(),
-                request.Dto.BundleName,
-                request.Dto.BundlePrice,
-                request.Dto.BundleDescription, 
-                request.Dto.TotalWeight,
-                request.Dto.TotalDistance,
-                request.Dto.TotalShipments);
+
+             var bundle = Bundle.Create(
+             creatorId: request.UserId.ToString(),
+             bundleName: request.Dto.BundleName,
+             description: request.Dto.BundleDescription,
+             bundlePrice: request.Dto.BundlePrice,
+             tier: request.Dto.Tier,
+             durationMonths: request.Dto.BundleDurationMonths,
+             maxShipments: request.Dto.MaxShipmentsPerMonth,
+             maxWeight: request.Dto.MaxWeightPerShipment,
+             maxDistance: request.Dto.MaxDistancePerShipment,
+             discountPercentage: request.Dto.DiscountPercentage,
+             minShipmentValue: request.Dto.MinimumShipmentValueForDiscount);
 
             await repository.AddAsync(bundle, ct);
             await unitOfWork.SaveChangesAsync(ct);

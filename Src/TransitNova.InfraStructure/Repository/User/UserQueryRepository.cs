@@ -1,7 +1,8 @@
-﻿
+
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using TransitNova.BusinessLayer.Common.CommonData;
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Shipment;
@@ -57,7 +58,7 @@ namespace TransitNova.InfraStructure.Repository.User
                 .Select(u => new UserProfileDto
                 {
                     FullName = u.FullName,
-                    Address = u.Address,
+                    Address = new AddressDto { MainAddress = u.Address.MainAddress, SecondaryAddress = u.Address.SecondaryAddress, Street = u.Address.Street },
                     PhoneNumber = u.PhoneNumber,
                     Email = u.Email,
                     CityName = u.City.Name,
@@ -77,7 +78,7 @@ namespace TransitNova.InfraStructure.Repository.User
                 .Select(u => new UserProfileDto
                 {
                     FullName = u.FullName,
-                    Address = u.Address,
+                    Address = new AddressDto { MainAddress = u.Address.MainAddress, SecondaryAddress = u.Address.SecondaryAddress, Street = u.Address.Street },
                     PhoneNumber = u.PhoneNumber,
                     Email = u.Email,
                     CityName = u.City.Name,
@@ -118,7 +119,9 @@ namespace TransitNova.InfraStructure.Repository.User
                     user.Profile.LastName.Contains(searchTerm) ||
                     user.Profile.Email.Contains(searchTerm) ||
                     user.Profile.PhoneNumber.Contains(searchTerm) ||
-                    user.Profile.Address.Contains(searchTerm) ||
+                    user.Profile.Address.MainAddress.Contains(searchTerm) ||
+                    (user.Profile.Address.SecondaryAddress != null && user.Profile.Address.SecondaryAddress.Contains(searchTerm)) ||
+                    user.Profile.Address.Street.Contains(searchTerm) ||
                     (user.AppUser.UserName != null && user.AppUser.UserName.Contains(searchTerm)));
             }
 
@@ -169,7 +172,7 @@ namespace TransitNova.InfraStructure.Repository.User
                     FullName = user.Profile.FirstName + " " + user.Profile.LastName,
                     Email = user.Profile.Email,
                     PhoneNumber = user.Profile.PhoneNumber,
-                    Address = user.Profile.Address,
+                    Address = new AddressDto { MainAddress = user.Profile.Address.MainAddress, SecondaryAddress = user.Profile.Address.SecondaryAddress, Street = user.Profile.Address.Street },
                     UserType = user.Profile.UserType,
                     CityName = user.Profile.City.Name,
                     GovernmentName = user.Profile.City.Government.Name,
@@ -207,7 +210,7 @@ namespace TransitNova.InfraStructure.Repository.User
                     FullName = profile.FirstName + " " + profile.LastName,
                     Email = profile.Email,
                     PhoneNumber = profile.PhoneNumber,
-                    Address = profile.Address,
+                    Address = new AddressDto { MainAddress = profile.Address.MainAddress, SecondaryAddress = profile.Address.SecondaryAddress, Street = profile.Address.Street },
                     UserType = profile.UserType,
                     CityName = profile.City.Name,
                     GovernmentName = profile.City.Government.Name,

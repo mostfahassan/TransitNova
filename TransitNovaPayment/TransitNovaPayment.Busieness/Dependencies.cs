@@ -1,12 +1,13 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using TransitNovaPayment.Busieness.Common.Abstract;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IPaymentExecution;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IPaymentService;
+using TransitNovaPayment.Busieness.Common.Abstract.Abstraction;
 using TransitNovaPayment.Busieness.Common.Abstract.PaymentMethods;
 using TransitNovaPayment.Busieness.Common.Behaviour;
-using TransitNovaPayment.Busieness.Common.Implementation;
+using TransitNovaPayment.Busieness.Implementation;
+using TransitNovaPayment.Busieness.Implementation.PaymentService;
+using TransitNovaPayment.Busieness.Interfaces.PaymentExecution;
+using TransitNovaPayment.Busieness.Interfaces.PaymentService;
 
 namespace TransitNovaPayment.Busieness
 {
@@ -22,7 +23,8 @@ namespace TransitNovaPayment.Busieness
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
 
-            services.AddScoped<IPayment, PaymentProcess>();
+            services.AddScoped<IShipmentPayment, ShipmentPaymentProcess>();
+            services.AddScoped<IBundlePayment, BundlePaymentProcess>();
             services.AddScoped<IPaymentExecutionStrategy, RandomizedPaymentExecutionStrategy>();
             services.AddScoped<PaymentMethodService, CreditCard>();
             services.AddScoped<PaymentMethodService, PaypalPayment>();
@@ -32,3 +34,4 @@ namespace TransitNovaPayment.Busieness
         }
     }
 }
+

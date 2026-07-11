@@ -12,7 +12,7 @@ namespace TransitNova.InfraStructure.Common.StrategyFactory.ApplyingStrategies
 
         public async Task ExecuteAsync(Guid userId, RegisterDto dto, CancellationToken cancellationToken)
         {
-            var warehouseManager = WarehouseManagerProfile.Create(userId, dto.FirstName, dto.LastName, dto.Email, dto.PhoneNumber, dto.Address, dto.CityId);
+            var warehouseManager = WarehouseManagerProfile.Create(userId, dto.FirstName, dto.LastName, dto.Email, dto.PhoneNumber, dto.Address.ToDomain(), dto.CityId);
             await context.WarehouseManagersProfiles.AddAsync(warehouseManager, cancellationToken);
         }
     }

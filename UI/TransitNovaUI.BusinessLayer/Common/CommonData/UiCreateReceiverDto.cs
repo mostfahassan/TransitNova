@@ -14,7 +14,7 @@ public sealed class UiCreateReceiverDto
 
     public string PhoneNumber { get; set; } = string.Empty;
 
-    public string Address { get; set; } = string.Empty;
+    public UiAddressDto Address { get; set; } = new();
 
     public int CityId { get; set; }
 
@@ -26,7 +26,7 @@ public sealed class UiCreateReceiverDto
             LastName = source.LastName,
             Email = source.Email,
             PhoneNumber = source.PhoneNumber,
-            Address = source.Address,
+            Address = UiAddressDto.ToDto(source.Address),
             CityId = source.CityId
         };
 

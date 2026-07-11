@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TransitNova.Domain.Entities.MainEntities;
 namespace TransitNova.InfraStructure.EntityConfig
@@ -8,6 +8,7 @@ namespace TransitNova.InfraStructure.EntityConfig
         public void Configure(EntityTypeBuilder<WarehouseManagerProfile> manager)
         {
             manager.HasKey(m => m.Id).IsClustered();
+            manager.OwnsAddress(m => m.Address, "Address");
             manager.HasOne(u => u.City)
                 .WithMany()
                 .HasForeignKey(u => u.CityId)

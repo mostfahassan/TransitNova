@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums.Bundle;
 using TransitNova.Domain.Enums.SystemLogs;
 using TransitNova.InfraStructure.Repository.Generic;
 using TransitNova.InfraStructure.Repository.Idempotent;
@@ -264,8 +265,7 @@ public sealed class RepositoryIntegrationTests
 
     private static Bundle CreateBundle(string name, bool currentState = true)
     {
-        var bundle = Bundle.Create(
-            "manager", $"{name}-{Guid.NewGuid():N}", 500m, "Description", 200m, 1_000m, 20);
+        var bundle = Bundle.Create("manager", $"{name}-{Guid.NewGuid():N}", "Description", 500m, BundleTier.Standard, 1, 20, 200m, 1000m, 0m, 0m);
         bundle.CurrentState = currentState;
         return bundle;
     }

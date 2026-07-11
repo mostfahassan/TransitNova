@@ -1,10 +1,12 @@
 ﻿using FluentAssertions;
+using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.UserProfile.Auth;
 using TransitNova.BusinessLayer.DTOs.Vehicle;
 using TransitNova.BusinessLayer.DTOs.Warehouse;
 using TransitNova.BusinessLayer.Validators.UserProfile.Auth;
 using TransitNova.BusinessLayer.Validators.VehicleValidators;
 using TransitNova.BusinessLayer.Validators.WarehouseValidators;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Users;
 using TransitNova.Domain.Enums.Warehouse;
@@ -35,7 +37,7 @@ public sealed class DtoValidatorCoverageTests
         switch (invalidField)
         {
             case "name": dto.Name = string.Empty; break;
-            case "address": dto.Address = string.Empty; break;
+            case "address": dto.Address = Address.Create(string.Empty, null, string.Empty); break;
             case "capacity": dto.Capacity = 0; break;
             case "usage": dto.CurrentUsage = dto.Capacity + 1; break;
             case "hours": dto.OperatingHours = 0; break;
@@ -58,7 +60,7 @@ public sealed class DtoValidatorCoverageTests
         {
             Name = "Warehouse",
             Type = WarehouseType.MainWarehouse,
-            Address = "Cairo",
+            Address =Address.Create("Cairo", null, "Warehouse Street"),
             Capacity = 100,
             CurrentUsage = 20,
             OperatingHours = null,
@@ -77,7 +79,7 @@ public sealed class DtoValidatorCoverageTests
         {
             Name = "Warehouse",
             Type = WarehouseType.MainWarehouse,
-            Address = "Cairo",
+            Address = Address.Create("Cairo", null, "Warehouse Street"),
             Capacity = 100,
             CurrentUsage = 20,
             OperatingHours = 0,
@@ -208,7 +210,7 @@ public sealed class DtoValidatorCoverageTests
     {
         Name = "Main Warehouse",
         Type = WarehouseType.MainWarehouse,
-        Address = "Cairo",
+        Address = Address.Create("Cairo", null, "Warehouse Street"),
         Capacity = 100,
         CurrentUsage = 20,
         OperatingHours = 12,
@@ -233,7 +235,7 @@ public sealed class DtoValidatorCoverageTests
         PhoneNumber = "+201001234567",
         FirstName = "Ahmed",
         LastName = "Ali",
-        Address = "Cairo",
+        Address = AddressDto.FromDomain(Address.Create("Cairo", null, "User Street")),
         UserType = UserType.User,
         CityId = 1
     };

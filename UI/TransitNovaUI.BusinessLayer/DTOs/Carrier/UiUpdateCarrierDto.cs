@@ -1,5 +1,6 @@
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.Domain.Enums.Carrier;
+using TransitNovaUI.BusinessLayer.Common.CommonData;
 namespace TransitNovaUI.BusinessLayer.DTOs.Carrier;
 
 public sealed class UiUpdateCarrierDto
@@ -10,7 +11,7 @@ public sealed class UiUpdateCarrierDto
     public string? PhoneNumber { get; set; } = string.Empty;
     public string? Email { get; set; } = string.Empty;
     public int? CityId { get; set; }
-    public string? Address { get; set; } = string.Empty;
+    public UiAddressDto? Address { get; set; }
  
 
     public static UpdateCarrierDto ToDto(UiUpdateCarrierDto source) =>
@@ -22,7 +23,7 @@ public sealed class UiUpdateCarrierDto
             PhoneNumber = source.PhoneNumber,
             Email = source.Email,
             CityId = source.CityId,
-            Address = source.Address,
+            Address = source.Address is null ? null : UiAddressDto.ToDto(source.Address),
            
         };
 

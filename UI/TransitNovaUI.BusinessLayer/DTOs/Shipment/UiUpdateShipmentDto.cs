@@ -1,11 +1,12 @@
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.Domain.Enums.Shipment;
+using TransitNovaUI.BusinessLayer.Common.CommonData;
 namespace TransitNovaUI.BusinessLayer.DTOs.Shipment;
 
 public sealed record UiUpdateShipmentDto(
     Guid? ReceiverId,
-    string? DeliveryAddress,
-    string? PickupAddress,
+    UiAddressDto? DeliveryAddress,
+    UiAddressDto? PickupAddress,
     UiPackageSpecificationRequestDto? PackageSpecification,
     enShipmentType? ShipmentType,
     TransportationMode? TransportationMode)
@@ -13,8 +14,8 @@ public sealed record UiUpdateShipmentDto(
     public static UpdateShipmentDto ToDto(UiUpdateShipmentDto source) =>
         new(
             source.ReceiverId,
-            source.DeliveryAddress,
-            source.PickupAddress,
+            source.DeliveryAddress is null ? null : UiAddressDto.ToDto(source.DeliveryAddress),
+            source.PickupAddress is null ? null : UiAddressDto.ToDto(source.PickupAddress),
             source.PackageSpecification is null
                 ? null
                 : UiPackageSpecificationRequestDto.ToDto(source.PackageSpecification),

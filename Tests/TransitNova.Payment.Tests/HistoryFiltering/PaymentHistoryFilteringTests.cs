@@ -1,6 +1,6 @@
 using FluentAssertions;
 using TransitNova.Payment.Tests.TestInfrastructure;
-using TransitNovaPayment.Busieness.Common.DTO.PaymentHistoryDto;
+using TransitNovaPayment.Busieness.DTO.PaymentHistoryDto;
 using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
 using TransitNovaPayment.Infrastructure.RepositoryImplementation.PaymentRepo;
 
@@ -16,7 +16,7 @@ public sealed class PaymentHistoryFilteringTests
         var creditPayment = PaymentTestData.CreatePayment(paymentMethod: PaymentMethod.CreditCard);
         var paypalPayment = PaymentTestData.CreatePayment(
             paymentMethod: PaymentMethod.PayPal,
-            shipmentId: Guid.Parse("55555555-5555-5555-5555-555555555555"));
+            ReferenceId: Guid.Parse("55555555-5555-5555-5555-555555555555"));
         var histories = new[]
         {
             PaymentTestData.CreateHistory(creditPayment, PaymentStatus.Pending, PaymentStatus.Success, now.AddDays(-2), "auditor-a"),

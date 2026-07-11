@@ -1,5 +1,6 @@
-﻿
+
 using Microsoft.EntityFrameworkCore;
+using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.DTOs.Shipment;
@@ -97,7 +98,7 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
            => query.Select(op => new OperationManagerProfileDto
            {
                Id = op.Id,
-               Address = op.Address,
+               Address = new AddressDto { MainAddress = op.Address.MainAddress, SecondaryAddress = op.Address.SecondaryAddress, Street = op.Address.Street },
                PhoneNumber = op.PhoneNumber,
                Email = op.Email,
                CityName = op.City.Name,

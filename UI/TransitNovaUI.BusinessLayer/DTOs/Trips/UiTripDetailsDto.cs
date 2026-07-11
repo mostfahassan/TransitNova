@@ -1,4 +1,5 @@
 using TransitNova.BusinessLayer.DTOs.Trips;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Trip;
 using TransitNovaUI.BusinessLayer.DTOs.Shipment;
 
@@ -12,7 +13,7 @@ public sealed class UiTripDetailsDto
     public string CarrierPhoneNumber { get; init; } = string.Empty;
     public Guid WarehouseId { get; init; }
     public string WarehouseName { get; init; } = string.Empty;
-    public string WarehouseAddress { get; init; } = string.Empty;
+    public Address WarehouseAddress { get; init; } = null!;
     public TripType TripType { get; init; }
     public TripStatus Status { get; init; }
     public DateTime CreatedAt { get; init; }

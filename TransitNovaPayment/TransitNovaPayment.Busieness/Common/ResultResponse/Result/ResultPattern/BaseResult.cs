@@ -1,6 +1,6 @@
-﻿using TransitNovaPayment.Busieness.Common.DTO.PaymentDto;
-using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ErrorsResult;
+﻿using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ErrorsResult;
 using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ResultPattern.Enums;
+using TransitNovaPayment.Busieness.DTO.PaymentDto;
 namespace TransitNovaPayment.Busieness.Common.ResultResponse.Result.ResultPattern
 {
     public class BaseResult : IResult

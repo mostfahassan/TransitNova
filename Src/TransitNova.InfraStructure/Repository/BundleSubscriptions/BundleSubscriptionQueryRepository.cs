@@ -1,12 +1,12 @@
-﻿
+
 using Microsoft.EntityFrameworkCore;
+using TransitNova.BusinessLayer.Common.CommonData;
 using System.Linq.Expressions;
 using TransitNova.BusinessLayer.DTOs.BundleSubscription;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
 using TransitNova.BusinessLayer.Interfaces.Repositories.BundleSubscriptionRepository;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.InfraStructure.Context;
-
 namespace TransitNova.InfraStructure.Repository.BundleSubscriptions
 {
     internal class BundleSubscriptionQueryRepository(AppDbContext context) : IBundleSubscriptionQueryRepository
@@ -56,7 +56,7 @@ namespace TransitNova.InfraStructure.Repository.BundleSubscriptions
              => x => new UserProfileDto
              {
                  FullName = x.SubscribedUser.FullName,
-                 Address = x.SubscribedUser.Address,
+                 Address = new AddressDto { MainAddress = x.SubscribedUser.Address.MainAddress, SecondaryAddress = x.SubscribedUser.Address.SecondaryAddress, Street = x.SubscribedUser.Address.Street },
                  PhoneNumber = x.SubscribedUser.PhoneNumber,
                  Email = x.SubscribedUser.Email,
 

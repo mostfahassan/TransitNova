@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TransitNova.Domain.Entities.MainEntities;
 namespace TransitNova.InfraStructure.EntityConfig
@@ -7,7 +7,8 @@ namespace TransitNova.InfraStructure.EntityConfig
     {
         public void Configure(EntityTypeBuilder<ReceiverProfile> user)
         {
-            user.HasKey(u => u.Id).HasName("ReceiverProfileKey"); 
+            user.HasKey(u => u.Id).HasName("ReceiverProfileKey");
+            user.OwnsAddress(u => u.Address, "Address"); 
                 
             user.HasMany(u => u.ReceivedShipments)
             .WithOne(s => s.Receiver)

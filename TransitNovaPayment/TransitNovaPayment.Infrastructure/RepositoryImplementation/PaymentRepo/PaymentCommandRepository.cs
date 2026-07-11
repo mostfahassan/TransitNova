@@ -1,5 +1,5 @@
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Repositories.PaymentRepository;
 using TransitNovaPayment.Busieness.Models.PaymentEntity;
+using TransitNovaPayment.Busieness.Repositories.PaymentRepository;
 using TransitNovaPayment.Infrastructure.Context;
 
 namespace TransitNovaPayment.Infrastructure.RepositoryImplementation.PaymentRepo

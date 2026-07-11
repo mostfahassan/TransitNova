@@ -2,7 +2,6 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.BusinessLayer.DTOs.AppUser;
-using TransitNova.BusinessLayer.Features.UserOperations.Commands;
 using TransitNova.BusinessLayer.Features.UserOperations.Commands.Shipment;
 using TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHandler.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
@@ -11,6 +10,7 @@ using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.DomainExceptions;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Result;
@@ -88,19 +88,17 @@ public sealed class CancelShipmentHandlerTests
     private static Shipment CreateShipment()
     {
         var senderId = Guid.NewGuid();
-        var receiver = ReceiverProfile.Create("Mona", "Ali", "mona@example.com", "0100", "Cairo", 1, senderId);
+        var receiver = ReceiverProfile.Create("Mona", "Ali", "mona@example.com", "0100", Address.Create("Cairo", null, "Main Street"), 1, senderId);
         return Shipment.Create(
             senderId,
             receiver,
             new Domain.Entities.Common.PackageSpecification(1m, 1m, 1m, 1m),
             TransitNova.Domain.Enums.Shipment.Currency.EGP,
             null,
-            "Delivery",
-            "Pickup",
+            Address.Create("PickupAddress", null, "Main Street"),
+            Address.Create("DeliveryAddress", null, "Main Street"),
             TransitNova.Domain.Enums.Shipment.enShipmentType.Standard,
             TransitNova.Domain.Enums.Shipment.TransportationMode.Land,
-            null,
-            Guid.NewGuid(),
             PaymentMethod.MobileWallets);
     }
 

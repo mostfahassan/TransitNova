@@ -1,3 +1,4 @@
+using TransitNovaPayment.Busieness.Common.Abstract.Abstraction;
 using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
 namespace TransitNovaPayment.Busieness.Common.Abstract.PaymentMethods
 {

@@ -2,6 +2,7 @@
 using FluentValidation;
 using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.Shipment;
+using TransitNova.BusinessLayer.Validators.AddressValidator;
 namespace TransitNova.BusinessLayer.Validators.ShipmentValidators
 {
     public class CreateShipmentValidation : AbstractValidator<CreateShipmentDto>
@@ -24,21 +25,19 @@ namespace TransitNova.BusinessLayer.Validators.ShipmentValidators
 
      
             RuleFor(x => x.DeliveryAddress)
-                .NotEmpty().WithMessage("Delivery address is required.")
-                .MaximumLength(250).WithMessage("Delivery address cannot exceed 250 characters.");
+                .NotNull().WithMessage("Delivery address is required.")
+                .SetValidator(new AddressDtoValidator());
 
             RuleFor(x => x.PickupAddress)
-                .NotEmpty().WithMessage("Pickup address is required.")
-                .MaximumLength(250).WithMessage("Pickup address cannot exceed 250 characters.");
+                .NotNull().WithMessage("Pickup address is required.")
+                .SetValidator(new AddressDtoValidator());
 
             RuleFor(x => x)
-                .Must(x => !x.DeliveryAddress.Equals(x.PickupAddress, StringComparison.OrdinalIgnoreCase))
+                .Must(x => !string.Equals(x.DeliveryAddress.ToNormalizedString(), x.PickupAddress.ToNormalizedString(), StringComparison.Ordinal))
                 .WithMessage("Delivery and pickup addresses cannot be identical.")
-                .When(x => !string.IsNullOrWhiteSpace(x.DeliveryAddress) && !string.IsNullOrWhiteSpace(x.PickupAddress));
+                .When(x => x.DeliveryAddress is not null && x.PickupAddress is not null);
 
-            RuleFor(x => x.PackageBundleId)
-                .NotEmpty()
-                .WithMessage("Package bundle Cant Be Empty.");
+            
 
             RuleFor(x => x.Receiver)
                 .NotNull()

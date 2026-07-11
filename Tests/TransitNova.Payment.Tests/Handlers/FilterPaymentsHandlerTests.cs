@@ -1,10 +1,10 @@
 using FluentAssertions;
 using Moq;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Repositories.PaymentRepository;
-using TransitNovaPayment.Busieness.Common.DTO.PaymentHistoryDto;
 using TransitNovaPayment.Busieness.Common.ResultResponse.PagedResults;
-using TransitNovaPayment.Busieness.Services.Payment.Handler.QueriesHandler;
+using TransitNovaPayment.Busieness.DTO.PaymentHistoryDto;
+using TransitNovaPayment.Busieness.Repositories.PaymentRepository;
 using TransitNovaPayment.Busieness.Services.Payment.Query;
+using TransitNovaPayment.Busieness.Services.Payment.Handler.QueriesHandler;
 
 namespace TransitNova.Payment.Tests.Handlers;
 
@@ -29,3 +29,4 @@ public sealed class FilterPaymentsHandlerTests
         repository.Verify(x => x.FilterPaymentHistoryAsync(filter, CancellationToken.None), Times.Once);
     }
 }
+

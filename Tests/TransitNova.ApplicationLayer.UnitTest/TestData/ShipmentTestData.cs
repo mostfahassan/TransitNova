@@ -15,22 +15,20 @@ internal static class ShipmentTestData
             "Ali",
             "mona@example.com",
             "01000000000",
-            "Cairo",
+            Address.Create("Cairo", null, "Main Street"),
             1,
             senderId);
 
         return Shipment.Create(
             senderId,
             receiver,
-            new PackageSpecification(10, 10, 10, 5),
+            new PackageSpecification(10, 10, 10 , 5),
             Currency.EGP,
             DateTime.UtcNow.AddDays(1),
-            "Delivery Address",
-            "Pickup Address",
+            Address.Create("Delivery Address", null, "Delivery Street"),
+            Address.Create("Pickup Address", null, "Pickup Street"),
             enShipmentType.Standard,
             TransportationMode.Land,
-            null,
-            Guid.NewGuid(),
             PaymentMethod.MobileWallets);
     }
 

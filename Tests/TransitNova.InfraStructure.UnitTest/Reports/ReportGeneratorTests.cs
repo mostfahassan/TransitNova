@@ -155,11 +155,11 @@ public sealed class ReportGeneratorTests
         public IDocument InvoiceDocument { get; init; } = new StubDocument("invoice-report");
         public IDocument ShipmentDocument { get; init; } = new StubDocument("shipment-report");
         public IDocument DashboardDocument { get; init; } = new StubDocument("dashboard-report");
-        public PaymentInvoiceDto? InvoiceArgument { get; private set; }
+        public ShipmentPaymentInvoiceDto? InvoiceArgument { get; private set; }
         public RetrieveShipmentDto? ShipmentArgument { get; private set; }
         public AdminDashboardDto? DashboardArgument { get; private set; }
 
-        public IDocument CreateInvoice(PaymentInvoiceDto invoice)
+        public IDocument CreateInvoice(ShipmentPaymentInvoiceDto invoice)
         {
             InvoiceArgument = invoice;
             return InvoiceDocument;

@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Edit Shipment";
     Model.PackageSpecification ??= new PackageSpecificationViewModel();
+    Model.PickupAddress ??= new AddressViewModel();
+    Model.DeliveryAddress ??= new AddressViewModel();
     var shipmentId = Convert.ToString(ViewContext.RouteData.Values["shipmentId"]) ?? string.Empty;
 }
 
@@ -16,13 +18,35 @@
         @Html.AntiForgeryToken()
         <section class="customer-card p-6 md:p-8">
             <div class="grid gap-5 md:grid-cols-2">
-                <div class="md:col-span-2">
-                    <label class="customer-label" asp-for="PickupAddress">Pickup address</label>
-                    <textarea class="customer-textarea" asp-for="PickupAddress" placeholder="Updated pickup address"></textarea>
+                                <div>
+                    <label class="customer-label" asp-for="PickupAddress.MainAddress">Pickup main address</label>
+                    <input class="customer-input" asp-for="PickupAddress.MainAddress" placeholder="Building or pickup point" />
+                    <span asp-validation-for="PickupAddress.MainAddress" class="customer-field-error"></span>
+                </div>
+                <div>
+                    <label class="customer-label" asp-for="PickupAddress.Street">Pickup street</label>
+                    <input class="customer-input" asp-for="PickupAddress.Street" placeholder="Street name" />
+                    <span asp-validation-for="PickupAddress.Street" class="customer-field-error"></span>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="customer-label" asp-for="DeliveryAddress">Delivery address</label>
-                    <textarea class="customer-textarea" asp-for="DeliveryAddress" placeholder="Updated delivery address"></textarea>
+                    <label class="customer-label" asp-for="PickupAddress.SecondaryAddress">Pickup secondary address</label>
+                    <input class="customer-input" asp-for="PickupAddress.SecondaryAddress" placeholder="Floor, unit, gate, or landmark" />
+                    <span asp-validation-for="PickupAddress.SecondaryAddress" class="customer-field-error"></span>
+                </div>
+                                <div>
+                    <label class="customer-label" asp-for="DeliveryAddress.MainAddress">Delivery main address</label>
+                    <input class="customer-input" asp-for="DeliveryAddress.MainAddress" placeholder="Building or destination" />
+                    <span asp-validation-for="DeliveryAddress.MainAddress" class="customer-field-error"></span>
+                </div>
+                <div>
+                    <label class="customer-label" asp-for="DeliveryAddress.Street">Delivery street</label>
+                    <input class="customer-input" asp-for="DeliveryAddress.Street" placeholder="Street name" />
+                    <span asp-validation-for="DeliveryAddress.Street" class="customer-field-error"></span>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="customer-label" asp-for="DeliveryAddress.SecondaryAddress">Delivery secondary address</label>
+                    <input class="customer-input" asp-for="DeliveryAddress.SecondaryAddress" placeholder="Floor, unit, gate, or landmark" />
+                    <span asp-validation-for="DeliveryAddress.SecondaryAddress" class="customer-field-error"></span>
                 </div>
                 <div>
                     <label class="customer-label" asp-for="ShipmentType">Shipment type</label>

@@ -28,8 +28,8 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
     public bool IsIssued { get; private set; }
     public DateTime? IssuedOn { get; private set; }
 
-    public string DeliveryAddress { get; private set; } = string.Empty;
-    public string PickupAddress { get; private set; } = string.Empty;
+    public Address DeliveryAddress { get; private set; } = null!;
+    public Address PickupAddress { get; private set; } = null!;
     public decimal ShipmentCost { get; private set; }
 
     public PackageSpecification PackageSpecification { get; private set; } = null!;
@@ -54,9 +54,6 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
     public Guid? HandlerId { get; private set; }
     public virtual OperationManagerProfile? HandledBy { get; private set; }
 
-    public Guid? PackageBundleId { get; private set; }
-    public virtual Bundle? PackageBundle { get; private set; }
-
     public virtual Trip? Trip { get; private set; }
     public Guid? TripId { get; set; }
 
@@ -71,12 +68,10 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         PackageSpecification packageSpecification,
         Currency currency,
         DateTime? pickUpDate,
-        string deliveryAddress,
-        string pickupAddress,
+        Address deliveryAddress,
+        Address pickupAddress,
         enShipmentType shipmentType,
         TransportationMode mode,
-        Guid? packageBundleId,
-        Guid paymentId,
         PaymentMethod paymentMethod)
     {
         Id = Guid.CreateVersion7();
@@ -94,15 +89,12 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         DeliveryAddress = deliveryAddress;
         PickupAddress = pickupAddress;
 
-        PackageBundleId = packageBundleId;
-
         TrackingNumber = GenerateTrackingNumber();
         CurrentStatus = ShipmentStatuses.Pending;
 
         CreatedBy = senderId.ToString();
         CurrentState = true;
 
-        PaymentId = paymentId;
         PaymentMethod = paymentMethod;
     }
 
@@ -112,12 +104,10 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         PackageSpecification packageSpecification,
         Currency currency,
         DateTime? pickUpDate,
-        string deliveryAddress,
-        string pickupAddress,
+        Address deliveryAddress,
+        Address pickupAddress,
         enShipmentType shipmentType,
         TransportationMode mode,
-        Guid? packageBundleId,
-        Guid paymentId,
         PaymentMethod paymentMethod)
     {
         var shipment = new Shipment(
@@ -130,8 +120,6 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             pickupAddress,
             shipmentType,
             mode,
-            packageBundleId,
-            paymentId,
             paymentMethod);
 
 
@@ -177,8 +165,8 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
 
     public void UpdateShipmentDetails(
         Guid? receiverId,
-        string? deliveryAddress,
-        string? pickupAddress,
+        Address? deliveryAddress,
+        Address? pickupAddress,
         TransportationMode? mode,
         enShipmentType? shipmentType,
         PackageSpecification? packageSpecification,
@@ -360,5 +348,9 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             throw new DomainOperationException("Shipment cost cannot be negative.", "NEGATIVE_COST", nameof(Shipment), Id);
         ShipmentCost = cost;
         EstimatedDeliveryDate = estimatedDeliveryDate;
+    }
+    public void SetPaymentId(Guid paymentId)
+    {
+        PaymentId = paymentId;
     }
 }

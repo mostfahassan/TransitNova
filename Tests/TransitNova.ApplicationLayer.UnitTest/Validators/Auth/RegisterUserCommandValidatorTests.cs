@@ -1,8 +1,10 @@
 ﻿using FluentAssertions;
+using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.UserProfile.Auth;
 using TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.Commands;
 using TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.Commands.CommandsValidators;
 using TransitNova.BusinessLayer.Validators.UserProfile.Auth;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Users;
 
 namespace TransitNova.ApplicationLayer.Tests.Validators.Auth;
@@ -116,7 +118,7 @@ public sealed class RegisterUserCommandValidatorTests
         PhoneNumber = "+201001234567",
         FirstName = "Mona",
         LastName = "Ali",
-        Address = "Cairo",
+        Address = AddressDto.FromDomain(Address.Create("Cairo", null, "Main Street")),
         CityId = 1,
         UserType = UserType.User
     };

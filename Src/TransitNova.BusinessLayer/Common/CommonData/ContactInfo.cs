@@ -1,10 +1,12 @@
-﻿namespace TransitNova.BusinessLayer.Common.CommonData
+using TransitNova.Domain.Entities.Common;
+
+namespace TransitNova.BusinessLayer.Common.CommonData
 {
     internal sealed class ContactInfo
     {
         public string Phone { get;  set; }
-        public string Address { get; set; }
-        public ContactInfo(string phone, string address)
+        public Address Address { get; set; }
+        public ContactInfo(string phone, Address address)
         {
             Phone = phone;
             Address = address;

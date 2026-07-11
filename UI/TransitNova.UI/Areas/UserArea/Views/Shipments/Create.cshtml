@@ -71,10 +71,20 @@
                         <input class="customer-input" asp-for="Receiver.PhoneNumber" placeholder="+20 101 445 1200" data-live-phone />
                         <div class="customer-field-error" data-error-for="Receiver_PhoneNumber"></div>
                     </div>
+                                        <div>
+                        <label class="customer-label" asp-for="Receiver.Address.MainAddress">Receiver main address</label>
+                        <input class="customer-input" asp-for="Receiver.Address.MainAddress" data-live-required="Receiver main address" placeholder="Building or district" />
+                        <div class="customer-field-error" data-error-for="Receiver_Address_MainAddress"></div>
+                    </div>
+                    <div>
+                        <label class="customer-label" asp-for="Receiver.Address.Street">Receiver street</label>
+                        <input class="customer-input" asp-for="Receiver.Address.Street" data-live-required="Receiver street" placeholder="Street name" />
+                        <div class="customer-field-error" data-error-for="Receiver_Address_Street"></div>
+                    </div>
                     <div class="sm:col-span-2">
-                        <label class="customer-label" asp-for="Receiver.Address">Receiver address</label>
-                        <textarea class="customer-textarea" asp-for="Receiver.Address" data-live-required="Receiver address" placeholder="Building, street, floor, landmark"></textarea>
-                        <div class="customer-field-error" data-error-for="Receiver_Address"></div>
+                        <label class="customer-label" asp-for="Receiver.Address.SecondaryAddress">Receiver secondary address <span class="font-normal text-[#999994]">(optional)</span></label>
+                        <input class="customer-input" asp-for="Receiver.Address.SecondaryAddress" placeholder="Floor, apartment, or landmark" />
+                        <div class="customer-field-error" data-error-for="Receiver_Address_SecondaryAddress"></div>
                     </div>
                 </div>
             </div>
@@ -88,15 +98,35 @@
                     <p class="mt-3 text-sm leading-6 text-[#666666]">The destination city is checked instantly before the shipment is submitted.</p>
                 </div>
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <div class="sm:col-span-2">
-                        <label class="customer-label" asp-for="PickupAddress">Pickup address</label>
-                        <textarea class="customer-textarea" asp-for="PickupAddress" data-live-required="Pickup address" placeholder="Warehouse, home, or office pickup point"></textarea>
-                        <div class="customer-field-error" data-error-for="PickupAddress"></div>
+                                        <div>
+                        <label class="customer-label" asp-for="PickupAddress.MainAddress">Pickup main address</label>
+                        <input class="customer-input" asp-for="PickupAddress.MainAddress" data-live-required="Pickup main address" placeholder="Building or pickup point" />
+                        <div class="customer-field-error" data-error-for="PickupAddress_MainAddress"></div>
+                    </div>
+                    <div>
+                        <label class="customer-label" asp-for="PickupAddress.Street">Pickup street</label>
+                        <input class="customer-input" asp-for="PickupAddress.Street" data-live-required="Pickup street" placeholder="Street name" />
+                        <div class="customer-field-error" data-error-for="PickupAddress_Street"></div>
                     </div>
                     <div class="sm:col-span-2">
-                        <label class="customer-label" asp-for="DeliveryAddress">Delivery address</label>
-                        <textarea class="customer-textarea" asp-for="DeliveryAddress" data-live-required="Delivery address" placeholder="Final delivery destination"></textarea>
-                        <div class="customer-field-error" data-error-for="DeliveryAddress"></div>
+                        <label class="customer-label" asp-for="PickupAddress.SecondaryAddress">Pickup secondary address <span class="font-normal text-[#999994]">(optional)</span></label>
+                        <input class="customer-input" asp-for="PickupAddress.SecondaryAddress" placeholder="Floor, unit, gate, or landmark" />
+                        <div class="customer-field-error" data-error-for="PickupAddress_SecondaryAddress"></div>
+                    </div>
+                                        <div>
+                        <label class="customer-label" asp-for="DeliveryAddress.MainAddress">Delivery main address</label>
+                        <input class="customer-input" asp-for="DeliveryAddress.MainAddress" data-live-required="Delivery main address" placeholder="Building or destination" />
+                        <div class="customer-field-error" data-error-for="DeliveryAddress_MainAddress"></div>
+                    </div>
+                    <div>
+                        <label class="customer-label" asp-for="DeliveryAddress.Street">Delivery street</label>
+                        <input class="customer-input" asp-for="DeliveryAddress.Street" data-live-required="Delivery street" placeholder="Street name" />
+                        <div class="customer-field-error" data-error-for="DeliveryAddress_Street"></div>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="customer-label" asp-for="DeliveryAddress.SecondaryAddress">Delivery secondary address <span class="font-normal text-[#999994]">(optional)</span></label>
+                        <input class="customer-input" asp-for="DeliveryAddress.SecondaryAddress" placeholder="Floor, unit, gate, or landmark" />
+                        <div class="customer-field-error" data-error-for="DeliveryAddress_SecondaryAddress"></div>
                     </div>
                     <div>
                         <label class="customer-label" asp-for="CountryId">Destination country</label>

@@ -1,3 +1,4 @@
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Warehouse;
 
 namespace TransitNova.BusinessLayer.DTOs.Warehouse
@@ -6,7 +7,7 @@ namespace TransitNova.BusinessLayer.DTOs.Warehouse
     {
         public string Name { get; set; } = string.Empty;
         public WarehouseType Type { get; set; }
-        public string Address { get; set; } = string.Empty;
+        public Address? Address { get; set; }
         public decimal Capacity { get; set; }
         public decimal CurrentUsage { get; set; }
         public int? OperatingHours { get; set; }

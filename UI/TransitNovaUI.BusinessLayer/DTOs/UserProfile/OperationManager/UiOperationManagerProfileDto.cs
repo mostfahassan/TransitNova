@@ -1,6 +1,8 @@
 using TransitNova.BusinessLayer.DTOs.UserProfile.OperationManager;
 using TransitNova.Domain.Enums.Users;
 
+using TransitNovaUI.BusinessLayer.Common.CommonData;
+
 namespace TransitNovaUI.BusinessLayer.DTOs.UserProfile.OperationManager;
 
 public sealed class UiOperationManagerProfileDto
@@ -9,7 +11,7 @@ public sealed class UiOperationManagerProfileDto
     public string FullName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
-    public string Address { get; set; } = string.Empty;
+    public UiAddressDto Address { get; set; } = new();
     public UserType UserType { get; set; }
     public string CityName { get; set; } = string.Empty;
     public string GovernmentName { get; set; } = string.Empty;
@@ -24,7 +26,7 @@ public sealed class UiOperationManagerProfileDto
             FullName = source.FullName,
             Email = source.Email,
             PhoneNumber = source.PhoneNumber,
-            Address = source.Address,
+            Address = UiAddressDto.ToUiDto(source.Address),
             UserType = source.UserType,
             CityName = source.CityName,
             GovernmentName = source.GovernmentName,

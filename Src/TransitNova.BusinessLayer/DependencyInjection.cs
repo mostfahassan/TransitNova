@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using TransitNova.BusinessLayer.Common.Behaviors;
 using TransitNova.BusinessLayer.Interfaces.Services.AdminDashboard;
+using TransitNova.BusinessLayer.Interfaces.Services.BundleService;
 using TransitNova.BusinessLayer.Interfaces.Services.CarrierDashboard;
 using TransitNova.BusinessLayer.Interfaces.Services.CompleteShipmentService;
 using TransitNova.BusinessLayer.Interfaces.Services.OperationManagerDashboard;
@@ -13,6 +14,7 @@ using TransitNova.BusinessLayer.Interfaces.Services.TokenServices;
 using TransitNova.BusinessLayer.Interfaces.Services.TripService;
 using TransitNova.BusinessLayer.Interfaces.Services.WarehouseManagerDashboardService;
 using TransitNova.BusinessLayer.Services.AdminDashboardService;
+using TransitNova.BusinessLayer.Services.BundleService;
 using TransitNova.BusinessLayer.Services.CarrierDashboardService;
 using TransitNova.BusinessLayer.Services.CompleteShipmentService;
 using TransitNova.BusinessLayer.Services.OperationManagerDashboardService;
@@ -22,6 +24,7 @@ using TransitNova.BusinessLayer.Services.ShipmentServices;
 using TransitNova.BusinessLayer.Services.TokenServices;
 using TransitNova.BusinessLayer.Services.TripServices;
 using TransitNova.BusinessLayer.Services.WarehouseManagerDashboardService;
+using TransitNova.Domain.Entities.MainEntities;
 namespace TransitNova.BusinessLayer
 {
     public static class DependencyInjection
@@ -55,7 +58,8 @@ namespace TransitNova.BusinessLayer
                 .AddScoped<IPaymentHistoryService, PaymentHistoryService>()
                 .AddScoped<IAdminDashboard, AdminDashboard>()
                 .AddScoped<IOperationManagerDashboard, OperationManagerDashboard>()
-                .AddScoped<ICarrierDashboard, CarrierDashboard>();
+                .AddScoped<ICarrierDashboard, CarrierDashboard>()
+                .AddScoped<IBundleSubscription, BundleSubscriptionPayment>();
 
 
             return services;

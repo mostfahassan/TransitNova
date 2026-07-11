@@ -8,7 +8,7 @@ namespace TransitNova.Domain.Entities.MainEntities
     {  
         public Guid AppUserId { get; private set; }
         public Warehouse? Warehouse { get; private set; }
-        private WarehouseManagerProfile(Guid appUserId, string firstName, string lastName, string email, string phoneNumber, string address, int cityId)
+        private WarehouseManagerProfile(Guid appUserId, string firstName, string lastName, string email, string phoneNumber, Address address, int cityId)
         {
             Id = Guid.CreateVersion7();
             FirstName = firstName;
@@ -21,7 +21,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             CurrentState = true;
             CityId = cityId;
         }
-        public static WarehouseManagerProfile Create(Guid id, string firstName, string lastName, string email, string phoneNumber, string address, int cityId)
+        public static WarehouseManagerProfile Create(Guid id, string firstName, string lastName, string email, string phoneNumber, Address address, int cityId)
         {
             var user = new WarehouseManagerProfile(id, firstName, lastName, email, phoneNumber, address, cityId);
             user.RaiseDomainEvent(new UserRegisteredDomainEvent(user.Id, email, user.FullName,phoneNumber, user.UserType));
@@ -29,7 +29,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         }
 
         public void Update(string? firstName = null, string? lastName = null, string? phoneNumber = null, string? email = null, int? cityId = null,
-            string? address = null)
+            Address? address = null)
         {
 
             FirstName = firstName ?? FirstName;

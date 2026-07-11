@@ -3,16 +3,18 @@ using FluentValidation;
 using Moq;
 using TransitNova.BusinessLayer.DTOs.Bundle;
 using TransitNova.BusinessLayer.DTOs.City;
+using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Features.Bundles.Commands;
 using TransitNova.BusinessLayer.Features.Bundles.Commands.CommandsValidators;
 using TransitNova.BusinessLayer.Features.Location.Cities.Commands;
 using TransitNova.BusinessLayer.Features.Location.Cities.Commands.CommandsValidators;
-using TransitNova.BusinessLayer.Interfaces.Repositories.LocationRepository;
-using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Features.Shipments.Commands;
 using TransitNova.BusinessLayer.Features.Shipments.Commands.CommandsValidators;
+using TransitNova.BusinessLayer.Interfaces.Repositories.LocationRepository;
 using TransitNova.BusinessLayer.Validators.ShipmentValidators;
+using TransitNova.Domain.Enums.Bundle;
 using TransitNova.Domain.Enums.Shipment;
+
 namespace TransitNova.ApplicationLayer.Tests.Validators;
 
 public sealed class CommandValidatorTests
@@ -51,7 +53,7 @@ public sealed class CommandValidatorTests
         var dto = ValidBundleDto();
         dto.BundleName = name;
         dto.BundlePrice = price;
-        dto.TotalShipments = shipments;
+        dto.MaxShipmentsPerMonth = shipments;
 
         var result = await validator.ValidateAsync(new CreateBundleCommand(Guid.NewGuid(), Guid.NewGuid(), dto));
 
@@ -105,7 +107,6 @@ public sealed class CommandValidatorTests
         result.Errors.Should().Contain(e => e.ErrorMessage == "City name already exists in this government.");
     }
 
-
     [Fact]
     public async Task RateCalculatorCommandValidator_Should_AcceptCommand_When_DtoIsValidAsync()
     {
@@ -131,13 +132,14 @@ public sealed class CommandValidatorTests
         result.IsValid.Should().BeFalse();
         result.Errors.Should().Contain(e => e.PropertyName == nameof(RateCalculatorCommand.Dto));
     }
+
     private static InlineValidator<CreateBundleDto> CreateBundleDtoValidator()
     {
         var validator = new InlineValidator<CreateBundleDto>();
         validator.RuleFor(x => x.BundleName).NotEmpty();
         validator.RuleFor(x => x.BundlePrice).GreaterThan(0);
-        validator.RuleFor(x => x.TotalWeight).GreaterThan(0);
-        validator.RuleFor(x => x.TotalShipments).GreaterThan(0);
+        validator.RuleFor(x => x.MaxWeightPerShipment).GreaterThan(0);
+        validator.RuleFor(x => x.MaxShipmentsPerMonth).GreaterThan(0);
         return validator;
     }
 
@@ -159,13 +161,18 @@ public sealed class CommandValidatorTests
         Height = 10,
         Length = 10
     };
+
     private static CreateBundleDto ValidBundleDto() => new()
     {
         BundleName = "Business",
         BundlePrice = 100m,
         BundleDescription = "Business bundle",
-        TotalWeight = 50m,
-        TotalDistance = 200m,
-        TotalShipments = 10
+        Tier = BundleTier.Pro,
+        BundleDurationMonths = 1,
+        MaxWeightPerShipment = 50m,
+        MaxDistancePerShipment = 200m,
+        MaxShipmentsPerMonth = 10,
+        DiscountPercentage = 0,
+        MinimumShipmentValueForDiscount = 0
     };
 }

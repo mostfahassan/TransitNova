@@ -26,7 +26,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.Cru
             }
 
             //======== Update Carrier 
-            carrier.UpdateProfile(request.AppUserId, request.Dto.FirstName, request.Dto.LastName, request.Dto.PhoneNumber, request.Dto.Address);
+            carrier.UpdateProfile(request.AppUserId, request.Dto.FirstName, request.Dto.LastName, request.Dto.PhoneNumber, request.Dto.Address?.ToDomain());
 
             //====== Apply Changes 
            

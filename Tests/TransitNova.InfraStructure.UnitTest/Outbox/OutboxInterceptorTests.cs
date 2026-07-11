@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TransitNova.Domain.Contracts.DomainEvents.Events.BundleEvents;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums.Bundle;
 using TransitNova.InfraStructure.Common.Interceptors;
 using TransitNova.InfraStructure.OutBox;
 using TransitNova.InfraStructure.Tests.TestInfrastructure;
@@ -78,20 +79,20 @@ public sealed class OutboxInterceptorTests
             .Should().ContainSingle(x => x.State == EntityState.Unchanged);
     }
 
+
     [Fact]
     public async Task ConvertDomainEventsToOutboxMessages_NoDomainEvents_Should_NotCreateMessageAsync()
     {
         await using var fixture = await SqliteAppDbContextFixture.CreateAsync(
             new ConvertDomainEventsToOutboxMessages());
-        fixture.Context.Bundles.Add(Bundle.Create(
-            "manager", "Business", 500m, "Description", 200m, 1_000m, 20));
 
+        fixture.Context.Bundles.Add(Bundle.Create("manager", "Business", "Description",
+            500m, BundleTier.Pro, 1, 20, 200m, 1_000m, 0m, 0m));
         await fixture.Context.SaveChangesAsync();
 
         fixture.Context.ChangeTracker.Entries<OutboxMessage>().Should().BeEmpty();
         (await fixture.Context.OutboxMessages.AsNoTracking().CountAsync()).Should().Be(0);
     }
-
     [Fact]
     public async Task ConvertDomainEventsToOutboxMessages_TwoDomainEvents_Should_CreateMessagesInOneBatchAsync()
     {
@@ -107,14 +108,14 @@ public sealed class OutboxInterceptorTests
             .Should().HaveCount(2)
             .And.OnlyContain(x => x.State == EntityState.Unchanged);
     }
-
     private static Bundle CreateBundleWithSubscription(out Guid userId)
     {
-        var bundle = Bundle.Create(
-            "manager", $"Business-{Guid.NewGuid():N}", 500m, "Description", 200m, 1_000m, 20);
+        var bundle = Bundle.Create("manager", $"Business-{Guid.NewGuid():N}", "Description", 500m, BundleTier.Pro,
+            1, 20, 200m, 1_000m, 0m, 0m);
         typeof(Bundle).GetProperty(nameof(Bundle.Id))!.SetValue(bundle, Guid.NewGuid());
         userId = Guid.NewGuid();
         bundle.Subscribe(userId);
         return bundle;
     }
+
 }

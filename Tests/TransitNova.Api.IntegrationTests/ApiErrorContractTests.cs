@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Net.Http.Json;
 using TransitNova.Api.IntegrationTests.Infrastructure;
+using TransitNova.Domain.Enums.Bundle;
 using TransitNova.Domain.Enums.Warehouse;
 
 namespace TransitNova.Api.IntegrationTests;
@@ -140,11 +141,15 @@ public sealed class ApiErrorContractTests : IClassFixture<TransitNovaWebApplicat
         return new
         {
             BundleName = bundleName,
-            TotalWeight = 25m,
-            BundlePrice = bundlePrice,
             BundleDescription = "Contract snapshot bundle for idempotency mismatch testing.",
-            TotalDistance = 150m,
-            TotalShipments = 10
+            BundlePrice = bundlePrice,
+            Tier = BundleTier.Standard,
+            BundleDurationMonths = 6,
+            MaxShipmentsPerMonth = 10,
+            MaxWeightPerShipment = 25m,
+            MaxDistancePerShipment = 150m,
+            DiscountPercentage = 5m,
+            MinimumShipmentValueForDiscount = 100m
         };
     }
 
@@ -184,3 +189,5 @@ public sealed class ApiErrorContractTests : IClassFixture<TransitNovaWebApplicat
                 StringComparison.OrdinalIgnoreCase));
     }
 }
+
+

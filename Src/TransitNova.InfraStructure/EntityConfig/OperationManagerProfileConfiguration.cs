@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TransitNova.Domain.Entities.MainEntities;
 
@@ -8,6 +8,8 @@ namespace TransitNova.InfraStructure.EntityConfig
     {
         public void Configure(EntityTypeBuilder<OperationManagerProfile> admin)
         {
+            admin.OwnsAddress(a => a.Address, "Address");
+
             admin.HasKey(a => a.Id)
                  .IsClustered();
 

@@ -27,7 +27,13 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingCommands
                 logger.LogWarning("Bundle not found. Id: {BundleId}", request.BundleId);
                 return BaseResult.Failure(Errors.BundleNotFound("Bundle not found"));
             }
-            entity.Update(operationManagerId.ToString(), request.Dto.BundlePrice, request.Dto.TotalWeight, request.Dto.TotalShipments);
+
+            entity.Update(
+                userId: operationManagerId.ToString(),
+                bundlePrice: request.Dto.BundlePrice,
+                description: request.Dto.BundleDescription,
+                discountPercentage: request.Dto.DiscountPercentage,
+                minShipmentValue: request.Dto.MinimumShipmentValueForDiscount);
 
             repository.Update(entity);
             
@@ -35,7 +41,6 @@ namespace TransitNova.BusinessLayer.Features.Bundles.Handlers.ApplyingCommands
    
             logger.LogInformation("Bundle updated successfully. Id: {BundleId}", request.BundleId);
             CacheInvalidationContext.Set(request, CacheKeys.Bundles.List, CacheKeys.Bundles.ById(request.BundleId));
-
             return BaseResult.Success();
         }
     }

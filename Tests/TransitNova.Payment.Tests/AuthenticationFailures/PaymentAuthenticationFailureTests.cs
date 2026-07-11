@@ -1,12 +1,12 @@
 using FluentAssertions;
 using Moq;
 using TransitNova.Payment.Tests.TestInfrastructure;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Interfaces.IPaymentExecution;
-using TransitNovaPayment.Busieness.Common.Abstract.Abstraction.Repositories.PaymentRepository;
 using TransitNovaPayment.Busieness.Common.ResultResponse.Result.ResultPattern.Enums;
+using TransitNovaPayment.Busieness.Interfaces.Common;
+using TransitNovaPayment.Busieness.Interfaces.PaymentExecution;
 using TransitNovaPayment.Busieness.Models.PaymentEntity.PaymentEnums;
-using PaymentProcessSut = TransitNovaPayment.Busieness.Common.Implementation.PaymentProcess;
+using TransitNovaPayment.Busieness.Repositories.PaymentRepository;
+using PaymentProcessSut = TransitNovaPayment.Busieness.Implementation.PaymentService.ShipmentPaymentProcess;
 
 namespace TransitNova.Payment.Tests.AuthenticationFailures;
 

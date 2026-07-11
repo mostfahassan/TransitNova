@@ -1,6 +1,7 @@
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.Domain.Enums.Shipment;
+using TransitNovaUI.BusinessLayer.Common.CommonData;
 namespace TransitNovaUI.BusinessLayer.DTOs.Shipment;
 
 public sealed class UiRetrieveShipmentDto
@@ -10,8 +11,8 @@ public sealed class UiRetrieveShipmentDto
     public Guid SenderId { get; set; }
     public UiUserSummaryDto Receiver { get; set; } = new();
     public UiUserSummaryDto? Sender { get; set; }
-    public string DeliveryAddress { get; set; } = string.Empty;
-    public string PickupAddress { get; set; } = string.Empty;
+    public UiAddressDto DeliveryAddress { get; set; } = new();
+    public UiAddressDto PickupAddress { get; set; } = new();
     public string? RejectionReason { get; set; }
     public UiPackageSpecificationDto PackageSpecification { get; set; } = new();
     public Currency Currency { get; set; }
@@ -22,7 +23,6 @@ public sealed class UiRetrieveShipmentDto
     public string TrackingNumber { get; set; } = string.Empty;
     public List<UiRetrieveShipmentStatusDto> ShipmentStates { get; set; } = [];
     public enShipmentType ShipmentType { get; set; }
-    public Guid? PackageBundleId { get; set; }
     public DateTime CreatedAt { get; set; }
 
     public static UiRetrieveShipmentDto ToUiDto(RetrieveShipmentDto source) =>
@@ -33,8 +33,8 @@ public sealed class UiRetrieveShipmentDto
             SenderId = source.SenderId,
             Receiver = UiUserSummaryDto.ToUiDto(source.Receiver),
             Sender = source.Sender is null ? null : UiUserSummaryDto.ToUiDto(source.Sender),
-            DeliveryAddress = source.DeliveryAddress,
-            PickupAddress = source.PickupAddress,
+            DeliveryAddress = UiAddressDto.ToUiDto(source.DeliveryAddress),
+            PickupAddress = UiAddressDto.ToUiDto(source.PickupAddress),
             RejectionReason = source.RejectionReason,
             PackageSpecification = UiPackageSpecificationDto.ToUiDto(source.PackageSpecification),
             Currency = source.Currency,
@@ -45,7 +45,6 @@ public sealed class UiRetrieveShipmentDto
             TrackingNumber = source.TrackingNumber,
             ShipmentStates =[ ..source.ShipmentStates.Select(UiRetrieveShipmentStatusDto.ToUiDto)],
             ShipmentType = source.ShipmentType,
-            PackageBundleId = source.PackageBundleId,
             CreatedAt = source.CreatedAt
         };
 

@@ -1,6 +1,7 @@
 using FluentAssertions;
 using TransitNova.Domain.Contracts.DomainEvents.Events.CarrierEvents;
 using TransitNova.Domain.DomainExceptions;
+using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Trip;
@@ -63,12 +64,13 @@ public sealed class CarrierTests
         var carrier = CreateCarrier();
         var userId = Guid.NewGuid();
 
-        carrier.UpdateProfile(userId, " New ", null, " 0111 ", " New address ");
+        carrier.UpdateProfile(userId, " New ", null, " 0111 ", Address.Create(" New address ", null, " Main street "));
 
         carrier.FirstName.Should().Be("New");
         carrier.LastName.Should().Be("Carrier");
         carrier.PhoneNumber.Should().Be("0111");
-        carrier.Address.Should().Be("New address");
+        carrier.Address.MainAddress.Should().Be("New address");
+        carrier.Address.Street.Should().Be("Main street");
         carrier.UpdatedBy.Should().Be(userId.ToString());
         carrier.GetDomainEvents().Should().Contain(e => e is CarrierProfileUpdatedDomainEvent);
     }
@@ -187,7 +189,7 @@ public sealed class CarrierTests
     }
 
     private static Carrier CreateCarrier(Guid? userId = null) =>
-        Carrier.Create(userId ?? Guid.NewGuid(), "Test", "Carrier", "carrier@example.com", "0100", "Cairo", 1);
+        Carrier.Create(userId ?? Guid.NewGuid(), "Test", "Carrier", "carrier@example.com", "0100", Address.FromLegacy("Cairo"), 1);
 
     private static Carrier CreateCarrierWithAdditionalData()
     {

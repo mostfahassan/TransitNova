@@ -14,4 +14,14 @@ namespace TransitNova.BusinessLayer.DTOs.BundleSubscription
         public DateTime? EndDate { get; set; }
         public DateTime? CancelledAt { get; set; }
     }
+
+    public class BundleSubscriptionInvoice
+    {
+        public Guid Id { get; set; }
+        public string BundleName { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public decimal BundlePrice { get; set; }
+        public DateTime? EndDate { get; set; }
+        public DateTime? SubscribedAt { get; set; }
+    }
 }

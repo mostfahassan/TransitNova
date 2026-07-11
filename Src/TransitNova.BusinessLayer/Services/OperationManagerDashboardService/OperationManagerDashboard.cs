@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.OperationManager;
 using TransitNova.BusinessLayer.Features.OperationManagerService;
@@ -21,20 +21,17 @@ namespace TransitNova.BusinessLayer.Services.OperationManagerDashboardService
                 return Result<OperationManagerDashboardDto>.Failure(Errors.NotFound("Operation manager not found."));
             }
 
-            var TotalHandledShipmentTask = dashboardQuery.TotalHandledShipmentsAsync(operationManagerId, cancellationToken);
-            var TotalHandledCarriersTask = dashboardQuery.TotalHandledCarriersAsync(operationManagerId, cancellationToken);
-            var ShipmentStatisticsTask = dashboardQuery.GetShipmentCountInStatusAsync(cancellationToken);
+            var handledSummaryTask = dashboardQuery.GetHandledSummaryAsync(operationManagerId, cancellationToken);
+            var shipmentStatisticsTask = dashboardQuery.GetShipmentCountInStatusAsync(cancellationToken);
             var shipmentsTask = dashboardQuery.GetShipmentsAsync(cancellationToken);
 
-            await Task.WhenAll(TotalHandledShipmentTask, TotalHandledCarriersTask, ShipmentStatisticsTask, shipmentsTask);
+            await Task.WhenAll(handledSummaryTask, shipmentStatisticsTask, shipmentsTask);
 
-            var totalHandledShipments = TotalHandledShipmentTask.Result;
-            var totalHandledCarriers = TotalHandledCarriersTask.Result;
-            var shipmentStatistics = ShipmentStatisticsTask.Result;
+            var handledSummary = handledSummaryTask.Result;
+            var shipmentStatistics = shipmentStatisticsTask.Result;
             var shipments = shipmentsTask.Result;
 
-
-            var dashboardDto = OperationManagerDashboardHelper.Build(shipments.Data, shipmentStatistics, totalHandledShipments, totalHandledCarriers);
+            var dashboardDto = OperationManagerDashboardHelper.Build(shipments.Data, shipmentStatistics, handledSummary.TotalHandledShipments, handledSummary.TotalHandledCarriers);
 
             return Result<OperationManagerDashboardDto>.Success(dashboardDto);
         }

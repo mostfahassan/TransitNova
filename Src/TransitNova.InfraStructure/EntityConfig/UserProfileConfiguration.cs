@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TransitNova.Domain.Entities.MainEntities;
 namespace TransitNova.InfraStructure.EntityConfig
@@ -8,6 +8,7 @@ namespace TransitNova.InfraStructure.EntityConfig
         public void Configure(EntityTypeBuilder<UserProfile> user)
         {
             user.HasKey(u => u.Id).IsClustered();
+            user.OwnsAddress(u => u.Address, "Address");
 
             user.HasMany(u => u.SentShipments)
             .WithOne(s => s.Sender)

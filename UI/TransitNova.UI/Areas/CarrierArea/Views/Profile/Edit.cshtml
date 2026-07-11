@@ -18,7 +18,9 @@
                 <div><label class="carrier-label" asp-for="PhoneNumber">Phone</label><input class="carrier-input" asp-for="PhoneNumber" /></div>
                 <div><label class="carrier-label" asp-for="Email">Email</label><input class="carrier-input" asp-for="Email" /></div>
                 <div><label class="carrier-label" asp-for="CityId">City Id</label><input class="carrier-input" asp-for="CityId" type="number" /></div>
-                <div class="md:col-span-2"><label class="carrier-label" asp-for="Address">Address</label><textarea class="carrier-textarea" asp-for="Address"></textarea></div>
+                                <div><label class="carrier-label" asp-for="Address.MainAddress">Main address</label><input class="carrier-input" asp-for="Address.MainAddress" placeholder="Building or district" /></div>
+                <div><label class="carrier-label" asp-for="Address.Street">Street</label><input class="carrier-input" asp-for="Address.Street" placeholder="Street name" /></div>
+                <div class="md:col-span-2"><label class="carrier-label" asp-for="Address.SecondaryAddress">Secondary address</label><input class="carrier-input" asp-for="Address.SecondaryAddress" placeholder="Floor, unit, or landmark" /></div>
             </div>
             <div class="mt-6 flex justify-end gap-3"><a asp-action="Index" class="carrier-button-secondary">Cancel</a><button type="submit" class="carrier-button"><span class="carrier-spinner hidden" data-button-spinner></span><span data-button-text>Save changes</span></button></div>
         </form>

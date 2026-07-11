@@ -13,6 +13,8 @@ using TransitNova.BusinessLayer.Interfaces.Services.CacheService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.Caching;
 using TransitNova.Domain.Entities.MainEntities;
+using TransitNova.Domain.Enums;
+using TransitNova.Domain.Enums.Bundle;
 using TransitNova.Domain.Enums.Result;
 
 namespace TransitNova.ApplicationLayer.Tests.Handlers;
@@ -41,9 +43,13 @@ public sealed class BundleHandlerTests
                 BundleName = "Business",
                 BundlePrice = 500m,
                 BundleDescription = "Business package",
-                TotalWeight = 200m,
-                TotalDistance = 1000m,
-                TotalShipments = 20
+                Tier = BundleTier.Pro,
+                BundleDurationMonths = 1,
+                MaxShipmentsPerMonth = 20,
+                MaxWeightPerShipment = 200m,
+                MaxDistancePerShipment = 1000m,
+                DiscountPercentage = 10m,
+                MinimumShipmentValueForDiscount = 2000m
             });
 
         var result = await handler.Handle(command, CancellationToken.None);
@@ -91,7 +97,7 @@ public sealed class BundleHandlerTests
         var cache = new Mock<ICacheService>();
         var appUserId = Guid.NewGuid();
         var managerId = Guid.NewGuid();
-        var bundle = Bundle.Create("creator", "Business", 100, "Description", 50, 500, 5);
+        var bundle = Bundle.Create("creator", "Business", "Desc", 100, BundleTier.Standard, 1, 5, 50, 500, 10, 1000);
         managers.Setup(x => x.GetUserIdAsync(appUserId, It.IsAny<CancellationToken>())).ReturnsAsync(managerId);
         repository.Setup(x => x.GetByIdAsync<Bundle>(bundle.Id, It.IsAny<CancellationToken>())).ReturnsAsync(bundle);
         unitOfWork.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
@@ -103,8 +109,9 @@ public sealed class BundleHandlerTests
 
         result.IsSuccess.Should().BeTrue();
         bundle.BundlePrice.Should().Be(250);
-        bundle.TotalWeight.Should().Be(75);
-        bundle.TotalShipments.Should().Be(12);
+        bundle.BundleDescription.Should().Be("New Description");
+        bundle.DiscountPercentage.Should().Be(15);
+        bundle.MinimumShipmentValueForDiscount.Should().Be(2500);
         bundle.UpdatedBy.Should().Be(managerId.ToString());
         repository.Verify(x => x.Update(bundle), Times.Once);
         unitOfWork.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
@@ -173,9 +180,8 @@ public sealed class BundleHandlerTests
     private static UpdateBundleDto UpdateDto() => new()
     {
         BundlePrice = 250,
-        TotalWeight = 75,
-        TotalShipments = 12
+        BundleDescription = "New Description",
+        DiscountPercentage = 15,
+        MinimumShipmentValueForDiscount = 2500
     };
 }
-
-

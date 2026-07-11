@@ -41,6 +41,12 @@ namespace TransitNova.InfraStructure.EntityConfig
 
             trip.HasIndex(t => t.WarehouseId);
             trip.HasIndex(t => t.Status);
+            trip.HasIndex(t => t.CarrierId);
+            trip.HasIndex(t => t.CreatedAt);
+            trip.HasIndex(t => new { t.Status, t.CreatedAt });
+            trip.HasIndex(t => new { t.CarrierId, t.Status });
+            trip.HasIndex(t => new { t.WarehouseId, t.Status });
+
 
 
         }

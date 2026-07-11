@@ -22,15 +22,15 @@ namespace TransitNova.InfraStructure.EntityConfig
                 .OnDelete(DeleteBehavior.Restrict);
 
             userBundleSubscriptions.HasIndex(x => new { x.SubscribedUserId, x.BundleId })
-                                   .IsUnique();
-            userBundleSubscriptions.HasIndex(x => x.BundleId);
-            userBundleSubscriptions.HasIndex(x => x.SubscribedUserId);
-            userBundleSubscriptions.HasIndex(x => x.SubscriptionDate);
+                                   .IsUnique()
+                                   .HasFilter("[IsActive] = 1"); 
+
             userBundleSubscriptions.HasIndex(x => x.EndDate);
-            userBundleSubscriptions.HasIndex(x => new { x.BundleId, x.SubscriptionDate });
-            userBundleSubscriptions.HasIndex(x => new { x.SubscribedUserId, x.SubscriptionDate });
 
             userBundleSubscriptions.Property(x => x.SubscriptionDate)
+                                   .IsRequired();
+
+            userBundleSubscriptions.Property(x => x.EndDate)
                                    .IsRequired();
         }
     }

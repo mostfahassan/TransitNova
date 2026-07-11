@@ -57,10 +57,20 @@
                 <label asp-for="WarehouseId" class="warehouse-label"></label>
                 <input value="@Model.WarehouseId" class="warehouse-input" disabled />
             </div>
+                        <div>
+                <label asp-for="Address.MainAddress" class="warehouse-label">Main address</label>
+                <input asp-for="Address.MainAddress" class="warehouse-input" placeholder="Building or district" />
+                <span asp-validation-for="Address.MainAddress" class="mt-1 block text-xs font-bold text-[#9F2F2D]"></span>
+            </div>
+            <div>
+                <label asp-for="Address.Street" class="warehouse-label">Street</label>
+                <input asp-for="Address.Street" class="warehouse-input" placeholder="Street name" />
+                <span asp-validation-for="Address.Street" class="mt-1 block text-xs font-bold text-[#9F2F2D]"></span>
+            </div>
             <div class="md:col-span-2">
-                <label asp-for="Address" class="warehouse-label"></label>
-                <textarea asp-for="Address" rows="4" class="warehouse-input resize-none"></textarea>
-                <span asp-validation-for="Address" class="mt-1 block text-xs font-bold text-[#9F2F2D]"></span>
+                <label asp-for="Address.SecondaryAddress" class="warehouse-label">Secondary address</label>
+                <input asp-for="Address.SecondaryAddress" class="warehouse-input" placeholder="Floor, unit, or landmark" />
+                <span asp-validation-for="Address.SecondaryAddress" class="mt-1 block text-xs font-bold text-[#9F2F2D]"></span>
             </div>
         </div>
         <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">

@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using TransitNova.Domain.Entities.Common;
+using TransitNova.Domain.Enums.Bundle;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
@@ -55,8 +57,7 @@ public sealed class RegisterViewModel
     [Required]
     public string LastName { get; set; } = string.Empty;
 
-    [Required]
-    public string Address { get; set; } = string.Empty;
+    public AddressViewModel Address { get; set; } = new();
 
     public UserType UserType { get; set; } = UserType.User;
 
@@ -82,12 +83,39 @@ public sealed class RegisterViewModel
         PhoneNumber = PhoneNumber,
         FirstName = FirstName,
         LastName = LastName,
-        Address = Address,
+        Address = Address.ToDto(),
         UserType = UserType,
         CityId = CityId
     };
 }
 
+public sealed class AddressViewModel
+{
+    [Required, StringLength(250)]
+    public string MainAddress { get; set; } = string.Empty;
+
+    [StringLength(250)]
+    public string? SecondaryAddress { get; set; }
+
+    [Required, StringLength(150)]
+    public string Street { get; set; } = string.Empty;
+
+    public UiAddressDto ToDto() => new()
+    {
+        MainAddress = MainAddress,
+        SecondaryAddress = SecondaryAddress,
+        Street = Street
+    };
+
+    public static AddressViewModel FromDto(UiAddressDto source) => new()
+    {
+        MainAddress = source.MainAddress,
+        SecondaryAddress = source.SecondaryAddress,
+        Street = source.Street
+    };
+
+    public override string ToString() => ToDto().ToString();
+}
 public sealed record LocationOptionViewModel(int Id, string Name);
 
 public sealed record WarehouseOptionViewModel(Guid Id, string Name);
@@ -145,8 +173,7 @@ public sealed class ReceiverViewModel
     [Required]
     public string PhoneNumber { get; set; } = string.Empty;
 
-    [Required]
-    public string Address { get; set; } = string.Empty;
+    public AddressViewModel Address { get; set; } = new();
 
     [Range(1, int.MaxValue)]
     public int CityId { get; set; }
@@ -161,7 +188,7 @@ public sealed class ReceiverViewModel
             LastName = LastName,
             Email = Email,
             PhoneNumber = PhoneNumber,
-            Address = Address,
+            Address = Address.ToDto(),
             CityId = CityId
         };
     }
@@ -188,10 +215,10 @@ public sealed class CreateShipmentViewModel
     public enShipmentType ShipmentDeliveryType { get; set; }
 
     [Required]
-    public string DeliveryAddress { get; set; } = string.Empty;
+    public AddressViewModel DeliveryAddress { get; set; } = new();
 
     [Required]
-    public string PickupAddress { get; set; } = string.Empty;
+    public AddressViewModel PickupAddress { get; set; } = new();
 
     public Guid? PackageBundleId { get; set; }
     public Guid PaymentId { get; set; }
@@ -204,8 +231,8 @@ public sealed class CreateShipmentViewModel
         PickUpDate,
         TransportationMode,
         ShipmentDeliveryType,
-        DeliveryAddress,
-        PickupAddress,
+        DeliveryAddress.ToDto(),
+        PickupAddress.ToDto(),
         PackageBundleId,
         PaymentId,
         PaymentMethod);
@@ -214,16 +241,16 @@ public sealed class CreateShipmentViewModel
 public sealed class UpdateShipmentViewModel
 {
     public Guid? ReceiverId { get; set; }
-    public string? DeliveryAddress { get; set; }
-    public string? PickupAddress { get; set; }
+    public AddressViewModel? DeliveryAddress { get; set; }
+    public AddressViewModel? PickupAddress { get; set; }
     public PackageSpecificationViewModel? PackageSpecification { get; set; }
     public enShipmentType? ShipmentType { get; set; }
     public TransportationMode? TransportationMode { get; set; }
 
     public UiUpdateShipmentDto ToDto() => new(
         ReceiverId,
-        DeliveryAddress,
-        PickupAddress,
+        DeliveryAddress?.ToDto(),
+        PickupAddress?.ToDto(),
         PackageSpecification?.ToDto(),
         ShipmentType,
         TransportationMode);
@@ -446,40 +473,59 @@ public sealed class BundleFormViewModel
     [Required]
     public string BundleName { get; set; } = string.Empty;
 
-    [Range(0.01, double.MaxValue)]
-    public decimal TotalWeight { get; set; }
-
-    [Range(0.01, double.MaxValue)]
-    public decimal BundlePrice { get; set; }
-
     [Required]
     public string BundleDescription { get; set; } = string.Empty;
 
     [Range(0.01, double.MaxValue)]
-    public decimal TotalDistance { get; set; }
+    public decimal BundlePrice { get; set; }
+
+    public BundleTier Tier { get; set; }
+
+    [Range(1, 24)]
+    public int BundleDurationMonths { get; set; }
 
     [Range(1, int.MaxValue)]
-    public int TotalShipments { get; set; }
+    public int MaxShipmentsPerMonth { get; set; }
+
+    [Range(0.01, double.MaxValue)]
+    public decimal MaxWeightPerShipment { get; set; }
+
+    [Range(0.01, double.MaxValue)]
+    public decimal MaxDistancePerShipment { get; set; }
+
+    [Range(0, 100)]
+    public decimal DiscountPercentage { get; set; }
+
+    [Range(0, double.MaxValue)]
+    public decimal MinimumShipmentValueForDiscount { get; set; }
 
     public UiCreateBundleDto ToCreateDto() => new()
     {
         BundleName = BundleName,
-        TotalWeight = TotalWeight,
-        BundlePrice = BundlePrice,
         BundleDescription = BundleDescription,
-        TotalDistance = TotalDistance,
-        TotalShipments = TotalShipments
+        BundlePrice = BundlePrice,
+        Tier = Tier,
+        BundleDurationMonths = BundleDurationMonths,
+        MaxShipmentsPerMonth = MaxShipmentsPerMonth,
+        MaxWeightPerShipment = MaxWeightPerShipment,
+        MaxDistancePerShipment = MaxDistancePerShipment,
+        DiscountPercentage = DiscountPercentage,
+        MinimumShipmentValueForDiscount = MinimumShipmentValueForDiscount
     };
 
     public UiUpdateBundleDto ToUpdateDto(Guid bundleId) => new()
     {
         BundleId = bundleId,
         BundleName = BundleName,
-        TotalWeight = TotalWeight,
-        BundlePrice = BundlePrice,
         BundleDescription = BundleDescription,
-        TotalDistance = TotalDistance,
-        TotalShipments = TotalShipments
+        BundlePrice = BundlePrice,
+        Tier = Tier,
+        BundleDurationMonths = BundleDurationMonths,
+        MaxShipmentsPerMonth = MaxShipmentsPerMonth,
+        MaxWeightPerShipment = MaxWeightPerShipment,
+        MaxDistancePerShipment = MaxDistancePerShipment,
+        DiscountPercentage = DiscountPercentage,
+        MinimumShipmentValueForDiscount = MinimumShipmentValueForDiscount
     };
 }
 
@@ -517,7 +563,7 @@ public sealed class WarehouseFormViewModel
     public WarehouseType Type { get; set; }
 
     [Required]
-    public string Address { get; set; } = string.Empty;
+    public Address Address { get; set; } = null!;
 
     [Range(0.01, double.MaxValue)]
     public decimal Capacity { get; set; }
@@ -532,7 +578,7 @@ public sealed class WarehouseFormViewModel
     {
         Name = Name,
         Type = Type,
-        Address = Address,
+        WarehouseAddress = Address,
         Capacity = Capacity,
         CurrentUsage = CurrentUsage,
         OperatingHours = OperatingHours ?? 0,
@@ -543,7 +589,7 @@ public sealed class WarehouseFormViewModel
     {
         Name = Name,
         Type = Type,
-        Address = Address,
+        WarehouseAddress = Address,
         Capacity = Capacity,
         CurrentUsage = CurrentUsage,
         OperatingHours = OperatingHours,
@@ -616,7 +662,7 @@ public sealed class WarehouseManagerProfileFormViewModel
     public string? PhoneNumber { get; set; }
     public string? Email { get; set; }
     public int? CityId { get; set; }
-    public string? Address { get; set; }
+    public AddressViewModel? Address { get; set; }
     public Guid? WarehouseId { get; set; }
 
     public UiUpdateWarehouseManagerProfileDto ToDto() => new()
@@ -627,7 +673,7 @@ public sealed class WarehouseManagerProfileFormViewModel
         PhoneNumber = PhoneNumber,
         Email = Email,
         CityId = CityId,
-        Address = Address,
+        Address = Address?.ToDto(),
         WarehouseId = WarehouseId
     };
 }
@@ -642,7 +688,7 @@ public sealed class CarrierProfileFormViewModel
     public string? PhoneNumber { get; set; }
     public string? Email { get; set; }
     public int? CityId { get; set; }
-    public string? Address { get; set; }
+    public AddressViewModel? Address { get; set; }
 
     public UiUpdateCarrierDto ToDto(Guid carrierId) => new()
     {
@@ -652,7 +698,7 @@ public sealed class CarrierProfileFormViewModel
         PhoneNumber = PhoneNumber,
         Email = Email,
         CityId = CityId,
-        Address = Address
+        Address = Address?.ToDto()
     };
 }
 

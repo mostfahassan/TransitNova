@@ -1,4 +1,3 @@
-﻿using TransitNova.Domain.Contracts.DomainEvents;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Users;
 namespace TransitNova.Domain.Entities.MainEntities
@@ -11,7 +10,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             
 
         }
-        private AdminProfile(Guid appUserId, string firstName, string lastName,string email,string phone, string address, int cityId)
+        private AdminProfile(Guid appUserId, string firstName, string lastName,string email,string phone, Address address, int cityId)
         {
             Id = Guid.CreateVersion7();
             FirstName = firstName;
@@ -24,7 +23,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             CurrentState = true;
             CityId = cityId;
         }
-        public static AdminProfile Create(Guid Id, string firstName, string lastName, string email, string phone, string address, int cityId)
+        public static AdminProfile Create(Guid Id, string firstName, string lastName, string email, string phone, Address address, int cityId)
         {
             return new (Id, firstName, lastName, email, phone, address, cityId);
         }

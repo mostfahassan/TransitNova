@@ -387,3 +387,20 @@ TestResultsExpansion/
 .github/Validations/
 .env
 .env.*
+
+# Local Database Storage (Docker Volumes)
+data/
+data/sqlserver/
+
+# Test Coverage and build artifacts
+build/
+bin/
+obj/
+
+# Crash dumps / System drive leakage
+%SystemDrive%/
+
+# IDE / Extension configs at root level (Optional but recommended)
+tailwind.extension.json
+.vs/
+.idea/

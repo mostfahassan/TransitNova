@@ -11,8 +11,8 @@ public sealed record UiCreateShipmentDto(
     DateTime? PickUpDate,
     TransportationMode TransportationMode,
     enShipmentType ShipmentDeliveryType,
-    string DeliveryAddress,
-    string PickupAddress,
+    UiAddressDto DeliveryAddress,
+    UiAddressDto PickupAddress,
     Guid? PackageBundleId,
     Guid PaymentId,
     PaymentMethod PaymentMethod
@@ -26,9 +26,8 @@ public sealed record UiCreateShipmentDto(
             source.PickUpDate,
             source.TransportationMode,
             source.ShipmentDeliveryType,
-            source.DeliveryAddress,
-            source.PickupAddress,
-            source.PackageBundleId,
+            UiAddressDto.ToDto(source.DeliveryAddress),
+            UiAddressDto.ToDto(source.PickupAddress),
             source.PaymentId,
             source.PaymentMethod);
 }
