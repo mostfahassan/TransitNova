@@ -51,6 +51,10 @@ namespace TransitNova.InfraStructure.Token
                         permissions.UnionWith(OperationManagerPermissions.All);
                         break;
 
+                    case Role.WarehouseManager:
+                        permissions.UnionWith(WarehouseManagerPermissions.All);
+                        break;
+
                     case Role.Admin:
                         permissions.UnionWith(AdminPermissions.All);
                         break;

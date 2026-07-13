@@ -5,6 +5,7 @@ using TransitNova.UI.Infrastructure.Mvc.Common;
 using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Shipments.Segregation;
+using TransitNovaUI.BusinessLayer.DTOs.Shipment;
 namespace TransitNova.UI.Areas.OperationManagerArea.Controllers.Operations;
 
 [Authorize(Roles = Role.OperationManager)]
@@ -18,25 +19,25 @@ public sealed class ShipmentsController(
     : AppControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] ShipmentFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index([FromQuery] UiShipmentFilterDto filter, CancellationToken cancellationToken)
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerShipmentsQuery.FilterShipmentsAsync(filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerShipmentsQuery.FilterShipmentsAsync(filter, token!, ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Assigned([FromQuery] ShipmentFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Assigned([FromQuery] UiShipmentFilterDto filter, CancellationToken cancellationToken)
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerShipmentsQuery.GetAssignedShipmentsAsync(filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerShipmentsQuery.GetAssignedShipmentsAsync(filter, token!, ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
 
     [HttpGet]
-    public async Task<IActionResult> ReviewQueue([FromQuery] ShipmentFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> ReviewQueue([FromQuery] UiShipmentFilterDto filter, CancellationToken cancellationToken)
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerShipmentsQuery.GetShipmentReviewQueueAsync(filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerShipmentsQuery.GetShipmentReviewQueueAsync(filter, token!, ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }

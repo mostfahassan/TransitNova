@@ -70,6 +70,13 @@ namespace TransitNovaPayment.Api
                 .Validate(settings => !string.IsNullOrWhiteSpace(settings.PrivateKey), "PaymentSettings:PrivateKey is required.")
                 .ValidateOnStart();
 
+            service.AddOptions<PaymentExecutionOptions>()
+                .Bind(configuration.GetSection(PaymentExecutionOptions.SectionName))
+                .Validate(
+                    settings => settings.DelayMilliseconds is >= 0 and <= 60_000,
+                    "PaymentExecution:DelayMilliseconds must be between 0 and 60000.")
+                .ValidateOnStart();
+
             return service;
         }
         // Problem Details

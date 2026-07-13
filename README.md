@@ -1,21 +1,86 @@
-# TransitNova Backend
+# TransitNova
 
-TransitNova is a modular logistics and shipment-management backend built with ASP.NET Core, Entity Framework Core, MediatR, CQRS, SQL Server, SignalR, Quartz, and Docker. The system models a full delivery workflow across users, carriers, operation managers, warehouse managers, administrators, shipments, trips, warehouses, subscriptions, notifications, and a separate simulated payment service.
+TransitNova is a portfolio-grade logistics SaaS built with ASP.NET Core, Clean Architecture, CQRS, MediatR, EF Core, ASP.NET Core Identity, SignalR, and a separate mocked payment service. It models the operational lifecycle of shipments across customers, administrators, carriers, operation managers, and warehouse managers.
 
-The backend is designed as a learning-focused but production-shaped system: it uses layered architecture, domain entities with business behavior, command/query separation, validation pipelines, transaction handling, idempotency, cache invalidation, authorization policies, refresh-token rotation, outbox-based domain event publishing, health checks, structured logging, OpenTelemetry tracing, and integration tests for the public API surface.
+This repository is a complete controlled MVP and a strong fresh-graduate CV project. It is not presented as production-approved software; the engineering review documents the remaining concurrency, token-security, migration, indexing, and browser-testing work.
+
+## Verified Baseline
+
+Audited on 2026-07-13:
+
+| Check | Result |
+| --- | --- |
+| Release solution build | Passed with `-m:1` |
+| Automated tests | 862 non-browser tests passed, 0 failed, 0 skipped; 55 full-stack E2E cases authored (81.25% workflow coverage) |
+| OpenAPI contract | 121 paths, 142 operations |
+| Docker Compose syntax | Valid |
+| AutoMapper configuration and SQL projections | Passed |
+| Domain line coverage | 88.04% |
+| Application line coverage | 81.24% |
+| Infrastructure line coverage | 80.14% |
+| Main API line coverage | 85.62% |
+| Payment aggregate line coverage | 87.40% |
+
+Overall line coverage is 82.31%. CI enforces an 80% line gate for every measured layer and overall; branch floors remain incremental improvement gates. See the [test coverage review](docs/TEST_COVERAGE_REVIEW.md).
+
+## Capabilities
+
+- Identity, JWT authentication, refresh-token rotation, role permissions, and resource ownership.
+- Five role dashboards: User, Admin, Carrier, Operation Manager, and Warehouse Manager.
+- Shipment creation, pricing, mocked payment, invoice, tracking, update, cancellation, review, rejection, assignment, pickup, warehouse handoff, delivery, issue, deletion, and rating.
+- Trip planning, carrier and warehouse scoping, start, completion, cancellation, and shipment assignment.
+- Carrier profile completion, vehicles, availability, workload, revenue, and ratings.
+- Bundle subscriptions with eligibility checks, monthly benefit limits, shipping discounts, and invoice audit snapshots.
+- Shared authenticated notifications with SignalR live delivery, unread count, read-all, paging, and role-specific MVC views.
+- Admin management for users, roles, carriers, operation managers, warehouses, locations, bundles, subscriptions, shipments, trips, payments, and reports.
+- Warehouse-scoped shipment and trip workflows.
+- PDF report generation through Hangfire and QuestPDF.
+- Durable domain-event outbox processing through Quartz.
+- Health checks, Serilog, Seq, correlation IDs, OpenTelemetry, Swagger, Scalar, and OpenAPI snapshots.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Browser["MVC browser client"] --> UI["TransitNova.UI"]
+    UI --> API["TransitNova.Api"]
+    API --> Business["TransitNova.BusinessLayer"]
+    Business --> Domain["TransitNova.Domain"]
+    API --> Infrastructure["TransitNova.InfraStructure"]
+    Infrastructure --> MainDb[("Main SQL Server database")]
+    Business --> Payment["TransitNovaPayment.API"]
+    Payment --> PaymentDb[("Payment SQL Server database")]
+    Infrastructure --> SignalR["NotificationHub"]
+    Infrastructure --> Jobs["Quartz outbox and Hangfire reports"]
+```
+
+| Project | Responsibility |
+| --- | --- |
+| `TransitNova.Domain` | Aggregates, entities, value objects, enums, events, invariants |
+| `TransitNova.BusinessLayer` | CQRS, handlers, validators, DTOs, services, pipeline behaviors |
+| `TransitNova.InfraStructure` | EF Core, Identity, repositories, tokens, caching, jobs, SignalR, reports |
+| `TransitNova.Api` | Versioned HTTP endpoints, authorization, rate limiting, errors, OpenAPI |
+| `TransitNovaUI.BusinessLayer` | Typed API clients and UI contracts |
+| `TransitNova.UI` | MVC Areas, Razor dashboards, forms, and JavaScript workflows |
+| `TransitNovaPayment` | Independent payment simulation and payment persistence |
+
+Read the complete [architecture description](docs/ARCHITECTURE.md) and [architecture review](docs/ARCHITECTURE_REVIEW.md).
 
 ## Repository Layout
 
 ```text
 TransitNova/
   Src/
-    TransitNova.Api/                Main HTTP API
-    TransitNova.BusinessLayer/      Application layer, CQRS, DTOs, validators, services
-    TransitNova.Domain/             Domain entities, enums, domain exceptions, domain events
-    TransitNova.InfraStructure/     EF Core, Identity, repositories, SignalR, outbox, background jobs
+    TransitNova.Api/
+    TransitNova.BusinessLayer/
+    TransitNova.Domain/
+    TransitNova.InfraStructure/
+  UI/
+    TransitNova.UI/
+    TransitNovaUI.BusinessLayer/
   TransitNovaPayment/
-    TransitNovaPayment.API/         Simulated payment gateway API
-    TransitNovaPayment.Busieness/   Payment CQRS, validation, payment process logic
+    TransitNovaPayment.API/
+    TransitNovaPayment.Busieness/
     TransitNovaPayment.Infrastructure/
   Tests/
     TransitNova.Api.IntegrationTests/
@@ -24,275 +89,137 @@ TransitNova/
     TransitNova.InfraStructure.UnitTest/
     TransitNova.MappingTests/
     TransitNova.Payment.Tests/
-  UI/                               MVC/UI projects
+    TransitNova.E2E.Tests/
+  build/coverage/
+  docs/
+  .github/workflows/ci.yml
   docker-compose.yml
   TransitNova.slnx
 ```
 
-## Main Capabilities
+## Requirements
 
-- User authentication with ASP.NET Core Identity, JWT access tokens, refresh-token rotation, and role-based authorization.
-- Role-specific workflows for users, carriers, operation managers, warehouse managers, and admins.
-- Shipment creation, pricing, approval, rejection, cancellation, issuing, tracking, assignment, pickup, warehouse handoff, and delivery.
-- Carrier profile management, vehicle management, trips, shipment completion, and carrier ratings.
-- Warehouse, warehouse manager, city, government, country, zone, bundle, subscription, and role management.
-- Payment workflow through a separate payment service using an HTTP gateway call and `X-PaymentKey`.
-- Notifications persisted in the database and broadcast through SignalR.
-- Domain events converted to outbox messages, then processed by a Quartz background job.
-- API versioning, OpenAPI/Scalar documentation, health checks, rate limiting, CORS, structured logging, and distributed tracing.
+- .NET SDK 10.x.
+- Docker Desktop for the complete local topology.
+- PowerShell.
+- EF Core CLI 10.0.9 for migration generation against the audited package version.
 
-## Architecture
+## Local Configuration
 
-TransitNova follows a layered backend architecture:
+Create an untracked `.env` file in the repository root:
 
-```mermaid
-flowchart TD
-    Client["Client or UI"] --> Api["TransitNova.Api"]
-    Api --> Business["TransitNova.BusinessLayer"]
-    Business --> Domain["TransitNova.Domain"]
-    Business --> InfraAbstractions["Repository and Service Interfaces"]
-    Infra["TransitNova.InfraStructure"] --> InfraAbstractions
-    Infra --> Db["SQL Server"]
-    Infra --> SignalR["SignalR Notification Hub"]
-    Infra --> Quartz["Quartz Outbox Worker"]
-    Business --> PaymentHttp["PaymentService HTTP Client"]
-    PaymentHttp --> PaymentApi["TransitNovaPayment.API"]
-    PaymentApi --> PaymentBusiness["TransitNovaPayment.Busieness"]
-    PaymentBusiness --> PaymentInfra["TransitNovaPayment.Infrastructure"]
-    PaymentInfra --> PaymentDb["SQL Server Payments DB"]
+```dotenv
+SQL_PASSWORD=<strong-local-sql-password>
+JWT_KEY=<at-least-48-bytes-of-random-development-key-material>
+PaymentSettings__PublicKey=<local-payment-public-key>
+PaymentSettings__PrivateKey=<matching-local-payment-private-key>
+ConnectionStrings__ApiDefaultConnection=Server=sqlserver,1433;Database=TransitNovaDb;User Id=sa;TrustServerCertificate=True
+ConnectionStrings__PaymentDefaultConnection=Server=sqlserver,1433;Database=TransitNovaPaymentDb;User Id=sa;TrustServerCertificate=True
 ```
 
-### Layer Responsibilities
+Set `SeedDemoData=false` unless deterministic portfolio demo accounts and records are intentionally required.
 
-| Layer | Responsibility |
-| --- | --- |
-| `TransitNova.Api` | HTTP endpoints, API versioning, request binding, authorization policies, middleware, OpenAPI, rate limits, health checks |
-| `TransitNova.BusinessLayer` | CQRS commands and queries, handlers, DTOs, validators, application services, pipeline behaviors, cache contracts |
-| `TransitNova.Domain` | Entities, aggregate behavior, domain events, domain exceptions, enums, invariants |
-| `TransitNova.InfraStructure` | EF Core DbContext, Identity, repositories, unit of work, token generation, outbox, SignalR, Quartz, health checks |
-| `TransitNovaPayment.API` | Payment gateway HTTP API |
-| `TransitNovaPayment.Busieness` | Payment command/query handling, validation, payment method strategies |
-| `TransitNovaPayment.Infrastructure` | Payment DbContext, repositories, cache, health checks |
+When `SeedDemoData=true`, TransitNova expects real lookup location data to already exist in the main database. Add `Countries`, `Governments`, and `Cities` first; the demo seeder intentionally does not fake geography.
 
-## CQRS and Pipeline Behaviors
+All seeded demo accounts share one password: `TransitNova@12345`.
 
-Application behavior is centralized through MediatR pipelines registered in `TransitNova.BusinessLayer.DependencyInjection`:
+| User type | Email pattern | Example |
+| --- | --- | --- |
+| User | `customer.NNN@seed.transitnova.local` | `customer.001@seed.transitnova.local` |
+| Admin | `admin.NNN@seed.transitnova.local` | `admin.001@seed.transitnova.local` |
+| Carrier | `carrier.NNN@seed.transitnova.local` | `carrier.001@seed.transitnova.local` |
+| Operation Manager | `operation.manager.NNN@seed.transitnova.local` | `operation.manager.001@seed.transitnova.local` |
+| Warehouse Manager | `warehouse.manager.NNN@seed.transitnova.local` | `warehouse.manager.001@seed.transitnova.local` |
 
-1. `ValidationBehavior`
-2. `CachingBehavior`
-3. `CacheInvalidationBehavior`
-4. `TransactionPipelineBehavior`
-5. `IdempotentCommandPipelineBehavior`
+## Run with Docker
 
-This means commands are validated before execution, cacheable queries can short-circuit from cache, cache invalidation happens after the inner command flow completes, transactional commands run inside a unit-of-work transaction, and idempotent commands persist a serialized response against the idempotency key.
-
-Idempotent commands inherit from:
-
-```csharp
-public abstract record IdempotentCommand<TResponse>(Guid RequestId)
-    : ICommand<TResponse>, ITransactional;
-```
-
-State-changing endpoints use the `X-Idempotency-Key` header through the custom `[IdempotencyKey]` model binding contract.
-
-## Domain Model
-
-The domain layer keeps important behavior inside entities instead of treating entities as simple data bags. Examples:
-
-- `Shipment.Create(...)` creates a pending shipment, creates its first status history entry, generates a tracking number, and raises `ShipmentCreatedDomainEvent`.
-- Shipment state transitions are controlled through methods such as `ApproveShipment`, `RejectShipment`, `CancelShipment`, `AssignToCarrier`, `DeliveredToWarehouse`, and `Delivered`.
-- Domain exceptions describe invalid business transitions, capacity problems, duplicated trip assignments, invalid refresh tokens, and entity-not-found cases.
-- Aggregates raise domain events through `AggregateRoot<TKey>`.
-
-## Outbox and Domain Events
-
-Domain events are stored through a transactional outbox:
-
-1. Domain entities raise events.
-2. `ConvertDomainEventsToOutboxMessages` intercepts `SaveChanges`.
-3. Domain events are serialized into `OutboxMessages`.
-4. Quartz runs `ProcessOutboxMessagesJob`.
-5. Messages are deserialized and published through MediatR.
-6. Handlers create notifications and other side effects.
-7. Successfully processed messages are marked with `ProcessedOn`.
-
-This avoids publishing side effects before the database transaction is saved.
-
-## Authentication and Authorization
-
-TransitNova uses JWT bearer authentication with ASP.NET Core Identity. Tokens include:
-
-- User id
-- Email
-- User name
-- Mobile phone
-- User type
-- JWT id
-- Roles
-- Permission claims derived from roles
-
-Authorization is handled with:
-
-- Role-based attributes such as `Role.User`, `Role.Admin`, and `Role.AllUsers`.
-- Permission policies from `UserPermissions`, `CarrierPermissions`, `OperationManagerPermissions`, `WarehouseManagerPermissions`, and `AdminPermissions`.
-- Resource-based authorization handlers:
-  - `ShipmentOwnerHandler`
-  - `CarrierOwnerHandler`
-  - `CompletedProfileHandler`
-  - `RefreshTokenAuthenticationHandler`
-  - `TokenOwnerHandler`
-  - `IsWarehouseManagerRequirementHandler`
-
-## Refresh Token Flow
-
-The refresh-token workflow rotates refresh tokens:
-
-1. The existing refresh token is loaded.
-2. The token is rejected if missing, expired, orphaned, or already revoked.
-3. Reuse of a revoked token revokes all user tokens and throws `ReusedRefreshTokenException`.
-4. The old token is revoked and linked to the replacement token.
-5. A new refresh token is persisted.
-6. User roles are loaded.
-7. A new JWT access token is generated.
-
-The current API endpoint is protected and checks token ownership through the authenticated principal and the supplied refresh token.
-
-## Payment Service Integration
-
-TransitNova has a separate payment service under `TransitNovaPayment/`. The main API calls it through `PaymentService` using:
-
-- `PaymentSettings:BaseUrl`
-- `PaymentSettings:PublicKey`
-- `X-PaymentKey` header
-- `POST /api/v1/payments/pay`
-
-The payment service validates the incoming key against its private payment settings and returns a result envelope containing payment status, commission, total amount, paid timestamp, and notes.
-
-## Observability
-
-The backend includes:
-
-- Serilog structured logging.
-- Seq sink configuration.
-- OpenTelemetry tracing.
-- ASP.NET Core instrumentation.
-- HttpClient instrumentation.
-- Correlation id middleware.
-- Health checks for API, database, payment configuration, and observability configuration.
-
-When using Docker Compose, Seq is exposed on:
-
-```text
-http://localhost:8081
-```
-
-## API Documentation
-
-The main API registers OpenAPI and Scalar in development.
-
-Default Docker endpoints:
-
-| Service | URL |
-| --- | --- |
-| Main API | `http://localhost:5200` |
-| Payment API | `http://localhost:5300` |
-| UI | `http://localhost:5169` |
-| Seq | `http://localhost:8081` |
-
-Scalar/OpenAPI is mapped when `ASPNETCORE_ENVIRONMENT=Development`.
-
-## Configuration
-
-Important environment variables:
-
-| Variable | Description |
-| --- | --- |
-| `SQL_PASSWORD` | SQL Server SA password used by Docker Compose |
-| `ConnectionStrings__ApiDefaultConnection` | Main API SQL Server connection string |
-| `ConnectionStrings__PaymentDefaultConnection` | Payment SQL Server connection string |
-| `JWT__Key` | JWT signing key. Must be at least 48 UTF-8 bytes for HS384 |
-| `PaymentSettings__BaseUrl` | Base URL of the payment service, for example `http://transitnova-payment:80` |
-| `PaymentSettings__PublicKey` | Key used by main API when calling payment service |
-| `PaymentSettings__PrivateKey` | Key expected by payment service |
-
-Example local `.env` values for Docker Compose:
-
-```env
-SQL_PASSWORD=Your_strong_password_123!
-JWT_KEY=your-very-long-hs384-development-signing-key-at-least-48-bytes
-PaymentSettings__PublicKey=dev-payment-key
-PaymentSettings__PrivateKey=dev-payment-key
-ConnectionStrings__ApiDefaultConnection=Server=sqlserver;Database=TransitNovaDb;User Id=sa;Password=Your_strong_password_123!;TrustServerCertificate=True
-ConnectionStrings__PaymentDefaultConnection=Server=sqlserver;Database=PaymentsDb;User Id=sa;Password=Your_strong_password_123!;TrustServerCertificate=True
-```
-
-## Running Locally
-
-### Run with Docker Compose
-
-```bash
+```powershell
+docker compose config --quiet
 docker compose up --build
 ```
 
-This starts:
+| Service | URL |
+| --- | --- |
+| MVC UI | `http://localhost:5169` |
+| Main API | `http://localhost:5200` |
+| Payment API | `http://localhost:5300` |
+| Main health | `http://localhost:5200/health` |
+| Payment health | `http://localhost:5300/health` |
+| SignalR notifications | `http://localhost:5200/hubs/notifications` |
+| Seq | `http://localhost:8081` |
 
-- SQL Server
-- Main API
-- Payment API
-- UI
-- Seq
+The Compose topology is for local Development only. See [deployment guidance](docs/DEPLOYMENT.md) before using another environment.
 
-### Run Tests
+## Database Migrations
 
-```bash
-dotnet test TransitNova.slnx --no-restore
+Main database migration:
+
+```powershell
+dotnet ef database update `
+  --project Src/TransitNova.InfraStructure/TransitNova.InfraStructure.csproj `
+  --startup-project Src/TransitNova.Api/TransitNova.Api.csproj `
+  --context AppDbContext
 ```
 
-Current verified test result on June 30, 2026:
+Payment database migration:
 
-```text
-Failed: 0
-Passed: 719
-Skipped: 0
+```powershell
+dotnet ef database update `
+  --project TransitNovaPayment/TransitNovaPayment.Infrastructure/TransitNovaPayment.Infrastructure.csproj `
+  --startup-project TransitNovaPayment/TransitNovaPayment.API/TransitNovaPayment.API.csproj `
+  --context AppDbContext
 ```
 
-### Check Vulnerable Packages
+Current migrations:
 
-```bash
-dotnet list TransitNova.slnx package --vulnerable --include-transitive
+- Main: `20260712073348_InitialMigration`, `20260713023105_AddShipmentInvoiceSubscriptionBenefitAudit`
+- Payment: `20260712073648_InitialMigration`
+
+## Build and Test
+
+```powershell
+dotnet restore TransitNova.slnx
+dotnet build TransitNova.slnx --configuration Release --no-restore -m:1
+dotnet test TransitNova.slnx --configuration Release --no-build
 ```
 
-Current scan result on June 30, 2026: no vulnerable packages reported by the configured NuGet sources.
+GitHub Actions is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). It merges coverage from all six non-browser suites, enforces 80% line coverage per layer and overall, runs a separate Compose-backed browser/API E2E job, and uploads coverage, TRX, E2E, and service-log artifacts.
 
-## Test Strategy
+## Documentation
 
-The test suite covers:
+- [Engineering documentation index](docs/README.md)
+- [Project review and scorecard](docs/PROJECT_REVIEW.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Architecture review](docs/ARCHITECTURE_REVIEW.md)
+- [Code quality review](docs/CODE_QUALITY_REVIEW.md)
+- [Performance review](docs/PERFORMANCE_REVIEW.md)
+- [Security review](docs/SECURITY_REVIEW.md)
+- [Test coverage review](docs/TEST_COVERAGE_REVIEW.md)
+- [Database design](docs/DATABASE_DESIGN.md)
+- [API design](docs/API_DESIGN.md)
+- [Deployment runbook](docs/DEPLOYMENT.md)
+- [Development guide](docs/DEVELOPMENT_GUIDE.md)
 
-- Domain entity behavior and domain exceptions.
-- Application validators and command/query handlers.
-- Pipeline behaviors.
-- Payment workflow mapping and gateway failure handling.
-- EF Core repository behavior using SQLite test infrastructure.
-- Entity configurations.
-- Outbox conversion and processing behavior.
-- AutoMapper configuration.
-- API endpoint discovery, endpoint execution through the HTTP pipeline, anonymous/protected endpoint behavior, idempotency header contracts, rate calculation endpoint behavior, and health endpoint behavior.
+## Honest Readiness
 
-The API integration tests include an endpoint catalog checksum, which makes public API surface changes explicit.
+| Context | Score |
+| --- | ---: |
+| Fresh-graduate CV project | 8.8/10 |
+| Controlled portfolio MVP | 8.1/10 |
+| Production readiness today | 6.3/10 |
+| Overall engineering review | 7.4/10 |
 
-## Engineering Notes
+Highest-priority production work:
 
-The backend is already beyond a basic CRUD junior project. The strongest parts are the CQRS structure, domain behavior, tests, outbox pattern, endpoint catalog tests, authorization policies, and operational concerns such as logging, tracing, health checks, Docker, and package vulnerability scanning.
+1. Remove concurrent EF Core operations on the same scoped context in dashboard builders.
+2. Hash refresh tokens at rest and remove token values from logs.
+3. Add Warehouse Manager permissions to generated JWT claims.
+4. Unify deployment-time migration handling for Main and Payment databases.
+5. Add Notification and Outbox indexes.
+6. Complete the remaining payment, SignalR, report, and idempotency browser workflows and add SQL Server Testcontainers.
 
-Recommended next backend improvements before a serious production-style demo:
-
-- Revisit refresh-token endpoint design so users can refresh after access-token expiry.
-- Add concurrency tests for duplicate idempotency keys.
-- Remove nullable warnings and consider enabling warnings-as-errors later.
-- Add payment service endpoint integration tests that call the real payment API route.
-- Dispose or reset unit-of-work transactions after commit/rollback.
-- Move repetitive system-log/cache-invalidation behavior toward domain events or application policies as the project grows.
+The full rationale and prioritized plan are in [PROJECT_REVIEW.md](docs/PROJECT_REVIEW.md).
 
 ## License
 
-No license file is currently included. Add one before publishing the repository publicly if the project is intended for reuse.
+No license file is currently included. Add an explicit license before allowing public reuse.

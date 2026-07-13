@@ -36,10 +36,14 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
-      MVC__Host: http://transitnova-ui:80
+      MVC__Host: http://localhost:5169
       PaymentSettings__BaseUrl: http://transitnova-payment:80 
       JWT__Key: "${JWT_KEY}"
       PaymentSettings__PublicKey: "${PaymentSettings__PublicKey}"
+      SeedDemoData: "${SeedDemoData:-false}"
+
+      RateLimiting__CommandPermitLimit: "${RateLimiting__CommandPermitLimit:-20}"
+      RateLimiting__DefaultPermitLimit: "${RateLimiting__DefaultPermitLimit:-100}"
       ConnectionStrings__DefaultConnection: "${ConnectionStrings__ApiDefaultConnection}"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://transitnova-seq:5341/ingest/otlp/v1/traces
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
@@ -66,6 +70,8 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
       PaymentSettings__PrivateKey: "${PaymentSettings__PrivateKey}"
+      PaymentExecution__DelayMilliseconds: "${PaymentExecution__DelayMilliseconds:-5000}"
+      PaymentExecution__ForcedSuccess: "${PaymentExecution__ForcedSuccess:-}"
       ConnectionStrings__DefaultConnection: "${ConnectionStrings__PaymentDefaultConnection}"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://transitnova-seq:5341/ingest/otlp/v1/traces
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
@@ -88,6 +94,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
       TransitNovaApi__BaseUrl: http://transitnova-api:80
+      TransitNovaApi__PublicBaseUrl: http://localhost:5200
     depends_on:
       - transitnova.api
     networks:
@@ -118,4 +125,3 @@ volumes:
     name: transitnova_sqlserver-data
   seq-data:
     name: transitnova_seq-data
-

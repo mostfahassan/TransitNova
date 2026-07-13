@@ -1,10 +1,4 @@
 @model WarehouseTableViewModel
-@{
-    var rows = AdminDisplay.Rows(Model.Source);
-    var totalCount = AdminDisplay.TotalCount(Model.Source);
-    var pageNumber = AdminDisplay.PageNumber(Model.Source);
-    var totalPages = AdminDisplay.TotalPages(Model.Source);
-}
 
 <section class="warehouse-card overflow-hidden">
     <div class="flex flex-col gap-4 border-b border-[#EAEAEA] p-5 lg:flex-row lg:items-center lg:justify-between">
@@ -13,11 +7,11 @@
             <p class="mt-1 text-sm font-semibold text-[#787774]">@Model.Subtitle</p>
         </div>
         <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">
-            @totalCount records / page @pageNumber of @totalPages
+            @Model.TotalCount records / page @Model.PageNumber of @Model.TotalPages
         </div>
     </div>
 
-    @if (rows.Count == 0)
+    @if (Model.Rows.Count == 0)
     {
         <div class="p-12 text-center">
             <div class="mx-auto grid h-14 w-14 place-items-center rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] font-mono text-xs font-black text-[#787774]">WM</div>
@@ -31,9 +25,9 @@
             <table class="warehouse-table">
                 <thead>
                     <tr>
-                        @foreach (var column in Model.Columns)
+                        @foreach (var header in Model.Headers)
                         {
-                            <th>@column.Header</th>
+                            <th>@header</th>
                         }
                         @if (Model.ShowDetails)
                         {
@@ -42,36 +36,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (var index = 0; index < rows.Count; index++)
+                    @for (var index = 0; index < Model.Rows.Count; index++)
                     {
-                        var row = rows[index];
-                        var id = AdminDisplay.RouteValue(row, Model.IdPropertyPath);
-                        var routeValues = new RouteValueDictionary();
-                        if (id is not null)
-                        {
-                            routeValues[Model.RouteIdName] = id;
-                        }
-                        var detailsUrl = id is null ? null : Url.Action(Model.DetailsAction, Model.Controller, routeValues);
+                        var row = Model.Rows[index];
+                        var detailsUrl = Url.Action(Model.DetailsAction, Model.Controller, row.RouteValues);
                         <tr style="--row-index:@index">
-                            @foreach (var column in Model.Columns)
+                            @foreach (var cell in row.Cells)
                             {
-                                var text = AdminDisplay.Text(row, column.PropertyPath, column.Kind);
                                 <td>
-                                    @if (column.Kind == "badge")
+                                    @if (cell.Kind == "badge")
                                     {
-                                        <span class="@WarehouseBadge(text)">@text</span>
+                                        <span class="@WarehouseBadge(cell.Text)">@cell.Text</span>
                                     }
-                                    else if (column.Kind == "id")
+                                    else if (cell.Kind == "id")
                                     {
-                                        <span class="font-mono text-xs font-black uppercase tracking-[0.1em] text-[#55524D]">@text</span>
+                                        <span class="font-mono text-xs font-black uppercase tracking-[0.1em] text-[#55524D]">@cell.Text</span>
                                     }
-                                    else if (column.Kind == "currency")
+                                    else if (cell.Kind == "currency")
                                     {
-                                        <span class="font-mono text-sm font-black text-[#111111]">@text</span>
+                                        <span class="font-mono text-sm font-black text-[#111111]">@cell.Text</span>
                                     }
                                     else
                                     {
-                                        <span>@text</span>
+                                        <span>@cell.Text</span>
                                     }
                                 </td>
                             }

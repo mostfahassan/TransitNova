@@ -1,18 +1,18 @@
-@model object?
+@model UiCarrierProfileDto?
 @{
     ViewData["Title"] = "Carrier Details";
-    var source = Model;
-    var carrierId = AdminDisplay.RouteValue(source, "Id|CarrierId");
-    var hasCarrier = !string.IsNullOrWhiteSpace(Convert.ToString(carrierId));
+    var carrier = Model ?? new UiCarrierProfileDto();
+    var hasCarrier = carrier.Id != Guid.Empty;
+    var routeValues = new Dictionary<string, object?> { ["carrierId"] = carrier.Id };
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Carrier record",
-        Title = AdminDisplay.Text(source, "FullName|Name|CarrierName"),
+        Title = carrier.FullName,
         Description = "Carrier readiness, contact details, and current operation assignment data.",
         PrimaryLabel = hasCarrier ? "Carrier shipments" : null,
         PrimaryController = hasCarrier ? "Carriers" : null,
         PrimaryAction = hasCarrier ? "Shipments" : null,
-        PrimaryRouteValues = hasCarrier ? new Dictionary<string, string> { ["carrierId"] = Convert.ToString(carrierId) ?? string.Empty } : null,
+        PrimaryRouteValues = hasCarrier ? routeValues : null,
         SecondaryLabel = "Back to fleet",
         SecondaryController = "Carriers",
         SecondaryAction = "Index"
@@ -21,24 +21,23 @@
     {
         Title = "Carrier profile",
         Subtitle = "Operational readiness summary",
-        Source = source,
+        PrimaryText = carrier.FullName,
         Controller = "Carriers",
         IndexAction = "Index",
         PrimaryLabel = hasCarrier ? "Shipments" : null,
         PrimaryAction = hasCarrier ? "Shipments" : null,
-        RouteIdName = "carrierId",
-        IdPropertyPath = "Id|CarrierId",
-        Fields = new List<OpsTableColumnViewModel>
-        {
-            new("Carrier", "FullName|Name|CarrierName"),
-            new("Status", "Status|CarrierStatus", "badge"),
-            new("Vehicle", "Vehicle.VehicleType|VehicleType"),
-            new("Current load", "CurrentLoad|AssignedShipmentsCount"),
-            new("City", "ServedCities|City|Address"),
-            new("Rating", "AverageRating|Rating"),
-            new("Phone", "PhoneNumber"),
-            new("Email", "Email")
-        }
+        RouteValues = routeValues,
+        Fields =
+        [
+            AdminDisplay.OpsCell("Carrier", carrier.FullName),
+            AdminDisplay.OpsCell("Status", carrier.Status, "badge"),
+            AdminDisplay.OpsCell("Vehicle", carrier.Vehicle?.VehicleType),
+            AdminDisplay.OpsCell("Current load", "-"),
+            AdminDisplay.OpsCell("City", carrier.CityName),
+            AdminDisplay.OpsCell("Rating", carrier.Rating),
+            AdminDisplay.OpsCell("Phone", carrier.PhoneNumber),
+            AdminDisplay.OpsCell("Email", carrier.Email)
+        ]
     };
 }
 

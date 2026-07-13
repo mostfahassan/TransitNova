@@ -27,7 +27,7 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
             var shipmentToReject = await shipmentQueryRepo.GetShipmentInStatusAsync(request.ShipmentId, ShipmentStatuses.Pending, cancellationToken, true);
             if (shipmentToReject == null)
             {
-                logger.LogWarning("Shipment with ID {ShipmentId} not found or not in pending status.", request.ShipmentId);
+                logger.LogWarning("Shipment with ID {ReferecneId} not found or not in pending status.", request.ShipmentId);
                 return BaseResult.NotFound(Errors.InvalidShipmentState($"Shipment with ID {request.ShipmentId} not in pending status."));
 
             }
@@ -45,7 +45,7 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
                 performedByName);
 
             await systemLogCommands.LogAsync(log, cancellationToken);
-            logger.LogInformation("Shipment with ID {ShipmentId} rejected by operation manager with ID {OperationManagerId}.", request.ShipmentId, request.OperationManagerId);
+            logger.LogInformation("Shipment with ID {ReferecneId} rejected by operation manager with ID {OperationManagerId}.", request.ShipmentId, request.OperationManagerId);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             CacheInvalidationContext.Set(
                 request,

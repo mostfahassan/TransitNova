@@ -27,7 +27,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
         {
             if (logger.IsEnabled(LogLevel.Debug))
             {
-                logger.LogDebug("Attempting cancellation for ShipmentId: {ShipmentId}", request.ShipmentId);
+                logger.LogDebug("Attempting cancellation for ReferecneId: {ReferecneId}", request.ShipmentId);
             }
             //====== Cancellation Attempt ======
             var cancelledShipment = await shipmentRepo.GetShipmentForCommandsAsync(request.ShipmentId, cancellationToken);
@@ -35,7 +35,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             {
                 if (logger.IsEnabled(LogLevel.Warning))
                 {
-                    logger.LogWarning("Shipment with Id: {ShipmentId} not found for cancellation", request.ShipmentId);
+                    logger.LogWarning("Shipment with Id: {ReferecneId} not found for cancellation", request.ShipmentId);
                 }
 
                 return BaseResult.NotFound(Errors.ShipmentNotFound($"Shipment With Id =>  {request.ShipmentId} not found"));
@@ -56,7 +56,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             //====== Cancellation Successful ======
             if (logger.IsEnabled(LogLevel.Information))
             {
-                logger.LogInformation("Shipment {ShipmentId} cancelled successfully", request.ShipmentId);
+                logger.LogInformation("Shipment {ReferecneId} cancelled successfully", request.ShipmentId);
             }
             CacheInvalidationContext.Set(
                 request,

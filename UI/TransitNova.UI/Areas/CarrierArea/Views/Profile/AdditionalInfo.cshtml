@@ -27,7 +27,7 @@
                     </div>
                     <div>
                         <label class="carrier-label" asp-for="WarehouseId">Home warehouse</label>
-                        <select class="carrier-select" asp-for="WarehouseId" required disabled="@(Model.Warehouses.Count == 0)">
+                        <select class="carrier-select" asp-for="WarehouseId" required>
                             <option value="">Choose warehouse</option>
                             @foreach (var warehouse in Model.Warehouses)
                             {

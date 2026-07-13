@@ -53,7 +53,7 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
             //====== Saving Chhanges ===========
              await unitOfWork.SaveChangesAsync(cancellationToken);
          
-            logger.LogInformation("Shipment {ShipmentId} approved by {ManagerId}.", request.ShipmentId, request.OperationManagerId);
+            logger.LogInformation("Shipment {ReferecneId} approved by {ManagerId}.", request.ShipmentId, request.OperationManagerId);
             CacheInvalidationContext.Set(
                 request,
                 CacheKeys.Shipments.ByTrackingNumber(pendedingShipment.TrackingNumber),

@@ -830,6 +830,12 @@
   },
   {
     "HttpMethod": "GET",
+    "RouteTemplate": "api/v{version:apiVersion}/admin/subscriptions/subscribers",
+    "EndpointName": "Get Subscribers",
+    "Parameters": []
+  },
+  {
+    "HttpMethod": "GET",
     "RouteTemplate": "api/v{version:apiVersion}/admin/subscriptions/{subscriptionId:guid}",
     "EndpointName": "Get Subscription ById",
     "Parameters": [
@@ -1081,7 +1087,10 @@
         "IsOptional": false,
         "Signatures": [
           "$: object(CreateWarehouseDto) nullable=false required=true",
-          "$.address: string nullable=false required=false",
+          "$.address: object(AddressDto) nullable=false required=false",
+          "$.address.mainAddress: string nullable=false required=false",
+          "$.address.secondaryAddress: string nullable=true required=false",
+          "$.address.street: string nullable=false required=false",
           "$.capacity: number(decimal) nullable=false required=false",
           "$.currentUsage: number(decimal) nullable=false required=false",
           "$.managerId: guid nullable=false required=false",
@@ -1153,7 +1162,10 @@
         "IsOptional": false,
         "Signatures": [
           "$: object(UpdateWarehouseDto) nullable=false required=true",
-          "$.address: string nullable=false required=false",
+          "$.address: object(AddressDto) nullable=true required=false",
+          "$.address.mainAddress: string nullable=false required=false",
+          "$.address.secondaryAddress: string nullable=true required=false",
+          "$.address.street: string nullable=false required=false",
           "$.capacity: number(decimal) nullable=false required=false",
           "$.currentUsage: number(decimal) nullable=false required=false",
           "$.managerId: guid nullable=true required=false",
@@ -1234,7 +1246,10 @@
         "IsOptional": false,
         "Signatures": [
           "$: object(RegisterDto) nullable=false required=true",
-          "$.address: string nullable=false required=false",
+          "$.address: object(AddressDto) nullable=false required=false",
+          "$.address.mainAddress: string nullable=false required=false",
+          "$.address.secondaryAddress: string nullable=true required=false",
+          "$.address.street: string nullable=false required=false",
           "$.cityId: integer nullable=false required=false",
           "$.confirmPassword: string nullable=false required=false",
           "$.email: string nullable=false required=false",
@@ -1300,7 +1315,10 @@
         "IsOptional": false,
         "Signatures": [
           "$: object(UpdateCarrierDto) nullable=false required=true",
-          "$.address: string nullable=true required=false",
+          "$.address: object(AddressDto) nullable=true required=false",
+          "$.address.mainAddress: string nullable=false required=false",
+          "$.address.secondaryAddress: string nullable=true required=false",
+          "$.address.street: string nullable=false required=false",
           "$.cityId: integer nullable=true required=false",
           "$.email: string nullable=true required=false",
           "$.firstName: string nullable=true required=false",
@@ -2355,6 +2373,32 @@
   },
   {
     "HttpMethod": "POST",
+    "RouteTemplate": "api/v{version:apiVersion}/reports/bundles",
+    "EndpointName": "Request Bundle Report",
+    "Parameters": [
+      {
+        "Name": "contract",
+        "Source": "Body",
+        "ClrType": "BundleReportContract",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": [
+          "$: object(BundleReportContract) nullable=false required=true",
+          "$.paymentId: guid nullable=false required=false"
+        ]
+      },
+      {
+        "Name": "requestId",
+        "Source": "Header",
+        "ClrType": "Guid",
+        "IsNullable": false,
+        "IsOptional": false,
+        "Signatures": []
+      }
+    ]
+  },
+  {
+    "HttpMethod": "POST",
     "RouteTemplate": "api/v{version:apiVersion}/reports/dashboards",
     "EndpointName": "Request Dashboard Report",
     "Parameters": [
@@ -2666,7 +2710,10 @@
         "Signatures": [
           "$: object(CreateShipmentDto) nullable=false required=true",
           "$.currency: enum(Currency)[EGP|USD|EUR] serialization=string nullable=false required=false",
-          "$.deliveryAddress: string nullable=false required=false",
+          "$.deliveryAddress: object(AddressDto) nullable=false required=false",
+          "$.deliveryAddress.mainAddress: string nullable=false required=false",
+          "$.deliveryAddress.secondaryAddress: string nullable=true required=false",
+          "$.deliveryAddress.street: string nullable=false required=false",
           "$.packageSpecification: object(PackageSpecificationDto) nullable=false required=false",
           "$.packageSpecification.height: number(decimal) nullable=false required=false",
           "$.packageSpecification.length: number(decimal) nullable=false required=false",
@@ -2675,9 +2722,15 @@
           "$.paymentId: guid nullable=false required=false",
           "$.paymentMethod: enum(PaymentMethod)[CreditCard|PayPal|MobileWallets] serialization=string nullable=false required=false",
           "$.pickUpDate: date-time nullable=true required=false",
-          "$.pickupAddress: string nullable=false required=false",
+          "$.pickupAddress: object(AddressDto) nullable=false required=false",
+          "$.pickupAddress.mainAddress: string nullable=false required=false",
+          "$.pickupAddress.secondaryAddress: string nullable=true required=false",
+          "$.pickupAddress.street: string nullable=false required=false",
           "$.receiver: object(CreateReceiverDto) nullable=false required=false",
-          "$.receiver.address: string nullable=false required=false",
+          "$.receiver.address: object(AddressDto) nullable=false required=false",
+          "$.receiver.address.mainAddress: string nullable=false required=false",
+          "$.receiver.address.secondaryAddress: string nullable=true required=false",
+          "$.receiver.address.street: string nullable=false required=false",
           "$.receiver.cityId: integer nullable=false required=false",
           "$.receiver.email: string nullable=false required=false",
           "$.receiver.firstName: string nullable=false required=false",
@@ -2749,13 +2802,19 @@
         "IsOptional": false,
         "Signatures": [
           "$: object(UpdateShipmentDto) nullable=false required=true",
-          "$.deliveryAddress: string nullable=true required=false",
+          "$.deliveryAddress: object(AddressDto) nullable=true required=false",
+          "$.deliveryAddress.mainAddress: string nullable=false required=false",
+          "$.deliveryAddress.secondaryAddress: string nullable=true required=false",
+          "$.deliveryAddress.street: string nullable=false required=false",
           "$.packageSpecification: object(PackageSpecificationDto) nullable=true required=false",
           "$.packageSpecification.height: number(decimal) nullable=false required=false",
           "$.packageSpecification.length: number(decimal) nullable=false required=false",
           "$.packageSpecification.weight: number(decimal) nullable=false required=false",
           "$.packageSpecification.width: number(decimal) nullable=false required=false",
-          "$.pickupAddress: string nullable=true required=false",
+          "$.pickupAddress: object(AddressDto) nullable=true required=false",
+          "$.pickupAddress.mainAddress: string nullable=false required=false",
+          "$.pickupAddress.secondaryAddress: string nullable=true required=false",
+          "$.pickupAddress.street: string nullable=false required=false",
           "$.receiverId: guid nullable=true required=false",
           "$.shipmentType: enum(enShipmentType)[Standard|Express|Fragile] serialization=string nullable=true required=false",
           "$.transportationMode: enum(TransportationMode)[Air|Sea|Land] serialization=string nullable=true required=false"
@@ -3055,7 +3114,10 @@
         "IsOptional": false,
         "Signatures": [
           "$: object(UpdateWarehouseManagerProfile) nullable=false required=true",
-          "$.address: string nullable=true required=false",
+          "$.address: object(AddressDto) nullable=true required=false",
+          "$.address.mainAddress: string nullable=false required=false",
+          "$.address.secondaryAddress: string nullable=true required=false",
+          "$.address.street: string nullable=false required=false",
           "$.cityId: integer nullable=true required=false",
           "$.email: string nullable=true required=false",
           "$.firstName: string nullable=true required=false",

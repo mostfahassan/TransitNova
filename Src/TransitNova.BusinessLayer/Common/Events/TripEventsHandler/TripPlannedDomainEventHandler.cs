@@ -1,13 +1,18 @@
 using MediatR;
+using TransitNova.BusinessLayer.Interfaces.Repositories.CarrierRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.NotificationRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.TripRepository;
+using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.DomainEvents.Events.TripDomainEvents;
 using TransitNova.Domain.Entities.MainEntities;
+
 namespace TransitNova.BusinessLayer.Common.Events.TripEventsHandler
 {
     public class TripPlannedDomainEventHandler(
         ITripQueryRepository tripRepository,
+        ICarrierQueryRepository carrierRepository,
+        IUserQueryRepository userRepository,
         INotificationCommand notificationRepo,
         IUnitOfWork unitOfWork)
         : INotificationHandler<TripPlannedDomainEvent>
@@ -18,9 +23,17 @@ namespace TransitNova.BusinessLayer.Common.Events.TripEventsHandler
             if (trip is null)
                 return;
 
-            var recipientIds = trip.Shipments.Select(shipment => shipment.SenderId)
-                .Append(trip.CarrierId)
-                .Distinct();
+            var recipientIds = new HashSet<Guid>();
+            var carrier = await carrierRepository.GetCarrierAsync(c => c.Id == trip.CarrierId, cancellationToken);
+            if (carrier is not null)
+                recipientIds.Add(carrier.AppUserId);
+
+            foreach (var shipment in trip.Shipments)
+            {
+                var senderAppUserId = await userRepository.GetAppUserIdByProfileIdAsync(shipment.SenderId, cancellationToken);
+                if (senderAppUserId.HasValue)
+                    recipientIds.Add(senderAppUserId.Value);
+            }
 
             foreach (var recipientId in recipientIds)
             {

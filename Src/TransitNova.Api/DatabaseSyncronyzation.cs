@@ -44,6 +44,7 @@ namespace TransitNova.Api
                     }
 
                     await SeedIdentityRolesAsync(services, logger);
+                    await DatabaseSeeder.SeedLocationLookupDataAsync(services, logger);
 
                     if (app.Configuration.GetValue("SeedDemoData", app.Environment.IsDevelopment()))
                     {

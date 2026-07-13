@@ -1,7 +1,4 @@
 @model OpsTableViewModel
-@{
-    var rows = AdminDisplay.Rows(Model.Source);
-}
 
 <section class="ops-card overflow-hidden">
     <div class="flex flex-col gap-3 border-b border-[#EAEAEA] p-6 lg:flex-row lg:items-center lg:justify-between">
@@ -12,10 +9,10 @@
                 <p class="mt-1 text-sm leading-6 text-[#787774]">@Model.Subtitle</p>
             }
         </div>
-        <div class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">@rows.Count records</div>
+        <div class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">@Model.Rows.Count records</div>
     </div>
 
-    @if (rows.Count == 0)
+    @if (Model.Rows.Count == 0)
     {
         <div class="p-12 text-center">
             <div class="mx-auto grid h-14 w-14 place-items-center rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] text-xs font-black text-[#787774]">OPS</div>
@@ -29,9 +26,9 @@
             <table class="ops-table">
                 <thead>
                     <tr>
-                        @foreach (var column in Model.Columns)
+                        @foreach (var header in Model.Headers)
                         {
-                            <th>@column.Header</th>
+                            <th>@header</th>
                         }
                         @if (Model.ShowDetails || !string.IsNullOrWhiteSpace(Model.PrimaryRowLabel))
                         {
@@ -40,27 +37,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (var index = 0; index < rows.Count; index++)
+                    @for (var index = 0; index < Model.Rows.Count; index++)
                     {
-                        var row = rows[index];
-                        var detailsId = AdminDisplay.RouteValue(row, Model.IdPropertyPath);
-                        var primaryId = AdminDisplay.RouteValue(row, Model.PrimaryRowIdPropertyPath);
+                        var row = Model.Rows[index];
                         <tr style="--row-index:@index">
-                            @foreach (var column in Model.Columns)
+                            @foreach (var cell in row.Cells)
                             {
-                                var text = AdminDisplay.Text(row, column.PropertyPath, column.Kind);
                                 <td>
-                                    @if (column.Kind == "badge")
+                                    @if (cell.Kind == "badge")
                                     {
-                                        <span class="@BadgeClass(text)">@text</span>
+                                        <span class="@BadgeClass(cell.Text)">@cell.Text</span>
                                     }
-                                    else if (column.Kind == "id")
+                                    else if (cell.Kind == "id")
                                     {
-                                        <span class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-[#111111]">@text</span>
+                                        <span class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-[#111111]">@cell.Text</span>
                                     }
                                     else
                                     {
-                                        @text
+                                        @cell.Text
                                     }
                                 </td>
                             }
@@ -70,13 +64,11 @@
                                     <div class="inline-flex items-center gap-2">
                                         @if (!string.IsNullOrWhiteSpace(Model.PrimaryRowLabel) && !string.IsNullOrWhiteSpace(Model.PrimaryRowAction))
                                         {
-                                            var primaryRoute = new RouteValueDictionary { [Model.PrimaryRowRouteIdName] = primaryId };
-                                            <a class="ops-button-secondary !px-3 !py-2" href="@Url.Action(Model.PrimaryRowAction, Model.PrimaryRowController ?? Model.Controller, primaryRoute)">@Model.PrimaryRowLabel</a>
+                                            <a class="ops-button-secondary !px-3 !py-2" href="@Url.Action(Model.PrimaryRowAction, Model.PrimaryRowController ?? Model.Controller, row.PrimaryRouteValues)">@Model.PrimaryRowLabel</a>
                                         }
                                         @if (Model.ShowDetails)
                                         {
-                                            var detailsRoute = new RouteValueDictionary { [Model.RouteIdName] = detailsId };
-                                            <a class="ops-button !px-3 !py-2" href="@Url.Action(Model.DetailsAction, Model.Controller, detailsRoute)">Details</a>
+                                            <a class="ops-button !px-3 !py-2" href="@Url.Action(Model.DetailsAction, Model.Controller, row.DetailsRouteValues)">Details</a>
                                         }
                                     </div>
                                 </td>

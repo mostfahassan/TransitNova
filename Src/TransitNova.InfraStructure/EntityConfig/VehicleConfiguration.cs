@@ -41,6 +41,8 @@ namespace TransitNova.InfraStructure.EntityConfig
             vehicle.Property(x => x.IsActive)
                 .IsRequired()
                 .HasDefaultValue(true);
+            vehicle.Property(x => x.VehicleType)
+                .HasConversion<string>();
 
             vehicle.HasQueryFilter(v =>
             !v.Carrier.IsDeleted &&

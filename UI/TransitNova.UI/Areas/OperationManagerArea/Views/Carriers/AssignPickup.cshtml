@@ -1,7 +1,7 @@
 @model OpsAssignCarrierPageViewModel
 @{
     ViewData["Title"] = "Assign Pickup";
-    var carriers = AdminDisplay.Rows(Model.Carriers);
+    var carriers = (Model.Carriers?.Data ?? Enumerable.Empty<UiCarrierSummaryDetailsDto>()).ToList();
     var hasCarriers = carriers.Count > 0;
 }
 
@@ -30,8 +30,7 @@
                         <option value="">Choose carrier</option>
                         @foreach (var carrier in carriers)
                         {
-                            var id = AdminDisplay.RouteValue(carrier, "Id|CarrierId");
-                            <option value="@id">@AdminDisplay.Text(carrier, "FullName|Name|CarrierName") / @AdminDisplay.Text(carrier, "Vehicle.VehicleType|VehicleType") / @AdminDisplay.Text(carrier, "CurrentLoad|AssignedShipmentsCount")</option>
+                            <option value="@carrier.Id">@carrier.FullName / - / @carrier.AssignedShipmentsCount</option>
                         }
                     </select>
                     <span class="ops-validation" asp-validation-for="CarrierId"></span>

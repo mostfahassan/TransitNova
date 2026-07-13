@@ -1,14 +1,11 @@
 @model WarehouseDetailViewModel
-@{
-    var source = Model.Source;
-}
 
 <section class="warehouse-card overflow-hidden">
     <div class="border-b border-[#EAEAEA] p-6">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
                 <p class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">@Model.Title</p>
-                <h2 class="mt-2 text-2xl font-black tracking-tight text-[#111111]">@AdminDisplay.PrimaryLabel(source)</h2>
+                <h2 class="mt-2 text-2xl font-black tracking-tight text-[#111111]">@Model.PrimaryLabel</h2>
                 <p class="mt-2 text-sm font-semibold leading-6 text-[#787774]">@Model.Subtitle</p>
             </div>
             <a asp-area="WarehouseManagerArea" asp-controller="@Model.Controller" asp-action="@Model.IndexAction" class="warehouse-button-secondary">Back</a>
@@ -18,26 +15,54 @@
     <div class="grid gap-px bg-[#EAEAEA] sm:grid-cols-2 xl:grid-cols-3">
         @foreach (var field in Model.Fields)
         {
-            var text = AdminDisplay.Text(source, field.PropertyPath, field.Kind);
             <div class="bg-white p-5">
                 <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">@field.Header</div>
                 <div class="mt-2 text-sm font-bold text-[#2F3437]">
                     @if (field.Kind == "badge")
                     {
-                        <span class="@WarehouseBadge(text)">@text</span>
+                        <span class="@WarehouseBadge(field.Text)">@field.Text</span>
                     }
                     else if (field.Kind == "id")
                     {
-                        <span class="font-mono text-xs uppercase tracking-[0.12em]">@text</span>
+                        <span class="font-mono text-xs uppercase tracking-[0.12em]">@field.Text</span>
                     }
                     else
                     {
-                        <span>@text</span>
+                        <span>@field.Text</span>
                     }
                 </div>
             </div>
         }
     </div>
+
+    @if (Model.AdditionalFields.Count > 0)
+    {
+        <div class="border-t border-[#EAEAEA] bg-[#FBFBFA] p-6">
+            <div class="mb-4 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Additional contract fields</div>
+            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                @foreach (var field in Model.AdditionalFields)
+                {
+                    <div class="rounded-[18px] border border-[#EAEAEA] bg-white p-5">
+                        <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">@field.Header</div>
+                        <div class="mt-2 text-sm font-bold text-[#2F3437]">
+                            @if (field.Kind == "badge")
+                            {
+                                <span class="@WarehouseBadge(field.Text)">@field.Text</span>
+                            }
+                            else if (field.Kind == "id")
+                            {
+                                <span class="font-mono text-xs uppercase tracking-[0.12em]">@field.Text</span>
+                            }
+                            else
+                            {
+                                <span>@field.Text</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 </section>
 
 @functions {

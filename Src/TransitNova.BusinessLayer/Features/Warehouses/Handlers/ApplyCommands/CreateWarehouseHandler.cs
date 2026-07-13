@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.Caching;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
@@ -43,7 +43,7 @@ namespace TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyCommands
                 request.Dto.Capacity,
                 request.Dto.CurrentUsage,
                 request.Dto.OperatingHours,
-                request.Dto.Address,
+                request.Dto.Address.ToDomain(),
                 request.AdminId,
                 request.Dto.ManagerId);
 
@@ -77,3 +77,4 @@ namespace TransitNova.BusinessLayer.Features.Warehouses.Handlers.ApplyCommands
         }
     }
 }
+

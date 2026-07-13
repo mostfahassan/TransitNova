@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.DTOs.AppUser;
@@ -27,7 +27,7 @@ internal class UserAuthCommandsService(
                 userDto.Email,
                 errors);
 
-            throw new UserCreationException(errors);
+            throw new UserCreationException(result.Errors);
         }
         return mapper.Map<AppUserDto>(appUser);
     }
@@ -86,4 +86,5 @@ internal class UserAuthCommandsService(
         }
     }
 }
+
 

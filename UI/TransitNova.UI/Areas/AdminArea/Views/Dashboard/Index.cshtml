@@ -1,11 +1,13 @@
-@using TransitNova.UI.Infrastructure.Mvc.Common
-@model object?
+@model UiAdminDashboardDto?
 @{
     ViewData["Title"] = "Admin Dashboard";
+    var dashboard = Model ?? new UiAdminDashboardDto();
     var currentDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
-    string Metric(string path) => AdminDisplay.Text(Model, path) == "-" ? "0" : AdminDisplay.Text(Model, path);
-    var recentShipmentRows = AdminDisplay.Value(Model, "RecentShipments");
-    var activityRows = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentActivities"));
+    string Metric(object? value) => AdminDisplay.Format(value) == "-" ? "0" : AdminDisplay.Format(value);
+    var recentShipmentRows = dashboard.RecentShipments;
+    var activityRows = dashboard.RecentActivities;
+    var topCarrierRows = dashboard.TopCarriers;
+    var topOperationManagerRows = dashboard.TopOperationManagers;
     var header = new AdminPageHeaderViewModel
     {
         Eyebrow = currentDate,
@@ -20,29 +22,27 @@
     };
     var kpiTiles = new List<AdminKpiTileViewModel>
     {
-        new("Total shipments", Metric("Kpis.TotalShipments"), "All shipments created in the platform.", "SHP"),
-        new("Active fleets", Metric("Kpis.TotalCarriers"), "Carrier capacity currently registered.", "FLT"),
-        new("Revenue", Metric("RevenueSummary.MonthlyRevenue"), "Recognized logistics revenue this month.", "REV"),
-        new("Pending issues", Metric("Kpis.PendingShipments"), "Shipments waiting for operational review.", "ISS")
+        new("Total shipments", Metric(dashboard.Kpis.TotalShipments), "All shipments created in the platform.", "SHP"),
+        new("Active fleets", Metric(dashboard.Kpis.TotalCarriers), "Carrier capacity currently registered.", "FLT"),
+        new("Revenue", Metric(dashboard.RevenueSummary.MonthlyRevenue), "Recognized logistics revenue this month.", "REV"),
+        new("Pending issues", Metric(dashboard.Kpis.PendingShipments), "Shipments waiting for operational review.", "ISS")
     };
     var shipmentTable = new AdminTableViewModel
     {
         Title = "Latest shipments",
         Subtitle = "Live operational movement across hubs, carriers, and warehouse checkpoints.",
-        Source = recentShipmentRows,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id|ShipmentId",
         ShowDetails = true,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Shipment", "TrackingNumber", "id"),
-            new("Origin", "PickupAddress|SenderCity"),
-            new("Destination", "DeliveryAddress|ReceiverCity"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Revenue", "ShippingCost|ShippinCost", "currency"),
-            new("Created", "CreatedAt")
-        },
+        Headers = ["Shipment", "Origin", "Destination", "Status", "Revenue", "Created"],
+        Rows = recentShipmentRows.Select(shipment => AdminDisplay.AdminRow(
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.AdminCell("Shipment", shipment.TrackingNumber, "id"),
+            AdminDisplay.AdminCell("Origin", shipment.PickupAddress),
+            AdminDisplay.AdminCell("Destination", shipment.DeliveryAddress),
+            AdminDisplay.AdminCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.AdminCell("Revenue", shipment.ShippingCost, "currency"),
+            AdminDisplay.AdminCell("Created", shipment.CreatedAt))).ToList(),
         EmptyTitle = "No recent shipments",
         EmptyDescription = "Shipments from the database will appear here once they are created."
     };
@@ -59,6 +59,22 @@
     }
 </section>
 
+<section class="mt-6">
+    <div class="admin-card flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
+        <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">Reports</div>
+            <h3 class="mt-2 text-lg font-extrabold text-[#111111]">Generate dashboard report</h3>
+            <p class="mt-1 text-sm text-[#787774]">Queue a polished PDF snapshot of the current admin dashboard for leadership review and archive.</p>
+        </div>
+        <form asp-area="AdminArea" asp-controller="Reports" asp-action="RequestDashboard" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="inline-flex min-h-[48px] items-center justify-center rounded-[14px] border border-[#111111] bg-[#111111] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#1E293B] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111]">
+                Generate dashboard report
+            </button>
+        </form>
+    </div>
+</section>
+
 <section class="mt-6 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
     <div class="admin-card p-6">
         <div class="flex items-center justify-between border-b border-[#EAEAEA] pb-4">
@@ -68,18 +84,30 @@
             </div>
             <span class="admin-badge admin-badge-success">Live</span>
         </div>
-        <div class="mt-6 grid gap-4 sm:grid-cols-3">
+        <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
                 <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">Available carriers</div>
-                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric("OperationalHealth.AvailableCarriers")</div>
+                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric(dashboard.OperationalHealth.AvailableCarriers)</div>
+            </div>
+            <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
+                <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">Busy carriers</div>
+                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric(dashboard.OperationalHealth.BusyCarriers)</div>
+            </div>
+            <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
+                <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">Active managers</div>
+                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric(dashboard.OperationalHealth.ActiveOperationManagers)</div>
             </div>
             <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
                 <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">Success rate</div>
-                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric("OperationalHealth.DeliverySuccessRate")%</div>
+                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric(dashboard.OperationalHealth.DeliverySuccessRate)%</div>
+            </div>
+            <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
+                <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">Cancelled rate</div>
+                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric(dashboard.OperationalHealth.CancelledShipmentRate)%</div>
             </div>
             <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
                 <div class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">Carrier rating</div>
-                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric("OperationalHealth.AverageCarrierRating")</div>
+                <div class="mt-2 text-2xl font-black text-[#111111]">@Metric(dashboard.OperationalHealth.AverageCarrierRating)</div>
             </div>
         </div>
     </div>
@@ -99,9 +127,61 @@
             @foreach (var activity in activityRows)
             {
                 <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
-                    <div class="text-sm font-bold text-[#111111]">@AdminDisplay.Text(activity, "Title")</div>
-                    <div class="mt-1 text-sm leading-6 text-[#787774]">@AdminDisplay.Text(activity, "Description")</div>
-                    <div class="mt-3 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">@AdminDisplay.Text(activity, "PerformedBy") / @AdminDisplay.Text(activity, "OccurredAt")</div>
+                    <div class="text-sm font-bold text-[#111111]">@activity.Title</div>
+                    <div class="mt-1 text-sm leading-6 text-[#787774]">@activity.Description</div>
+                    <div class="mt-3 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">@activity.PerformedBy / @AdminDisplay.Format(activity.OccurredAt)</div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="mt-6 grid gap-6 xl:grid-cols-2">
+    <div class="admin-card p-6">
+        <div class="flex items-center justify-between border-b border-[#EAEAEA] pb-4">
+            <div>
+                <h3 class="text-lg font-extrabold text-[#111111]">Top carriers</h3>
+                <p class="mt-1 text-sm text-[#787774]">Highest-performing carriers by deliveries and rating.</p>
+            </div>
+        </div>
+        <div class="mt-5 space-y-3">
+            @if (topCarrierRows.Count == 0)
+            {
+                <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-5 text-sm font-semibold text-[#787774]">Carrier performance data will appear here once deliveries are recorded.</div>
+            }
+            @foreach (var carrier in topCarrierRows)
+            {
+                <div class="flex items-center justify-between rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
+                    <div>
+                        <div class="text-sm font-bold text-[#111111]">@carrier.FullName</div>
+                        <div class="mt-1 text-xs font-extrabold uppercase tracking-[0.16em] text-[#787774]">Delivered @carrier.DeliveredShipments shipments</div>
+                    </div>
+                    <span class="admin-badge admin-badge-success">@carrier.Rating rating</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="admin-card p-6">
+        <div class="flex items-center justify-between border-b border-[#EAEAEA] pb-4">
+            <div>
+                <h3 class="text-lg font-extrabold text-[#111111]">Top operation managers</h3>
+                <p class="mt-1 text-sm text-[#787774]">Operational leaders with the highest approved shipment volume.</p>
+            </div>
+        </div>
+        <div class="mt-5 space-y-3">
+            @if (topOperationManagerRows.Count == 0)
+            {
+                <div class="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-5 text-sm font-semibold text-[#787774]">Manager performance data will appear here once review activity is available.</div>
+            }
+            @foreach (var manager in topOperationManagerRows)
+            {
+                <div class="flex items-center justify-between rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] p-4">
+                    <div>
+                        <div class="text-sm font-bold text-[#111111]">@manager.FullName</div>
+                        <div class="mt-1 text-xs font-extrabold uppercase tracking-[0.16em] text-[#787774]">Approved @manager.ApprovedShipments shipments</div>
+                    </div>
+                    <span class="admin-badge">Lead</span>
                 </div>
             }
         </div>

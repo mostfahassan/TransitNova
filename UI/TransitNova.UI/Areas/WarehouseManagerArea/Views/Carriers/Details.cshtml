@@ -1,34 +1,41 @@
-@model object?
+@model UiCarrierProfileDto?
 @{
     ViewData["Title"] = "Carrier Details";
-    var servedCities = AdminDisplay.Value(Model, "ServedCities");
-    var assignedShipments = AdminDisplay.Text(Model, "AssignedShipmentsCount");
-    var activeTrips = AdminDisplay.Text(Model, "ActiveTripsCount");
-    var rating = AdminDisplay.Text(Model, "Rating");
+    var carrier = Model ?? new UiCarrierProfileDto();
+    var assignedShipments = "-";
+    var activeTrips = "-";
+    var rating = AdminDisplay.Format(carrier.Rating);
     var detail = new WarehouseDetailViewModel
     {
         Title = "Carrier profile",
         Subtitle = "Operational identity, status, and warehouse workload for this carrier.",
-        Source = Model,
+        PrimaryLabel = carrier.FullName,
         Controller = "Carriers",
-        Fields = new List<WarehouseTableColumnViewModel>
-        {
-            new("Carrier", "FullName"),
-            new("Status", "Status", "badge"),
-            new("Code", "Code", "id"),
-            new("Phone", "PhoneNumber"),
-            new("Rating", "Rating"),
-            new("Assigned shipments", "AssignedShipmentsCount"),
-            new("Active trips", "ActiveTripsCount"),
-            new("Served cities", "ServedCities")
-        }
+        Fields =
+        [
+            AdminDisplay.WarehouseCell("Carrier", carrier.FullName),
+            AdminDisplay.WarehouseCell("Status", carrier.Status, "badge"),
+            AdminDisplay.WarehouseCell("Code", carrier.Code, "id"),
+            AdminDisplay.WarehouseCell("Phone", carrier.PhoneNumber),
+            AdminDisplay.WarehouseCell("Rating", carrier.Rating),
+            AdminDisplay.WarehouseCell("Assigned shipments", assignedShipments),
+            AdminDisplay.WarehouseCell("Active trips", activeTrips),
+            AdminDisplay.WarehouseCell("Served cities", carrier.CityName)
+        ]
+    };
+    var kpiTiles = new List<WarehouseKpiTileViewModel>
+    {
+        new("Assigned shipments", assignedShipments, "Current load", "warning"),
+        new("Active trips", activeTrips, "Moving now", "info"),
+        new("Rating", rating, "Service quality", "success")
     };
 }
 
 <section class="mb-6 grid gap-4 md:grid-cols-3">
-    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Assigned shipments", assignedShipments, "Current load", "warning")" />
-    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Active trips", activeTrips, "Moving now", "info")" />
-    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Rating", rating, "Service quality", "success")" />
+    @foreach (var tile in kpiTiles)
+    {
+        <partial name="_WarehouseKpiTile" model="tile" />
+    }
 </section>
 
 <partial name="_WarehouseDetail" model="detail" />
@@ -40,12 +47,9 @@
             <h2 class="mt-2 text-xl font-black tracking-tight text-[#111111]">Served city lanes</h2>
             <p class="mt-1 text-sm font-semibold text-[#787774]">Used by dispatch to match pickup and delivery city coverage.</p>
         </div>
-        <a asp-area="WarehouseManagerArea" asp-controller="Trips" asp-action="Index" asp-route-CarrierId="@AdminDisplay.Value(Model, "Id")" class="warehouse-button-secondary">Trips for carrier</a>
+        <a asp-area="WarehouseManagerArea" asp-controller="Trips" asp-action="Index" asp-route-CarrierId="@carrier.Id" class="warehouse-button-secondary">Trips for carrier</a>
     </div>
     <div class="mt-5 flex flex-wrap gap-2">
-        @foreach (var city in AdminDisplay.Rows(servedCities))
-        {
-            <span class="warehouse-badge warehouse-badge-info">@AdminDisplay.Format(city)</span>
-        }
+        <span class="warehouse-badge warehouse-badge-info">@AdminDisplay.Format(carrier.CityName)</span>
     </div>
 </section>

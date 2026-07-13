@@ -1,6 +1,8 @@
-@model object?
+@model UiPagedResult<UiRetrieveShipmentDto>?
 @{
     ViewData["Title"] = "Warehouse Shipments";
+    var result = Model ?? new UiPagedResult<UiRetrieveShipmentDto> { PageSize = 20 };
+    var items = result.Data.ToList();
     var header = new WarehousePageHeaderViewModel
     {
         Eyebrow = "Inventory lane",
@@ -17,20 +19,21 @@
     {
         Title = "Shipment records",
         Subtitle = "Warehouse shipment list with compact routing and status fields.",
-        Source = Model,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id",
-        Columns = new List<WarehouseTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Status", "CurrentStatus", "badge"),
-            new("Receiver", "Receiver.FullName|Receiver.Email"),
-            new("Sender", "Sender.FullName|Sender.Email"),
-            new("Mode", "TransportationMode"),
-            new("Cost", "ShippingCost", "currency"),
-            new("Created", "CreatedAt")
-        },
+        Headers = ["Tracking", "Status", "Receiver", "Sender", "Mode", "Cost", "Created"],
+        Rows = items.Select(shipment => AdminDisplay.WarehouseRow(
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.WarehouseCell("Tracking", shipment.TrackingNumber, "id"),
+            AdminDisplay.WarehouseCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.WarehouseCell("Receiver", shipment.Receiver.FullName),
+            AdminDisplay.WarehouseCell("Sender", shipment.Sender?.FullName),
+            AdminDisplay.WarehouseCell("Mode", shipment.TransportationMode),
+            AdminDisplay.WarehouseCell("Cost", shipment.ShippingCost, "currency"),
+            AdminDisplay.WarehouseCell("Created", shipment.CreatedAt))).ToList(),
+        TotalCount = result.TotalCount,
+        PageNumber = result.PageNumber,
+        TotalPages = result.PageSize <= 0 ? 1 : result.TotalPages,
         EmptyTitle = "No shipments in this lane",
         EmptyDescription = "Matching warehouse shipments will appear here after applying filters or scanner input."
     };

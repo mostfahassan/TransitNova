@@ -1,6 +1,7 @@
-@model object?
+@model UiPagedResult<UiAdminUserDetailsDto>?
 @{
     ViewData["Title"] = "Users";
+    var page = Model ?? UiPagedResult<UiAdminUserDetailsDto>.From([], 0, 1, 10);
     var header = new AdminPageHeaderViewModel
     {
         Title = "Users",
@@ -13,22 +14,23 @@
     {
         Title = "User directory",
         Subtitle = "Users returned from the backend filtering endpoint.",
-        Source = Model,
         Controller = "Users",
-        RouteIdName = "userId",
-        IdPropertyPath = "UserId|Id",
         ShowDetails = true,
         ShowEdit = false,
         ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("User", "FullName|UserName|Email"),
-            new("Email", "Email"),
-            new("Type", "UserType", "badge"),
-            new("City", "CityName"),
-            new("Active", "IsActive", "badge"),
-            new("Created", "CreatedAt")
-        }
+        Headers = ["User", "Email", "Type", "City", "Active", "Created"],
+        Rows = page.Data.Select(user => AdminDisplay.AdminRow(
+            "userId",
+            user.UserId,
+            AdminDisplay.AdminCell("User", string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName),
+            AdminDisplay.AdminCell("Email", user.Email),
+            AdminDisplay.AdminCell("Type", user.UserType, "badge"),
+            AdminDisplay.AdminCell("City", user.CityName),
+            AdminDisplay.AdminCell("Active", user.IsActive, "badge"),
+            AdminDisplay.AdminCell("Created", user.CreatedAt))).ToList(),
+        TotalCount = page.TotalCount,
+        PageNumber = page.PageNumber,
+        TotalPages = page.TotalPages
     };
 }
 

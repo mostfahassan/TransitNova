@@ -1,3 +1,7 @@
+using TransitNovaUI.BusinessLayer.Common.ResultPattern;
+using TransitNovaUI.BusinessLayer.DTOs.Carrier;
+using TransitNovaUI.BusinessLayer.DTOs.Shipment;
+
 namespace TransitNova.UI.ViewModels;
 
 public sealed class OpsPageHeaderViewModel
@@ -19,24 +23,27 @@ public sealed record OpsSidebarItemViewModel(string Label, string Controller, st
 
 public sealed record OpsKpiTileViewModel(string Label, string Value, string Meta, string Icon, string Tone = "neutral");
 
-public sealed record OpsTableColumnViewModel(string Header, string PropertyPath, string Kind = "text");
+public sealed record OpsDisplayCellViewModel(string Header, string Text, string Kind = "text");
+
+public sealed class OpsTableRowViewModel
+{
+    public IReadOnlyCollection<OpsDisplayCellViewModel> Cells { get; init; } = [];
+    public IDictionary<string, object?> DetailsRouteValues { get; init; } = new Dictionary<string, object?>();
+    public IDictionary<string, object?> PrimaryRouteValues { get; init; } = new Dictionary<string, object?>();
+}
 
 public sealed class OpsTableViewModel
 {
     public string Title { get; set; } = string.Empty;
     public string Subtitle { get; set; } = string.Empty;
-    public object? Source { get; set; }
-    public IReadOnlyCollection<OpsTableColumnViewModel> Columns { get; set; } = [];
+    public IReadOnlyCollection<string> Headers { get; set; } = [];
+    public IReadOnlyList<OpsTableRowViewModel> Rows { get; set; } = [];
     public string Controller { get; set; } = string.Empty;
     public string DetailsAction { get; set; } = "Details";
-    public string RouteIdName { get; set; } = "id";
-    public string IdPropertyPath { get; set; } = "Id";
     public bool ShowDetails { get; set; } = true;
     public string? PrimaryRowLabel { get; set; }
     public string? PrimaryRowAction { get; set; }
     public string? PrimaryRowController { get; set; }
-    public string PrimaryRowRouteIdName { get; set; } = "id";
-    public string PrimaryRowIdPropertyPath { get; set; } = "Id";
     public string EmptyTitle { get; set; } = "No operational records";
     public string EmptyDescription { get; set; } = "Live records from the API will appear here when available.";
 }
@@ -45,16 +52,16 @@ public sealed class OpsDetailViewModel
 {
     public string Title { get; set; } = string.Empty;
     public string Subtitle { get; set; } = string.Empty;
-    public object? Source { get; set; }
-    public IReadOnlyCollection<OpsTableColumnViewModel> Fields { get; set; } = [];
+    public string PrimaryText { get; set; } = string.Empty;
+    public IReadOnlyCollection<OpsDisplayCellViewModel> Fields { get; set; } = [];
+    public IReadOnlyCollection<OpsDisplayCellViewModel> AdditionalFields { get; set; } = [];
+    public IDictionary<string, object?> RouteValues { get; set; } = new Dictionary<string, object?>();
     public string Controller { get; set; } = string.Empty;
     public string IndexAction { get; set; } = "Index";
     public string? PrimaryLabel { get; set; }
     public string? PrimaryAction { get; set; }
     public string? SecondaryLabel { get; set; }
     public string? SecondaryAction { get; set; }
-    public string RouteIdName { get; set; } = "id";
-    public string IdPropertyPath { get; set; } = "Id";
 }
 
 public sealed class OpsAssignCarrierPageViewModel
@@ -68,13 +75,14 @@ public sealed class OpsAssignCarrierPageViewModel
     public string? City { get; set; }
     public int? CityId { get; set; }
     public DateTime? ScheduledAt { get; set; } = DateTime.UtcNow.AddHours(1);
-    public object? Carriers { get; set; }
+    public UiPagedResult<UiCarrierSummaryDetailsDto>? Carriers { get; set; }
 
     public TransitNovaUI.BusinessLayer.DTOs.Carrier.UiAssignCarrierDto ToDto() => new(CarrierId);
 }
 public sealed class OpsDispatchPageViewModel
 {
-    public object? Carriers { get; set; }
-    public object? Shipments { get; set; }
+    public UiPagedResult<UiCarrierSummaryDetailsDto>? Carriers { get; set; }
+    public UiPagedResult<UiRetrieveShipmentDto>? Shipments { get; set; }
 }
+
 

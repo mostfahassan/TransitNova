@@ -25,7 +25,7 @@ namespace TransitNova.BusinessLayer.Services.TokenServices
             // === Check If Refresh OldrefreshToken reused
             if (validatedToken.IsRevoked)
             {
-                logger.LogCritical("Refresh OldrefreshToken reuse detected. UserId: {UserId}, Token: {Token}", validatedToken.UserId, validatedToken.Token);
+                logger.LogCritical("Refresh OldrefreshToken reuse detected. UserId: {UserId}", validatedToken.UserId);
                 await tokenRepo.RevokeAllUserTokenAsync(validatedToken.UserId, cancellationToken);
                 throw new ReusedRefreshTokenException(validatedToken.UserId, validatedToken.Token);
             }

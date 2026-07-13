@@ -120,6 +120,12 @@ namespace TransitNova.InfraStructure.Repository.OperationManager
                 .AsNoTracking()
                 .Select(op => op.Id)
                 .ToListAsync(cancellationToken);
+
+        public async Task<List<Guid>> GetOperationManagersAppUserIdsAsync(CancellationToken cancellationToken)
+          => await context.OperationManagerProfiles
+                .AsNoTracking()
+                .Select(op => op.AppUserId)
+                .ToListAsync(cancellationToken);
         
     }
 

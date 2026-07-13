@@ -14,6 +14,25 @@ namespace TransitNova.InfraStructure.Common.CacheService
 
         public Task SetAsync<T>(string key, T value, TimeSpan expiration, CancellationToken cancellationToken)
         {
+           
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = expiration,
+                Size = GetCacheSizeUnit(key)
+            };
+
+            cache.Set(key, value, options);
+            return Task.CompletedTask;
+        }
+
+        public Task RemoveAsync(string key)
+        {
+            cache.Remove(key);
+            return Task.CompletedTask;
+        }
+
+        static int GetCacheSizeUnit(string key)
+        {
             var size = key switch
             {
                 string cacheKey when cacheKey == CacheKeys.Admins.Dashboard => 10,
@@ -47,21 +66,7 @@ namespace TransitNova.InfraStructure.Common.CacheService
                 string cacheKey when cacheKey.StartsWith($"{CacheKeys.ZonesPrefix}:filter:", StringComparison.Ordinal) => 10,
                 _ => 5
             };
-
-            var options = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = expiration,
-                Size = size
-            };
-
-            cache.Set(key, value, options);
-            return Task.CompletedTask;
-        }
-
-        public Task RemoveAsync(string key)
-        {
-            cache.Remove(key);
-            return Task.CompletedTask;
+            return size;
         }
     }
 }

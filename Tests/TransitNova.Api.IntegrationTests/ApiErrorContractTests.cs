@@ -127,7 +127,7 @@ public sealed class ApiErrorContractTests : IClassFixture<TransitNovaWebApplicat
         {
             Name = "Validation Warehouse",
             Type = WarehouseType.BranchWarehouse,
-            Address = "Contract Address",
+            Address = new { MainAddress = "Contract Address", SecondaryAddress = "Dock 2", Street = "Validation Street" },
             Capacity = 1000m,
             CurrentUsage = 0m,
             OperatingHours = 24,
@@ -189,5 +189,8 @@ public sealed class ApiErrorContractTests : IClassFixture<TransitNovaWebApplicat
                 StringComparison.OrdinalIgnoreCase));
     }
 }
+
+
+
 
 

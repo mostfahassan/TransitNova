@@ -10,6 +10,7 @@ namespace TransitNova.InfraStructure.Common.PdfGenerator.Helpers
         IDocument CreateInvoice(ShipmentPaymentInvoiceDto invoice);
         IDocument CreateShipment(RetrieveShipmentDto shipment);
         IDocument CreateDashboard(AdminDashboardDto dashboard);
+        IDocument CreateBundleInvoice(BundlePaymentInvoiceDto bundlePaymentInvoice);
     }
 
     internal sealed class PdfDocumentFactory : IPdfDocumentFactory
@@ -19,5 +20,7 @@ namespace TransitNova.InfraStructure.Common.PdfGenerator.Helpers
         public IDocument CreateShipment(RetrieveShipmentDto shipment) => new ShipmentPdfDocument(shipment);
 
         public IDocument CreateDashboard(AdminDashboardDto dashboard) => new DashboardPdfDocument(dashboard);
+
+        public IDocument CreateBundleInvoice(BundlePaymentInvoiceDto bundlePaymentInvoice) => new BundleInvoicePdfDocument(bundlePaymentInvoice);
     }
 }

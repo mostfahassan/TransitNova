@@ -1,26 +1,20 @@
 @model OpsDetailViewModel
-@{
-    var source = Model.Source;
-    var id = AdminDisplay.RouteValue(source, Model.IdPropertyPath);
-}
 
 <section class="ops-card overflow-hidden">
     <div class="flex flex-col gap-4 border-b border-[#EAEAEA] p-6 lg:flex-row lg:items-center lg:justify-between">
         <div>
             <div class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#787774]">@Model.Subtitle</div>
-            <h3 class="mt-2 text-2xl font-extrabold tracking-tight text-[#111111]">@AdminDisplay.PrimaryLabel(source)</h3>
+            <h3 class="mt-2 text-2xl font-extrabold tracking-tight text-[#111111]">@Model.PrimaryText</h3>
         </div>
         <div class="flex flex-wrap gap-2">
             <a class="ops-button-secondary" asp-area="OperationManagerArea" asp-controller="@Model.Controller" asp-action="@Model.IndexAction">Back</a>
             @if (!string.IsNullOrWhiteSpace(Model.SecondaryLabel) && !string.IsNullOrWhiteSpace(Model.SecondaryAction))
             {
-                var route = new RouteValueDictionary { [Model.RouteIdName] = id };
-                <a class="ops-button-secondary" href="@Url.Action(Model.SecondaryAction, Model.Controller, route)">@Model.SecondaryLabel</a>
+                <a class="ops-button-secondary" href="@Url.Action(Model.SecondaryAction, Model.Controller, Model.RouteValues)">@Model.SecondaryLabel</a>
             }
             @if (!string.IsNullOrWhiteSpace(Model.PrimaryLabel) && !string.IsNullOrWhiteSpace(Model.PrimaryAction))
             {
-                var route = new RouteValueDictionary { [Model.RouteIdName] = id };
-                <a class="ops-button" href="@Url.Action(Model.PrimaryAction, Model.Controller, route)">@Model.PrimaryLabel</a>
+                <a class="ops-button" href="@Url.Action(Model.PrimaryAction, Model.Controller, Model.RouteValues)">@Model.PrimaryLabel</a>
             }
         </div>
     </div>
@@ -28,22 +22,54 @@
     <div class="grid gap-px bg-[#EAEAEA] sm:grid-cols-2 xl:grid-cols-3">
         @foreach (var field in Model.Fields)
         {
-            var text = AdminDisplay.Text(source, field.PropertyPath, field.Kind);
             <div class="bg-white p-5">
                 <div class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">@field.Header</div>
                 <div class="mt-2 text-sm font-semibold text-[#2F3437]">
                     @if (field.Kind == "badge")
                     {
-                        <span class="@BadgeClass(text)">@text</span>
+                        <span class="@BadgeClass(field.Text)">@field.Text</span>
+                    }
+                    else if (field.Kind == "id")
+                    {
+                        <span class="font-mono text-xs uppercase tracking-[0.12em]">@field.Text</span>
                     }
                     else
                     {
-                        @text
+                        @field.Text
                     }
                 </div>
             </div>
         }
     </div>
+
+    @if (Model.AdditionalFields.Count > 0)
+    {
+        <div class="border-t border-[#EAEAEA] bg-[#FBFBFA] p-6">
+            <div class="mb-4 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#787774]">Additional contract fields</div>
+            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                @foreach (var field in Model.AdditionalFields)
+                {
+                    <div class="rounded-[18px] border border-[#EAEAEA] bg-white p-5">
+                        <div class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#787774]">@field.Header</div>
+                        <div class="mt-2 text-sm font-semibold text-[#2F3437]">
+                            @if (field.Kind == "badge")
+                            {
+                                <span class="@BadgeClass(field.Text)">@field.Text</span>
+                            }
+                            else if (field.Kind == "id")
+                            {
+                                <span class="font-mono text-xs uppercase tracking-[0.12em]">@field.Text</span>
+                            }
+                            else
+                            {
+                                <span>@field.Text</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 </section>
 
 @functions {

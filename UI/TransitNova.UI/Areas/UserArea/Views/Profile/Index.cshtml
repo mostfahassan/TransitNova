@@ -1,46 +1,88 @@
-@model object?
+@model TransitNovaUI.BusinessLayer.DTOs.UserProfile.UiUserProfileDto?
 @{
     ViewData["Title"] = "Profile";
+    var profile = Model ?? new TransitNovaUI.BusinessLayer.DTOs.UserProfile.UiUserProfileDto();
+    var initials = string.Concat(profile.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(part => char.ToUpperInvariant(part[0])));
 }
 
 <section class="customer-fade-up">
     <div class="customer-card overflow-hidden">
         <div class="grid gap-0 lg:grid-cols-[360px_1fr]">
             <aside class="border-b border-[#EAEAEA] bg-[#FBFBFA] p-8 lg:border-b-0 lg:border-r">
-                <div class="grid h-20 w-20 place-items-center rounded-[24px] bg-[#111111] text-2xl font-black text-white">CU</div>
-                <h1 class="mt-6 text-4xl font-black tracking-[-0.04em] text-[#111111]">@AdminDisplay.Text(Model, "FullName|Name|FirstName|UserName", "text")</h1>
-                <p class="mt-3 text-sm leading-6 text-[#666666]">@AdminDisplay.Text(Model, "Email")</p>
-                <div class="mt-6 customer-badge customer-badge-success">Verified customer</div>
+                <div class="grid h-20 w-20 place-items-center rounded-[24px] bg-[#111111] text-2xl font-black text-white">@(string.IsNullOrWhiteSpace(initials) ? "CU" : initials)</div>
+                <h1 class="mt-6 text-4xl font-black tracking-[-0.04em] text-[#111111]">@(string.IsNullOrWhiteSpace(profile.FullName) ? "Customer" : profile.FullName)</h1>
+                <p class="mt-3 text-sm leading-6 text-[#666666]">@(string.IsNullOrWhiteSpace(profile.Email) ? "No email on file" : profile.Email)</p>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <div class="customer-badge customer-badge-success">@profile.UserType</div>
+                    <div class="customer-badge @(string.IsNullOrWhiteSpace(profile.BundleName) ? "customer-badge-neutral" : "customer-badge-info")">@(string.IsNullOrWhiteSpace(profile.BundleName) ? "No active bundle" : profile.BundleName)</div>
+                </div>
             </aside>
 
             <div class="p-8">
                 <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h2 class="text-2xl font-black tracking-[-0.03em] text-[#111111]">Account overview</h2>
-                        <p class="mt-2 text-sm leading-6 text-[#666666]">Customer profile data currently coming from the backend contract.</p>
+                        <p class="mt-2 text-sm leading-6 text-[#666666]">This screen now mirrors the full user profile contract returned by the backend.</p>
                     </div>
                     <a asp-area="AccountArea" asp-controller="Account" asp-action="ChangePassword" class="customer-button-secondary">Change password</a>
                 </div>
 
-                <dl class="mt-8 grid gap-4 md:grid-cols-2">
+                <dl class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     <div class="customer-card-flat p-5">
                         <dt class="customer-label">Full name</dt>
-                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "FullName|Name|UserName")</dd>
+                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@(string.IsNullOrWhiteSpace(profile.FullName) ? "-" : profile.FullName)</dd>
                     </div>
-                   
+                    <div class="customer-card-flat p-5">
+                        <dt class="customer-label">Email</dt>
+                        <dd class="break-all text-lg font-black tracking-[-0.02em] text-[#111111]">@(string.IsNullOrWhiteSpace(profile.Email) ? "-" : profile.Email)</dd>
+                    </div>
                     <div class="customer-card-flat p-5">
                         <dt class="customer-label">Phone</dt>
-                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "PhoneNumber|Phone")</dd>
+                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@(string.IsNullOrWhiteSpace(profile.PhoneNumber) ? "-" : profile.PhoneNumber)</dd>
+                    </div>
+                    <div class="customer-card-flat p-5">
+                        <dt class="customer-label">User type</dt>
+                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@profile.UserType</dd>
                     </div>
                     <div class="customer-card-flat p-5">
                         <dt class="customer-label">City</dt>
-                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "City|CityName|CityId")</dd>
+                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@(string.IsNullOrWhiteSpace(profile.CityName) ? "-" : profile.CityName)</dd>
                     </div>
-                    <div class="customer-card-flat p-5 md:col-span-2">
+                    <div class="customer-card-flat p-5">
+                        <dt class="customer-label">Government</dt>
+                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@(string.IsNullOrWhiteSpace(profile.GovernmentName) ? "-" : profile.GovernmentName)</dd>
+                    </div>
+                    <div class="customer-card-flat p-5">
+                        <dt class="customer-label">Country</dt>
+                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@(string.IsNullOrWhiteSpace(profile.CountryName) ? "-" : profile.CountryName)</dd>
+                    </div>
+                    <div class="customer-card-flat p-5">
+                        <dt class="customer-label">Total shipments sent</dt>
+                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@profile.TotalShipmentsSent</dd>
+                    </div>
+                    <div class="customer-card-flat p-5">
+                        <dt class="customer-label">Active bundle</dt>
+                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@(string.IsNullOrWhiteSpace(profile.BundleName) ? "No active bundle" : profile.BundleName)</dd>
+                    </div>
+                    <div class="customer-card-flat p-5 md:col-span-2 xl:col-span-3">
                         <dt class="customer-label">Address</dt>
-                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@AdminDisplay.Text(Model, "Address")</dd>
+                        <dd class="text-lg font-black tracking-[-0.02em] text-[#111111]">@profile.Address</dd>
                     </div>
                 </dl>
+
+                <div class="mt-8 rounded-[24px] border border-[#EAEAEA] bg-[#FBFBFA] p-6">
+                    <div class="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#787774]">Reference</div>
+                    <div class="mt-4 grid gap-4 md:grid-cols-2">
+                        <div>
+                            <div class="customer-label">Profile ID</div>
+                            <div class="mt-1 break-all text-sm font-black text-[#111111]">@profile.Id</div>
+                        </div>
+                        <div>
+                            <div class="customer-label">Bundle status</div>
+                            <div class="mt-1 text-sm font-black text-[#111111]">@(string.IsNullOrWhiteSpace(profile.BundleName) ? "No subscription currently linked" : $"Subscribed to {profile.BundleName}")</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -16,7 +16,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyQueries
             var shipment = await carrierShipmentRepository.GetCarrierShipmentAsync(request.CarrierId, request.ShipmentId, ct);
             if (shipment is null)
             {
-                logger.LogWarning("Carrier {UserId} attempted to open unassigned Shipment {ShipmentId}", request.CarrierId, request.ShipmentId);
+                logger.LogWarning("Carrier {UserId} attempted to open unassigned Shipment {ReferecneId}", request.CarrierId, request.ShipmentId);
                 var notFoundResult = Result<RetrieveShipmentDto>.NotFound(Errors.ShipmentNotFound("Shipment not found for this carrier."));
                 return notFoundResult;
             }

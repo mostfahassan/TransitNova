@@ -166,7 +166,12 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
                 .FirstOrDefaultAsync(ct);
 
         public async Task<Shipment?> GetShipmentForCommandsAsync(Guid shipmentId, CancellationToken ct)
-            => await context.Shipments.Where(sh => sh.Id == shipmentId).Include(sh => sh.ShipmentStates).FirstOrDefaultAsync(ct);
+            => await context.Shipments
+                .Where(sh => sh.Id == shipmentId)
+                .Include(sh => sh.Sender)
+                .Include(sh => sh.ShipmentStates)
+                    .ThenInclude(status => status.Carrier)
+                .FirstOrDefaultAsync(ct);
 
         public async Task<string?> GetShipmentTrackingNumberAsync(Guid shipmentId, CancellationToken ct)
         => await context.Shipments

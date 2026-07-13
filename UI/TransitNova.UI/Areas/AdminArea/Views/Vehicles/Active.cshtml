@@ -1,6 +1,7 @@
-@model object?
+@model IEnumerable<UiVehicleDto>?
 @{
     ViewData["Title"] = "Active vehicles";
+    var items = (Model ?? Enumerable.Empty<UiVehicleDto>()).ToList();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Active vehicles",
@@ -13,22 +14,23 @@
     {
         Title = "Active fleet",
         Subtitle = "Vehicles that can participate in current assignment flows.",
-        Source = Model,
         Controller = "Vehicles",
-        RouteIdName = "vehicleId",
-        IdPropertyPath = "Id|VehicleId",
         ShowDetails = true,
         ShowEdit = false,
         ShowDelete = true,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Plate", "PlateNumber", "id"),
-            new("Type", "VehicleType", "badge"),
-            new("Carrier", "CarrierName|CarrierCode"),
-            new("Rating", "CarrierRating"),
-            new("Refrigerated", "IsRefrigerated", "badge"),
-            new("Status", "CarrierStatus", "badge")
-        }
+        Headers = ["Plate", "Type", "Carrier", "Weight", "Volume", "Active"],
+        Rows = items.Select(vehicle => AdminDisplay.AdminRow(
+            "vehicleId",
+            vehicle.Id,
+            AdminDisplay.AdminCell("Plate", vehicle.PlateNumber, "id"),
+            AdminDisplay.AdminCell("Type", vehicle.VehicleType, "badge"),
+            AdminDisplay.AdminCell("Carrier", vehicle.CarrierName),
+            AdminDisplay.AdminCell("Weight", vehicle.CapacityWeight),
+            AdminDisplay.AdminCell("Volume", vehicle.CapacityVolume),
+            AdminDisplay.AdminCell("Active", vehicle.IsActive, "badge"))).ToList(),
+        TotalCount = items.Count,
+        PageNumber = 1,
+        TotalPages = 1
     };
 }
 

@@ -18,7 +18,13 @@ namespace TransitNova.InfraStructure.EntityConfig
                         .OnDelete(DeleteBehavior.Cascade);
 
             shipmentStatus.Property(x => x.CarrierId)
-                        .HasColumnName("UserId");
+                         .HasColumnName("UserId");
+
+            shipmentStatus.Property(ss => ss.StatusType)
+                         .HasConversion<string>()
+                         .IsRequired()
+                         .HasMaxLength("AssignedToDeliveryCarrier".Length);
+
 
             shipmentStatus.HasOne(ss => ss.Carrier)
                           .WithMany()

@@ -24,7 +24,6 @@ using TransitNova.BusinessLayer.Services.ShipmentServices;
 using TransitNova.BusinessLayer.Services.TokenServices;
 using TransitNova.BusinessLayer.Services.TripServices;
 using TransitNova.BusinessLayer.Services.WarehouseManagerDashboardService;
-using TransitNova.Domain.Entities.MainEntities;
 namespace TransitNova.BusinessLayer
 {
     public static class DependencyInjection
@@ -59,6 +58,7 @@ namespace TransitNova.BusinessLayer
                 .AddScoped<IAdminDashboard, AdminDashboard>()
                 .AddScoped<IOperationManagerDashboard, OperationManagerDashboard>()
                 .AddScoped<ICarrierDashboard, CarrierDashboard>()
+                .AddScoped<IBundleBenefitService, BundleBenefitService>()
                 .AddScoped<IBundleSubscription, BundleSubscriptionPayment>();
 
 
@@ -66,3 +66,4 @@ namespace TransitNova.BusinessLayer
         }
     }
 }
+

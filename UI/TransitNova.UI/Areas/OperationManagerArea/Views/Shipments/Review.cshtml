@@ -1,13 +1,13 @@
-@model object?
+@model UiRetrieveShipmentDto?
 @{
     ViewData["Title"] = "Review Shipment";
-    var source = Model;
-    var shipmentId = AdminDisplay.RouteValue(source, "Id|ShipmentId");
-    var hasShipment = !string.IsNullOrWhiteSpace(Convert.ToString(shipmentId));
+    var shipment = Model ?? new UiRetrieveShipmentDto();
+    var shipmentId = shipment.Id;
+    var hasShipment = shipmentId != Guid.Empty;
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Shipment review",
-        Title = "Review " + AdminDisplay.Text(source, "TrackingNumber", "id"),
+        Title = "Review " + AdminDisplay.Format(shipment.TrackingNumber, kind: "id"),
         Description = "Approve the shipment if data is clean, or reject it with a clear reason.",
         SecondaryLabel = "Back to queue",
         SecondaryController = "Shipments",
@@ -17,20 +17,19 @@
     {
         Title = "Review payload",
         Subtitle = "Pending decision",
-        Source = source,
+        PrimaryText = shipment.TrackingNumber,
         Controller = "Shipments",
         IndexAction = "ReviewQueue",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id|ShipmentId",
-        Fields = new List<OpsTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Pickup", "PickupAddress|SenderCity"),
-            new("Delivery", "DeliveryAddress|ReceiverCity"),
-            new("Mode", "TransportationMode"),
-            new("Cost", "ShippingCost|ShippinCost|ShipmentCost", "currency")
-        }
+        RouteValues = new Dictionary<string, object?> { ["shipmentId"] = shipmentId },
+        Fields =
+        [
+            AdminDisplay.OpsCell("Tracking", shipment.TrackingNumber, "id"),
+            AdminDisplay.OpsCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.OpsCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.OpsCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.OpsCell("Mode", shipment.TransportationMode),
+            AdminDisplay.OpsCell("Cost", shipment.ShippingCost, "currency")
+        ]
     };
 }
 

@@ -4,6 +4,7 @@ using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.Interfaces.Repositories.PaymentInvoiceRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
+using TransitNova.BusinessLayer.Interfaces.Services.BundleService;
 using TransitNova.BusinessLayer.Interfaces.Services.PaymentService;
 using TransitNova.BusinessLayer.Interfaces.Services.ShipmentServices;
 using TransitNova.Domain.Entities.MainEntities;
@@ -15,7 +16,8 @@ namespace TransitNova.BusinessLayer.Services.ShipmentServices
         IReceiverRepository receiver,
         IPaymentService paymentService,
         IUserQueryRepository user,
-        IShipmentPricingServices pricingService) : IShipmentService
+        IShipmentPricingServices pricingService,
+        IBundleBenefitService bundleBenefitService) : IShipmentService
     {
         public async Task<(Result<InvoiceDto>, string)> HandleShipmentCreation(CreateShipmentDto Dto, Guid AppUserId, CancellationToken cancellationToken)
         {
@@ -29,6 +31,8 @@ namespace TransitNova.BusinessLayer.Services.ShipmentServices
             //==== Calculate Shipment Cost and Estimated Delivery Date
             var packageSpecification = Dto.PackageSpecification.ToDomain();
             var (cost, estimatedDeliveryDate) = pricingService.CalculateShipment(packageSpecification, Dto.ShipmentDeliveryType, Dto.TransportationMode);
+            var benefit = await bundleBenefitService.CalculateShipmentBenefitAsync(senderId, cost, Dto.PackageSpecification, cancellationToken);
+            var payableCost = benefit.FinalShippingCost;
 
             //=== Initialize Shipment Creation
             var shipment = Shipment.Create(senderId, receiverToCreate, packageSpecification, Dto.Currency, Dto.PickUpDate, Dto.DeliveryAddress.ToDomain(), Dto.PickupAddress.ToDomain(),
@@ -39,7 +43,7 @@ namespace TransitNova.BusinessLayer.Services.ShipmentServices
             {
               ReferenceId = shipment.Id,
               PaymentMethod = Dto.PaymentMethod,
-              Cost = cost,
+              Cost = payableCost,
               Currency = Dto.Currency
             };
 
@@ -61,9 +65,26 @@ namespace TransitNova.BusinessLayer.Services.ShipmentServices
             shipment.SetShipmentCost(response.Data.Amount, estimatedDeliveryDate);
             shipment.SetPaymentId(response.Data.PaymentId);
 
-            var paymentInvoice = PaymentInvoice.Create(response.Data.PaymentId, response.Data.ReferenceId, senderId,
-                response.Data.Amount, response.Data.Commission, response.Data.TotalAmount, paymentMethod,
-                paymentStatus, response.Data.PaidAt, response.Data.Notes);
+            var paymentInvoice = PaymentInvoice.Create(
+                response.Data.PaymentId,
+                response.Data.ReferenceId,
+                senderId,
+                response.Data.Amount,
+                response.Data.Commission,
+                response.Data.TotalAmount,
+                paymentMethod,
+                paymentStatus,
+                response.Data.ReferenceType!,
+                response.Data.PaidAt,
+                response.Data.Notes,
+                benefit.BundleSubscriptionId,
+                benefit.BundleId,
+                benefit.BundleName,
+                benefit.OriginalShippingCost,
+                benefit.DiscountPercentage,
+                benefit.DiscountAmount,
+                response.Data.Amount,
+                benefit.SubscriptionBenefitApplied);
 
             //==== Create Receiver
             await receiver.CreateReceiverAsync(receiverToCreate, cancellationToken);
@@ -72,7 +93,30 @@ namespace TransitNova.BusinessLayer.Services.ShipmentServices
             await shipmentCommand.AddAsync(shipment, cancellationToken);
             await payment.CreateInvoice(paymentInvoice, cancellationToken);
 
-            return (Result<InvoiceDto>.Success(response.Data), shipment.TrackingNumber);
+            var invoice = new InvoiceDto
+            {
+                PaymentId = response.Data.PaymentId,
+                ReferenceId = response.Data.ReferenceId,
+                ReferenceType = response.Data.ReferenceType,
+                Amount = response.Data.Amount,
+                Commission = response.Data.Commission,
+                TotalAmount = response.Data.TotalAmount,
+                PaymentMethod = response.Data.PaymentMethod,
+                Status = response.Data.Status,
+                PaidAt = response.Data.PaidAt,
+                Notes = response.Data.Notes,
+                BundleSubscriptionId = benefit.BundleSubscriptionId,
+                BundleId = benefit.BundleId,
+                BundleName = benefit.BundleName,
+                OriginalShippingCost = benefit.OriginalShippingCost,
+                DiscountPercentage = benefit.DiscountPercentage,
+                DiscountAmount = benefit.DiscountAmount,
+                FinalShippingCost = response.Data.Amount,
+                SubscriptionBenefitApplied = benefit.SubscriptionBenefitApplied,
+                SubscriptionBenefitMessage = benefit.SubscriptionBenefitMessage
+            };
+
+            return (Result<InvoiceDto>.Success(invoice), shipment.TrackingNumber);
         }
 
 

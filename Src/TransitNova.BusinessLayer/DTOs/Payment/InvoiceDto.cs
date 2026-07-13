@@ -14,6 +14,15 @@ namespace TransitNova.BusinessLayer.DTOs.Payment
         public string Status { get; init; } = string.Empty;
         public DateTime? PaidAt { get; init; }
         public string? Notes { get; init; }
+        public Guid? BundleSubscriptionId { get; init; }
+        public Guid? BundleId { get; init; }
+        public string? BundleName { get; init; }
+        public decimal OriginalShippingCost { get; init; }
+        public decimal DiscountPercentage { get; init; }
+        public decimal DiscountAmount { get; init; }
+        public decimal FinalShippingCost { get; init; }
+        public bool SubscriptionBenefitApplied { get; init; }
+        public string SubscriptionBenefitMessage { get; init; } = string.Empty;
     }
 
     public class ShipmentPaymentInvoiceDto
@@ -33,6 +42,13 @@ namespace TransitNova.BusinessLayer.DTOs.Payment
         public DateTime? PaidAt { get; init; }
         public Currency Currency { get; set; }
         public string? Notes { get; set; }
+        public decimal OriginalShippingCost { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal DiscountPercentage { get; set; }
+        public decimal FinalShippingCost { get; set; }
+        public string? BundleName { get; set; }
+        public bool SubscriptionBenefitApplied { get; set; }
+        public string SubscriptionBenefitMessage { get; set; } = string.Empty;
     }
 
     public sealed class BundlePaymentInvoiceDto

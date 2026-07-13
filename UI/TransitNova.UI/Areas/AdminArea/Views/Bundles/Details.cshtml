@@ -1,6 +1,7 @@
-@model object?
+@model UiRetrieveBundleDto?
 @{
     ViewData["Title"] = "Bundle details";
+    var bundle = Model ?? new UiRetrieveBundleDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Bundle details",
@@ -13,21 +14,20 @@
     {
         Title = "Bundle record",
         Subtitle = "Full bundle configuration returned by the backend.",
-        Source = Model,
+        PrimaryLabel = bundle.BundleName,
         Controller = "Bundles",
-        RouteIdName = "bundleId",
-        IdPropertyPath = "Id|BundleId",
         EditAction = null,
         DeleteAction = null,
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Name", "BundleName"),
-            new("Price", "BundlePrice", "currency"),
-            new("Weight", "TotalWeight"),
-            new("Distance", "TotalDistance"),
-            new("Shipments", "TotalShipments"),
-            new("Description", "BundleDescription")
-        }
+        RouteValues = new Dictionary<string, object?> { ["bundleId"] = bundle.Id },
+        Fields =
+        [
+            AdminDisplay.AdminCell("Name", bundle.BundleName),
+            AdminDisplay.AdminCell("Price", bundle.BundlePrice, "currency"),
+            AdminDisplay.AdminCell("Weight", bundle.MaxWeightPerShipment),
+            AdminDisplay.AdminCell("Distance", bundle.MaxDistancePerShipment),
+            AdminDisplay.AdminCell("Shipments", bundle.MaxShipmentsPerMonth),
+            AdminDisplay.AdminCell("Description", bundle.BundleDescription)
+        ]
     };
 }
 

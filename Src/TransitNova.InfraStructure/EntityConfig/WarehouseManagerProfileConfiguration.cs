@@ -8,7 +8,15 @@ namespace TransitNova.InfraStructure.EntityConfig
         public void Configure(EntityTypeBuilder<WarehouseManagerProfile> manager)
         {
             manager.HasKey(m => m.Id).IsClustered();
+            
+            
+            manager.Property(m => m.UserType)
+                .IsRequired()
+                .HasConversion<string>()
+                .HasMaxLength("WarehouseManager".Length);
+
             manager.OwnsAddress(m => m.Address, "Address");
+           
             manager.HasOne(u => u.City)
                 .WithMany()
                 .HasForeignKey(u => u.CityId)

@@ -1,5 +1,5 @@
 using TransitNova.BusinessLayer.DTOs.Warehouse;
-using TransitNova.Domain.Entities.Common;
+using TransitNovaUI.BusinessLayer.Common.CommonData;
 using TransitNova.Domain.Enums.Warehouse;
 namespace TransitNovaUI.BusinessLayer.DTOs.Warehouse;
 
@@ -8,7 +8,7 @@ public sealed class UiWarehouseDto
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public WarehouseType Type { get; set; }
-    public Address Address { get; init; } = null!;
+    public UiAddressDto Address { get; init; } = new();
     public decimal Capacity { get; set; }
     public decimal CurrentUsage { get; set; }
     public int? OperatingHours { get; set; }
@@ -25,7 +25,12 @@ public sealed class UiWarehouseDto
             Id = source.Id,
             Name = source.Name,
             Type = source.Type,
-            Address = source.Address,
+            Address = new UiAddressDto
+            {
+                MainAddress = source.Address.MainAddress,
+                SecondaryAddress = source.Address.SecondaryAddress,
+                Street = source.Address.Street
+            },
             Capacity = source.Capacity,
             CurrentUsage = source.CurrentUsage,
             OperatingHours = source.OperatingHours,

@@ -8,6 +8,8 @@ using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Carriers.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.OperationManager.Shipments.Segregation;
+using TransitNovaUI.BusinessLayer.DTOs.Carrier;
+using TransitNovaUI.BusinessLayer.DTOs.Shipment;
 
 namespace TransitNova.UI.Areas.OperationManagerArea.Controllers.Operations;
 
@@ -23,32 +25,32 @@ public sealed class CarriersController(
     : AppControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Index(CarrierFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(UiFilterCarrierDto filter, CancellationToken cancellationToken)
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerCarriersQuery.FilterCarriersAsync(filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerCarriersQuery.FilterCarriersAsync(filter, token!, ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Dispatch(CarrierFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Dispatch(UiFilterCarrierDto filter, CancellationToken cancellationToken)
     {
         filter.Status ??= CarrierStatus.Available;
         filter.AvailableFrom ??= DateTime.UtcNow;
         filter.PageSize = filter.PageSize <= 0 ? 20 : filter.PageSize;
 
-        var carriersResponse = await apiInvoker.ExecuteAsync((token, ct) => operationManagerCarriersQuery.FilterCarriersAsync(filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var carriersResponse = await apiInvoker.ExecuteAsync((token, ct) => operationManagerCarriersQuery.FilterCarriersAsync(filter, token!, ct), cancellationToken: cancellationToken);
         if (carriersResponse.IsFailure)
             return HandleGetFailure(carriersResponse);
 
-        var shipmentFilter = new ShipmentFilterViewModel
+        var shipmentFilter = new UiShipmentFilterDto
         {
             Status = [ShipmentStatuses.Approved, ShipmentStatuses.InWarehouse],
             PageNumber = 1,
             PageSize = 50
         };
 
-        var shipmentsResponse = await apiInvoker.ExecuteAsync((token, ct) => operationManagerShipmentsQuery.FilterShipmentsAsync(shipmentFilter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var shipmentsResponse = await apiInvoker.ExecuteAsync((token, ct) => operationManagerShipmentsQuery.FilterShipmentsAsync(shipmentFilter, token!, ct), cancellationToken: cancellationToken);
         if (shipmentsResponse.IsFailure)
             return HandleGetFailure(shipmentsResponse);
 
@@ -68,9 +70,9 @@ public sealed class CarriersController(
     }
 
     [HttpGet("{carrierId:guid}")]
-    public async Task<IActionResult> Shipments(Guid carrierId, CarrierShipmentFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Shipments(Guid carrierId, UiCarrierShipmentFilterDto filter, CancellationToken cancellationToken)
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerCarriersQuery.GetCarrierShipmentsAsync(carrierId, filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerCarriersQuery.GetCarrierShipmentsAsync(carrierId, filter, token!, ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
@@ -143,7 +145,7 @@ public sealed class CarriersController(
 
     private async Task<OpsAssignCarrierPageViewModel> BuildAssignmentPageAsync(string assignmentType, Guid shipmentId, string? city, int? cityId, CancellationToken cancellationToken, Guid selectedCarrierId = default, DateTime? scheduledAt = null)
     {
-        var filter = new CarrierFilterViewModel
+        var filter = new UiFilterCarrierDto
         {
             Status = CarrierStatus.Available,
             City = string.IsNullOrWhiteSpace(city) || city == "-" ? null : city,
@@ -153,7 +155,7 @@ public sealed class CarriersController(
             PageSize = 50
         };
 
-        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerCarriersQuery.FilterCarriersAsync(filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => operationManagerCarriersQuery.FilterCarriersAsync(filter, token!, ct), cancellationToken: cancellationToken);
 
         if (response.IsFailure)
             ApiError(response);

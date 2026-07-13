@@ -12,6 +12,7 @@ using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.OperationManagers.Quer
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.PaymentHistories.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Roles.Command;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Roles.Query;
+using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Shipments.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Subscriptions.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Trips.Query;
 using TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Users.Query;
@@ -44,6 +45,8 @@ using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.PaymentHistories.Se
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Roles.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Roles.Queries;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Roles.Segregation;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Shipment.Query;
+using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Shipment.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Subscriptions.Queries;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Subscriptions.Segregation;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Trips.Queries;
@@ -138,6 +141,10 @@ public static class AdminApiClientRegistrationExtensions
         services.AddScoped<IGetRoleMembersQueryService, AdminRolesQuery>();
         services.AddScoped<IGetRolesQueryService, AdminRolesQuery>();
 
+        services.AddScoped<AdminShipmentQuery>();
+        services.AddScoped<IAdminShipmentsQuery, AdminShipmentQuery>();
+        services.AddScoped<IGetAdminShipmentsQueryService, AdminShipmentQuery>();
+        services.AddScoped<IGetAdminShipmentsByIdQueryService, AdminShipmentQuery>();
         services.AddScoped<AdminSubscriptionsQuery>();
         services.AddScoped<IAdminSubscriptionQuery, AdminSubscriptionsQuery>();
         services.AddScoped<IGetBundleSubscribersQueryService, AdminSubscriptionsQuery>();

@@ -1,47 +1,12 @@
 using System.Collections;
 using System.Globalization;
-using System.Reflection;
+
+using TransitNova.UI.ViewModels;
 
 namespace TransitNova.UI.Infrastructure.Mvc.Common;
 
 public static class AdminDisplay
 {
-    public static IReadOnlyList<object> Rows(object? source)
-    {
-        if (source is null)
-            return [];
-
-        if (source is string)
-            return [source];
-
-        var data = Value(source, "Data|Items|Users|RecentShipments|RecentActivities|TopCarriers|TopOperationManagers");
-        if (data is not null && !ReferenceEquals(data, source))
-            return Rows(data);
-
-        if (source is IEnumerable enumerable)
-            return enumerable.Cast<object>().ToList();
-
-        return [source];
-    }
-
-    public static object? Value(object? source, string propertyPath)
-    {
-        if (source is null || string.IsNullOrWhiteSpace(propertyPath))
-            return null;
-
-        foreach (var alternative in propertyPath.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-        {
-            var value = ReadPath(source, alternative);
-            if (HasDisplayValue(value))
-                return value;
-        }
-
-        return null;
-    }
-
-    public static string Text(object? source, string propertyPath, string kind = "text") =>
-        Format(Value(source, propertyPath), propertyPath, kind);
-
     public static string Format(object? value, string propertyPath = "", string kind = "text")
     {
         if (value is null)
@@ -75,26 +40,57 @@ public static class AdminDisplay
 
         if (value is IEnumerable enumerable && value is not string)
         {
-            var values = enumerable.Cast<object>().Select(ShortObjectText).Where(item => !string.IsNullOrWhiteSpace(item)).Take(4).ToArray();
+            var values = enumerable.Cast<object?>()
+                .Where(item => item is not null)
+                .Select(item => Format(item, propertyPath, kind))
+                .Where(item => !string.IsNullOrWhiteSpace(item) && item != "-")
+                .Take(4)
+                .ToArray();
             return values.Length == 0 ? "-" : string.Join(", ", values);
         }
 
-        return ShortObjectText(value);
+        return Convert.ToString(value, CultureInfo.InvariantCulture) ?? "-";
     }
 
-    public static bool Boolean(object? source, string propertyPath)
-    {
-        var value = Value(source, propertyPath);
 
-        return value switch
+    public static AdminDisplayCellViewModel AdminCell(string header, object? value, string kind = "text") =>
+        new(header, Format(value, header, kind), kind);
+
+    public static AdminTableRowViewModel AdminRow(string routeIdName, object? routeId, params AdminDisplayCellViewModel[] cells) =>
+        new()
         {
-            bool boolean => boolean,
-            string text => bool.TryParse(text, out var parsed) && parsed,
-            int number => number != 0,
-            _ => false
+            Cells = cells,
+            RouteValues = new Dictionary<string, object?> { [routeIdName] = routeId }
         };
-    }
 
+    public static OpsDisplayCellViewModel OpsCell(string header, object? value, string kind = "text") =>
+        new(header, Format(value, header, kind), kind);
+
+    public static OpsTableRowViewModel OpsRow(string detailsRouteIdName, object? detailsRouteId, params OpsDisplayCellViewModel[] cells) =>
+        new()
+        {
+            Cells = cells,
+            DetailsRouteValues = new Dictionary<string, object?> { [detailsRouteIdName] = detailsRouteId },
+            PrimaryRouteValues = new Dictionary<string, object?> { [detailsRouteIdName] = detailsRouteId }
+        };
+
+    public static OpsTableRowViewModel OpsRow(string detailsRouteIdName, object? detailsRouteId, string primaryRouteIdName, object? primaryRouteId, params OpsDisplayCellViewModel[] cells) =>
+        new()
+        {
+            Cells = cells,
+            DetailsRouteValues = new Dictionary<string, object?> { [detailsRouteIdName] = detailsRouteId },
+            PrimaryRouteValues = new Dictionary<string, object?> { [primaryRouteIdName] = primaryRouteId }
+        };
+
+    public static WarehouseDisplayCellViewModel WarehouseCell(string header, object? value, string kind = "text") =>
+        new(header, Format(value, header, kind), kind);
+
+    public static WarehouseTableRowViewModel WarehouseRow(string routeIdName, object? routeId, params WarehouseDisplayCellViewModel[] cells) =>
+        new()
+        {
+            Cells = cells,
+            RouteValues = new Dictionary<string, object?> { [routeIdName] = routeId }
+        };
     public static string BadgeClass(string value)
     {
         var text = value.ToLowerInvariant();
@@ -111,69 +107,6 @@ public static class AdminDisplay
         return "admin-badge admin-badge-neutral";
     }
 
-    public static string PrimaryLabel(object? source) =>
-        Text(source, "Name|FullName|BundleName|RoleName|UserName|PlateNumber|TrackingNumber|Title|Email|Code|Id");
-
-    public static object? RouteValue(object? source, string idPropertyPath) =>
-        Value(source, idPropertyPath);
-
-    public static int TotalCount(object? source)
-    {
-        var value = Value(source, "TotalCount|TotalUsers|UsersCount|Count");
-        return value is int count ? count : Rows(source).Count;
-    }
-
-    public static int PageNumber(object? source)
-    {
-        var value = Value(source, "PageNumber");
-        return value is int page && page > 0 ? page : 1;
-    }
-
-    public static int TotalPages(object? source)
-    {
-        var value = Value(source, "TotalPages");
-        if (value is int pages && pages > 0)
-            return pages;
-
-        var pageSizeValue = Value(source, "PageSize");
-        var pageSize = pageSizeValue is int size && size > 0 ? size : Math.Max(Rows(source).Count, 1);
-        return Math.Max(1, (int)Math.Ceiling(TotalCount(source) / (double)pageSize));
-    }
-
-    private static object? ReadPath(object source, string propertyPath)
-    {
-        object? current = source;
-        foreach (var segment in propertyPath.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-        {
-            if (current is null)
-                return null;
-
-            current = ReadProperty(current, segment);
-        }
-
-        return current;
-    }
-
-    private static object? ReadProperty(object source, string propertyName)
-    {
-        if (source is IDictionary dictionary && dictionary.Contains(propertyName))
-            return dictionary[propertyName];
-
-        var property = source.GetType().GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-        return property?.GetValue(source);
-    }
-
-    private static bool HasDisplayValue(object? value)
-    {
-        if (value is null)
-            return false;
-
-        if (value is string text)
-            return !string.IsNullOrWhiteSpace(text);
-
-        return true;
-    }
-
     private static bool IsCurrency(string propertyPath, string kind)
     {
         if (string.Equals(kind, "currency", StringComparison.OrdinalIgnoreCase))
@@ -181,18 +114,9 @@ public static class AdminDisplay
 
         return propertyPath.Contains("Price", StringComparison.OrdinalIgnoreCase)
             || propertyPath.Contains("Revenue", StringComparison.OrdinalIgnoreCase)
-            || propertyPath.Contains("Cost", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static string ShortObjectText(object value)
-    {
-        if (value is Guid guid)
-            return guid.ToString()[..8].ToUpperInvariant();
-
-        var label = Value(value, "Name|FullName|BundleName|RoleName|UserName|TrackingNumber|PlateNumber|Title|Email|Code");
-        if (label is not null && !ReferenceEquals(label, value))
-            return Format(label);
-
-        return Convert.ToString(value, CultureInfo.InvariantCulture) ?? "-";
+            || propertyPath.Contains("Cost", StringComparison.OrdinalIgnoreCase)
+            || propertyPath.Contains("Amount", StringComparison.OrdinalIgnoreCase)
+            || propertyPath.Contains("Commission", StringComparison.OrdinalIgnoreCase);
     }
 }
+

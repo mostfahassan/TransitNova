@@ -1,10 +1,10 @@
-﻿
 using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.Domain.Enums.Carrier;
 namespace TransitNova.BusinessLayer.DTOs.Carrier
 {
     public class CarrierProfileDto : CommonRetrieveData
     {
+        public int CityId { get; set; }
         public string? Code { get; set; }
         public DateTime ContractStartDate { get; set; }
         public DateTime ContractEndDate { get; set; }

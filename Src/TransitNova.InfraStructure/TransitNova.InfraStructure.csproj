@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <Compile Remove="ServiceRegistration\VehicleRegistration\**" />
     <EmbeddedResource Remove="ServiceRegistration\VehicleRegistration\**" />
@@ -34,6 +34,10 @@
     <ProjectReference Include="..\TransitNova.BusinessLayer\TransitNova.BusinessLayer.csproj" />
     <ProjectReference Include="..\TransitNova.Domain\TransitNova.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Context\Seeder\LocationScripts\*.sql" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <Folder Include="Repository\VehicleRepo\VehicleQuery\" />

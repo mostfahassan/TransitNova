@@ -42,7 +42,7 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Co
             await systemLogCommands.LogAsync(log, cancellationToken);
             // === Save Changes 
             await unitOfWork.SaveChangesAsync(cancellationToken);
-            logger.LogInformation("Shipment with ID {ShipmentId} assigned to pickup carrier with ID {CarrierId} by operation manager with ID {OperationManagerId}.", request.ShipmentId, request.CarrierId, request.OperationManagerId);
+            logger.LogInformation("Shipment with ID {ReferecneId} assigned to pickup carrier with ID {CarrierId} by operation manager with ID {OperationManagerId}.", request.ShipmentId, request.CarrierId, request.OperationManagerId);
             CacheInvalidationContext.Set(
                 request,
                 CacheKeys.Carriers.ShipmentDetails(request.CarrierId, request.ShipmentId),

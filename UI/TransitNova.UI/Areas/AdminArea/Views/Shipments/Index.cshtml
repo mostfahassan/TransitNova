@@ -1,6 +1,12 @@
-@model object?
+@using TransitNova.Domain.Enums.Shipment
+@model UiPagedResult<UiRetrieveShipmentDto>?
 @{
     ViewData["Title"] = "Shipments";
+    var result = Model ?? new UiPagedResult<UiRetrieveShipmentDto> { PageSize = 20 };
+    var items = result.Data.ToList();
+    var selectedStatus = Context.Request.Query["Status"].ToString();
+    var selectedMode = Context.Request.Query["Mode"].ToString();
+    var selectedType = Context.Request.Query["Type"].ToString();
     var header = new AdminPageHeaderViewModel
     {
         Eyebrow = "Shipment oversight",
@@ -12,24 +18,23 @@
     {
         Title = "Shipment registry",
         Subtitle = "Operationally relevant shipment records returned by the API.",
-        Source = Model,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id|ShipmentId",
         ShowDetails = true,
-        ShowEdit = false,
-        ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Pickup", "PickupAddress|SenderCity"),
-            new("Delivery", "DeliveryAddress|ReceiverCity"),
-            new("Mode", "TransportationMode"),
-            new("Type", "ShipmentType"),
-            new("Cost", "ShippingCost|ShipmentCost", "currency"),
-            new("Created", "CreatedAt")
-        },
+        Headers = ["Tracking", "Status", "Pickup", "Delivery", "Mode", "Type", "Cost", "Created"],
+        Rows = items.Select(shipment => AdminDisplay.AdminRow(
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.AdminCell("Tracking", shipment.TrackingNumber, "id"),
+            AdminDisplay.AdminCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.AdminCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.AdminCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.AdminCell("Mode", shipment.TransportationMode),
+            AdminDisplay.AdminCell("Type", shipment.ShipmentType),
+            AdminDisplay.AdminCell("Cost", shipment.ShippingCost, "currency"),
+            AdminDisplay.AdminCell("Created", shipment.CreatedAt))).ToList(),
+        TotalCount = result.TotalCount,
+        PageNumber = result.PageNumber,
+        TotalPages = result.PageSize <= 0 ? 1 : result.TotalPages,
         EmptyTitle = "No shipments found",
         EmptyDescription = "Once shipments are returned by the API they will appear here."
     };
@@ -38,7 +43,7 @@
 <partial name="_AdminPageHeader" model="header" />
 
 <section class="admin-card mb-6 p-5">
-    <form method="get" class="grid gap-4 lg:grid-cols-[1fr_180px_180px_180px_auto] lg:items-end">
+    <form method="get" class="grid gap-4 lg:grid-cols-[minmax(220px,1fr)_180px_150px_150px_220px_160px_160px_auto] lg:items-end">
         <div>
             <label class="admin-label" for="SearchTerm">Search shipment</label>
             <input id="SearchTerm" name="SearchTerm" value="@Context.Request.Query["SearchTerm"]" class="admin-input" placeholder="Tracking, city, address" />
@@ -47,13 +52,38 @@
             <label class="admin-label" for="Status">Status</label>
             <select id="Status" name="Status" class="admin-select">
                 <option value="">Any status</option>
-                <option value="Pending">Pending</option>
-                <option value="Approved">Approved</option>
-                <option value="AssignedToPickUpCarrier">Pickup assigned</option>
-                <option value="InWarehouse">In warehouse</option>
-                <option value="AssignedToDeliveryCarrier">Delivery assigned</option>
-                <option value="Delivered">Delivered</option>
+                @foreach (var status in Enum.GetValues<ShipmentStatuses>())
+                {
+                    var value = status.ToString();
+                    <option value="@value" selected="@(selectedStatus == value ? "selected" : null)">@value</option>
+                }
             </select>
+        </div>
+        <div>
+            <label class="admin-label" for="Mode">Mode</label>
+            <select id="Mode" name="Mode" class="admin-select">
+                <option value="">Any mode</option>
+                @foreach (var mode in Enum.GetValues<TransportationMode>())
+                {
+                    var value = mode.ToString();
+                    <option value="@value" selected="@(selectedMode == value ? "selected" : null)">@value</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label class="admin-label" for="Type">Type</label>
+            <select id="Type" name="Type" class="admin-select">
+                <option value="">Any type</option>
+                @foreach (var type in Enum.GetValues<enShipmentType>())
+                {
+                    var value = type.ToString();
+                    <option value="@value" selected="@(selectedType == value ? "selected" : null)">@value</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label class="admin-label" for="SenderId">Sender Id</label>
+            <input id="SenderId" name="SenderId" value="@Context.Request.Query["SenderId"]" class="admin-input" placeholder="Customer profile id" />
         </div>
         <div>
             <label class="admin-label" for="From">From</label>

@@ -1,6 +1,7 @@
-@model object?
+@model IEnumerable<UiRoleSummaryDto>?
 @{
     ViewData["Title"] = "Roles";
+    var items = (Model ?? Enumerable.Empty<UiRoleSummaryDto>()).ToList();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Roles",
@@ -13,22 +14,20 @@
     {
         Title = "Role registry",
         Subtitle = "Application roles available to the identity system.",
-        Source = Model,
         Controller = "Roles",
-        RouteIdName = "roleId",
-        IdPropertyPath = "RoleId|Id",
         ShowDetails = true,
         ShowEdit = true,
         ShowDelete = true,
-        RowActions = new List<AdminRowActionViewModel>
-        {
-            new("RoleMembers", "RoleMembers")
-        },
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Role", "RoleName|Name"),
-            new("Total Users", "TotalUsers|UsersCount")
-        }
+        RowActions = [new AdminRowActionViewModel("RoleMembers", "RoleMembers")],
+        Headers = ["Role", "Total Users"],
+        Rows = items.Select(role => AdminDisplay.AdminRow(
+            "roleId",
+            role.RoleId,
+            AdminDisplay.AdminCell("Role", role.RoleName),
+            AdminDisplay.AdminCell("Total Users", role.TotalUsers))).ToList(),
+        TotalCount = items.Count,
+        PageNumber = 1,
+        TotalPages = 1
     };
 }
 

@@ -1,7 +1,7 @@
-@model UserPaymentInvoiceDetailsViewModel
+@model UiInvoiceDto?
 @{
     ViewData["Title"] = "Invoice Details";
-    var invoice = Model.Invoice;
+    var invoice = Model ?? new UiInvoiceDto();
 }
 
 <section class="customer-fade-up">
@@ -9,7 +9,7 @@
         <div>
             <div class="@BadgeClass(invoice.Status.ToString())">@invoice.Status</div>
             <h1 class="mt-5 text-4xl font-black leading-[1.02] tracking-[-0.04em] text-[#111111] md:text-6xl">@(invoice.InvoiceId ?? ShortId(invoice.PaymentId))</h1>
-            <p class="mt-4 max-w-2xl text-base leading-7 text-[#666666]">A customer-facing invoice record with payment reference, shipment reference, cost breakdown, and report-ready totals.</p>
+            <p class="mt-4 max-w-2xl text-base leading-7 text-[#666666]">A customer-facing invoice record with payment reference, shipment reference, discount breakdown, and report-ready totals.</p>
         </div>
         <div class="flex flex-wrap gap-3">
             <a asp-area="UserArea" asp-controller="PaymentInvoices" asp-action="Index" class="customer-button-secondary">All invoices</a>
@@ -25,12 +25,31 @@
                 <p class="mt-2 text-sm leading-6 text-[#666666]">The values below are returned from the backend invoice contract and stay stable for report generation.</p>
             </div>
 
-            <div class="grid gap-0 md:grid-cols-2">
+            <div class="grid gap-0 md:grid-cols-2 xl:grid-cols-3">
                 @InfoTile("Shipping cost", FormatMoney(invoice.ShippingCost), invoice.Currency.ToString(), "00")
                 @InfoTile("Commission", FormatMoney(invoice.Commission), invoice.Currency.ToString(), "01")
-                @InfoTile("Payment method", invoice.PaymentMethod.ToString(), "METHOD", "02")
-                @InfoTile("Paid at", FormatDate(invoice.PaidAt), "UTC", "03")
+                @InfoTile("Final shipping", FormatMoney(invoice.FinalShippingCost), invoice.Currency.ToString(), "02")
+                @InfoTile("Original shipping", FormatMoney(invoice.OriginalShippingCost), invoice.Currency.ToString(), "03")
+                @InfoTile("Discount amount", FormatMoney(invoice.DiscountAmount), invoice.Currency.ToString(), "04")
+                @InfoTile("Discount rate", FormatPercent(invoice.DiscountPercentage), "RATE", "05")
+                @InfoTile("Payment method", invoice.PaymentMethod.ToString(), "METHOD", "06")
+                @InfoTile("Paid at", FormatDate(invoice.PaidAt), "UTC", "07")
+                @InfoTile("Reference type", invoice.ReferenceType, "REF", "08")
             </div>
+
+            @if (invoice.SubscriptionBenefitApplied)
+            {
+                <div class="border-t border-[#CFE8D7] bg-[#F3F7F3] p-6 md:p-8">
+                    <div class="customer-badge customer-badge-success">Subscription benefit applied</div>
+                    <p class="mt-3 text-sm font-semibold leading-6 text-[#14532D]">@(string.IsNullOrWhiteSpace(invoice.SubscriptionBenefitMessage) ? "Your active bundle reduced this shipment cost." : invoice.SubscriptionBenefitMessage)</p>
+                    <div class="mt-5 grid gap-0 overflow-hidden rounded-[24px] border border-[#CFE8D7] bg-white md:grid-cols-2">
+                        @InfoTile("Bundle", string.IsNullOrWhiteSpace(invoice.BundleName) ? "Active bundle" : invoice.BundleName!, "BENEFIT", "B0")
+                        @InfoTile("Discount", FormatPercent(invoice.DiscountPercentage), "RATE", "B1")
+                        @InfoTile("Original shipping", FormatMoney(invoice.OriginalShippingCost), invoice.Currency.ToString(), "B2")
+                        @InfoTile("Saved amount", FormatMoney(invoice.DiscountAmount), invoice.Currency.ToString(), "B3")
+                    </div>
+                </div>
+            }
 
             <div class="border-t border-[#EAEAEA] bg-[#FBFBFA] p-6 md:p-8">
                 <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -57,6 +76,8 @@
                 <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">References</div>
                 <dl class="mt-5 space-y-4 text-sm">
                     <div class="border-b border-[#EAEAEA] pb-3"><dt class="font-bold text-[#666666]">Payment ID</dt><dd class="mt-1 break-all font-black text-[#111111]">@invoice.PaymentId</dd></div>
+                    <div class="border-b border-[#EAEAEA] pb-3"><dt class="font-bold text-[#666666]">Reference type</dt><dd class="mt-1 font-black text-[#111111]">@invoice.ReferenceType</dd></div>
+                    <div class="border-b border-[#EAEAEA] pb-3"><dt class="font-bold text-[#666666]">Reference ID</dt><dd class="mt-1 break-all font-black text-[#111111]">@invoice.ReferenceId</dd></div>
                     <div class="border-b border-[#EAEAEA] pb-3">
                         <dt class="font-bold text-[#666666]">Shipment</dt>
                         <dd class="mt-1">
@@ -67,6 +88,16 @@
                         </dd>
                     </div>
                     <div><dt class="font-bold text-[#666666]">Invoice ID</dt><dd class="mt-1 font-black text-[#111111]">@(invoice.InvoiceId ?? "Not assigned")</dd></div>
+                </dl>
+            </section>
+
+            <section class="customer-card-flat p-6">
+                <div class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Settlement</div>
+                <dl class="mt-5 space-y-4 text-sm">
+                    <div class="flex items-center justify-between gap-4"><dt class="font-bold text-[#666666]">Status</dt><dd class="text-right font-black text-[#111111]">@invoice.Status</dd></div>
+                    <div class="flex items-center justify-between gap-4"><dt class="font-bold text-[#666666]">Currency</dt><dd class="text-right font-black text-[#111111]">@invoice.Currency</dd></div>
+                    <div class="flex items-center justify-between gap-4"><dt class="font-bold text-[#666666]">Paid at</dt><dd class="text-right font-black text-[#111111]">@FormatDate(invoice.PaidAt)</dd></div>
+                    <div class="flex items-center justify-between gap-4"><dt class="font-bold text-[#666666]">Benefit applied</dt><dd class="text-right font-black text-[#111111]">@(invoice.SubscriptionBenefitApplied ? "Yes" : "No")</dd></div>
                 </dl>
             </section>
 
@@ -83,6 +114,7 @@
     private static string ShipmentReference(string? trackingNumber, Guid shipmentId) => string.IsNullOrWhiteSpace(trackingNumber) ? ShortId(shipmentId) : trackingNumber;
     private static string CustomerLabel(string? customerName) => string.IsNullOrWhiteSpace(customerName) ? "Customer account" : customerName;
     private static string FormatMoney(decimal value) => value.ToString("N2", System.Globalization.CultureInfo.InvariantCulture);
+    private static string FormatPercent(decimal value) => value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "%";
     private static string FormatDate(DateTime? value) => value is null ? "Pending confirmation" : value.Value.ToString("MMM dd, yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
 
     private IHtmlContent InfoTile(string label, string value, string meta, string index)
@@ -99,3 +131,4 @@
         return "customer-badge customer-badge-neutral";
     }
 }
+

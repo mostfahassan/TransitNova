@@ -1,3 +1,4 @@
+using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Trip;
 
@@ -30,6 +31,10 @@ namespace TransitNova.BusinessLayer.DTOs.WarehouseManager
     {
         public Guid ManagerId { get; set; }
         public string ManagerName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public int CityId { get; set; }
+        public AddressDto Address { get; set; } = new();
         public Guid WarehouseId { get; set; }
         public string WarehouseName { get; set; } = string.Empty;
     }

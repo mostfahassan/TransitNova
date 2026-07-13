@@ -1,6 +1,7 @@
-@model object?
+@model UiAdminUserDetailsDto?
 @{
     ViewData["Title"] = "User details";
+    var user = Model ?? new UiAdminUserDetailsDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "User details",
@@ -13,29 +14,28 @@
     {
         Title = "User record",
         Subtitle = "Complete administrative user profile returned by the API.",
-        Source = Model,
+        PrimaryLabel = user.FullName,
         Controller = "Users",
-        RouteIdName = "userId",
-        IdPropertyPath = "UserId|Id",
         EditAction = null,
         DeleteAction = null,
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Full name", "FullName"),
-            new("Username", "UserName"),
-            new("Email", "Email"),
-            new("Phone", "PhoneNumber"),
-            new("Type", "UserType", "badge"),
-            new("Active", "IsActive", "badge"),
-            new("Locked out", "IsLockedOut", "badge"),
-            new("Address", "Address"),
-            new("City", "CityName"),
-            new("Government", "GovernmentName"),
-            new("Country", "CountryName"),
-            new("Shipments sent", "TotalShipmentsSent"),
-            new("Bundle", "BundleName"),
-            new("Created", "CreatedAt")
-        }
+        RouteValues = new Dictionary<string, object?> { ["userId"] = user.UserId },
+        Fields =
+        [
+            AdminDisplay.AdminCell("Full name", user.FullName),
+            AdminDisplay.AdminCell("Username", user.UserName),
+            AdminDisplay.AdminCell("Email", user.Email),
+            AdminDisplay.AdminCell("Phone", user.PhoneNumber),
+            AdminDisplay.AdminCell("Type", user.UserType, "badge"),
+            AdminDisplay.AdminCell("Active", user.IsActive, "badge"),
+            AdminDisplay.AdminCell("Locked out", user.IsLockedOut, "badge"),
+            AdminDisplay.AdminCell("Address", user.Address),
+            AdminDisplay.AdminCell("City", user.CityName),
+            AdminDisplay.AdminCell("Government", user.GovernmentName),
+            AdminDisplay.AdminCell("Country", user.CountryName),
+            AdminDisplay.AdminCell("Shipments sent", user.TotalShipmentsSent),
+            AdminDisplay.AdminCell("Bundle", user.BundleName),
+            AdminDisplay.AdminCell("Created", user.CreatedAt)
+        ]
     };
 }
 

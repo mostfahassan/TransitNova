@@ -1,6 +1,7 @@
-@model object?
+@model UiRoleSummaryDto?
 @{
     ViewData["Title"] = "Role details";
+    var role = Model ?? new UiRoleSummaryDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Role details",
@@ -13,17 +14,16 @@
     {
         Title = "Role record",
         Subtitle = "Authorization role summary from the backend.",
-        Source = Model,
+        PrimaryLabel = role.RoleName ?? string.Empty,
         Controller = "Roles",
-        RouteIdName = "roleId",
-        IdPropertyPath = "RoleId|Id",
         EditAction = "Edit",
         DeleteAction = "Delete",
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Role", "RoleName|Name"),
-            new("Total Users", "TotalUsers|UsersCount")
-        }
+        RouteValues = new Dictionary<string, object?> { ["roleId"] = role.RoleId },
+        Fields =
+        [
+            AdminDisplay.AdminCell("Role", role.RoleName),
+            AdminDisplay.AdminCell("Total Users", role.TotalUsers)
+        ]
     };
 }
 

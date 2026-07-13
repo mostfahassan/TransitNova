@@ -1,6 +1,7 @@
-@model object?
+@model IEnumerable<UiOperationManagerProfileDto>?
 @{
     ViewData["Title"] = "Active operation managers";
+    var items = (Model ?? Enumerable.Empty<UiOperationManagerProfileDto>()).ToList();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Active operation managers",
@@ -13,22 +14,23 @@
     {
         Title = "Active managers",
         Subtitle = "Managers marked active by the backend.",
-        Source = Model,
         Controller = "OperationManagers",
-        RouteIdName = "operationManagerId",
-        IdPropertyPath = "Id|OperationManagerId|UserId",
         ShowDetails = true,
         ShowEdit = false,
         ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Manager", "FullName|Name|Email"),
-            new("Email", "Email"),
-            new("Phone", "PhoneNumber"),
-            new("Active", "IsActive", "badge"),
-            new("Handled carriers", "HandledCarriersCount"),
-            new("Handled shipments", "HandledShipmentsCount")
-        }
+        Headers = ["Manager", "Email", "Phone", "Active", "Handled carriers", "Handled shipments"],
+        Rows = items.Select(manager => AdminDisplay.AdminRow(
+            "operationManagerId",
+            manager.Id,
+            AdminDisplay.AdminCell("Manager", manager.FullName),
+            AdminDisplay.AdminCell("Email", manager.Email),
+            AdminDisplay.AdminCell("Phone", manager.PhoneNumber),
+            AdminDisplay.AdminCell("Active", "-", "badge"),
+            AdminDisplay.AdminCell("Handled carriers", manager.TotalCarriertHandled),
+            AdminDisplay.AdminCell("Handled shipments", manager.TotalShipmentHandled))).ToList(),
+        TotalCount = items.Count,
+        PageNumber = 1,
+        TotalPages = 1
     };
 }
 

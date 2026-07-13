@@ -1,29 +1,29 @@
-@model object?
+@model UiRetrieveShipmentDto?
 @{
     ViewData["Title"] = "Carrier Shipment Details";
-    var source = Model;
+    var shipment = Model ?? new UiRetrieveShipmentDto();
     var detail = new OpsDetailViewModel
     {
         Title = "Carrier shipment detail",
-        Subtitle = "Tracking / " + AdminDisplay.Text(source, "TrackingNumber", "id"),
-        Source = source,
+        Subtitle = "Tracking / " + AdminDisplay.Format(shipment.TrackingNumber, kind: "id"),
+        PrimaryText = shipment.TrackingNumber,
         Controller = "Carriers",
         IndexAction = "Index",
-        Fields = new List<OpsTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Pickup", "PickupAddress|SenderCity"),
-            new("Delivery", "DeliveryAddress|ReceiverCity"),
-            new("Mode", "TransportationMode"),
-            new("Type", "ShipmentType"),
-            new("Estimated delivery", "EstimatedDeliveryDate")
-        }
+        Fields =
+        [
+            AdminDisplay.OpsCell("Tracking", shipment.TrackingNumber, "id"),
+            AdminDisplay.OpsCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.OpsCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.OpsCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.OpsCell("Mode", shipment.TransportationMode),
+            AdminDisplay.OpsCell("Type", shipment.ShipmentType),
+            AdminDisplay.OpsCell("Estimated delivery", shipment.EstimatedDeliveryDate)
+        ]
     };
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Carrier shipment",
-        Title = AdminDisplay.Text(source, "TrackingNumber", "id"),
+        Title = AdminDisplay.Format(shipment.TrackingNumber, kind: "id"),
         Description = "Operational shipment detail as seen from a carrier assignment context.",
         SecondaryLabel = "Back to fleet",
         SecondaryController = "Carriers",

@@ -1,66 +1,53 @@
-@model object?
+@model UiRetrieveShipmentDto?
 @{
     ViewData["Title"] = "Shipment Details";
-    var states = AdminDisplay.Value(Model, "ShipmentStates");
-    var package = AdminDisplay.Value(Model, "PackageSpecification");
+    var shipment = Model ?? new UiRetrieveShipmentDto();
+    var package = shipment.PackageSpecification;
     var detail = new WarehouseDetailViewModel
     {
         Title = "Shipment record",
         Subtitle = "Warehouse-facing shipment details, package data, and lifecycle history.",
-        Source = Model,
+        PrimaryLabel = shipment.TrackingNumber,
         Controller = "Shipments",
-        Fields = new List<WarehouseTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Status", "CurrentStatus", "badge"),
-            new("Receiver", "Receiver.FullName|Receiver.Email"),
-            new("Sender", "Sender.FullName|Sender.Email"),
-            new("Pickup", "PickupAddress"),
-            new("Delivery", "DeliveryAddress"),
-            new("Mode", "TransportationMode"),
-            new("Type", "ShipmentType"),
-            new("Cost", "ShippingCost", "currency"),
-            new("ETA", "EstimatedDeliveryDate"),
-            new("Created", "CreatedAt"),
-            new("Rejection", "RejectionReason")
-        }
+        Fields =
+        [
+            AdminDisplay.WarehouseCell("Tracking", shipment.TrackingNumber, "id"),
+            AdminDisplay.WarehouseCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.WarehouseCell("Receiver", shipment.Receiver.FullName),
+            AdminDisplay.WarehouseCell("Sender", shipment.Sender?.FullName),
+            AdminDisplay.WarehouseCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.WarehouseCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.WarehouseCell("Mode", shipment.TransportationMode),
+            AdminDisplay.WarehouseCell("Type", shipment.ShipmentType),
+            AdminDisplay.WarehouseCell("Cost", shipment.ShippingCost, "currency"),
+            AdminDisplay.WarehouseCell("ETA", shipment.EstimatedDeliveryDate),
+            AdminDisplay.WarehouseCell("Created", shipment.CreatedAt),
+            AdminDisplay.WarehouseCell("Rejection", shipment.RejectionReason)
+        ]
     };
 }
-
 <partial name="_WarehouseDetail" model="detail" />
-
 <section class="mt-6 grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
     <section class="warehouse-card p-6">
         <p class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Package inspection</p>
         <h2 class="mt-2 text-xl font-black tracking-tight text-[#111111]">Physical specification</h2>
         <div class="mt-5 grid gap-3 sm:grid-cols-2">
-            <div class="rounded-xl border border-[#EAEAEA] bg-white p-4"><div class="warehouse-label">Weight</div><div class="mt-1 text-2xl font-black text-[#111111]">@AdminDisplay.Text(package, "Weight")</div></div>
-            <div class="rounded-xl border border-[#EAEAEA] bg-white p-4"><div class="warehouse-label">Width</div><div class="mt-1 text-2xl font-black text-[#111111]">@AdminDisplay.Text(package, "Width")</div></div>
-            <div class="rounded-xl border border-[#EAEAEA] bg-white p-4"><div class="warehouse-label">Height</div><div class="mt-1 text-2xl font-black text-[#111111]">@AdminDisplay.Text(package, "Height")</div></div>
-            <div class="rounded-xl border border-[#EAEAEA] bg-white p-4"><div class="warehouse-label">Length</div><div class="mt-1 text-2xl font-black text-[#111111]">@AdminDisplay.Text(package, "Length")</div></div>
+            <div class="rounded-xl border border-[#EAEAEA] bg-white p-4"><div class="warehouse-label">Weight</div><div class="mt-1 text-2xl font-black text-[#111111]">@AdminDisplay.Format(package.Weight)</div></div>
+            <div class="rounded-xl border border-[#EAEAEA] bg-white p-4"><div class="warehouse-label">Width</div><div class="mt-1 text-2xl font-black text-[#111111]">@AdminDisplay.Format(package.Width)</div></div>
+            <div class="rounded-xl border border-[#EAEAEA] bg-white p-4"><div class="warehouse-label">Height</div><div class="mt-1 text-2xl font-black text-[#111111]">@AdminDisplay.Format(package.Height)</div></div>
+            <div class="rounded-xl border border-[#EAEAEA] bg-white p-4"><div class="warehouse-label">Length</div><div class="mt-1 text-2xl font-black text-[#111111]">@AdminDisplay.Format(package.Length)</div></div>
         </div>
     </section>
-
     <section class="warehouse-card p-6">
-        <div class="flex items-start justify-between gap-4">
-            <div>
-                <p class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Lifecycle</p>
-                <h2 class="mt-2 text-xl font-black tracking-tight text-[#111111]">Status timeline</h2>
-            </div>
-            <span class="warehouse-badge warehouse-badge-info">Audit trail</span>
-        </div>
+        <div class="flex items-start justify-between gap-4"><div><p class="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[#787774]">Lifecycle</p><h2 class="mt-2 text-xl font-black tracking-tight text-[#111111]">Status timeline</h2></div><span class="warehouse-badge warehouse-badge-info">Audit trail</span></div>
         <ol class="mt-6 space-y-4">
-            @foreach (var row in AdminDisplay.Rows(states).Select((item, index) => new { item, index }))
-            {
-                <li class="warehouse-stagger-row flex gap-4 rounded-xl border border-[#EAEAEA] bg-white p-4" style="--row-index:@row.index">
-                    <span class="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#111111] text-xs font-black text-white">@(row.index + 1)</span>
-                    <span class="min-w-0">
-                        <span class="block text-sm font-black text-[#111111]">@AdminDisplay.Text(row.item, "Status|ShipmentStatus", "badge")</span>
-                        <span class="mt-1 block text-xs font-bold text-[#787774]">@AdminDisplay.Text(row.item, "CreatedAt|ChangedAt|Date")</span>
-                        <span class="mt-2 block text-sm font-semibold leading-6 text-[#2F3437]">@AdminDisplay.Text(row.item, "Description|Reason|Notes")</span>
-                    </span>
-                </li>
-            }
+        @foreach (var row in shipment.ShipmentStates.Select((item, index) => new { item, index }))
+        {
+            <li class="warehouse-stagger-row flex gap-4 rounded-xl border border-[#EAEAEA] bg-white p-4" style="--row-index:@row.index">
+                <span class="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#111111] text-xs font-black text-white">@(row.index + 1)</span>
+                <span class="min-w-0"><span class="block text-sm font-black text-[#111111]">@AdminDisplay.Format(row.item.StatusType, kind: "badge")</span><span class="mt-1 block text-xs font-bold text-[#787774]">@AdminDisplay.Format(row.item.ChangedAt)</span><span class="mt-2 block text-sm font-semibold leading-6 text-[#2F3437]">@AdminDisplay.Format(row.item.Carrier?.FullName)</span></span>
+            </li>
+        }
         </ol>
     </section>
 </section>

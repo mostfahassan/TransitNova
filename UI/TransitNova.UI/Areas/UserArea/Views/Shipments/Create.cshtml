@@ -252,14 +252,14 @@
         </section>
     </form>
 
-    <div class="fixed inset-0 z-50 hidden bg-[#111111]/55 px-4 py-8 backdrop-blur-sm" data-payment-overlay aria-hidden="true" role="status" aria-live="polite">
-        <div class="flex min-h-full items-center justify-center">
-            <div class="w-full max-w-md rounded-[32px] bg-[#111111] p-8 text-white shadow-[0_24px_80px_rgba(17,17,17,0.35)]">
-                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5">
+    <div class="fixed inset-0 z-[9999] hidden min-h-dvh place-items-center overflow-y-auto bg-[#111111]/70 px-4 py-6 backdrop-blur-md sm:px-6" data-payment-overlay aria-hidden="true" role="status" aria-live="polite">
+        <div class="w-full max-w-md">
+            <div class="w-full rounded-[28px] border border-white/10 bg-[#111111] px-7 py-8 text-white shadow-[0_32px_100px_rgba(0,0,0,0.42)] sm:px-8">
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-inner">
                     <div class="h-12 w-12 animate-spin rounded-full border-[3px] border-white/20 border-t-white"></div>
                 </div>
-                <h2 class="mt-6 text-center text-2xl font-black tracking-[-0.03em]">Processing payment</h2>
-                <p class="mt-3 text-center text-sm leading-6 text-white/70">This usually takes around 5 seconds.</p>
+                <h2 class="mt-6 text-center text-2xl font-black tracking-normal">Processing payment</h2>
+                <p class="mx-auto mt-3 max-w-xs text-center text-sm leading-6 text-white/75">This usually takes around 5 seconds. Keep this page open while we confirm the invoice.</p>
             </div>
         </div>
     </div>
@@ -281,13 +281,25 @@
                         <div class="text-sm font-semibold text-[#666666]">Payment method: <span class="text-[#111111]" data-invoice-payment-method>Not available</span></div>
                     </div>
                     <dl class="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Invoice ID</dt><dd class="mt-2 break-all text-sm font-semibold leading-6 text-[#111111]" data-invoice-id>Not available</dd></div>`r`n                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Payment ID</dt><dd class="mt-2 break-all text-sm font-semibold leading-6 text-[#111111]" data-invoice-payment-id>Not available</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Invoice ID</dt><dd class="mt-2 break-all text-sm font-semibold leading-6 text-[#111111]" data-invoice-id>Not available</dd></div>
+                        <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Payment ID</dt><dd class="mt-2 break-all text-sm font-semibold leading-6 text-[#111111]" data-invoice-payment-id>Not available</dd></div>
                         <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Paid at</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-invoice-paid-at>Pending confirmation</dd></div>
                         <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Shipping cost</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-invoice-shipping-cost>0.00</dd></div>
                         <div class="border-b border-[#EFEFED] pb-4"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Commission</dt><dd class="mt-2 text-sm font-semibold leading-6 text-[#111111]" data-invoice-commission>0.00</dd></div>
                         <div class="border-b border-[#EFEFED] pb-4 sm:col-span-2"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Total amount</dt><dd class="mt-2 text-2xl font-black tracking-[-0.03em] text-[#111111]" data-invoice-amount>0.00</dd></div>
                         <div class="sm:col-span-2"><dt class="text-[11px] font-black uppercase tracking-[0.18em] text-[#787774]">Notes</dt><dd class="mt-2 text-sm leading-6 text-[#444444]" data-invoice-notes>No additional notes.</dd></div>
                     </dl>
+                    <div class="hidden rounded-[24px] border border-[#CFE8D7] bg-[#F3F7F3] p-5" data-subscription-benefit-panel>
+                        <div class="customer-badge customer-badge-success">Subscription benefit applied</div>
+                        <p class="mt-3 text-sm font-semibold leading-6 text-[#14532D]" data-benefit-message>Your active bundle reduced this shipment cost.</p>
+                        <dl class="mt-5 grid gap-x-6 gap-y-4 sm:grid-cols-2">
+                            <div><dt class="text-[10px] font-black uppercase tracking-[0.16em] text-[#477B59]">Bundle</dt><dd class="mt-1 text-sm font-black text-[#111111]" data-benefit-bundle-name>Not available</dd></div>
+                            <div><dt class="text-[10px] font-black uppercase tracking-[0.16em] text-[#477B59]">Discount</dt><dd class="mt-1 text-sm font-black text-[#111111]" data-benefit-discount-rate>0%</dd></div>
+                            <div><dt class="text-[10px] font-black uppercase tracking-[0.16em] text-[#477B59]">Original shipping</dt><dd class="mt-1 text-sm font-black text-[#111111]" data-benefit-original-cost>0.00</dd></div>
+                            <div><dt class="text-[10px] font-black uppercase tracking-[0.16em] text-[#477B59]">Saved amount</dt><dd class="mt-1 text-sm font-black text-[#14532D]" data-benefit-discount-amount>0.00</dd></div>
+                            <div class="sm:col-span-2"><dt class="text-[10px] font-black uppercase tracking-[0.16em] text-[#477B59]">Final shipping</dt><dd class="mt-1 text-2xl font-black tracking-[-0.03em] text-[#111111]" data-benefit-final-cost>0.00</dd></div>
+                        </dl>
+                    </div>
                 </div>
                 <div class="flex flex-col-reverse gap-3 border-t border-[#EFEFED] px-6 py-6 md:flex-row md:justify-end md:px-8">
                     <button type="button" class="customer-button-secondary min-h-[48px] justify-center" data-invoice-close>Close</button>

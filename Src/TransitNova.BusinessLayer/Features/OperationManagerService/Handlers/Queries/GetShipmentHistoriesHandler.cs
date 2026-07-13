@@ -15,17 +15,17 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Qu
          GetShipmentHistoriesQuery request,
          CancellationToken cancellationToken)
         {
-            logger.LogInformation("Retrieving shipment history for ShipmentId {ShipmentId}", request.ShipmentId);
+            logger.LogInformation("Retrieving shipment history for ReferecneId {ReferecneId}", request.ShipmentId);
             var shipmentHistory = await shipment.GetShipmentHistoriesAsync(request.ShipmentId, cancellationToken);
             if (!shipmentHistory.Any())
             {
-                logger.LogWarning("No shipment history found for ShipmentId {ShipmentId}", request.ShipmentId);
+                logger.LogWarning("No shipment history found for ReferecneId {ReferecneId}", request.ShipmentId);
 
 
                 var emptyResult = Result<IEnumerable<RetrieveShipmentStatusDto>>.Success([]);
                 return emptyResult;
             }
-            logger.LogInformation("Successfully retrieved {Count} shipment history records for ShipmentId {ShipmentId}", shipmentHistory.Count(),
+            logger.LogInformation("Successfully retrieved {Count} shipment history records for ReferecneId {ReferecneId}", shipmentHistory.Count(),
                    request.ShipmentId);
 
 

@@ -1,43 +1,134 @@
-@model object?
+@using TransitNova.Domain.Enums.Shipment
+@model TransitNovaUI.BusinessLayer.DTOs.Shipment.UiRetrieveShipmentDto?
 @{
     ViewData["Title"] = "Shipment details";
+    var shipment = Model ?? new TransitNovaUI.BusinessLayer.DTOs.Shipment.UiRetrieveShipmentDto();
     var header = new AdminPageHeaderViewModel
     {
         Eyebrow = "Shipment oversight",
-        Title = "Shipment details",
-        Description = "Inspect the full shipment record, status, package data, and sender/receiver context.",
+        Title = string.IsNullOrWhiteSpace(shipment.TrackingNumber) ? "Shipment details" : shipment.TrackingNumber,
+        Description = "Inspect the full shipment record, status timeline, package dimensions, and sender/receiver context.",
         SecondaryLabel = "Back",
         SecondaryController = "Shipments",
         SecondaryAction = "Index"
     };
-    var detail = new AdminDetailViewModel
-    {
-        Title = "Shipment record",
-        Subtitle = "Administrative shipment projection returned by the API.",
-        Source = Model,
-        Controller = "Shipments",
-        IndexAction = "Index",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id|ShipmentId",
-        EditAction = null,
-        DeleteAction = null,
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Pickup", "PickupAddress|SenderCity"),
-            new("Delivery", "DeliveryAddress|ReceiverCity"),
-            new("Mode", "TransportationMode"),
-            new("Type", "ShipmentType"),
-            new("Cost", "ShippingCost|ShipmentCost", "currency"),
-            new("Estimated delivery", "EstimatedDeliveryDate"),
-            new("Created", "CreatedAt"),
-            new("Receiver", "Receiver.FullName|Receiver.Email"),
-            new("Sender", "Sender.FullName|Sender.Email"),
-            new("Rejection reason", "RejectionReason")
-        }
-    };
 }
 
 <partial name="_AdminPageHeader" model="header" />
-<partial name="_AdminDetail" model="detail" />
+
+<section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+    <div class="space-y-6">
+        <section class="admin-card overflow-hidden">
+            <div class="border-b border-[#EAEAEA] p-6 md:p-8">
+                <div class="inline-flex items-center rounded-full border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[#111111]">@shipment.CurrentStatus</div>
+                <h2 class="mt-4 text-3xl font-black tracking-[-0.03em] text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.TrackingNumber) ? "Shipment" : shipment.TrackingNumber)</h2>
+                <p class="mt-2 text-sm leading-6 text-[#666666]">Pickup and delivery routing, operational timestamps, and financial metadata.</p>
+            </div>
+            <div class="grid gap-0 md:grid-cols-2">
+                <div class="border-b border-r border-[#EAEAEA] p-6">
+                    <div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#787774]">Pickup address</div>
+                    <div class="mt-3 text-lg font-black text-[#111111]">@shipment.PickupAddress</div>
+                    <p class="mt-2 text-sm text-[#666666]">Sender city: @(string.IsNullOrWhiteSpace(shipment.Sender?.CityName) ? "-" : shipment.Sender.CityName)</p>
+                </div>
+                <div class="border-b border-[#EAEAEA] p-6">
+                    <div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#787774]">Delivery address</div>
+                    <div class="mt-3 text-lg font-black text-[#111111]">@shipment.DeliveryAddress</div>
+                    <p class="mt-2 text-sm text-[#666666]">Receiver city: @(string.IsNullOrWhiteSpace(shipment.Receiver.CityName) ? "-" : shipment.Receiver.CityName)</p>
+                </div>
+                <div class="border-r border-[#EAEAEA] p-6">
+                    <div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#787774]">Shipment configuration</div>
+                    <div class="mt-3 text-lg font-black text-[#111111]">@shipment.ShipmentType</div>
+                    <p class="mt-2 text-sm text-[#666666]">@shipment.TransportationMode</p>
+                </div>
+                <div class="p-6">
+                    <div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#787774]">Cost and timing</div>
+                    <div class="mt-3 text-lg font-black text-[#111111]">@shipment.ShippingCost.ToString("N2") @shipment.Currency</div>
+                    <p class="mt-2 text-sm text-[#666666]">ETA: @(shipment.EstimatedDeliveryDate?.ToString("MMM dd, yyyy HH:mm") ?? "Pending")</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid gap-6 lg:grid-cols-2">
+            <article class="admin-card p-6">
+                <h3 class="text-xl font-black text-[#111111]">Receiver</h3>
+                <dl class="mt-5 space-y-3 text-sm">
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Full name</dt><dd class="text-right font-black text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Receiver.FullName) ? "-" : shipment.Receiver.FullName)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Email</dt><dd class="break-all text-right font-black text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Receiver.Email) ? "-" : shipment.Receiver.Email)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Phone</dt><dd class="text-right font-black text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Receiver.PhoneNumber) ? "-" : shipment.Receiver.PhoneNumber)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">City</dt><dd class="text-right font-black text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Receiver.CityName) ? "-" : shipment.Receiver.CityName)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Address</dt><dd class="text-right font-black text-[#111111]">@shipment.Receiver.Address</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Receiver ID</dt><dd class="break-all text-right font-mono text-xs font-black text-[#111111]">@shipment.ReceiverId</dd></div>
+                </dl>
+            </article>
+
+            <article class="admin-card p-6">
+                <h3 class="text-xl font-black text-[#111111]">Sender</h3>
+                <dl class="mt-5 space-y-3 text-sm">
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Full name</dt><dd class="text-right font-black text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Sender?.FullName) ? "-" : shipment.Sender.FullName)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Email</dt><dd class="break-all text-right font-black text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Sender?.Email) ? "-" : shipment.Sender.Email)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Phone</dt><dd class="text-right font-black text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Sender?.PhoneNumber) ? "-" : shipment.Sender.PhoneNumber)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">City</dt><dd class="text-right font-black text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Sender?.CityName) ? "-" : shipment.Sender.CityName)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Address</dt><dd class="text-right font-black text-[#111111]">@(shipment.Sender?.Address?.ToString() ?? "-")</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Sender ID</dt><dd class="break-all text-right font-mono text-xs font-black text-[#111111]">@shipment.SenderId</dd></div>
+                </dl>
+            </article>
+        </section>
+
+        <section class="admin-card p-6 md:p-8">
+            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h3 class="text-xl font-black text-[#111111]">Package specification</h3>
+                    <p class="mt-1 text-sm text-[#666666]">Every dimension exposed by the shipment contract.</p>
+                </div>
+                <div class="inline-flex items-center rounded-full border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[#111111]">@shipment.Currency</div>
+            </div>
+            <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"><div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#787774]">Weight</div><div class="mt-2 text-lg font-black text-[#111111]">@shipment.PackageSpecification.Weight.ToString("N2") kg</div></div>
+                <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"><div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#787774]">Width</div><div class="mt-2 text-lg font-black text-[#111111]">@shipment.PackageSpecification.Width.ToString("N2")</div></div>
+                <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"><div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#787774]">Height</div><div class="mt-2 text-lg font-black text-[#111111]">@shipment.PackageSpecification.Height.ToString("N2")</div></div>
+                <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"><div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#787774]">Length</div><div class="mt-2 text-lg font-black text-[#111111]">@shipment.PackageSpecification.Length.ToString("N2")</div></div>
+                <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"><div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#787774]">Rejection</div><div class="mt-2 text-sm font-black text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.RejectionReason) ? "-" : shipment.RejectionReason)</div></div>
+            </div>
+        </section>
+
+        <section class="admin-card p-6 md:p-8">
+            <h3 class="text-xl font-black text-[#111111]">Shipment timeline</h3>
+            <div class="mt-6 space-y-3">
+                @if (shipment.ShipmentStates.Count == 0)
+                {
+                    <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5 text-sm font-semibold text-[#666666]">No shipment history returned from the API.</div>
+                }
+                else
+                {
+                    @foreach (var entry in shipment.ShipmentStates.Select((value, index) => new { value, index }))
+                    {
+                        <article class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5">
+                            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <div class="inline-flex items-center rounded-full border border-[#EAEAEA] bg-white px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[#111111]">@entry.value.StatusType</div>
+                                    <p class="mt-3 text-sm font-bold text-[#111111]">@(string.IsNullOrWhiteSpace(entry.value.Carrier?.FullName) ? "No carrier attached to this state." : $"Carrier: {entry.value.Carrier.FullName}")</p>
+                                    @if (!string.IsNullOrWhiteSpace(entry.value.Carrier?.Email) || !string.IsNullOrWhiteSpace(entry.value.Carrier?.PhoneNumber))
+                                    {
+                                        <p class="mt-1 text-xs text-[#666666]">@entry.value.Carrier?.Email @(string.IsNullOrWhiteSpace(entry.value.Carrier?.PhoneNumber) ? string.Empty : $"• {entry.value.Carrier?.PhoneNumber}")</p>
+                                    }
+                                </div>
+                                <div class="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#787774]">@entry.value.ChangedAt.ToString("MMM dd, yyyy HH:mm")</div>
+                            </div>
+                        </article>
+                    }
+                }
+            </div>
+        </section>
+    </div>
+
+    <aside class="space-y-5">
+        <section class="admin-card p-6">
+            <div class="text-[11px] font-black uppercase tracking-[0.16em] text-[#787774]">Reference</div>
+            <dl class="mt-4 space-y-3 text-sm">
+                <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Shipment ID</dt><dd class="break-all text-right font-black text-[#111111]">@shipment.Id</dd></div>
+                <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Tracking number</dt><dd class="break-all text-right font-black text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.TrackingNumber) ? "-" : shipment.TrackingNumber)</dd></div>
+                <div class="flex justify-between gap-4"><dt class="font-bold text-[#666666]">Created at</dt><dd class="text-right font-black text-[#111111]">@shipment.CreatedAt.ToString("MMM dd, yyyy HH:mm")</dd></div>
+            </dl>
+        </section>
+    </aside>
+</section>

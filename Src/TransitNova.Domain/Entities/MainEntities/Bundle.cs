@@ -1,19 +1,16 @@
-﻿using TransitNova.Domain.Contracts.DomainEvents.Events.BundleEvents;
+using TransitNova.Domain.Contracts.DomainEvents.Events.BundleEvents;
 using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Bundle;
-
 namespace TransitNova.Domain.Entities.MainEntities
 {
     public class Bundle : AggregateRoot<Guid>
     {
-       
         public string BundleName { get; private set; } = string.Empty;
         public string BundleDescription { get; private set; } = string.Empty;
         public decimal BundlePrice { get; private set; }
         public BundleTier Tier { get; private set; }
         public int BundleDurationMonths { get; private set; } = 1;
-
         public int MaxShipmentsPerMonth { get; private set; }
         public decimal MaxWeightPerShipment { get; private set; }
         public decimal MaxDistancePerShipment { get; private set; }
@@ -66,32 +63,32 @@ namespace TransitNova.Domain.Entities.MainEntities
             RaiseDomainEvent(new BundleUpdatedDomainEvent(Id, BundlePrice));
         }
 
-        public void Subscribe(Guid userId)
+        public void Subscribe(Guid userProfileId)
         {
-            if (Subscriptions.Any(s => s.SubscribedUserId == userId && s.IsActive))
+            if (Subscriptions.Any(s => s.SubscribedUserId == userProfileId && s.IsActive))
                 throw new DomainOperationException("User is already subscribed to this bundle.", "BUNDLE_ALREADY_SUBSCRIBED", "Bundle");
 
             var subscription = new BundleSubscription
             {
-                SubscribedUserId = userId,
+                SubscribedUserId = userProfileId,
                 BundleId = Id,
                 SubscriptionDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddMonths(BundleDurationMonths),
                 IsActive = true
             };
             _subscriptions.Add(subscription);
-            RaiseDomainEvent(new UserSubscribedToBundleDomainEvent(userId, Id));
+            RaiseDomainEvent(new UserSubscribedToBundleDomainEvent(userProfileId, Id));
         }
 
-        public void Unsubscribe(Guid userId)
+        public void Unsubscribe(Guid userProfileId)
         {
-            var subscription = Subscriptions.FirstOrDefault(s => s.SubscribedUserId == userId && s.IsActive)
+            var subscription = Subscriptions.FirstOrDefault(s => s.SubscribedUserId == userProfileId && s.IsActive)
                 ?? throw new EntityNotFoundException("Active subscription not found for this user.", "BUNDLE_SUBSCRIPTION_NOT_FOUND", "Bundle");
 
             subscription.IsActive = false;
             subscription.CancelledAt = DateTime.UtcNow;
 
-            RaiseDomainEvent(new UserUnsubscribedFromBundleDomainEvent(userId, Id));
+            RaiseDomainEvent(new UserUnsubscribedFromBundleDomainEvent(userProfileId, Id));
         }
 
         //=== Business Logic Methods 

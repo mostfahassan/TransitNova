@@ -19,18 +19,25 @@ public sealed class WarehousePageHeaderViewModel
 
 public sealed record WarehouseKpiTileViewModel(string Label, string Value, string Meta, string Tone = "neutral", decimal? Progress = null);
 
-public sealed record WarehouseTableColumnViewModel(string Header, string PropertyPath, string Kind = "text");
+public sealed record WarehouseDisplayCellViewModel(string Header, string Text, string Kind = "text");
+
+public sealed class WarehouseTableRowViewModel
+{
+    public IReadOnlyCollection<WarehouseDisplayCellViewModel> Cells { get; init; } = [];
+    public IDictionary<string, object?> RouteValues { get; init; } = new Dictionary<string, object?>();
+}
 
 public sealed class WarehouseTableViewModel
 {
     public string Title { get; set; } = string.Empty;
     public string Subtitle { get; set; } = string.Empty;
-    public object? Source { get; set; }
-    public IReadOnlyCollection<WarehouseTableColumnViewModel> Columns { get; set; } = [];
+    public IReadOnlyCollection<string> Headers { get; set; } = [];
+    public IReadOnlyList<WarehouseTableRowViewModel> Rows { get; set; } = [];
+    public int TotalCount { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int TotalPages { get; set; } = 1;
     public string Controller { get; set; } = string.Empty;
     public string DetailsAction { get; set; } = "Details";
-    public string RouteIdName { get; set; } = "id";
-    public string IdPropertyPath { get; set; } = "Id";
     public bool ShowDetails { get; set; } = true;
     public string EmptyTitle { get; set; } = "No warehouse records";
     public string EmptyDescription { get; set; } = "Records from the backend will appear here when available.";
@@ -40,10 +47,9 @@ public sealed class WarehouseDetailViewModel
 {
     public string Title { get; set; } = string.Empty;
     public string Subtitle { get; set; } = string.Empty;
-    public object? Source { get; set; }
-    public IReadOnlyCollection<WarehouseTableColumnViewModel> Fields { get; set; } = [];
+    public string PrimaryLabel { get; set; } = string.Empty;
+    public IReadOnlyCollection<WarehouseDisplayCellViewModel> Fields { get; set; } = [];
+    public IReadOnlyCollection<WarehouseDisplayCellViewModel> AdditionalFields { get; set; } = [];
     public string Controller { get; set; } = string.Empty;
     public string IndexAction { get; set; } = "Index";
-    public string RouteIdName { get; set; } = "id";
-    public string IdPropertyPath { get; set; } = "Id";
 }

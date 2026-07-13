@@ -10,7 +10,7 @@ namespace TransitNova.BusinessLayer.Common.Mappings.LocationMapping
         {
             CreateMap<Zone, ZoneDto>()
                 .ForMember(d => d.CityName, opt => opt.MapFrom(s => s.City != null ? s.City.Name : string.Empty))
-                .ForMember(d => d.CountryId, opt => opt.MapFrom(s => s.City != null ? s.City.GovernmentId : default))
+                .ForMember(d => d.CountryId, opt => opt.MapFrom(s => s.City != null ? s.City.Government.CountryId : default))
                 .ForMember(d => d.CountryName, opt => opt.MapFrom(s => s.City != null && s.City.Government != null ? s.City.Government.Country.Name : string.Empty));
         }
     }

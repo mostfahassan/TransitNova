@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
 using TransitNova.UI.Infrastructure.Mvc.Common;
 using TransitNova.UI.Infrastructure.Mvc.Interface;
-using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.User.PaymentInvoices.Segregation;
 
 namespace TransitNova.UI.Areas.UserArea.Controllers;
@@ -25,7 +24,7 @@ public sealed class PaymentInvoicesController(
             return HandleGetFailure(response);
 
         var invoices = response.Data?.ToArray() ?? [];
-        return View(new UserPaymentInvoicesIndexViewModel(invoices));
+        return View(invoices);
     }
 
     [HttpGet("{paymentId:guid}")]
@@ -38,6 +37,7 @@ public sealed class PaymentInvoicesController(
 
         return response.Data is null
             ? RedirectToAction("NotFound", "Errors", new { area = "AccountArea" })
-            : View(new UserPaymentInvoiceDetailsViewModel(response.Data));
+            : View(response.Data);
     }
 }
+

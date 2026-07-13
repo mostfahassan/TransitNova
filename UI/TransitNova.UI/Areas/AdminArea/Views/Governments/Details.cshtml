@@ -1,6 +1,7 @@
-@model object?
+@model UiGovernmentDto?
 @{
     ViewData["Title"] = "Government details";
+    var government = Model ?? new UiGovernmentDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Government details",
@@ -13,19 +14,18 @@
     {
         Title = "Government record",
         Subtitle = "Regional metadata used by location workflows.",
-        Source = Model,
+        PrimaryLabel = government.Name,
         Controller = "Governments",
-        RouteIdName = "governmentId",
-        IdPropertyPath = "Id|GovernmentId",
         EditAction = "Edit",
         DeleteAction = "Delete",
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Government", "Name"),
-            new("Country", "CountryName"),
-            new("Country ID", "CountryId", "id"),
-            new("Government ID", "Id", "id")
-        }
+        RouteValues = new Dictionary<string, object?> { ["governmentId"] = government.Id },
+        Fields =
+        [
+            AdminDisplay.AdminCell("Government", government.Name),
+            AdminDisplay.AdminCell("Country", government.CountryName),
+            AdminDisplay.AdminCell("Country ID", government.CountryId, "id"),
+            AdminDisplay.AdminCell("Government ID", government.Id, "id")
+        ]
     };
 }
 

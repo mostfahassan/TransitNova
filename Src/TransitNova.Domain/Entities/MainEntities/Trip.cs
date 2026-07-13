@@ -4,6 +4,7 @@ using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Trip;
+
 namespace TransitNova.Domain.Entities.MainEntities
 {
     public class Trip : AggregateRoot<Guid>
@@ -52,7 +53,6 @@ namespace TransitNova.Domain.Entities.MainEntities
             trip.RaiseDomainEvent(
                 new TripPlannedDomainEvent(
                     trip.Id,
-                    trip.CarrierId,
                     trip.WarehouseId,
                     trip.TripType,
                     trip.TotalShipments));
@@ -60,11 +60,10 @@ namespace TransitNova.Domain.Entities.MainEntities
             return trip;
         }
 
-     
-        public void Update(Guid? carrierId, Guid? warehouseId, TripType? tripType,DateTime? plannedDate, DateTime? startTime, DateTime? endTime, int totalShipments)
+        public void Update(Guid? carrierId, Guid? warehouseId, TripType? tripType, DateTime? plannedDate, DateTime? startTime, DateTime? endTime, int totalShipments)
         {
-            CarrierId = carrierId?? CarrierId;
-            WarehouseId = warehouseId?? WarehouseId;
+            CarrierId = carrierId ?? CarrierId;
+            WarehouseId = warehouseId ?? WarehouseId;
             TripType = tripType ?? TripType;
             PlannedDate = plannedDate ?? PlannedDate;
             StartTime = startTime;
@@ -98,7 +97,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = carrierId.ToString();
 
-            RaiseDomainEvent(new TripCompletedDomainEvent(Id, CarrierId, Status, EndTime.Value, TotalShipments));
+            RaiseDomainEvent(new TripCompletedDomainEvent(Id, Status, EndTime.Value, TotalShipments));
         }
 
         public void Cancel(Guid operationManagerId)
@@ -113,6 +112,7 @@ namespace TransitNova.Domain.Entities.MainEntities
 
             RaiseDomainEvent(new TripCancelledDomainEvent(Id, Status, EndTime.Value));
         }
+
         public void AddShipment(Shipment shipment, Guid operationManagerId)
         {
             if (shipment is null)
@@ -143,7 +143,6 @@ namespace TransitNova.Domain.Entities.MainEntities
             RaiseDomainEvent(new TripShipmentAddedDomainEvent(Id, shipment.Id, shipment.CurrentStatus, TotalShipments));
         }
 
-        // Validations
         private static void ValidatePlan(Guid carrierId, Guid warehouseId, TripType tripType, List<Shipment> shipments)
         {
             if (carrierId == Guid.Empty)
@@ -202,6 +201,5 @@ namespace TransitNova.Domain.Entities.MainEntities
             if (!isReady)
                 throw new DomainOperationException("All trip shipments must be completed before the trip can be completed.", "TRIP_SHIPMENTS_NOT_COMPLETED", "Trip", Id);
         }
-
     }
 }

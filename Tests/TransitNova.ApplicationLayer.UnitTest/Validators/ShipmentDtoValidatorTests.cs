@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using FluentValidation;
 using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.Shipment;
@@ -36,7 +36,7 @@ public sealed class ShipmentDtoValidatorTests
             case "last-name": receiver.LastName = string.Empty; break;
             case "email": receiver.Email = "not-an-email"; break;
             case "phone": receiver.PhoneNumber = "000"; break;
-            case "address": receiver.Address = AddressDto.FromDomain(Address.Create(string.Empty, null, string.Empty)); break;
+            case "address": receiver.Address = new AddressDto { MainAddress = string.Empty, Street = string.Empty }; break;
             case "city": receiver.CityId = 0; break;
         }
 
@@ -113,8 +113,8 @@ public sealed class ShipmentDtoValidatorTests
         var shipment = ValidShipment();
         shipment = field switch
         {
-            "delivery" => shipment with { DeliveryAddress = AddressDto.FromDomain(Address.Create(string.Empty, null, string.Empty)) },
-            "pickup" => shipment with { PickupAddress = AddressDto.FromDomain(Address.Create(string.Empty, null, string.Empty)) },
+            "delivery" => shipment with { DeliveryAddress = new AddressDto { MainAddress = string.Empty, Street = string.Empty } },
+            "pickup" => shipment with { PickupAddress = new AddressDto { MainAddress = string.Empty, Street = string.Empty } },
             "same-address" => shipment with { PickupAddress = shipment.DeliveryAddress},
             "receiver" => shipment with { Receiver = null! },
             _ => shipment with { PackageSpecification = null! }
@@ -133,8 +133,8 @@ public sealed class ShipmentDtoValidatorTests
         var shipment = ValidShipment();
         var overLimit = new string('a', 251);
         shipment = field == "delivery"
-            ? shipment with { DeliveryAddress = AddressDto.FromDomain(Address.Create(overLimit, null, string.Empty)) }
-            : shipment with { PickupAddress = AddressDto.FromDomain(Address.Create(overLimit, null, string.Empty)) };
+            ? shipment with { DeliveryAddress = new AddressDto { MainAddress = overLimit, Street = string.Empty } }
+            : shipment with { PickupAddress = new AddressDto { MainAddress = overLimit, Street = string.Empty } };
 
         var result = await CreateValidator().ValidateAsync(shipment);
 
@@ -205,3 +205,6 @@ public sealed class ShipmentDtoValidatorTests
         Guid.NewGuid(),
         PaymentMethod.CreditCard);
 }
+
+
+

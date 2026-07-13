@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.Common.CQRS;
 using TransitNova.BusinessLayer.Common.ResultPattern;
@@ -28,7 +28,7 @@ namespace TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.H
             if (!valid || user is null)
             {
                 logger.LogWarning("Login failed for {Email}. Reason: {Reason}", request.Dto.Email, error);
-                return Result<AuthResponseDto>.Failure(Errors.InvalidCredentials("Invalid email or password."));
+                return Result<AuthResponseDto>.Unauthorized(Errors.InvalidCredentials("Invalid email or password."));
             }
 
             //BuildAsync Refresh Token
@@ -59,3 +59,4 @@ namespace TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.H
         }
     }
 }
+

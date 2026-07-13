@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.Commands;
 using TransitNova.BusinessLayer.Features.UserAuthentication.Authentication.Handlers.ApplyingCommands;
-using TransitNova.BusinessLayer.Interfaces.Services.IdentityOperationService;
+using TransitNova.BusinessLayer.Interfaces.Repositories.TokenRepository;
 
 namespace TransitNova.ApplicationLayer.Tests.Commands.Auth;
 
@@ -12,50 +12,55 @@ public sealed class LogoutCommandHandlerTests
     [Fact]
     public async Task SignOutHandler_WhenCalled_ShouldReturnSuccessAsync()
     {
-        var rules = new Mock<IUserAuthRulesService>();
-        var handler = CreateHandler(rules);
+        var tokens = new Mock<IRefreshTokenRepository>();
+        var handler = CreateHandler(tokens);
 
-        var result = await handler.Handle(new SignOutCommand(), CancellationToken.None);
+        var result = await handler.Handle(new SignOutCommand(Guid.NewGuid()), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
     }
 
     [Fact]
-    public async Task SignOutHandler_WhenCalled_ShouldSignOutExactlyOnceAsync()
+    public async Task SignOutHandler_WhenCalled_ShouldRevokeAllRefreshTokensForCurrentUserAsync()
     {
-        var rules = new Mock<IUserAuthRulesService>();
-        var handler = CreateHandler(rules);
+        var userId = Guid.NewGuid();
+        var tokens = new Mock<IRefreshTokenRepository>();
+        tokens.Setup(x => x.RevokeAllUserTokenAsync(userId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(2);
+        var handler = CreateHandler(tokens);
 
-        await handler.Handle(new SignOutCommand(), CancellationToken.None);
+        await handler.Handle(new SignOutCommand(userId), CancellationToken.None);
 
-        rules.Verify(x => x.SignOutAsync(CancellationToken.None), Times.Once);
+        tokens.Verify(x => x.RevokeAllUserTokenAsync(userId, CancellationToken.None), Times.Once);
     }
 
     [Fact]
     public async Task SignOutHandler_WhenCancellationTokenIsPassed_ShouldForwardItAsync()
     {
-        var rules = new Mock<IUserAuthRulesService>();
-        var handler = CreateHandler(rules);
+        var userId = Guid.NewGuid();
+        var tokens = new Mock<IRefreshTokenRepository>();
+        var handler = CreateHandler(tokens);
         using var cancellation = new CancellationTokenSource();
 
-        await handler.Handle(new SignOutCommand(), cancellation.Token);
+        await handler.Handle(new SignOutCommand(userId), cancellation.Token);
 
-        rules.Verify(x => x.SignOutAsync(cancellation.Token), Times.Once);
+        tokens.Verify(x => x.RevokeAllUserTokenAsync(userId, cancellation.Token), Times.Once);
     }
 
     [Fact]
-    public async Task SignOutHandler_WhenIdentitySignOutFails_ShouldPropagateExceptionAsync()
+    public async Task SignOutHandler_WhenTokenRevocationFails_ShouldPropagateExceptionAsync()
     {
-        var rules = new Mock<IUserAuthRulesService>();
-        rules.Setup(x => x.SignOutAsync(It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new InvalidOperationException("sign out failed"));
-        var handler = CreateHandler(rules);
+        var tokens = new Mock<IRefreshTokenRepository>();
+        tokens.Setup(x => x.RevokeAllUserTokenAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException("token revocation failed"));
+        var handler = CreateHandler(tokens);
 
-        var act = () => handler.Handle(new SignOutCommand(), CancellationToken.None);
+        var act = () => handler.Handle(new SignOutCommand(Guid.NewGuid()), CancellationToken.None);
 
-        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("sign out failed");
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("token revocation failed");
     }
 
-    private static SignOutHandler CreateHandler(Mock<IUserAuthRulesService> rules) =>
-        new(Mock.Of<ILogger<SignOutHandler>>(), rules.Object);
+    private static SignOutHandler CreateHandler(Mock<IRefreshTokenRepository> tokens) =>
+        new(Mock.Of<ILogger<SignOutHandler>>(), tokens.Object);
 }

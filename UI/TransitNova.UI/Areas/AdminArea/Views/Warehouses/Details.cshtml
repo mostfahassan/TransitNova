@@ -1,6 +1,7 @@
-@model object?
+@model UiWarehouseDto?
 @{
     ViewData["Title"] = "Warehouse details";
+    var warehouse = Model ?? new UiWarehouseDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Warehouse details",
@@ -13,24 +14,23 @@
     {
         Title = "Warehouse record",
         Subtitle = "Full warehouse data returned by the API.",
-        Source = Model,
+        PrimaryLabel = warehouse.Name,
         Controller = "Warehouses",
-        RouteIdName = "warehouseId",
-        IdPropertyPath = "Id|WarehouseId",
         EditAction = "Edit",
         DeleteAction = "Delete",
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Warehouse", "Name"),
-            new("Type", "Type", "badge"),
-            new("Address", "Address"),
-            new("Capacity", "Capacity"),
-            new("Current usage", "CurrentUsage"),
-            new("Operating hours", "OperatingHours"),
-            new("Zones", "ZoneNames"),
-            new("Created", "CreatedAt"),
-            new("Updated", "UpdatedAt")
-        }
+        RouteValues = new Dictionary<string, object?> { ["warehouseId"] = warehouse.Id },
+        Fields =
+        [
+            AdminDisplay.AdminCell("Warehouse", warehouse.Name),
+            AdminDisplay.AdminCell("Type", warehouse.Type, "badge"),
+            AdminDisplay.AdminCell("Address", warehouse.Address),
+            AdminDisplay.AdminCell("Capacity", warehouse.Capacity),
+            AdminDisplay.AdminCell("Current usage", warehouse.CurrentUsage),
+            AdminDisplay.AdminCell("Operating hours", warehouse.OperatingHours),
+            AdminDisplay.AdminCell("Zones", warehouse.ZoneNames),
+            AdminDisplay.AdminCell("Created", warehouse.CreatedAt),
+            AdminDisplay.AdminCell("Updated", warehouse.UpdatedAt)
+        ]
     };
 }
 

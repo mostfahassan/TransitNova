@@ -1,89 +1,174 @@
-@model object?
+@using TransitNova.Domain.Enums.Shipment
+@model TransitNovaUI.BusinessLayer.DTOs.Shipment.UiRetrieveShipmentDto?
 @{
     ViewData["Title"] = "Shipment Details";
-    var source = Model;
-    var shipmentId = AdminDisplay.RouteValue(source, "Id|ShipmentId");
-    var hasShipment = !string.IsNullOrWhiteSpace(Convert.ToString(shipmentId));
-    var status = AdminDisplay.Text(source, "CurrentStatus|Status");
-    var pickupCity = AdminDisplay.Text(source, "SenderCity|PickupCity|PickupAddress");
-    var deliveryCity = AdminDisplay.Text(source, "ReceiverCity|DeliveryCity|DeliveryAddress");
+    var shipment = Model ?? new TransitNovaUI.BusinessLayer.DTOs.Shipment.UiRetrieveShipmentDto();
+    var shipmentId = shipment.Id == Guid.Empty ? string.Empty : shipment.Id.ToString();
+    var pickupCity = string.IsNullOrWhiteSpace(shipment.Sender?.CityName) ? shipment.PickupAddress.ToString() : shipment.Sender?.CityName;
+    var deliveryCity = string.IsNullOrWhiteSpace(shipment.Receiver.CityName) ? shipment.DeliveryAddress.ToString() : shipment.Receiver.CityName;
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Shipment record",
-        Title = AdminDisplay.Text(source, "TrackingNumber", "id"),
+        Title = string.IsNullOrWhiteSpace(shipment.TrackingNumber) ? "Shipment details" : shipment.TrackingNumber,
         Description = "Operational details for routing, assignment, approval, and exception handling.",
-        SecondaryLabel = hasShipment ? "History" : null,
-        SecondaryController = hasShipment ? "Shipments" : null,
-        SecondaryAction = hasShipment ? "Histories" : null,
-        SecondaryRouteValues = hasShipment ? new Dictionary<string, string> { ["shipmentId"] = Convert.ToString(shipmentId) ?? string.Empty } : null
-    };
-    var detail = new OpsDetailViewModel
-    {
-        Title = "Shipment details",
-        Subtitle = "Shipment / " + AdminDisplay.Text(source, "TrackingNumber", "id"),
-        Source = source,
-        Controller = "Shipments",
-        IndexAction = "Index",
-        SecondaryLabel = hasShipment ? "History" : null,
-        SecondaryAction = hasShipment ? "Histories" : null,
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id|ShipmentId",
-        Fields = new List<OpsTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Pickup", "PickupAddress|SenderCity"),
-            new("Delivery", "DeliveryAddress|ReceiverCity"),
-            new("Mode", "TransportationMode"),
-            new("Type", "ShipmentType"),
-            new("Cost", "ShippingCost|ShippinCost|ShipmentCost", "currency"),
-            new("Estimated delivery", "EstimatedDeliveryDate"),
-            new("Created", "CreatedAt")
-        }
+        SecondaryLabel = string.IsNullOrWhiteSpace(shipmentId) ? null : "History",
+        SecondaryController = string.IsNullOrWhiteSpace(shipmentId) ? null : "Shipments",
+        SecondaryAction = string.IsNullOrWhiteSpace(shipmentId) ? null : "Histories",
+        SecondaryRouteValues = string.IsNullOrWhiteSpace(shipmentId) ? null : new Dictionary<string, string> { ["shipmentId"] = shipmentId }
     };
 }
 
 <partial name="_OpsPageHeader" model="header" />
-<partial name="_OpsDetail" model="detail" />
+
+<section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+    <div class="space-y-6">
+        <section class="ops-card overflow-hidden">
+            <div class="border-b border-[#EAEAEA] p-6 md:p-8">
+                <div class="inline-flex items-center rounded-full border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[#111111]">@shipment.CurrentStatus</div>
+                <h2 class="mt-4 text-3xl font-black tracking-[-0.03em] text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.TrackingNumber) ? "Shipment" : shipment.TrackingNumber)</h2>
+                <p class="mt-2 text-sm leading-6 text-[#787774]">Complete operational projection with routing, package data, and shipment state history.</p>
+            </div>
+            <div class="grid gap-0 md:grid-cols-2">
+                <div class="border-b border-r border-[#EAEAEA] p-6">
+                    <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Pickup address</div>
+                    <div class="mt-3 text-lg font-extrabold text-[#111111]">@shipment.PickupAddress</div>
+                    <p class="mt-2 text-sm leading-6 text-[#787774]">Sender city: @(string.IsNullOrWhiteSpace(shipment.Sender?.CityName) ? "-" : shipment.Sender.CityName)</p>
+                </div>
+                <div class="border-b border-[#EAEAEA] p-6">
+                    <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Delivery address</div>
+                    <div class="mt-3 text-lg font-extrabold text-[#111111]">@shipment.DeliveryAddress</div>
+                    <p class="mt-2 text-sm leading-6 text-[#787774]">Receiver city: @(string.IsNullOrWhiteSpace(shipment.Receiver.CityName) ? "-" : shipment.Receiver.CityName)</p>
+                </div>
+                <div class="border-r border-[#EAEAEA] p-6">
+                    <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Shipment type</div>
+                    <div class="mt-3 text-lg font-extrabold text-[#111111]">@shipment.ShipmentType</div>
+                    <p class="mt-2 text-sm leading-6 text-[#787774]">Mode: @shipment.TransportationMode</p>
+                </div>
+                <div class="p-6">
+                    <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Financials</div>
+                    <div class="mt-3 text-lg font-extrabold text-[#111111]">@shipment.ShippingCost.ToString("N2") @shipment.Currency</div>
+                    <p class="mt-2 text-sm leading-6 text-[#787774]">ETA: @(shipment.EstimatedDeliveryDate?.ToString("MMM dd, yyyy HH:mm") ?? "Pending")</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid gap-6 lg:grid-cols-2">
+            <article class="ops-card p-6">
+                <h3 class="text-xl font-extrabold text-[#111111]">Receiver</h3>
+                <dl class="mt-5 space-y-3 text-sm">
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Full name</dt><dd class="text-right font-extrabold text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Receiver.FullName) ? "-" : shipment.Receiver.FullName)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Email</dt><dd class="break-all text-right font-extrabold text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Receiver.Email) ? "-" : shipment.Receiver.Email)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Phone</dt><dd class="text-right font-extrabold text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Receiver.PhoneNumber) ? "-" : shipment.Receiver.PhoneNumber)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">City</dt><dd class="text-right font-extrabold text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Receiver.CityName) ? "-" : shipment.Receiver.CityName)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Address</dt><dd class="text-right font-extrabold text-[#111111]">@shipment.Receiver.Address</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Receiver ID</dt><dd class="break-all text-right font-mono text-xs font-extrabold text-[#111111]">@shipment.ReceiverId</dd></div>
+                </dl>
+            </article>
+
+            <article class="ops-card p-6">
+                <h3 class="text-xl font-extrabold text-[#111111]">Sender</h3>
+                <dl class="mt-5 space-y-3 text-sm">
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Full name</dt><dd class="text-right font-extrabold text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Sender?.FullName) ? "-" : shipment.Sender.FullName)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Email</dt><dd class="break-all text-right font-extrabold text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Sender?.Email) ? "-" : shipment.Sender.Email)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Phone</dt><dd class="text-right font-extrabold text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Sender?.PhoneNumber) ? "-" : shipment.Sender.PhoneNumber)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">City</dt><dd class="text-right font-extrabold text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.Sender?.CityName) ? "-" : shipment.Sender.CityName)</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Address</dt><dd class="text-right font-extrabold text-[#111111]">@(shipment.Sender?.Address?.ToString() ?? "-")</dd></div>
+                    <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Sender ID</dt><dd class="break-all text-right font-mono text-xs font-extrabold text-[#111111]">@shipment.SenderId</dd></div>
+                </dl>
+            </article>
+        </section>
+
+        <section class="ops-card p-6 md:p-8">
+            <h3 class="text-xl font-extrabold text-[#111111]">Package specification</h3>
+            <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Weight</div><div class="mt-2 text-lg font-extrabold text-[#111111]">@shipment.PackageSpecification.Weight.ToString("N2") kg</div></div>
+                <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Width</div><div class="mt-2 text-lg font-extrabold text-[#111111]">@shipment.PackageSpecification.Width.ToString("N2")</div></div>
+                <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Height</div><div class="mt-2 text-lg font-extrabold text-[#111111]">@shipment.PackageSpecification.Height.ToString("N2")</div></div>
+                <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Length</div><div class="mt-2 text-lg font-extrabold text-[#111111]">@shipment.PackageSpecification.Length.ToString("N2")</div></div>
+                <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Rejection</div><div class="mt-2 text-sm font-extrabold text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.RejectionReason) ? "-" : shipment.RejectionReason)</div></div>
+            </div>
+        </section>
+
+        <section class="ops-card p-6 md:p-8">
+            <h3 class="text-xl font-extrabold text-[#111111]">Shipment timeline</h3>
+            <div class="mt-6 space-y-3">
+                @if (shipment.ShipmentStates.Count == 0)
+                {
+                    <div class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5 text-sm font-semibold text-[#787774]">No shipment history returned from the API.</div>
+                }
+                else
+                {
+                    @foreach (var entry in shipment.ShipmentStates.Select((value, index) => new { value, index }))
+                    {
+                        <article class="rounded-[20px] border border-[#EAEAEA] bg-[#FBFBFA] p-5 ops-fade-up" style="--item-index:@entry.index">
+                            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <div class="inline-flex items-center rounded-full border border-[#EAEAEA] bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[#111111]">@entry.value.StatusType</div>
+                                    <p class="mt-3 text-sm font-bold text-[#111111]">@(string.IsNullOrWhiteSpace(entry.value.Carrier?.FullName) ? "No carrier attached to this state." : $"Carrier: {entry.value.Carrier.FullName}")</p>
+                                    @if (!string.IsNullOrWhiteSpace(entry.value.Carrier?.Email) || !string.IsNullOrWhiteSpace(entry.value.Carrier?.PhoneNumber))
+                                    {
+                                        <p class="mt-1 text-xs text-[#787774]">@entry.value.Carrier?.Email @(string.IsNullOrWhiteSpace(entry.value.Carrier?.PhoneNumber) ? string.Empty : $"• {entry.value.Carrier?.PhoneNumber}")</p>
+                                    }
+                                </div>
+                                <div class="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-[#787774]">@entry.value.ChangedAt.ToString("MMM dd, yyyy HH:mm")</div>
+                            </div>
+                        </article>
+                    }
+                }
+            </div>
+        </section>
+    </div>
+
+    <aside class="space-y-5">
+        <section class="ops-card p-6">
+            <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Reference</div>
+            <dl class="mt-4 space-y-3 text-sm">
+                <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Shipment ID</dt><dd class="break-all text-right font-extrabold text-[#111111]">@shipment.Id</dd></div>
+                <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Tracking number</dt><dd class="break-all text-right font-extrabold text-[#111111]">@(string.IsNullOrWhiteSpace(shipment.TrackingNumber) ? "-" : shipment.TrackingNumber)</dd></div>
+                <div class="flex justify-between gap-4"><dt class="font-bold text-[#787774]">Created at</dt><dd class="text-right font-extrabold text-[#111111]">@shipment.CreatedAt.ToString("MMM dd, yyyy HH:mm")</dd></div>
+            </dl>
+        </section>
+    </aside>
+</section>
 
 <section class="mt-6 grid gap-4 md:grid-cols-3">
-    @if (hasShipment && IsPending(status))
+    @if (shipment.Id != Guid.Empty && shipment.CurrentStatus == ShipmentStatuses.Pending)
     {
-        <form asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Approve" asp-route-shipmentId="@shipmentId" method="post" data-confirm="Approve this shipment?" data-ops-ajax-form="true" class="ops-card p-5">
+        <form asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Approve" asp-route-shipmentId="@shipment.Id" method="post" data-confirm="Approve this shipment?" data-ops-ajax-form="true" class="ops-card p-5">
             @Html.AntiForgeryToken()
             <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Decision</div>
             <h3 class="mt-2 text-lg font-extrabold text-[#111111]">Approve shipment</h3>
             <p class="mt-2 text-sm leading-6 text-[#787774]">Move this shipment from review queue into dispatch readiness.</p>
             <button type="submit" class="ops-button mt-5 w-full">Approve</button>
         </form>
-        <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Reject" asp-route-shipmentId="@shipmentId" class="ops-card ops-lift p-5">
+        <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Reject" asp-route-shipmentId="@shipment.Id" class="ops-card ops-lift p-5">
             <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Decision</div>
             <h3 class="mt-2 text-lg font-extrabold text-[#111111]">Reject shipment</h3>
             <p class="mt-2 text-sm leading-6 text-[#787774]">Capture the issue and stop this shipment from dispatch.</p>
             <span class="ops-button-danger mt-5 w-full">Reject</span>
         </a>
     }
-    @if (hasShipment && IsApproved(status))
+    @if (shipment.Id != Guid.Empty && shipment.CurrentStatus == ShipmentStatuses.Approved)
     {
-        <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="AssignPickup" asp-route-shipmentId="@shipmentId" asp-route-city="@pickupCity" class="ops-card ops-lift p-5">
+        <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="AssignPickup" asp-route-shipmentId="@shipment.Id" asp-route-city="@pickupCity" class="ops-card ops-lift p-5">
             <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Dispatch</div>
             <h3 class="mt-2 text-lg font-extrabold text-[#111111]">Assign pickup</h3>
             <p class="mt-2 text-sm leading-6 text-[#787774]">Filter carriers by pickup city and confirm first-mile ownership.</p>
             <span class="ops-button-secondary mt-5 w-full">Open pickup panel</span>
         </a>
     }
-    @if (hasShipment && IsInWarehouse(status))
+    @if (shipment.Id != Guid.Empty && shipment.CurrentStatus == ShipmentStatuses.InWarehouse)
     {
-        <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="AssignDelivery" asp-route-shipmentId="@shipmentId" asp-route-city="@deliveryCity" class="ops-card ops-lift p-5">
+        <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="AssignDelivery" asp-route-shipmentId="@shipment.Id" asp-route-city="@deliveryCity" class="ops-card ops-lift p-5">
             <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Dispatch</div>
             <h3 class="mt-2 text-lg font-extrabold text-[#111111]">Assign delivery</h3>
             <p class="mt-2 text-sm leading-6 text-[#787774]">Choose a destination-zone carrier for final-mile delivery.</p>
             <span class="ops-button-secondary mt-5 w-full">Open delivery panel</span>
         </a>
     }
-    @if (hasShipment)
+    @if (shipment.Id != Guid.Empty)
     {
-        <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Histories" asp-route-shipmentId="@shipmentId" class="ops-card ops-lift p-5">
+        <a asp-area="OperationManagerArea" asp-controller="Shipments" asp-action="Histories" asp-route-shipmentId="@shipment.Id" class="ops-card ops-lift p-5">
             <div class="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-[#787774]">Timeline</div>
             <h3 class="mt-2 text-lg font-extrabold text-[#111111]">View history</h3>
             <p class="mt-2 text-sm leading-6 text-[#787774]">Audit each state transition and assigned carrier handoff.</p>
@@ -91,9 +176,3 @@
         </a>
     }
 </section>
-
-@functions {
-    private static bool IsPending(string value) => value.Contains("Pending", StringComparison.OrdinalIgnoreCase);
-    private static bool IsApproved(string value) => value.Contains("Approved", StringComparison.OrdinalIgnoreCase);
-    private static bool IsInWarehouse(string value) => value.Contains("Warehouse", StringComparison.OrdinalIgnoreCase);
-}

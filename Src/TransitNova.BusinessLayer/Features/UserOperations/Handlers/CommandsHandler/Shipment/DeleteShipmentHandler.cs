@@ -19,12 +19,12 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
         public async Task<BaseResult> Handle(DeleteShipmentCommand request, CancellationToken cancellationToken)
         {
            
-            logger.LogDebug("Attempting soft-delete for Shipment {ShipmentId}", request.ShipmentId);
+            logger.LogDebug("Attempting soft-delete for Shipment {ReferecneId}", request.ShipmentId);
             //====== Soft Delete Operation ======
             var shipment = await shipmentRepo.GetShipmentForCommandsAsync(request.ShipmentId, cancellationToken);
             if (shipment == null)
             {
-                logger.LogWarning("Shipment with Id: {ShipmentId} not found for soft-delete", request.ShipmentId);
+                logger.LogWarning("Shipment with Id: {ReferecneId} not found for soft-delete", request.ShipmentId);
                 return BaseResult.Failure(Errors.ShipmentNotFound($"Shipment With Id =>  {request.ShipmentId} not found"));
             }
             //====== Perform soft delete by marking the shipment as deleted ======
@@ -32,7 +32,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            logger.LogInformation("Shipment {ShipmentId} soft-deleted successfully", request.ShipmentId);
+            logger.LogInformation("Shipment {ReferecneId} soft-deleted successfully", request.ShipmentId);
             CacheInvalidationContext.Set(
                 request,
                 CacheKeys.Users.Dashboard(request.AppUserId),

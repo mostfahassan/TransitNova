@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using TransitNova.BusinessLayer.Interfaces.Repositories.NotificationRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
@@ -16,7 +16,7 @@ namespace TransitNova.BusinessLayer.Common.Events.ShipmentEventsHandlers
             ShipmentIssuedDomainEvent notification,
             CancellationToken cancellationToken)
         {
-            var operationManagerIds = await operationManager.GetOperationManagersIdsAsync(cancellationToken);
+            var operationManagerIds = await operationManager.GetOperationManagersAppUserIdsAsync(cancellationToken);
 
             foreach (var operationManagerId in operationManagerIds)
             {

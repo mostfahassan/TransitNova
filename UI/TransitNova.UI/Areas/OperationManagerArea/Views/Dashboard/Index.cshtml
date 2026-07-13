@@ -1,7 +1,8 @@
-@model object?
+@model UiOperationManagerDashboardDto?
 @{
     ViewData["Title"] = "Operations Dashboard";
-    string Metric(string path) => AdminDisplay.Text(Model, path) == "-" ? "0" : AdminDisplay.Text(Model, path);
+    var dashboard = Model ?? new UiOperationManagerDashboardDto();
+    string Metric(object? value) => AdminDisplay.Format(value) == "-" ? "0" : AdminDisplay.Format(value);
 
     var header = new OpsPageHeaderViewModel
     {
@@ -16,34 +17,32 @@
         SecondaryAction = "Index"
     };
 
-    var alerts = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentActivity"));
-    var recentShipments = AdminDisplay.Value(Model, "RecentShipments");
-    var fleetRows = AdminDisplay.Rows(AdminDisplay.Value(Model, "RecentCarriers"));
+    var alerts = dashboard.RecentActivity.ToList();
+    var recentShipments = dashboard.RecentShipments.ToList();
+    var fleetRows = dashboard.RecentCarriers.ToList();
 
     var kpis = new List<OpsKpiTileViewModel>
     {
-        new("Active shipments", Metric("ActiveShipments"), "Shipments currently moving across routes.", "tracking", "info"),
+        new("Active shipments", Metric(dashboard.ActiveShipments), "Shipments currently moving across routes.", "tracking", "info"),
         new("Available drivers", fleetRows.Count.ToString(), "Carrier pool ready for dispatch.", "driver", "success"),
-        new("Pending dispatches", Metric("PendingShipments"), "Shipments waiting for assignment or review.", "dispatch", "warning")
+        new("Pending dispatches", Metric(dashboard.PendingShipments), "Shipments waiting for assignment or review.", "dispatch", "warning")
     };
 
     var shipmentTable = new OpsTableViewModel
     {
         Title = "Live shipment movement",
         Subtitle = "Latest operational rows from the active control queue.",
-        Source = recentShipments,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id|ShipmentId",
-        Columns = new List<OpsTableColumnViewModel>
-        {
-            new("Shipment", "TrackingNumber", "id"),
-            new("Origin", "SenderCity|PickupAddress"),
-            new("Destination", "ReceiverCity|DeliveryAddress"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Type", "ShipmentType"),
-            new("Cost", "ShippinCost|ShippingCost", "currency")
-        }
+        Headers = ["Shipment", "Origin", "Destination", "Status", "Type", "Cost"],
+        Rows = recentShipments.Select(shipment => AdminDisplay.OpsRow(
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.OpsCell("Shipment", shipment.TrackingNumber, "id"),
+            AdminDisplay.OpsCell("Origin", shipment.SenderCity),
+            AdminDisplay.OpsCell("Destination", shipment.ReceiverCity),
+            AdminDisplay.OpsCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.OpsCell("Type", shipment.ShipmentType),
+            AdminDisplay.OpsCell("Cost", shipment.ShippinCost, "currency"))).ToList()
     };
 }
 
@@ -69,10 +68,10 @@
             @foreach (var alert in alerts.Take(2).Select((value, index) => new { value, index }))
             {
                 <article class="bg-white p-5" style="--item-index:@alert.index">
-                    <span class="@BadgeClass(AdminDisplay.Text(alert.value, "Status|CurrentStatus"))">@AdminDisplay.Text(alert.value, "Status|CurrentStatus")</span>
-                    <h4 class="mt-3 text-base font-extrabold text-[#111111]">@AdminDisplay.Text(alert.value, "Title|TrackingNumber")</h4>
-                    <p class="mt-2 text-sm leading-6 text-[#787774]">@AdminDisplay.Text(alert.value, "Description|Route|DeliveryAddress")</p>
-                    <div class="mt-4 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#787774]">@AdminDisplay.Text(alert.value, "OccurredAt|CreatedAt")</div>
+                    <span class="@BadgeClass(alert.value.Status.ToString())">@alert.value.Status</span>
+                    <h4 class="mt-3 text-base font-extrabold text-[#111111]">@alert.value.Title</h4>
+                    <p class="mt-2 text-sm leading-6 text-[#787774]">@alert.value.Description</p>
+                    <div class="mt-4 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#787774]">@AdminDisplay.Format(alert.value.OccurredAt)</div>
                 </article>
             }
         </div>
@@ -101,18 +100,18 @@
             }
             @foreach (var carrier in fleetRows.Take(5).Select((value, index) => new { value, index }))
             {
-                <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="Details" asp-route-carrierId="@AdminDisplay.RouteValue(carrier.value, "Id")" class="block p-5 transition-colors hover:bg-black/[0.035]" style="--item-index:@carrier.index">
+                <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="Details" asp-route-carrierId="@carrier.value.Id" class="block p-5 transition-colors hover:bg-black/[0.035]" style="--item-index:@carrier.index">
                     <div class="flex items-start justify-between gap-4">
                         <div class="min-w-0">
-                            <div class="truncate text-sm font-extrabold text-[#111111]">@AdminDisplay.Text(carrier.value, "FullName|Name")</div>
-                            <div class="mt-1 text-sm text-[#787774]">@AdminDisplay.Text(carrier.value, "ServedCities|CurrentLocation|City")</div>
+                            <div class="truncate text-sm font-extrabold text-[#111111]">@carrier.value.FullName</div>
+                            <div class="mt-1 text-sm text-[#787774]">@string.Join(", ", carrier.value.ServedCities)</div>
                         </div>
-                        <span class="@BadgeClass(AdminDisplay.Text(carrier.value, "Status"))">@AdminDisplay.Text(carrier.value, "Status")</span>
+                        <span class="@BadgeClass(carrier.value.Status.ToString())">@carrier.value.Status</span>
                     </div>
                     <div class="mt-4 grid grid-cols-3 gap-3 text-center">
-                        <div class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] p-3"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#787774]">Load</div><div class="mt-1 font-black text-[#111111]">@AdminDisplay.Text(carrier.value, "AssignedShipmentsCount")</div></div>
-                        <div class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] p-3"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#787774]">Trips</div><div class="mt-1 font-black text-[#111111]">@AdminDisplay.Text(carrier.value, "ActiveTripsCount")</div></div>
-                        <div class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] p-3"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#787774]">Rating</div><div class="mt-1 font-black text-[#111111]">@AdminDisplay.Text(carrier.value, "Rating")</div></div>
+                        <div class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] p-3"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#787774]">Load</div><div class="mt-1 font-black text-[#111111]">@carrier.value.AssignedShipmentsCount</div></div>
+                        <div class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] p-3"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#787774]">Trips</div><div class="mt-1 font-black text-[#111111]">@carrier.value.ActiveTripsCount</div></div>
+                        <div class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] p-3"><div class="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#787774]">Rating</div><div class="mt-1 font-black text-[#111111]">@carrier.value.Rating</div></div>
                     </div>
                 </a>
             }

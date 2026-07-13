@@ -16,6 +16,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers
                 PhoneNumber = carrier.PhoneNumber,
                 Address = AddressDto.FromDomain(carrier.Address),
                 UserType = carrier.UserType,
+                CityId = carrier.CityId,
                 CityName = carrier.City?.Name ?? string.Empty,
                 GovernmentName = carrier.City?.Government?.Name ?? string.Empty,
                 Code = carrier.Code,

@@ -14,21 +14,22 @@ namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
             Converters = { new JsonStringEnumConverter() }
         };
 
+   
         public async Task<ApiResponse<T>> ReadQueryResponseAsync<T>(HttpResponseMessage httpResponse, CancellationToken ct)
         {
-            var response = await TryReadResponseAsync<ApiResponse<T>>(httpResponse, ct);
+            var response = await TryReadResponseAsync<T>(httpResponse, ct);
             return response ?? ApiResponse<T>.FailedResponse(Errors.Failure("Failed to read Query response."));
         }
 
         public async Task<ApiResponse> ReadCommandResponseAsync(HttpResponseMessage httpResponse, CancellationToken ct)
         {
-            var response = await TryReadResponseAsync<ApiResponse>(httpResponse, ct);
+            var response = await TryReadResponseAsync(httpResponse, ct);
             return response ?? ApiResponse.Failure(Errors.Failure("Failed to read command response."));
         }
 
         public async Task<ApiResponse<T>> ReadCommandResponseAsync<T>(HttpResponseMessage httpResponse, CancellationToken ct)
         {
-            var response = await TryReadResponseAsync<ApiResponse<T>>(httpResponse, ct);
+            var response = await TryReadResponseAsync<T>(httpResponse, ct);
             return response ?? ApiResponse<T>.FailedResponse(Errors.Failure("Failed to read command response."));
         }
 
@@ -56,73 +57,109 @@ namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
 
         public string UrlBuilder(string url) => $"{ApiHelper.BaseUrl}/{url.TrimStart('/')}";
 
-        private async Task<TResponse?> TryReadResponseAsync<TResponse>(HttpResponseMessage httpResponse, CancellationToken ct)
-            where TResponse : ApiResponse
+
+        private async Task<ApiResponse<T>?> TryReadResponseAsync<T>(HttpResponseMessage httpResponse, CancellationToken ct)
         {
             var body = await httpResponse.Content.ReadAsStringAsync(ct);
-            if (string.IsNullOrWhiteSpace(body))
-                return CreateEmptyBodyResponse<TResponse>(httpResponse);
 
-            var problemDetailsResponse = TryReadProblemDetailsResponse<TResponse>(httpResponse, body);
-            if (problemDetailsResponse is not null)
-                return problemDetailsResponse;
+            if (string.IsNullOrWhiteSpace(body))
+                return ToResponse<T>(ResolveEmptyBodyOutcome(httpResponse));
+
+            if (TryParseProblemDetails(httpResponse, body, out var problemOutcome))
+                return ToResponse<T>(problemOutcome);
 
             try
             {
-                return JsonSerializer.Deserialize<TResponse>(body, _jsonOptions);
+                return JsonSerializer.Deserialize<ApiResponse<T>>(body, _jsonOptions);
             }
             catch (Exception ex) when (ex is JsonException or NotSupportedException or InvalidOperationException)
             {
-                logger.LogWarning(ex,
-                    "Failed to deserialize API response. StatusCode: {StatusCode}. Body starts with: {BodyPreview}",
-                    (int)httpResponse.StatusCode,
-                    Preview(body));
-
-                return CreateInvalidJsonResponse<TResponse>(httpResponse, body);
+                LogDeserializationFailure(ex, httpResponse);
+                return ToResponse<T>(BuildInvalidJsonOutcome(httpResponse, body));
             }
         }
-        private static TResponse CreateEmptyBodyResponse<TResponse>(HttpResponseMessage httpResponse)
-            where TResponse : ApiResponse
+
+        private async Task<ApiResponse?> TryReadResponseAsync(HttpResponseMessage httpResponse, CancellationToken ct)
+        {
+            var body = await httpResponse.Content.ReadAsStringAsync(ct);
+
+            if (string.IsNullOrWhiteSpace(body))
+                return ToResponse(ResolveEmptyBodyOutcome(httpResponse));
+
+            if (TryParseProblemDetails(httpResponse, body, out var problemOutcome))
+                return ToResponse(problemOutcome);
+
+            try
+            {
+                return JsonSerializer.Deserialize<ApiResponse>(body, _jsonOptions);
+            }
+            catch (Exception ex) when (ex is JsonException or NotSupportedException or InvalidOperationException)
+            {
+                LogDeserializationFailure(ex, httpResponse);
+                return ToResponse(BuildInvalidJsonOutcome(httpResponse, body));
+            }
+        }
+
+        // ---- Outcome -> response mapping (compile-time typed, zero reflection) ----
+
+        // Plain data holder describing "what the response should look like".
+        // It carries no knowledge of ApiResponse vs ApiResponse<T>, so the parsing
+        // logic below (empty body / ProblemDetails / invalid JSON) is written ONCE
+        // and reused by both the generic and non-generic read paths.
+        private readonly record struct ResponseOutcome(
+            bool IsSuccess,
+            ResultStatus Status,
+            int StatusCode,
+            ErrorCode? ErrorCode,
+            ApiError? Error,
+            IReadOnlyList<ApiError> Errors,
+            string? Message);
+
+        private static ApiResponse<T> ToResponse<T>(ResponseOutcome outcome) =>
+            new(default, outcome.IsSuccess, outcome.Status, outcome.StatusCode, outcome.ErrorCode, outcome.Error, outcome.Errors, outcome.Message);
+
+        private static ApiResponse ToResponse(ResponseOutcome outcome) =>
+            new(outcome.IsSuccess, outcome.Status, outcome.StatusCode, outcome.ErrorCode, outcome.Error, outcome.Errors, outcome.Message);
+
+        // ---- Outcome builders (pure functions, no reflection - each mirrors the original logic 1:1) ----
+
+        private static ResponseOutcome ResolveEmptyBodyOutcome(HttpResponseMessage httpResponse)
         {
             var statusCode = (int)httpResponse.StatusCode;
             var status = ResolveStatus(statusCode);
 
             if (httpResponse.IsSuccessStatusCode)
-                return CreateSuccessResponse<TResponse>(statusCode, status);
+                return new ResponseOutcome(true, status, statusCode, null, null, Array.Empty<ApiError>(), null);
 
             var message = $"Request failed with HTTP {statusCode}.";
             var error = Errors.Failure(message);
-            return CreateFailureResponse<TResponse>(statusCode, message, error, [error]);
+            return new ResponseOutcome(false, status, statusCode, error.Code, error, [error], message);
         }
 
-        private static TResponse CreateSuccessResponse<TResponse>(int statusCode, ResultStatus status)
-            where TResponse : ApiResponse
+        private static ResponseOutcome BuildInvalidJsonOutcome(HttpResponseMessage httpResponse, string body)
         {
-            if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(ApiResponse<>))
-            {
-                var dataType = typeof(TResponse).GetGenericArguments()[0];
-                var responseType = typeof(ApiResponse<>).MakeGenericType(dataType);
-                return (TResponse)Activator.CreateInstance(responseType, null, true, status, statusCode, null, null, Array.Empty<ApiError>(), null)!;
-            }
+            var statusCode = (int)httpResponse.StatusCode;
 
-            return (TResponse)(ApiResponse)new(true, status, statusCode, null, null, Array.Empty<ApiError>(), null);
-        }
-
-        private static string Preview(string body)
-        {
             var preview = body.Trim();
-            return preview.Length > 180 ? preview[..180] : preview;
+            if (preview.Length > 180)
+                preview = preview[..180];
+
+            var message = $"Unexpected API response format. HTTP {statusCode}. Body starts with: {preview}";
+            var error = Errors.Failure(message);
+
+            return new ResponseOutcome(false, ResolveStatus(statusCode), statusCode, error.Code, error, [error], message);
         }
-        private static TResponse? TryReadProblemDetailsResponse<TResponse>(HttpResponseMessage httpResponse, string body)
-            where TResponse : ApiResponse
+
+        private static bool TryParseProblemDetails(HttpResponseMessage httpResponse, string body, out ResponseOutcome outcome)
         {
+            outcome = default;
             try
             {
                 using var document = JsonDocument.Parse(body);
                 var root = document.RootElement;
 
                 if (root.ValueKind != JsonValueKind.Object || !LooksLikeProblemDetails(root))
-                    return null;
+                    return false;
 
                 var statusCode = ReadInt(root, "statusCode") ?? ReadInt(root, "status") ?? (int)httpResponse.StatusCode;
                 var message = ReadString(root, "message")
@@ -134,11 +171,12 @@ namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
                 var errors = ReadErrors(root, errorCode);
                 var error = errors.FirstOrDefault() ?? new ApiError(errorCode, message);
 
-                return CreateFailureResponse<TResponse>(statusCode, message, error, errors);
+                outcome = new ResponseOutcome(false, ResolveStatus(statusCode), statusCode, error.Code, error, errors, message);
+                return true;
             }
             catch (JsonException)
             {
-                return null;
+                return false;
             }
         }
 
@@ -222,51 +260,26 @@ namespace TransitNovaUI.BusinessLayer.Common.APIHelper.Http
             return Enum.TryParse<ErrorCode>(value, ignoreCase: true, out var errorCode) ? errorCode : null;
         }
 
-        private static TResponse CreateInvalidJsonResponse<TResponse>(HttpResponseMessage httpResponse, string body)
-            where TResponse : ApiResponse
+        private void LogDeserializationFailure(Exception ex, HttpResponseMessage httpResponse)
         {
-            var preview = body.Trim();
-            if (preview.Length > 180)
-                preview = preview[..180];
-
-            var message = $"Unexpected API response format. HTTP {(int)httpResponse.StatusCode}. Body starts with: {preview}";
-            var error = Errors.Failure(message);
-
-            return CreateFailureResponse<TResponse>((int)httpResponse.StatusCode, message, error, [error]);
+            logger.LogWarning(ex,
+                "Failed to deserialize API response. StatusCode: {StatusCode}. Body starts with: {BodyPreview}",
+                (int)httpResponse.StatusCode,
+                httpResponse.Content.Headers.ContentType?.MediaType);
         }
 
-        private static TResponse CreateFailureResponse<TResponse>(int statusCode, string message, ApiError error, IReadOnlyList<ApiError> errors)
-            where TResponse : ApiResponse
+        private static ResultStatus ResolveStatus(int statusCode) => statusCode switch
         {
-            var status = ResolveStatus(statusCode);
-
-            if (typeof(TResponse).IsGenericType && typeof(TResponse).GetGenericTypeDefinition() == typeof(ApiResponse<>))
-            {
-                var dataType = typeof(TResponse).GetGenericArguments()[0];
-                var responseType = typeof(ApiResponse<>).MakeGenericType(dataType);
-                return (TResponse)Activator.CreateInstance(responseType, null, false, status, statusCode, error.Code, error, errors, message)!;
-            }
-
-            return (TResponse)(ApiResponse)new(false, status, statusCode, error.Code, error, errors, message);
-        }
-
-        private static ResultStatus ResolveStatus(int statusCode)
-        {
-            return statusCode switch
-            {
-                200 => ResultStatus.Success,
-                201 => ResultStatus.Created,
-                204 => ResultStatus.NoContent,
-                401 => ResultStatus.Unauthorized,
-                403 => ResultStatus.Forbidden,
-                404 => ResultStatus.NotFound,
-                409 => ResultStatus.Conflict,
-                422 => ResultStatus.ValidationError,
-                500 => ResultStatus.UnExpected,
-                _ => statusCode >= 500 ? ResultStatus.UnExpected : ResultStatus.Failure
-            };
-        }
+            200 => ResultStatus.Success,
+            201 => ResultStatus.Created,
+            204 => ResultStatus.NoContent,
+            401 => ResultStatus.Unauthorized,
+            403 => ResultStatus.Forbidden,
+            404 => ResultStatus.NotFound,
+            409 => ResultStatus.Conflict,
+            422 => ResultStatus.ValidationError,
+            500 => ResultStatus.UnExpected,
+            _ => statusCode >= 500 ? ResultStatus.UnExpected : ResultStatus.Failure
+        };
     }
 }
-
-

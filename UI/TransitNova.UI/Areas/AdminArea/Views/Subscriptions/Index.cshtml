@@ -1,0 +1,33 @@
+@model IEnumerable<UiBundleSubscriptionDetailsDto>?
+@{
+    ViewData["Title"] = "Subscribers";
+    var items = (Model ?? Enumerable.Empty<UiBundleSubscriptionDetailsDto>()).ToList();
+    var header = new AdminPageHeaderViewModel
+    {
+        Title = "Subscribers",
+        Description = "Review all bundle subscriptions and customer subscriber status.",
+        PrimaryLabel = null,
+        PrimaryController = "Subscriptions",
+        PrimaryAction = null
+    };
+    var table = new AdminTableViewModel
+    {
+        Title = "Subscriber ledger",
+        Subtitle = "Customers and subscription status across all bundles.",
+        Controller = "Subscriptions",
+        ShowDetails = true,
+        Headers = ["Subscriber", "Email", "Bundle", "Status", "Started", "Expires"],
+        Rows = items.Select(subscription => AdminDisplay.AdminRow(
+            "subscriptionId",
+            subscription.Id,
+            AdminDisplay.AdminCell("Subscriber", subscription.FullName),
+            AdminDisplay.AdminCell("Email", subscription.Email),
+            AdminDisplay.AdminCell("Bundle", subscription.BundleName),
+            AdminDisplay.AdminCell("Status", subscription.IsActive, "badge"),
+            AdminDisplay.AdminCell("Started", subscription.SubscriptionDate),
+            AdminDisplay.AdminCell("Expires", subscription.EndDate))).ToList()
+    };
+}
+
+<partial name="_AdminPageHeader" model="header" />
+<partial name="_AdminTable" model="table" />

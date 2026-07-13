@@ -1,16 +1,11 @@
 using TransitNovaUI.BusinessLayer.DTOs.Bundle;
+using TransitNovaUI.BusinessLayer.DTOs.OperationManager;
 using TransitNovaUI.BusinessLayer.DTOs.Payment;
 
 namespace TransitNova.UI.ViewModels;
 
 public sealed record UserDashboardPageViewModel(
-    object? Dashboard,
+    UiProfileDashboardDto? Dashboard,
     IReadOnlyCollection<UiInvoiceDto> RecentInvoices,
     int TotalInvoices,
     IReadOnlyCollection<UiRetrieveBundleDto> AvailableBundles);
-
-public sealed record UserPaymentInvoicesIndexViewModel(
-    IReadOnlyCollection<UiInvoiceDto> Invoices);
-
-public sealed record UserPaymentInvoiceDetailsViewModel(
-    UiInvoiceDto Invoice);

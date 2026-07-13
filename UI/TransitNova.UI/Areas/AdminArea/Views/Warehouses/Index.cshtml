@@ -1,6 +1,7 @@
-@model object?
+@model IEnumerable<UiWarehouseDto>?
 @{
     ViewData["Title"] = "Warehouses";
+    var items = (Model ?? Enumerable.Empty<UiWarehouseDto>()).ToList();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Warehouses",
@@ -13,22 +14,23 @@
     {
         Title = "Warehouse network",
         Subtitle = "Fulfillment hubs connected to carriers and trips.",
-        Source = Model,
         Controller = "Warehouses",
-        RouteIdName = "warehouseId",
-        IdPropertyPath = "Id|WarehouseId",
         ShowDetails = true,
         ShowEdit = true,
         ShowDelete = true,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Warehouse", "Name"),
-            new("Type", "Type", "badge"),
-            new("Capacity", "Capacity"),
-            new("Usage", "CurrentUsage"),
-            new("Carriers", "CarrierCount"),
-            new("Active trips", "ActiveTripsCount")
-        }
+        Headers = ["Warehouse", "Type", "Capacity", "Usage", "Carriers", "Active trips"],
+        Rows = items.Select(warehouse => AdminDisplay.AdminRow(
+            "warehouseId",
+            warehouse.Id,
+            AdminDisplay.AdminCell("Warehouse", warehouse.Name),
+            AdminDisplay.AdminCell("Type", warehouse.Type, "badge"),
+            AdminDisplay.AdminCell("Capacity", warehouse.Capacity),
+            AdminDisplay.AdminCell("Usage", warehouse.CurrentUsage),
+            AdminDisplay.AdminCell("Carriers", warehouse.CarrierCount),
+            AdminDisplay.AdminCell("Active trips", warehouse.ActiveTripsCount))).ToList(),
+        TotalCount = items.Count,
+        PageNumber = 1,
+        TotalPages = 1
     };
 }
 

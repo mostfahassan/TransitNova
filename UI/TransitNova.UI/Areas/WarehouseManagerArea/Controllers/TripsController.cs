@@ -5,6 +5,7 @@ using TransitNova.UI.Infrastructure.Mvc.Common;
 using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.WarehouseManager.Trips.Segregations.Query;
+using TransitNovaUI.BusinessLayer.DTOs.Trips;
 namespace TransitNova.UI.Areas.WarehouseManagerArea.Controllers;
 
 [Authorize(Roles = Role.WarehouseManager)]
@@ -16,13 +17,13 @@ public sealed class TripsController(
     : AppControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Index(TripFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(UiFilterTripsDto filter, CancellationToken cancellationToken)
     {
         if (CurrentWarehouseId is not Guid warehouseId)
             return RedirectToAction("Index", "Dashboard", new { area = "WarehouseManagerArea" });
 
         filter.WarehouseId = warehouseId;
-        var response = await apiInvoker.ExecuteAsync((token, ct) => warehouseManagerTripsQuery.GetWarehouseManagerTripsAsync(warehouseId, filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => warehouseManagerTripsQuery.GetWarehouseManagerTripsAsync(warehouseId, filter, token!, ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }

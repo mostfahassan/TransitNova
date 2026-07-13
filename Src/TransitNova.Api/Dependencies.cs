@@ -16,6 +16,7 @@ using TransitNova.Api.AuthorizationResource.Requirement;
 using TransitNova.Api.CustomMiddlewares;
 using TransitNova.Api.Documentation;
 using TransitNova.Api.Exceptions;
+using TransitNova.Api.Options;
 using TransitNova.BusinessLayer;
 using TransitNova.BusinessLayer.Options;
 using TransitNova.Domain.Contracts.Permissions;
@@ -37,7 +38,7 @@ namespace TransitNova.Api
             service.AddInfraStructureService(configuration).AddInBusinessService();
             service.AddJsonSerializer();
             service.AddOpenTelemetryServices();
-            service.AddRateLimiting();
+            service.AddRateLimiting(configuration);
             service.AddOpenApiDocumentation();
             service.AddCachingConfiguration();
             service.AddExceptionHandler<GlobalExceptionHandler>();
@@ -49,13 +50,14 @@ namespace TransitNova.Api
         }
 
 
-        // â”€â”€ Middleware
+        //Middleware
         public static WebApplication UseDependencies(this WebApplication app)
         {
            
             app.UseExceptionHandler(); 
             app.UseHsts();
             app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseCors("AllowMVC");
             app.UseSerilogRequestLogging();
             app.UseMiddleware<CorrelationIDMiddleware>();
@@ -254,49 +256,61 @@ namespace TransitNova.Api
             return service;
         }
 
-        public static IServiceCollection AddRateLimiting(this IServiceCollection service)
+        public static IServiceCollection AddRateLimiting(this IServiceCollection service, IConfiguration configuration)
         {
+            var settings = configuration.GetSection(ApiRateLimitOptions.SectionName).Get<ApiRateLimitOptions>() ?? new ApiRateLimitOptions();
+
+            service.AddOptions<ApiRateLimitOptions>()
+                .Bind(configuration.GetSection(ApiRateLimitOptions.SectionName));
+              
             service.AddRateLimiter(options =>
             {
-                options.AddFixedWindowLimiter("DefaultRateLimiter", options =>
+                options.AddFixedWindowLimiter("DefaultRateLimiter", limiter =>
                 {
-                    options.PermitLimit = 100;
-                    options.Window = TimeSpan.FromMinutes(1);
-                    options.QueueLimit = 50;
-                    options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    limiter.PermitLimit = settings.DefaultPermitLimit;
+                    limiter.Window = TimeSpan.FromSeconds(settings.WindowSeconds);
+                    limiter.QueueLimit = settings.DefaultQueueLimit;
+                    limiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
                 });
 
-                options.AddPolicy
-                ("CommandsLimiter", context =>
-                  RateLimitPartition.GetSlidingWindowLimiter(
-                      partitionKey: context.User.Identity?.Name ?? context.Connection.RemoteIpAddress?.ToString(),
-                      factory: _ => new SlidingWindowRateLimiterOptions
-                      {
-                          PermitLimit = 20,
-                          QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                          QueueLimit = 50,
-                          Window = TimeSpan.FromMinutes(1),
-                          SegmentsPerWindow = 6,
-                      })
-                );
+                options.AddPolicy(
+                    "CommandsLimiter",
+                    context => RateLimitPartition.GetSlidingWindowLimiter(
+                        partitionKey: context.User.Identity?.Name
+                            ?? context.Connection.RemoteIpAddress?.ToString()
+                            ?? "unknown",
+                        factory: _ => new SlidingWindowRateLimiterOptions
+                        {
+                            PermitLimit = settings.CommandPermitLimit,
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = settings.CommandQueueLimit,
+                            Window = TimeSpan.FromSeconds(settings.WindowSeconds),
+                            SegmentsPerWindow = settings.SegmentsPerWindow
+                        }));
 
                 options.OnRejected = async (context, token) =>
                 {
-                    if (token.IsCancellationRequested) return;
+                    if (token.IsCancellationRequested)
+                        return;
 
-                    if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter))
-                    {
-                        context.HttpContext.Response.Headers.RetryAfter = ((int)Math.Ceiling(retryAfter.TotalSeconds)).ToString();
-                        var proplemDetailsFactory = context.HttpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
-                        var proplemDetails = proplemDetailsFactory.CreateProblemDetails(context.HttpContext,
-                              StatusCodes.Status429TooManyRequests,
-                              "Too Many Requests",
-                              detail: $"Too Many Requests, Please Try Again After {retryAfter.TotalSeconds} From Now");
+                    if (!context.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter))
+                        return;
 
-                        await context.HttpContext.Response.WriteAsJsonAsync(proplemDetails,token);
-                    }
+                    context.HttpContext.Response.Headers.RetryAfter =
+                        ((int)Math.Ceiling(retryAfter.TotalSeconds)).ToString();
+
+                    var problemDetailsFactory = context.HttpContext.RequestServices
+                        .GetRequiredService<ProblemDetailsFactory>();
+                    var problemDetails = problemDetailsFactory.CreateProblemDetails(
+                        context.HttpContext,
+                        StatusCodes.Status429TooManyRequests,
+                        "Too Many Requests",
+                        detail: $"Too many requests. Please retry after {retryAfter.TotalSeconds:F0} seconds.");
+
+                    await context.HttpContext.Response.WriteAsJsonAsync(problemDetails, token);
                 };
             });
+
             return service;
         }
 
@@ -314,6 +328,4 @@ namespace TransitNova.Api
 
     }
 }
-
-
 

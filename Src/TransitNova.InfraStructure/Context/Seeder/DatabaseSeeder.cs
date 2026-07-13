@@ -7,7 +7,10 @@ using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using TransitNova.BusinessLayer.Common.CommonData;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using TransitNova.BusinessLayer.DTOs.Reports;
+using TransitNova.Domain.Contracts.Constants;
 using TransitNova.Domain.Contracts.DomainEvents;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Entities.MainEntities;
@@ -15,10 +18,10 @@ using TransitNova.Domain.Enums.Bundle;
 using TransitNova.Domain.Enums.Carrier;
 using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
+using TransitNova.Domain.Enums.SystemLogs;
 using TransitNova.Domain.Enums.Trip;
 using TransitNova.Domain.Enums.Users;
 using TransitNova.Domain.Enums.Warehouse;
-using TransitNova.InfraStructure.Context;
 
 namespace TransitNova.InfraStructure.Context.Seeder
 {
@@ -27,6 +30,55 @@ namespace TransitNova.InfraStructure.Context.Seeder
         private const string SeedEmailDomain = "seed.transitnova.local";
         private const string DemoPassword = "TransitNova@12345";
         private static readonly DateTime SeedClock = new(2026, 7, 1, 8, 0, 0, DateTimeKind.Utc);
+
+        private static readonly string[] LocationScriptNames = ["Countries.sql", "Governments.sql", "Cities.sql"];
+
+        public static async Task SeedLocationLookupDataAsync(IServiceProvider services, ILogger logger, CancellationToken ct = default)
+        {
+            var context = services.GetRequiredService<AppDbContext>();
+
+            var hasCountries = await context.Countries.AnyAsync(ct);
+            var hasGovernments = await context.Governments.AnyAsync(ct);
+            var hasCities = await context.Cities.AnyAsync(ct);
+
+            if (hasCountries || hasGovernments || hasCities)
+            {
+                if (hasCountries && hasGovernments && hasCities)
+                {
+                    logger.LogInformation("Location lookup seed already exists. Skipping Countries, Governments, and Cities.");
+                    return;
+                }
+
+                throw new InvalidOperationException("Location lookup tables are partially populated. Clear Countries, Governments, and Cities or complete the location seed before rerunning startup seeding.");
+            }
+
+            var executionStrategy = context.Database.CreateExecutionStrategy();
+            await executionStrategy.ExecuteAsync(async () =>
+            {
+                await using var tx = await context.Database.BeginTransactionAsync(ct);
+
+                foreach (var scriptName in LocationScriptNames)
+                {
+                    var sql = LoadLocationScript(scriptName);
+                    if (string.IsNullOrWhiteSpace(sql))
+                        continue;
+
+                    await context.Database.ExecuteSqlRawAsync(sql, ct);
+                }
+
+                await tx.CommitAsync(ct);
+            });
+
+            var countryCount = await context.Countries.CountAsync(ct);
+            var governmentCount = await context.Governments.CountAsync(ct);
+            var cityCount = await context.Cities.CountAsync(ct);
+
+            logger.LogInformation(
+                "Seeded location lookup data: {Countries} countries, {Governments} governments, {Cities} cities.",
+                countryCount,
+                governmentCount,
+                cityCount);
+        }
 
         public static async Task SeedDemoDataAsync(IServiceProvider services, ILogger logger, CancellationToken ct = default)
         {
@@ -40,7 +92,7 @@ namespace TransitNova.InfraStructure.Context.Seeder
 
             var cities = await context.Cities.AsNoTracking().OrderBy(c => c.Id).ToListAsync(ct);
             if (cities.Count == 0)
-                throw new InvalidOperationException("DatabaseSeeder requires existing Cities/Governments data. These lookup entities are intentionally not faked.");
+                throw new InvalidOperationException("DatabaseSeeder requires location lookup data before demo seeding. Add Countries, Governments, and Cities to the database, then rerun with SeedDemoData=true.");
 
             var roles = (await context.Roles.AsNoTracking().ToListAsync(ct))
                 .Where(r => !string.IsNullOrWhiteSpace(r.Name))
@@ -65,11 +117,36 @@ namespace TransitNova.InfraStructure.Context.Seeder
             context.Shipments.AddRange(seed.Shipments);
             context.Trips.AddRange(seed.Trips);
             context.CarrierRatings.AddRange(seed.CarrierRatings);
+            context.PaymentInvoices.AddRange(seed.PaymentInvoices);
+            context.Notifications.AddRange(seed.Notifications);
+            context.ReportRequests.AddRange(seed.ReportRequests);
+            context.SystemActivityLogs.AddRange(seed.SystemActivityLogs);
 
             await context.SaveChangesAsync(ct);
             await tx.CommitAsync(ct);
 
-            logger.LogInformation("Seeded TransitNova demo data: {Customers} customers, {Carriers} carriers, {Vehicles} vehicles, {Warehouses} warehouses, {Shipments} shipments, {Trips} trips.", seed.UserProfiles.Count, seed.Carriers.Count, seed.Vehicles.Count, seed.Warehouses.Count, seed.Shipments.Count, seed.Trips.Count);
+            logger.LogInformation("Seeded TransitNova demo data: {Customers} customers, {Carriers} carriers, {Vehicles} vehicles, {Warehouses} warehouses, {Shipments} shipments, {Trips} trips, {Invoices} invoices, {Notifications} notifications, {Reports} reports, {ActivityLogs} activity logs. Demo password for all seeded user types is {DemoPassword}.", seed.UserProfiles.Count, seed.Carriers.Count, seed.Vehicles.Count, seed.Warehouses.Count, seed.Shipments.Count, seed.Trips.Count, seed.PaymentInvoices.Count, seed.Notifications.Count, seed.ReportRequests.Count, seed.SystemActivityLogs.Count, DemoPassword);
+        }
+
+        private static string LoadLocationScript(string scriptName)
+        {
+            var assembly = typeof(DatabaseSeeder).Assembly;
+            var resourceName = assembly
+                .GetManifestResourceNames()
+                .SingleOrDefault(name => name.EndsWith($".LocationScripts.{scriptName}", StringComparison.OrdinalIgnoreCase));
+
+            if (resourceName is null)
+                throw new InvalidOperationException($"Embedded location script '{scriptName}' was not found.");
+
+            using var stream = assembly.GetManifestResourceStream(resourceName)
+                ?? throw new InvalidOperationException($"Embedded location script '{resourceName}' could not be opened.");
+            using var reader = new StreamReader(stream);
+
+            var script = reader.ReadToEnd();
+            script = Regex.Replace(script, @"^\s*USE\s+\[[^\]]+\]\s*$", string.Empty, RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            script = Regex.Replace(script, @"^\s*GO\s*$", string.Empty, RegexOptions.Multiline | RegexOptions.IgnoreCase);
+
+            return script.Trim();
         }
 
         private sealed record SeedData(
@@ -87,7 +164,11 @@ namespace TransitNova.InfraStructure.Context.Seeder
             List<Bundle> Bundles,
             List<Shipment> Shipments,
             List<Trip> Trips,
-            List<CarrierRating> CarrierRatings);
+            List<CarrierRating> CarrierRatings,
+            List<PaymentInvoice> PaymentInvoices,
+            List<Notification> Notifications,
+            List<ReportRequest> ReportRequests,
+            List<SystemActivityLog> SystemActivityLogs);
         private sealed class SeedBuilder
         {
             private readonly IReadOnlyList<City> _cities;
@@ -135,13 +216,21 @@ namespace TransitNova.InfraStructure.Context.Seeder
                 var carriers = carrierUsers.Select((u, i) =>
                 {
                     var carrier = _carriers.Create(u, City(i + 350), warehouses[i % warehouses.Count], i);
+                    Reflect.Set(carrier, nameof(Carrier.HandlerId), operationManagers[i % operationManagers.Count].Id);
                     foreach (var zone in Pick(zones, i * 2, 6)) carrier.ServedZones.Add(zone);
                     return carrier;
                 }).ToList();
 
                 var vehicles = carriers.Select((c, i) => _vehicles.Create(c, i)).ToList();
                 var bundles = CreateBundles(admins[0].Id);
-                foreach (var pair in userProfiles.Take(15).Select((u, i) => (u, i))) bundles[pair.i % bundles.Count].Subscribe(pair.u.Id);
+                foreach (var pair in userProfiles.Take(15).Select((u, i) => (u, i)))
+                {
+                    var bundle = bundles[pair.i % bundles.Count];
+                    bundle.Subscribe(pair.u.Id);
+                    var subscription = bundle.Subscriptions.Single(s => s.SubscribedUserId == pair.u.Id);
+                    subscription.SubscriptionDate = SeedClock.AddDays(-(pair.i % 30));
+                    subscription.EndDate = subscription.SubscriptionDate.AddMonths(bundle.BundleDurationMonths);
+                }
 
                 var receivers = new List<ReceiverProfile>();
                 var shipments = new List<Shipment>();
@@ -167,11 +256,24 @@ namespace TransitNova.InfraStructure.Context.Seeder
 
                 var trips = BuildTrips(pickupCandidates, carriers, warehouses, operationManagers);
                 var carrierRatings = BuildRatings(shipments, carriers, userProfiles);
+                var paymentInvoices = BuildPaymentInvoices(shipments, bundles);
+                var notifications = BuildNotifications(userProfiles, carriers, operationManagers, warehouseManagers, admins, shipments);
+                var reportRequests = BuildReportRequests(userProfiles, admins, paymentInvoices, shipments);
+                var systemActivityLogs = BuildSystemActivityLogs(admins, operationManagers, carriers, shipments, trips, warehouses);
 
-                foreach (var aggregate in userProfiles.Cast<IAggregateRoot>().Concat(warehouseManagers).Concat(operationManagers).Concat(admins).Concat(carriers).Concat(bundles).Concat(shipments).Concat(trips))
+                foreach (var aggregate in userProfiles.Cast<IAggregateRoot>()
+                             .Concat(warehouseManagers)
+                             .Concat(operationManagers)
+                             .Concat(admins)
+                             .Concat(carriers)
+                             .Concat(bundles)
+                             .Concat(shipments)
+                             .Concat(trips)
+                             .Concat(notifications)
+                             .Concat(reportRequests))
                     aggregate.ClearDomainEvents();
 
-                return new SeedData(users, userRoles, userProfiles, receivers, admins, operationManagers, warehouseManagers, zones, warehouses, carriers, vehicles, bundles, shipments, trips, carrierRatings);
+                return new SeedData(users, userRoles, userProfiles, receivers, admins, operationManagers, warehouseManagers, zones, warehouses, carriers, vehicles, bundles, shipments, trips, carrierRatings, paymentInvoices, notifications, reportRequests, systemActivityLogs);
             }
 
             private List<AppUser> CreateUsers(UserType type, int count, string prefix, List<AppUser> users, List<IdentityUserRole<Guid>> roles)
@@ -323,6 +425,282 @@ namespace TransitNova.InfraStructure.Context.Seeder
                 }).ToList();
             }
 
+
+            private static List<PaymentInvoice> BuildPaymentInvoices(IReadOnlyList<Shipment> shipments, IReadOnlyList<Bundle> bundles)
+            {
+                var invoices = new List<PaymentInvoice>();
+                var activeSubscriptions = new Dictionary<Guid, (Bundle Bundle, BundleSubscription Subscription)>();
+                foreach (var bundle in bundles)
+                {
+                    foreach (var subscription in bundle.Subscriptions.Where(s => s.IsActive))
+                        activeSubscriptions[subscription.SubscribedUserId] = (bundle, subscription);
+                }
+
+                var appliedBenefitCounts = new Dictionary<(Guid UserId, Guid BundleId), int>();
+
+                foreach (var pair in shipments.Select((shipment, index) => (shipment, index)))
+                {
+                    var shipment = pair.shipment;
+                    var paymentId = Reflect.Guid("shipment-payment", pair.index);
+                    shipment.SetPaymentId(paymentId);
+
+                    var originalCost = shipment.ShipmentCost;
+                    var finalCost = originalCost;
+                    decimal discountPercentage = 0;
+                    decimal discountAmount = 0;
+                    Guid? bundleSubscriptionId = null;
+                    Guid? bundleId = null;
+                    string? bundleName = null;
+                    var benefitApplied = false;
+
+                    if (activeSubscriptions.TryGetValue(shipment.SenderId, out var seedSubscription))
+                    {
+                        var bundle = seedSubscription.Bundle;
+                        var usageKey = (shipment.SenderId, bundle.Id);
+                        appliedBenefitCounts.TryGetValue(usageKey, out var appliedCount);
+                        var withinMonthlyLimit = bundle.MaxShipmentsPerMonth <= 0 || appliedCount < bundle.MaxShipmentsPerMonth;
+                        var withinWeightLimit = bundle.MaxWeightPerShipment <= 0 || shipment.PackageSpecification.Weight <= bundle.MaxWeightPerShipment;
+                        var aboveMinimumValue = bundle.MinimumShipmentValueForDiscount <= 0 || originalCost >= bundle.MinimumShipmentValueForDiscount;
+
+                        if (withinMonthlyLimit && withinWeightLimit && aboveMinimumValue && bundle.DiscountPercentage > 0)
+                        {
+                            discountPercentage = bundle.DiscountPercentage;
+                            discountAmount = Math.Round(originalCost * (discountPercentage / 100m), 2, MidpointRounding.AwayFromZero);
+                            finalCost = Math.Max(0m, originalCost - discountAmount);
+                            bundleSubscriptionId = seedSubscription.Subscription.Id;
+                            bundleId = bundle.Id;
+                            bundleName = bundle.BundleName;
+                            benefitApplied = discountAmount > 0;
+                            appliedBenefitCounts[usageKey] = appliedCount + 1;
+                        }
+                    }
+
+                    var commission = Math.Round(finalCost * 0.08m, 2, MidpointRounding.AwayFromZero);
+                    var invoice = PaymentInvoice.Create(
+                        paymentId,
+                        shipment.Id,
+                        shipment.SenderId,
+                        finalCost,
+                        commission,
+                        finalCost + commission,
+                        shipment.PaymentMethod,
+                        PaymentStatus.Success,
+                        Constant.PaymentReferenceConstants.Shipment,
+                        shipment.CreatedAt.AddMinutes(2),
+                        benefitApplied ? $"{bundleName} discount applied to seeded shipment." : "Seeded successful shipment payment.",
+                        bundleSubscriptionId,
+                        bundleId,
+                        bundleName,
+                        originalCost,
+                        discountPercentage,
+                        discountAmount,
+                        finalCost,
+                        benefitApplied);
+
+                    Reflect.Set(invoice, nameof(PaymentInvoice.Id), Reflect.Guid("shipment-invoice", pair.index));
+                    Reflect.Dates(invoice, shipment.CreatedAt.AddMinutes(2), shipment.SenderId);
+                    invoices.Add(invoice);
+                }
+
+                var bundleInvoiceIndex = 0;
+                foreach (var bundle in bundles)
+                {
+                    foreach (var subscription in bundle.Subscriptions.Where(s => s.IsActive))
+                    {
+                        var paymentId = Reflect.Guid("bundle-payment", bundleInvoiceIndex);
+                        var commission = Math.Round(bundle.BundlePrice * 0.04m, 2, MidpointRounding.AwayFromZero);
+                        var invoice = PaymentInvoice.Create(
+                            paymentId,
+                            bundle.Id,
+                            subscription.SubscribedUserId,
+                            bundle.BundlePrice,
+                            commission,
+                            bundle.BundlePrice + commission,
+                            PaymentMethod.CreditCard,
+                            PaymentStatus.Success,
+                            Constant.PaymentReferenceConstants.Bundle,
+                            subscription.SubscriptionDate.AddMinutes(3),
+                            "Seeded successful bundle subscription payment.");
+
+                        Reflect.Set(invoice, nameof(PaymentInvoice.Id), Reflect.Guid("bundle-invoice", bundleInvoiceIndex));
+                        Reflect.Dates(invoice, subscription.SubscriptionDate.AddMinutes(3), subscription.SubscribedUserId);
+                        invoices.Add(invoice);
+                        bundleInvoiceIndex++;
+                    }
+                }
+
+                return invoices;
+            }
+
+            private static List<Notification> BuildNotifications(
+                IReadOnlyList<UserProfile> users,
+                IReadOnlyList<Carrier> carriers,
+                IReadOnlyList<OperationManagerProfile> operationManagers,
+                IReadOnlyList<WarehouseManagerProfile> warehouseManagers,
+                IReadOnlyList<AdminProfile> admins,
+                IReadOnlyList<Shipment> shipments)
+            {
+                var notifications = new List<Notification>();
+
+                foreach (var pair in shipments.Take(30).Select((shipment, index) => (shipment, index)))
+                {
+                    var notification = Notification.Create(
+                        pair.shipment.Sender.AppUserId,
+                        "Shipment status update",
+                        $"Shipment {pair.shipment.TrackingNumber} is now {pair.shipment.CurrentStatus}.");
+                    AddNotification(notifications, notification, pair.index, pair.shipment.CreatedAt.AddHours(2), markAsRead: pair.index % 3 == 0);
+                }
+
+                foreach (var pair in carriers.Take(10).Select((carrier, index) => (carrier, index)))
+                {
+                    var notification = Notification.Create(
+                        pair.carrier.AppUserId,
+                        "Carrier workload assigned",
+                        "Your seeded roster includes active trips and shipment history for dashboard review.");
+                    AddNotification(notifications, notification, 100 + pair.index, SeedClock.AddDays(-(pair.index % 10)).AddHours(4), markAsRead: pair.index % 2 == 0);
+                }
+
+                foreach (var pair in operationManagers.Select((manager, index) => (manager, index)))
+                {
+                    var notification = Notification.Create(
+                        pair.manager.AppUserId,
+                        "Operations queue ready",
+                        "Demo shipments, carriers, and trips have been assigned to your operation manager scope.");
+                    AddNotification(notifications, notification, 200 + pair.index, SeedClock.AddDays(-pair.index).AddHours(5), markAsRead: false);
+                }
+
+                foreach (var pair in warehouseManagers.Take(5).Select((manager, index) => (manager, index)))
+                {
+                    var notification = Notification.Create(
+                        pair.manager.AppUserId,
+                        "Warehouse board ready",
+                        "Warehouse shipments and trips are available for the demo command board.");
+                    AddNotification(notifications, notification, 300 + pair.index, SeedClock.AddDays(-pair.index).AddHours(6), markAsRead: pair.index % 2 == 1);
+                }
+
+                foreach (var pair in admins.Select((admin, index) => (admin, index)))
+                {
+                    var notification = Notification.Create(
+                        pair.admin.AppUserId,
+                        "Demo tenant seeded",
+                        "TransitNova demo operational data is ready for admin review.");
+                    AddNotification(notifications, notification, 400 + pair.index, SeedClock.AddHours(7 + pair.index), markAsRead: pair.index != 0);
+                }
+
+                return notifications;
+            }
+
+            private static void AddNotification(List<Notification> notifications, Notification notification, int index, DateTime createdOnUtc, bool markAsRead)
+            {
+                Reflect.Set(notification, nameof(Notification.Id), Reflect.Guid("notification", index));
+                Reflect.Set(notification, nameof(Notification.CreatedOnUtc), createdOnUtc);
+                if (markAsRead)
+                    notification.MarkAsRead();
+                notifications.Add(notification);
+            }
+
+            private static List<ReportRequest> BuildReportRequests(
+                IReadOnlyList<UserProfile> users,
+                IReadOnlyList<AdminProfile> admins,
+                IReadOnlyList<PaymentInvoice> invoices,
+                IReadOnlyList<Shipment> shipments)
+            {
+                var reports = new List<ReportRequest>();
+                var adminUserId = admins[0].AppUserId;
+                var userId = users[0].AppUserId;
+                var shipmentInvoice = invoices.First(x => x.ReferecneType == Constant.PaymentReferenceConstants.Shipment);
+                var bundleInvoice = invoices.FirstOrDefault(x => x.ReferecneType == Constant.PaymentReferenceConstants.Bundle);
+
+                reports.Add(CreateCompletedReport(
+                    DashboardReportContract.ReportKey,
+                    JsonSerializer.Serialize(new DashboardReportContract()),
+                    adminUserId,
+                    "reports/demo/dashboard-summary.pdf",
+                    214_528,
+                    0));
+
+                reports.Add(CreateCompletedReport(
+                    ShipmentReportContract.ReportKey,
+                    JsonSerializer.Serialize(new ShipmentReportContract { ShipmentId = shipments[0].Id }),
+                    adminUserId,
+                    "reports/demo/shipment-analysis.pdf",
+                    178_240,
+                    1));
+
+                reports.Add(CreateCompletedReport(
+                    InvoiceReportContract.ReportKey,
+                    JsonSerializer.Serialize(new InvoiceReportContract { PaymentId = shipmentInvoice.PaymentId }),
+                    userId,
+                    "reports/demo/invoice.pdf",
+                    96_512,
+                    2));
+
+                if (bundleInvoice is not null)
+                {
+                    reports.Add(CreateStartedReport(
+                        BundleReportContract.ReportKey,
+                        JsonSerializer.Serialize(new BundleReportContract { PaymentId = bundleInvoice.PaymentId }),
+                        adminUserId,
+                        3));
+                }
+
+                reports.Add(CreatePendingReport(
+                    ShipmentReportContract.ReportKey,
+                    JsonSerializer.Serialize(new ShipmentReportContract { ShipmentId = shipments[1].Id }),
+                    userId,
+                    4));
+
+                return reports;
+            }
+
+            private static ReportRequest CreatePendingReport(string reportKey, string payloadJson, Guid requestedBy, int index)
+            {
+                var report = ReportRequest.CreateReport(reportKey, payloadJson, requestedBy);
+                Reflect.Set(report, nameof(ReportRequest.Id), Reflect.Guid("report-request", index));
+                Reflect.Dates(report, SeedClock.AddDays(-index), requestedBy);
+                return report;
+            }
+
+            private static ReportRequest CreateStartedReport(string reportKey, string payloadJson, Guid requestedBy, int index)
+            {
+                var report = CreatePendingReport(reportKey, payloadJson, requestedBy, index);
+                report.MarkAsStarted();
+                Reflect.Set(report, nameof(ReportRequest.StartedAt), SeedClock.AddDays(-index).AddMinutes(10));
+                return report;
+            }
+
+            private static ReportRequest CreateCompletedReport(string reportKey, string payloadJson, Guid requestedBy, string filePath, int fileSize, int index)
+            {
+                var report = CreateStartedReport(reportKey, payloadJson, requestedBy, index);
+                report.MarkAsCompleted(filePath, fileSize);
+                Reflect.Set(report, nameof(ReportRequest.CompletedAt), SeedClock.AddDays(-index).AddMinutes(25));
+                return report;
+            }
+
+            private static List<SystemActivityLog> BuildSystemActivityLogs(
+                IReadOnlyList<AdminProfile> admins,
+                IReadOnlyList<OperationManagerProfile> operationManagers,
+                IReadOnlyList<Carrier> carriers,
+                IReadOnlyList<Shipment> shipments,
+                IReadOnlyList<Trip> trips,
+                IReadOnlyList<Warehouse> warehouses)
+            {
+                var logs = new List<SystemActivityLog>();
+                AddActivity(logs, ActivityAction.Created, ActivityEntityType.Warehouse, $"Seeded {warehouses[0].Name}.", admins[0].AppUserId, admins[0].FullName, 0);
+                AddActivity(logs, ActivityAction.Approved, ActivityEntityType.Shipment, $"Approved shipment {shipments[3].TrackingNumber}.", operationManagers[0].AppUserId, operationManagers[0].FullName, 1);
+                AddActivity(logs, ActivityAction.Assigned, ActivityEntityType.Carrier, $"Assigned carrier {carriers[0].Code} to an operations handler.", operationManagers[0].AppUserId, operationManagers[0].FullName, 2);
+                AddActivity(logs, ActivityAction.Started, ActivityEntityType.Trip, $"Started trip {trips.First().Id.ToString()[..8]}.", operationManagers[0].AppUserId, operationManagers[0].FullName, 3);
+                AddActivity(logs, ActivityAction.Delivered, ActivityEntityType.Shipment, $"Delivered shipment {shipments.First(s => s.CurrentStatus == ShipmentStatuses.Delivered).TrackingNumber}.", carriers[0].AppUserId, carriers[0].FullName, 4);
+                AddActivity(logs, ActivityAction.Updated, ActivityEntityType.User, "Demo users and role assignments seeded.", admins[0].AppUserId, admins[0].FullName, 5);
+                return logs;
+            }
+
+            private static void AddActivity(List<SystemActivityLog> logs, ActivityAction action, ActivityEntityType entityType, string description, Guid performedByUserId, string performedByName, int index)
+            {
+                var log = SystemActivityLog.AddLog(action, entityType, description, performedByUserId, performedByName);
+                Reflect.Set(log, nameof(SystemActivityLog.OccurredAt), SeedClock.AddDays(-index).AddHours(8));
+                logs.Add(log);
+            }
             private City City(int index) => _cities[index % _cities.Count];
 
             private static IEnumerable<Zone> Pick(IReadOnlyList<Zone> zones, int start, int count)
@@ -485,7 +863,7 @@ namespace TransitNova.InfraStructure.Context.Seeder
                 var mode = index % 13 == 0 ? TransportationMode.Air : TransportationMode.Land;
                 var weight = type == enShipmentType.Fragile ? _faker.Random.Decimal(1.2m, 14m) : _faker.Random.Decimal(0.5m, 38m);
                 var package = new PackageSpecification(Math.Round(weight, 2), Math.Round(_faker.Random.Decimal(15, 90), 2), Math.Round(_faker.Random.Decimal(10, 75), 2), Math.Round(_faker.Random.Decimal(10, 110), 2));
-                var shipment = Shipment.Create(sender.Id, receiver, package, Currency.EGP, SeedClock.AddDays(index % 21).AddHours(index % 9), Address.Create($"{receiverCity.Name} Delivery Point", null, _faker.Address.StreetAddress()), Address.Create($"{senderCity.Name} Pickup Point", null, _faker.Address.StreetAddress()), type, mode,(PaymentMethod)(index % 3));
+                var shipment = Shipment.Create(sender.Id, receiver, package, Currency.EGP, SeedClock.AddDays(index % 21).AddHours(index % 9), Address.Create($"{receiverCity.Name} Delivery Point", null, _faker.Address.StreetAddress()), Address.Create($"{senderCity.Name} Pickup Point", null, _faker.Address.StreetAddress()), type, mode, (PaymentMethod)(index % 3));
                 var cost = package.Weight * (type == enShipmentType.Express ? 32m : 18m) + (type == enShipmentType.Fragile ? 85m : 0m) + _faker.Random.Decimal(25, 160);
                 shipment.SetShipmentCost(Math.Round(cost, 2), SeedClock.AddDays(2 + index % 12));
                 Reflect.Set(shipment, nameof(Shipment.Id), Reflect.Guid("shipment", index));
@@ -546,6 +924,3 @@ namespace TransitNova.InfraStructure.Context.Seeder
         }
     }
 }
-
-
-

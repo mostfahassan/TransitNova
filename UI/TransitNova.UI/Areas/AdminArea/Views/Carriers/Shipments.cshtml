@@ -1,6 +1,7 @@
-@model object?
+@model UiCarrierShipmentListDto?
 @{
     ViewData["Title"] = "Carrier shipments";
+    var shipments = Model?.Shipments ?? UiPagedResult<UiRetrieveShipmentDto>.From([], 0, 1, 10);
     var header = new AdminPageHeaderViewModel
     {
         Title = "Carrier shipments",
@@ -13,26 +14,26 @@
     {
         Title = "Carrier shipment ledger",
         Subtitle = "Shipment rows filtered through the carrier administration endpoint.",
-        Source = Model,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id|ShipmentId",
         ShowDetails = true,
         ShowEdit = false,
         ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Shipment", "TrackingNumber", "id"),
-            new("Pickup", "PickupAddress"),
-            new("Delivery", "DeliveryAddress"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Mode", "TransportationMode", "badge"),
-            new("Cost", "ShippingCost", "currency"),
-            new("Created", "CreatedAt")
-        }
+        Headers = ["Shipment", "Pickup", "Delivery", "Status", "Mode", "Cost", "Created"],
+        Rows = shipments.Data.Select(shipment => AdminDisplay.AdminRow(
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.AdminCell("Shipment", shipment.TrackingNumber, "id"),
+            AdminDisplay.AdminCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.AdminCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.AdminCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.AdminCell("Mode", shipment.TransportationMode, "badge"),
+            AdminDisplay.AdminCell("Cost", shipment.ShippingCost, "currency"),
+            AdminDisplay.AdminCell("Created", shipment.CreatedAt))).ToList(),
+        TotalCount = shipments.TotalCount,
+        PageNumber = shipments.PageNumber,
+        TotalPages = shipments.TotalPages
     };
 }
 
 <partial name="_AdminPageHeader" model="header" />
 <partial name="_AdminTable" model="table" />
-

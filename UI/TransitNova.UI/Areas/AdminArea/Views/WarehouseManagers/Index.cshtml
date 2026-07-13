@@ -1,6 +1,7 @@
-@model object?
+@model UiPagedResult<UiWarehouseManagerListDto>?
 @{
     ViewData["Title"] = "Warehouse managers";
+    var page = Model ?? UiPagedResult<UiWarehouseManagerListDto>.From([], 0, 1, 10);
     var header = new AdminPageHeaderViewModel
     {
         Title = "Warehouse managers",
@@ -13,22 +14,23 @@
     {
         Title = "Warehouse manager directory",
         Subtitle = "Managers returned by warehouse-manager filters.",
-        Source = Model,
         Controller = "WarehouseManagers",
-        RouteIdName = "id",
-        IdPropertyPath = "Id|UserId|WarehouseManagerId",
         ShowDetails = true,
         ShowEdit = false,
         ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Manager", "FullName|Name|Email"),
-            new("Email", "Email"),
-            new("Phone", "PhoneNumber"),
-            new("Warehouse", "WarehouseName|WarehouseId"),
-            new("City", "CityName"),
-            new("Active", "IsActive", "badge")
-        }
+        Headers = ["Manager", "Email", "Phone", "Warehouse", "City", "Active"],
+        Rows = page.Data.Select(manager => AdminDisplay.AdminRow(
+            "id",
+            manager.Id,
+            AdminDisplay.AdminCell("Manager", manager.FullName),
+            AdminDisplay.AdminCell("Email", manager.Email),
+            AdminDisplay.AdminCell("Phone", "-"),
+            AdminDisplay.AdminCell("Warehouse", manager.WarehouseName ?? AdminDisplay.Format(manager.WarehouseId, "Warehouse", "id")),
+            AdminDisplay.AdminCell("City", "-"),
+            AdminDisplay.AdminCell("Active", "-", "badge"))).ToList(),
+        TotalCount = page.TotalCount,
+        PageNumber = page.PageNumber,
+        TotalPages = page.TotalPages
     };
 }
 

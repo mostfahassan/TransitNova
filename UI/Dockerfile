@@ -6,6 +6,8 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
+COPY ["Directory.Build.props", "./"]
+COPY ["Directory.Packages.props", "./"]
 COPY ["UI/TransitNova.UI/TransitNova.UI.csproj", "UI/TransitNova.UI/"]
 COPY ["UI/TransitNovaUI.BusinessLayer/TransitNovaUI.BusinessLayer.csproj", "UI/TransitNovaUI.BusinessLayer/"]
 COPY ["Src/TransitNova.BusinessLayer/TransitNova.BusinessLayer.csproj", "Src/TransitNova.BusinessLayer/"]
@@ -26,3 +28,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "TransitNova.UI.dll"]
+

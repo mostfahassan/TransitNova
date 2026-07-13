@@ -19,6 +19,10 @@ namespace TransitNova.InfraStructure.EntityConfig
                 .HasForeignKey(c => c.CityId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            admin.Property(admin => admin.UserType)
+                 .HasConversion<string>()
+                 .IsRequired();
+
             admin.HasIndex(c => c.AppUserId).IsUnique();
             admin.HasOne<AppUser>()
                     .WithOne()

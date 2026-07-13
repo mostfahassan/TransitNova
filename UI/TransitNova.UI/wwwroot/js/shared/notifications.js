@@ -220,13 +220,24 @@
             await handleIncomingNotification(notification);
         });
 
+        connection.onreconnecting(() => {
+            body.dataset.notificationsConnection = 'reconnecting';
+        });
+
         connection.onreconnected(async () => {
+            body.dataset.notificationsConnection = 'connected';
             await reconnectSync();
+        });
+
+        connection.onclose(() => {
+            body.dataset.notificationsConnection = 'disconnected';
         });
 
         try {
             await connection.start();
+            body.dataset.notificationsConnection = 'connected';
         } catch {
+            body.dataset.notificationsConnection = 'failed';
             // Best effort; the badge syncs again on the next page load or reconnect.
         }
     }

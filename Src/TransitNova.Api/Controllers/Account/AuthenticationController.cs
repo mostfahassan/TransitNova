@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -75,8 +75,9 @@ namespace TransitNova.Api.Controllers.Account
         [EndpointDescription("Terminates the current authenticated session and invalidates the user's active authentication context.")]
         public async Task<IActionResult> SignOutAsync(CancellationToken ct)
         {
-            var response = await mediator.Send(new SignOutCommand(), ct);
+            var response = await mediator.Send(new SignOutCommand(User.GetUserId()), ct);
             return response.ToActionResult();
         }
     }
 }
+

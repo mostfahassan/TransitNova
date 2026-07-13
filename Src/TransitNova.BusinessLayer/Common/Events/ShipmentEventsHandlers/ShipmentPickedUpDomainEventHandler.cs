@@ -22,21 +22,21 @@ namespace TransitNova.BusinessLayer.Common.Events.ShipmentEventsHandlers
             if (shipment is null)
                 return;
 
-            var carrierId = shipment.ShipmentStates
+            var carrierAppUserId = shipment.ShipmentStates
                 .FirstOrDefault(status => status.CurrentState && status.StatusType == ShipmentStatuses.PickedUp)
-                ?.CarrierId;
+                ?.Carrier?.AppUserId;
 
-            if (carrierId.HasValue)
+            if (carrierAppUserId.HasValue)
             {
                 var carrierNotification = Notification.Create(
-                    carrierId.Value,
+                    carrierAppUserId.Value,
                     "Shipment Picked Up",
                     $"Shipment {notification.TrackingNumber} pickup has been confirmed.");
                 await notificationRepo.AddNotificationAsync(carrierNotification, cancellationToken);
             }
 
             var senderNotification = Notification.Create(
-                shipment.SenderId,
+                shipment.Sender.AppUserId,
                 "Shipment Picked Up",
                 $"Shipment {notification.TrackingNumber} has been picked up by the assigned carrier.");
             await notificationRepo.AddNotificationAsync(senderNotification, cancellationToken);

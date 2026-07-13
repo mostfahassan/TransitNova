@@ -19,7 +19,7 @@ public class CarrierShipmentQueryRepository(
 {
     public async Task<RetrieveShipmentDto?> GetCarrierShipmentAsync(Guid carrierId, Guid shipmentId, CancellationToken ct = default)
     {
-        logger.LogDebug("Fetching shipments for Carrier {UserId} and Shipment {ShipmentId}", carrierId, shipmentId);
+        logger.LogDebug("Fetching shipments for Carrier {UserId} and Shipment {ReferecneId}", carrierId, shipmentId);
 
         var shipment = await context.Shipments
             .AsNoTracking()

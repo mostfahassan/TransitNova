@@ -1,6 +1,7 @@
-@model object?
+@model UiOperationManagerProfileDto?
 @{
     ViewData["Title"] = "Operation manager details";
+    var manager = Model ?? new UiOperationManagerProfileDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Operation manager details",
@@ -13,23 +14,22 @@
     {
         Title = "Operation manager record",
         Subtitle = "Profile and performance details for the selected operation manager.",
-        Source = Model,
+        PrimaryLabel = manager.FullName,
         Controller = "OperationManagers",
-        RouteIdName = "operationManagerId",
-        IdPropertyPath = "Id|OperationManagerId|UserId",
         EditAction = null,
         DeleteAction = null,
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Manager", "FullName|Name"),
-            new("Email", "Email"),
-            new("Phone", "PhoneNumber"),
-            new("Active", "IsActive", "badge"),
-            new("City", "CityName"),
-            new("Address", "Address"),
-            new("Handled carriers", "HandledCarriersCount"),
-            new("Handled shipments", "HandledShipmentsCount")
-        }
+        RouteValues = new Dictionary<string, object?> { ["operationManagerId"] = manager.Id },
+        Fields =
+        [
+            AdminDisplay.AdminCell("Manager", manager.FullName),
+            AdminDisplay.AdminCell("Email", manager.Email),
+            AdminDisplay.AdminCell("Phone", manager.PhoneNumber),
+            AdminDisplay.AdminCell("Active", "-", "badge"),
+            AdminDisplay.AdminCell("City", manager.CityName),
+            AdminDisplay.AdminCell("Address", manager.Address),
+            AdminDisplay.AdminCell("Handled carriers", manager.TotalCarriertHandled),
+            AdminDisplay.AdminCell("Handled shipments", manager.TotalShipmentHandled)
+        ]
     };
 }
 

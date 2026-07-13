@@ -5,6 +5,7 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.PaymentInvoiceReposi
 {
     public interface IPaymentRepositoryQuery
     {
+        Task<BundlePaymentInvoiceDto?> GetBundleInvoiceByPaymentIdAsync(Guid paymentId, CancellationToken cancellationToken);
         Task<ShipmentPaymentInvoiceDto?> GetInvoiceByPaymentIdAsync(Guid paymentId, CancellationToken cancellationToken);
         Task<ShipmentPaymentInvoiceDto?> GetUserInvoiceAsync(Guid userId, CancellationToken cancellationToken);
         Task<ShipmentPaymentInvoiceDto?> GetUserInvoiceByPaymentIdAsync(Guid userId, Guid paymentId, CancellationToken cancellationToken);
@@ -12,3 +13,5 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.PaymentInvoiceReposi
         Task<PagedResult<ShipmentPaymentInvoiceDto>> GetInvoicesPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
     }
 }
+
+

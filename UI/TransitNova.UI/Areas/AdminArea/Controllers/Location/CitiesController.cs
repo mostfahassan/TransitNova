@@ -6,6 +6,7 @@ using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Cities.Segregations.Commands;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Cities.Segregations.Query;
+using TransitNovaUI.BusinessLayer.DTOs.City;
 
 namespace TransitNova.UI.Areas.AdminArea.Controllers.Location;
 
@@ -20,9 +21,9 @@ public sealed class CitiesController(
     : AppControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Index(CityFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(UiCityFilterDto filter, CancellationToken cancellationToken)
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => adminCityQuery.FilterCitiesAsync(filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminCityQuery.FilterCitiesAsync(filter, token!, ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }

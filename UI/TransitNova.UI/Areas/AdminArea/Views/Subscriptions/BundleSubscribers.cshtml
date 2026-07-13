@@ -1,10 +1,11 @@
-@model object?
+@model IEnumerable<UiBundleSubscriptionDetailsDto>?
 @{
     ViewData["Title"] = "Bundle subscribers";
+    var items = (Model ?? Enumerable.Empty<UiBundleSubscriptionDetailsDto>()).ToList();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Bundle subscribers",
-        Description = "Review users subscribed to a selected logistics bundle.",
+        Description = "Review all users subscribed to logistics bundles.",
         PrimaryLabel = null,
         PrimaryController = "Subscriptions",
         PrimaryAction = null
@@ -12,23 +13,19 @@
     var table = new AdminTableViewModel
     {
         Title = "Subscriber ledger",
-        Subtitle = "Customers and subscription status for the selected bundle.",
-        Source = Model,
+        Subtitle = "Customers and subscription status across all bundles.",
         Controller = "Subscriptions",
-        RouteIdName = "subscriptionId",
-        IdPropertyPath = "Id|SubscriptionId|UserId",
         ShowDetails = true,
-        ShowEdit = false,
-        ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Subscriber", "FullName|UserName|Email"),
-            new("Email", "Email"),
-            new("Bundle", "BundleName"),
-            new("Status", "Status|IsActive", "badge"),
-            new("Started", "CreatedAt|StartDate"),
-            new("Expires", "ExpiresAt|EndDate")
-        }
+        Headers = ["Subscriber", "Email", "Bundle", "Status", "Started", "Expires"],
+        Rows = items.Select(subscription => AdminDisplay.AdminRow(
+            "subscriptionId",
+            subscription.Id,
+            AdminDisplay.AdminCell("Subscriber", subscription.FullName),
+            AdminDisplay.AdminCell("Email", subscription.Email),
+            AdminDisplay.AdminCell("Bundle", subscription.BundleName),
+            AdminDisplay.AdminCell("Status", subscription.IsActive, "badge"),
+            AdminDisplay.AdminCell("Started", subscription.SubscriptionDate),
+            AdminDisplay.AdminCell("Expires", subscription.EndDate))).ToList()
     };
 }
 

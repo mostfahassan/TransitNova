@@ -1,4 +1,4 @@
-﻿
+
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.DTOs.Shipment;
@@ -9,6 +9,7 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.OperationManagerRepo
     {
         Task<Guid> GetUserIdAsync(Guid userId, CancellationToken cancellationToken);
         Task<List<Guid>> GetOperationManagersIdsAsync(CancellationToken cancellationToken);
+        Task<List<Guid>> GetOperationManagersAppUserIdsAsync(CancellationToken cancellationToken);
         Task<string?> GetOperationManagerNameAsync(Guid userId, CancellationToken cancellationToken);
         Task<OperationManagerProfileDto?> GetOperationManagerProfileAsync(Guid id, CancellationToken cancellationToken);
         Task<List<OperationManagerProfileDto>> GetAllAsync(CancellationToken cancellationToken);

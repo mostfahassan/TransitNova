@@ -10,13 +10,15 @@ public sealed class SystemActivityLogConfiguration : IEntityTypeConfiguration<Sy
 
         Log.HasKey(x => x.Id);
 
-        Log.Property(x => x.Action)
+        Log.Property(x => x.EntityType)
+            .HasConversion<string>()
             .IsRequired()
             .HasMaxLength(50);
 
-        Log.Property(x => x.EntityType)
-            .IsRequired()
-            .HasMaxLength(50);
+        Log.Property(x => x.Action)
+             .HasConversion<string>()
+             .IsRequired()
+             .HasMaxLength(15);
 
         Log.Property(x => x.Description)
             .IsRequired()
@@ -31,9 +33,7 @@ public sealed class SystemActivityLogConfiguration : IEntityTypeConfiguration<Sy
 
         Log.HasIndex(x => x.OccurredAt);
         Log.HasIndex(x => new {x.PerformedByName, x.OccurredAt});
-
         Log.HasIndex(x => x.EntityType);
-
         Log.HasIndex(x => x.PerformedByUserId);
     }
 }

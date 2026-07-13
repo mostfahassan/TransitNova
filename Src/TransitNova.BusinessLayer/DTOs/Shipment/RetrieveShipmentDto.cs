@@ -24,6 +24,5 @@ namespace TransitNova.BusinessLayer.DTOs.Shipment
         public List<RetrieveShipmentStatusDto> ShipmentStates { get; set; } = new();
         public enShipmentType ShipmentType { get; set; }
         public DateTime CreatedAt { get; set; }
-        
     }
 }

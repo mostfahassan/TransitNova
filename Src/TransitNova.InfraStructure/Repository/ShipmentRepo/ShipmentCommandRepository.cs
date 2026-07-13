@@ -18,7 +18,7 @@ namespace TransitNova.InfraStructure.Repository.ShipmentRepo
         }
         public async Task UpdateAsync(Shipment shipment, CancellationToken ct)
         {
-            logger.LogDebug("Updating shipment {ShipmentId} in context", shipment.Id);
+            logger.LogDebug("Updating shipment {ReferecneId} in context", shipment.Id);
             context.Shipments.Update(shipment); 
         }
     }

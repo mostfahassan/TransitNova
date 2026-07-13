@@ -1,6 +1,7 @@
-@model object?
+@model UiCityDto?
 @{
     ViewData["Title"] = "City details";
+    var city = Model ?? new UiCityDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "City details",
@@ -13,19 +14,18 @@
     {
         Title = "City record",
         Subtitle = "Location metadata used across shipment addresses.",
-        Source = Model,
+        PrimaryLabel = city.Name,
         Controller = "Cities",
-        RouteIdName = "cityId",
-        IdPropertyPath = "Id|CityId",
         EditAction = "Edit",
         DeleteAction = "Delete",
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("City", "Name"),
-            new("Government", "GovernmentName"),
-            new("Government ID", "GovernmentId", "id"),
-            new("City ID", "Id", "id")
-        }
+        RouteValues = new Dictionary<string, object?> { ["cityId"] = city.Id },
+        Fields =
+        [
+            AdminDisplay.AdminCell("City", city.Name),
+            AdminDisplay.AdminCell("Government", city.GovernmentName),
+            AdminDisplay.AdminCell("Government ID", city.GovernmentId, "id"),
+            AdminDisplay.AdminCell("City ID", city.Id, "id")
+        ]
     };
 }
 

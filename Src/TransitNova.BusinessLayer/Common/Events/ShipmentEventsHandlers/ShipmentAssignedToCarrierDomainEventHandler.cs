@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using TransitNova.BusinessLayer.Interfaces.Repositories.NotificationRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
@@ -20,21 +20,21 @@ namespace TransitNova.BusinessLayer.Common.Events.ShipmentEventsHandlers
             if (shipment is null)
                 return;
 
-            var carrierId = shipment.ShipmentStates
+            var carrierAppUserId = shipment.ShipmentStates
                 .FirstOrDefault(status => status.CurrentState && status.StatusType == notification.Status)
-                ?.CarrierId;
+                ?.Carrier?.AppUserId;
 
-            if (carrierId.HasValue)
+            if (carrierAppUserId.HasValue)
             {
                 var carrierNotification = Notification.Create(
-                    carrierId.Value,
+                    carrierAppUserId.Value,
                     "Shipment Assigned",
                     $"Shipment {notification.TrackingNumber} has been assigned to you.");
                 await notificationRepo.AddNotificationAsync(carrierNotification, cancellationToken);
             }
 
             var senderNotification = Notification.Create(
-                shipment.SenderId,
+                shipment.Sender.AppUserId,
                 "Carrier Assigned",
                 $"A carrier has been assigned to shipment {notification.TrackingNumber}.");
             await notificationRepo.AddNotificationAsync(senderNotification, cancellationToken);

@@ -1,7 +1,7 @@
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.DTOs.Shipment;
-using TransitNova.Domain.Entities.Common;
+using TransitNovaUI.BusinessLayer.Common.CommonData;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Trip;
 using TransitNovaUI.BusinessLayer.Common.ResultPattern;
@@ -17,7 +17,7 @@ public sealed class UiCarrierTripDto
     public DateTime? StartTime { get; set; }
     public DateTime? EndTime { get; set; }
     public string WarehouseName { get; set; } = string.Empty;
-    public Address WarehouseAddress { get; set; } = null!;
+    public UiAddressDto WarehouseAddress { get; set; } = new();
     public int ShipmentCount { get; set; }
     public IReadOnlyCollection<UiRetrieveShipmentDto> Shipments { get; set; } = [];
 
@@ -31,7 +31,12 @@ public sealed class UiCarrierTripDto
             StartTime = source.StartTime,
             EndTime = source.EndTime,
             WarehouseName = source.WarehouseName,
-            WarehouseAddress = source.WarehouseAddress,
+            WarehouseAddress = new UiAddressDto
+            {
+                MainAddress = source.WarehouseAddress.MainAddress,
+                SecondaryAddress = source.WarehouseAddress.SecondaryAddress,
+                Street = source.WarehouseAddress.Street
+            },
             ShipmentCount = source.ShipmentCount,
             Shipments = source.Shipments.Select(UiRetrieveShipmentDto.ToUiDto).ToList()
         };

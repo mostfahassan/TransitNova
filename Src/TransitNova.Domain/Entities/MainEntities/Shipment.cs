@@ -4,26 +4,24 @@ using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.Common;
 using TransitNova.Domain.Enums.Payment;
 using TransitNova.Domain.Enums.Shipment;
+
 namespace TransitNova.Domain.Entities.MainEntities;
+
 public class Shipment : AggregateRoot<Guid>, ISoftDeletable
 {
     private readonly List<ShipmentStatus> _shipmentStates = new();
     public IReadOnlyCollection<ShipmentStatus> ShipmentStates => _shipmentStates;
 
-    // ===== Soft Delete =====
     public bool IsDeleted { get; private set; }
     public DateTime? DeletedOn { get; private set; }
 
-    // ===== Cancellation =====
     public bool IsCancelled { get; private set; }
     public DateTime? CancelledOn { get; private set; }
 
-    // ===== Rejection =====
     public bool IsRejected { get; private set; }
     public DateTime? RejectedAt { get; private set; }
     public string? RejectionReason { get; private set; }
 
-    // ===== Issue =====
     public string? IssueMessage { get; private set; }
     public bool IsIssued { get; private set; }
     public DateTime? IssuedOn { get; private set; }
@@ -58,8 +56,8 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
     public Guid? TripId { get; set; }
 
     public Guid PaymentId { get; private set; }
-
     public PaymentMethod PaymentMethod { get; private set; }
+
     private Shipment() { }
 
     private Shipment(
@@ -94,7 +92,6 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
 
         CreatedBy = senderId.ToString();
         CurrentState = true;
-
         PaymentMethod = paymentMethod;
     }
 
@@ -122,12 +119,10 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             mode,
             paymentMethod);
 
-
-        shipment._shipmentStates.Add(
-            shipment.CreateHistory(ShipmentStatuses.Pending));
+        shipment._shipmentStates.Add(shipment.CreateHistory(ShipmentStatuses.Pending));
 
         shipment.RaiseDomainEvent(
-            new ShipmentCreatedDomainEvent(senderId,shipment.Id, shipment.TrackingNumber));
+            new ShipmentCreatedDomainEvent(shipment.Id, shipment.TrackingNumber));
 
         return shipment;
     }
@@ -138,7 +133,7 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
     private ShipmentStatus CreateHistory(ShipmentStatuses statusType, Guid? carrierId = null)
     {
         var current = _shipmentStates.FirstOrDefault(x => x.CurrentState);
-           current?.CurrentState = false;
+        current?.CurrentState = false;
 
         return new ShipmentStatus
         {
@@ -191,14 +186,13 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
 
         UpdatedAt = DateTime.UtcNow;
         RaiseDomainEvent(new ShipmentUpdatedDomainEvent(Id, TrackingNumber));
-
     }
 
     public void ApproveShipment(Guid handlerId)
     {
         EnsurePending();
         ChangeStatus(ShipmentStatuses.Approved, handledById: handlerId);
-        RaiseDomainEvent(new ShipmentApprovedDomainEvent(SenderId, Id, TrackingNumber));
+        RaiseDomainEvent(new ShipmentApprovedDomainEvent(Id, TrackingNumber));
     }
 
     public void RejectShipment(Guid handlerId, string rejectionReason)
@@ -229,8 +223,8 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
         IssuedOn = DateTime.UtcNow;
         ChangeStatus(ShipmentStatuses.Issue);
         RaiseDomainEvent(new ShipmentIssuedDomainEvent(Id, TrackingNumber, issueMessage));
-
     }
+
     public void DeleteShipment()
     {
         if (IsCancelled || IsDeleted)
@@ -238,12 +232,12 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
 
         if (CurrentStatus is not ShipmentStatuses.Delivered)
             throw new InvalidShipmentStateException(Id, "Delivered", CurrentStatus.ToString());
+
         IsDeleted = true;
         DeletedOn = DateTime.UtcNow;
         ChangeStatus(ShipmentStatuses.Deleted);
         RaiseDomainEvent(new ShipmentDeletedDomainEvent(Id, TrackingNumber));
     }
-
 
     public void AssignedAsDeliveryTrip(Guid tripId, Guid carrierId)
     {
@@ -252,10 +246,9 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             throw new DomainOperationException("Shipment Is Being Rejected Or Cancelled,Cant Assigned For Trip");
 
         ChangeStatus(ShipmentStatuses.OutForDelivery, carrierId);
-
         RaiseDomainEvent(new ShipmentAssignedToCarrierDomainEvent(Id, TrackingNumber, ShipmentStatuses.OutForDelivery));
-
     }
+
     public void AssignedAsPickupTrip(Guid tripId, Guid carrierId)
     {
         TripId = tripId;
@@ -263,33 +256,27 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             throw new DomainOperationException("Shipment Is Being Rejected Or Cancelled,Cant Assigned For Trip");
 
         ChangeStatus(ShipmentStatuses.OutForPickup, carrierId);
-
         RaiseDomainEvent(new ShipmentAssignedToCarrierDomainEvent(Id, TrackingNumber, ShipmentStatuses.OutForPickup));
-
     }
+
     public void Delivered(Guid carrierId)
     {
         if (CurrentStatus != ShipmentStatuses.OutForDelivery)
             throw new ShipmentNotAssignedException(Id, carrierId);
 
         ActualDeliveryDate = DateTime.UtcNow;
-
         ChangeStatus(ShipmentStatuses.Delivered, carrierId);
-
         RaiseDomainEvent(new ShipmentDeliveredDomainEvent(Id, TrackingNumber));
-
     }
+
     public void PickedUp(Guid carrierId)
     {
         if (CurrentStatus != ShipmentStatuses.OutForPickup)
             throw new ShipmentNotAssignedException(Id, carrierId);
 
         PickupDate = DateTime.UtcNow;
-
         ChangeStatus(ShipmentStatuses.PickedUp, carrierId);
-
         RaiseDomainEvent(new ShipmentPickedUpDomainEvent(Id, TrackingNumber));
-
     }
 
     public void DeliveredToWarehouse(Guid carrierId)
@@ -316,8 +303,8 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             PickupDate = DateTime.UtcNow;
 
         RaiseDomainEvent(new ShipmentAssignedToCarrierDomainEvent(Id, TrackingNumber, newStatus));
-
     }
+
     private void EnsurePending()
     {
         if (CurrentStatus != ShipmentStatuses.Pending)
@@ -342,13 +329,15 @@ public class Shipment : AggregateRoot<Guid>, ISoftDeletable
             throw new InvalidShipmentStateException(Id, "NotFinalState", CurrentStatus.ToString());
     }
 
-    public void SetShipmentCost(decimal cost,DateTime estimatedDeliveryDate)
+    public void SetShipmentCost(decimal cost, DateTime estimatedDeliveryDate)
     {
         if (cost < 0)
             throw new DomainOperationException("Shipment cost cannot be negative.", "NEGATIVE_COST", nameof(Shipment), Id);
+
         ShipmentCost = cost;
         EstimatedDeliveryDate = estimatedDeliveryDate;
     }
+
     public void SetPaymentId(Guid paymentId)
     {
         PaymentId = paymentId;

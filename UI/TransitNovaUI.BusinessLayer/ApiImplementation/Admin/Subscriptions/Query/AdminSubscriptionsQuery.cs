@@ -5,14 +5,21 @@ namespace TransitNovaUI.BusinessLayer.ApiImplementation.Admin.Subscriptions.Quer
 {
     public class AdminSubscriptionsQuery(IHttpHandler httpHandler, HttpClient httpClient) : ApiServiceBase(httpHandler, httpClient), IAdminSubscriptionQuery
     {
-        public Task<ApiResponse<List<UiUserProfileDto>>> GetBundleSubscribersAsync(Guid bundleId, string bearerToken, CancellationToken cancellationToken = default)
+        public Task<ApiResponse<List<UiBundleSubscriptionDetailsDto>>> GetSubscribersAsync(string bearerToken, CancellationToken cancellationToken = default)
         {
           
-            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Subscriptions.GetBundleSubscribersUrl, ("bundleId", bundleId)));
+            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Subscriptions.GetSubscribersUrl));
 
-            return SendQueryRequestAsync<List<UiUserProfileDto>>(HttpMethod.Get, url, bearerToken, cancellationToken);
+            return SendQueryRequestAsync<List<UiBundleSubscriptionDetailsDto>>(HttpMethod.Get, url, bearerToken, cancellationToken);
         }
 
+
+        public Task<ApiResponse<List<UiBundleSubscriptionDetailsDto>>> GetBundleSubscribersAsync(Guid bundleId, string bearerToken, CancellationToken cancellationToken = default)
+        {
+            var url = httpHandler.UrlBuilder(ApiRoutes.Build(ApiRoutes.Subscriptions.GetBundleSubscribersUrl, ("bundleId", bundleId)));
+
+            return SendQueryRequestAsync<List<UiBundleSubscriptionDetailsDto>>(HttpMethod.Get, url, bearerToken, cancellationToken);
+        }
         public Task<ApiResponse<UiBundleSubscriptionDetailsDto>> GetSubscriptionByIdAsync(Guid subscriptionId, string bearerToken, CancellationToken cancellationToken = default)
         {
             

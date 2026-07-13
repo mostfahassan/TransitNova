@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using TransitNova.BusinessLayer.Interfaces.Repositories.NotificationRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
@@ -21,7 +21,7 @@ namespace TransitNova.BusinessLayer.Common.Events.ShipmentEventsHandlers
                 return;
 
             var notificationCreated = Notification.Create(
-                shipment.SenderId,
+                shipment.Sender.AppUserId,
                 "Shipment Rejected",
                 $"Shipment {notification.TrackingNumber} was rejected: {notification.RejectionReason}");
             await notificationRepo.AddNotificationAsync(notificationCreated, cancellationToken);

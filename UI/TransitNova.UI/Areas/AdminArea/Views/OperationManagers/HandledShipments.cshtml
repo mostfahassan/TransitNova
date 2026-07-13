@@ -1,6 +1,7 @@
-@model object?
+@model UiPagedResult<UiRetrieveShipmentSummaryDto>?
 @{
     ViewData["Title"] = "Handled shipments";
+    var page = Model ?? UiPagedResult<UiRetrieveShipmentSummaryDto>.From([], 0, 1, 10);
     var header = new AdminPageHeaderViewModel
     {
         Title = "Handled shipments",
@@ -13,25 +14,25 @@
     {
         Title = "Handled shipment ledger",
         Subtitle = "Paginated shipment workload returned by the backend.",
-        Source = Model,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id|ShipmentId",
         ShowDetails = true,
         ShowEdit = false,
         ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Shipment", "TrackingNumber", "id"),
-            new("Pickup", "PickupAddress"),
-            new("Delivery", "DeliveryAddress"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Mode", "TransportationMode", "badge"),
-            new("Created", "CreatedAt")
-        }
+        Headers = ["Shipment", "Pickup", "Delivery", "Status", "Mode", "Created"],
+        Rows = page.Data.Select(shipment => AdminDisplay.AdminRow(
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.AdminCell("Shipment", shipment.TrackingNumber, "id"),
+            AdminDisplay.AdminCell("Pickup", shipment.SenderCity),
+            AdminDisplay.AdminCell("Delivery", shipment.ReceiverCity),
+            AdminDisplay.AdminCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.AdminCell("Mode", shipment.ShipmentType, "badge"),
+            AdminDisplay.AdminCell("Created", shipment.CreatedAt))).ToList(),
+        TotalCount = page.TotalCount,
+        PageNumber = page.PageNumber,
+        TotalPages = page.TotalPages
     };
 }
 
 <partial name="_AdminPageHeader" model="header" />
 <partial name="_AdminTable" model="table" />
-

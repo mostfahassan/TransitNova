@@ -1,6 +1,7 @@
 @model GovernmentFormViewModel
 @{
     ViewData["Title"] = ViewContext.RouteData.Values["action"]?.ToString() == "Edit" ? "Edit Government" : "Create Government";
+    var isEdit = string.Equals(ViewContext.RouteData.Values["action"]?.ToString(), "Edit", StringComparison.OrdinalIgnoreCase);
     var header = new AdminPageHeaderViewModel
     {
         Title = ViewData["Title"]?.ToString() ?? "Create Government",
@@ -15,8 +16,23 @@
     @Html.AntiForgeryToken()
     <div asp-validation-summary="ModelOnly" class="mb-5 rounded-xl border border-[#F5D4D4] bg-[#FDEBEC] p-4 text-sm text-[#9F2F2D]"></div>
     <div class="grid gap-5 lg:grid-cols-2">
-        <div><label asp-for="Name" class="admin-label"></label><input asp-for="Name" class="admin-input" placeholder="Cairo" /><span asp-validation-for="Name" class="admin-validation"></span></div>
-        <div><label asp-for="CountryId" class="admin-label"></label><input asp-for="CountryId" class="admin-input" placeholder="1" /><span asp-validation-for="CountryId" class="admin-validation"></span></div>
+        <div>
+            <label asp-for="Name" class="admin-label"></label>
+            <input asp-for="Name" class="admin-input" placeholder="Cairo" />
+            <span asp-validation-for="Name" class="admin-validation"></span>
+        </div>
+        <div>
+            <label asp-for="CountryId" class="admin-label"></label>
+            <input asp-for="CountryId" class="admin-input" placeholder="1" />
+            <span asp-validation-for="CountryId" class="admin-validation"></span>
+        </div>
+        @if (isEdit && !string.IsNullOrWhiteSpace(Model.CountryName))
+        {
+            <div class="lg:col-span-2">
+                <label class="admin-label">Current country</label>
+                <input value="@Model.CountryName" class="admin-input" disabled />
+            </div>
+        }
     </div>
     <div class="mt-6 flex justify-end gap-3"><a asp-action="Index" class="admin-button-secondary">Cancel</a><button type="submit" class="admin-button">Save government</button></div>
 </form>

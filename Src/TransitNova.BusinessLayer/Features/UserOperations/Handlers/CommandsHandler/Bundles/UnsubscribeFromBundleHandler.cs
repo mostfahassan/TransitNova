@@ -23,8 +23,8 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
         public async Task<BaseResult> Handle(UnsubscribeFromBundleCommand request, CancellationToken cancellationToken)
         {
             //====== Verify User Exists ======
-            var userId = await userRepository.GetAppUserIdAsync(request.UserId, cancellationToken);
-            if (userId == Guid.Empty)
+            var profileId = await userRepository.GetAppUserIdAsync(request.UserId, cancellationToken);
+            if (profileId == Guid.Empty)
             {
                 logger.LogWarning("User with ID {UserId} not found for bundle unsubscription", request.UserId);
                 return BaseResult.NotFound(Errors.UserNotFound($"User with ID {request.UserId} not found"));
@@ -39,14 +39,14 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             }
 
             //====== Check Active Subscription Exists ======
-            var activeSubscription = bundle.Subscriptions.FirstOrDefault(s => s.SubscribedUserId == request.UserId && s.IsActive);
+            var activeSubscription = bundle.Subscriptions.FirstOrDefault(s => s.SubscribedUserId == profileId && s.IsActive);
             if (activeSubscription is null)
             {
                 logger.LogWarning("No active subscription found for User {UserId} to Bundle {BundleId}", request.UserId, request.BundleId);
                 return BaseResult.NotFound(Errors.FailedOperation($"User has no active subscription to Bundle {request.BundleId}"));
             }
 
-            bundle.Unsubscribe(request.UserId);
+            bundle.Unsubscribe(profileId);
             
             await unitOfWork.SaveChangesAsync(cancellationToken);
 

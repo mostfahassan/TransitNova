@@ -19,7 +19,7 @@ public sealed class NotificationsBridgeController(IUiAuthSessionService authSess
             return Unauthorized();
 
         return Ok(new NotificationBridgeSessionResponse(
-            ApiHelper.BaseUrl.TrimEnd('/'),
+            ApiHelper.PublicBaseUrl.TrimEnd('/'),
             accessToken));
     }
 }

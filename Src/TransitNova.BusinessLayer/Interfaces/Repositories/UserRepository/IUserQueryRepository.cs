@@ -1,4 +1,4 @@
-﻿using TransitNova.BusinessLayer.Common.ResultPattern;
+using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
 using TransitNova.Domain.Enums.Shipment;
@@ -7,6 +7,7 @@ namespace TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository
     public interface IUserQueryRepository
     {
         Task<Guid> GetAppUserIdAsync(Guid AppUserId, CancellationToken ct);
+        Task<Guid?> GetAppUserIdByProfileIdAsync(Guid profileId, CancellationToken ct);
         Task <string?> GetUserFullName (Guid AppUserId, CancellationToken ct);
         Task<UserProfileDto?> GetUserProfileAsync(Guid UserId, CancellationToken ct);
         Task<IEnumerable<RetrieveShipmentSummaryDto>> GetUserShipmentsAsync(Guid AppUserId, CancellationToken ct);

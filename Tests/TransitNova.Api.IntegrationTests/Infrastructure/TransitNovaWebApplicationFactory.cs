@@ -40,6 +40,7 @@ public sealed class TransitNovaWebApplicationFactory : WebApplicationFactory<Pro
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
+        builder.UseSetting("MVC:Host", "https://localhost");
         builder.ConfigureAppConfiguration((_, configuration) =>
         {
             configuration.AddInMemoryCollection(new Dictionary<string, string?>
@@ -365,9 +366,9 @@ public sealed class TransitNovaWebApplicationFactory : WebApplicationFactory<Pro
 
             await context.Database.ExecuteSqlInterpolatedAsync($$"""
                 INSERT INTO Warehouses
-                    (Id, Name, Type, HasManager, Address, RowVersion, Capacity, CurrentUsage, ManagerId, OperatingHours, CreatedAt, CreatedBy, UpdatedAt, UpdatedBy, CurrentState)
+                    (Id, Name, Type, HasManager, Address_MainAddress, Address_SecondaryAddress, Address_Street, RowVersion, Capacity, CurrentUsage, ManagerId, OperatingHours, CreatedAt, CreatedBy, UpdatedAt, UpdatedBy, CurrentState)
                 VALUES
-                    ({{warehouse.Id}}, {{warehouse.Name}}, {{warehouse.Type}}, {{warehouse.HasManager}}, {{warehouse.Address}}, X'01', {{warehouse.Capacity}}, {{warehouse.CurrentUsage}}, {{warehouse.ManagerId}}, {{warehouse.OperatingHours}}, {{DateTime.UtcNow}}, {{warehouse.CreatedBy}}, NULL, NULL, {{warehouse.CurrentState}});
+                    ({{warehouse.Id}}, {{warehouse.Name}}, {{warehouse.Type}}, {{warehouse.HasManager}}, {{warehouse.Address.MainAddress}}, {{warehouse.Address.SecondaryAddress}}, {{warehouse.Address.Street}}, X'01', {{warehouse.Capacity}}, {{warehouse.CurrentUsage}}, {{warehouse.ManagerId}}, {{warehouse.OperatingHours}}, {{DateTime.UtcNow}}, {{warehouse.CreatedBy}}, NULL, NULL, {{warehouse.CurrentState}});
                 """);
         }
 
@@ -402,7 +403,3 @@ public sealed class TransitNovaWebApplicationFactory : WebApplicationFactory<Pro
         }
     }
 }
-
-
-
-

@@ -5,6 +5,7 @@ using TransitNova.UI.Infrastructure.Mvc.Common;
 using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.WarehouseManager.Shipments.Segregations.Query;
+using TransitNovaUI.BusinessLayer.DTOs.Shipment;
 
 namespace TransitNova.UI.Areas.WarehouseManagerArea.Controllers;
 
@@ -17,12 +18,12 @@ public sealed class ShipmentsController(
     : AppControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Index(ShipmentFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(UiShipmentFilterDto filter, CancellationToken cancellationToken)
     {
         if (CurrentWarehouseId is not Guid warehouseId)
             return RedirectToAction("Index", "Dashboard", new { area = "WarehouseManagerArea" });
 
-        var response = await apiInvoker.ExecuteAsync((token, ct) => warehouseManagerShipmentsQuery.GetWarehouseManagerShipmentsAsync(warehouseId, filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => warehouseManagerShipmentsQuery.GetWarehouseManagerShipmentsAsync(warehouseId, filter, token!, ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }

@@ -24,6 +24,13 @@
     const commissionField = document.querySelector('[data-invoice-commission]');
     const amountField = document.querySelector('[data-invoice-amount]');
     const notesField = document.querySelector('[data-invoice-notes]');
+    const benefitPanel = document.querySelector('[data-subscription-benefit-panel]');
+    const benefitMessageField = document.querySelector('[data-benefit-message]');
+    const benefitBundleNameField = document.querySelector('[data-benefit-bundle-name]');
+    const benefitDiscountRateField = document.querySelector('[data-benefit-discount-rate]');
+    const benefitOriginalCostField = document.querySelector('[data-benefit-original-cost]');
+    const benefitDiscountAmountField = document.querySelector('[data-benefit-discount-amount]');
+    const benefitFinalCostField = document.querySelector('[data-benefit-final-cost]');
     const serviceableCities = new Set(['1', '2', '3', '4', '5', '10', '11', '12', '20']);
     const originalButtonText = submitText?.textContent?.trim() || 'Create Shipment';
     const defaultFailureMessage = 'No invoice was generated. Please review the payment method and try again.';
@@ -132,6 +139,8 @@
         if (!paymentOverlay) return;
         paymentOverlayOpen = open;
         paymentOverlay.classList.toggle('hidden', !open);
+        paymentOverlay.classList.toggle('grid', open);
+        paymentOverlay.setAttribute('aria-hidden', open ? 'false' : 'true');
         syncBodyScrollLock();
     }
 
@@ -280,6 +289,12 @@
             : '0.00';
     }
 
+    function formatPercentage(value) {
+        const percentage = Number(value);
+        return Number.isFinite(percentage)
+            ? `${percentage.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}%`
+            : '0%';
+    }
     function formatDateTime(value) {
         if (!value) return 'Pending confirmation';
         const date = new Date(value);
@@ -304,6 +319,18 @@
         statusBadge.classList.add('bg-[#F4F4F3]', 'text-[#444444]');
     }
 
+    function populateBenefit(invoice, currency) {
+        const applied = Boolean(invoice?.subscriptionBenefitApplied);
+        benefitPanel?.classList.toggle('hidden', !applied);
+        if (!applied) return;
+
+        if (benefitMessageField) benefitMessageField.textContent = invoice.subscriptionBenefitMessage || 'Your active bundle reduced this shipment cost.';
+        if (benefitBundleNameField) benefitBundleNameField.textContent = invoice.bundleName || 'Active bundle';
+        if (benefitDiscountRateField) benefitDiscountRateField.textContent = formatPercentage(invoice.discountPercentage);
+        if (benefitOriginalCostField) benefitOriginalCostField.textContent = `${formatAmount(invoice.originalShippingCost)} ${currency}`.trim();
+        if (benefitDiscountAmountField) benefitDiscountAmountField.textContent = `${formatAmount(invoice.discountAmount)} ${currency}`.trim();
+        if (benefitFinalCostField) benefitFinalCostField.textContent = `${formatAmount(invoice.finalShippingCost || invoice.shippingCost)} ${currency}`.trim();
+    }
     function populateInvoice(invoice) {
         if (!invoice) return;
         if (invoiceIdField) invoiceIdField.textContent = invoice.invoiceId || 'Not available';
@@ -316,6 +343,7 @@
         const totalAmount = invoice.totalAmount ?? invoice.amount;
         if (amountField) amountField.textContent = `${formatAmount(totalAmount)} ${currency}`.trim();
         if (notesField) notesField.textContent = invoice.notes || 'No additional notes.';
+        populateBenefit(invoice, currency);
         updateStatusBadge(invoice.status);
     }
 
@@ -397,4 +425,3 @@
         if (event.key === 'Escape' && invoiceModalOpen) toggleInvoiceModal(false);
     });
 })();
-

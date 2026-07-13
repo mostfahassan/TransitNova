@@ -23,11 +23,11 @@ namespace TransitNova.BusinessLayer.Features.OperationManagerService.Handlers.Qu
                 return Result<RetrieveShipmentDto>.Forbidden(Errors.Forbidden("Operation manager profile was not found."));
             }
 
-            logger.LogDebug("Fetching shipment {ShipmentId} for operation manager app-user {OperationManagerAppUserId}.", request.ShipmentId, request.OperationManagerId);
+            logger.LogDebug("Fetching shipment {ReferecneId} for operation manager app-user {OperationManagerAppUserId}.", request.ShipmentId, request.OperationManagerId);
             var shipment = await shipmentRepository.GetShipmentAsync(sh => sh.Id == request.ShipmentId, cancellationToken);
             if (shipment is null)
             {
-                logger.LogInformation("Shipment {ShipmentId} was not found for operation manager app-user {OperationManagerAppUserId}.", request.ShipmentId, request.OperationManagerId);
+                logger.LogInformation("Shipment {ReferecneId} was not found for operation manager app-user {OperationManagerAppUserId}.", request.ShipmentId, request.OperationManagerId);
                 return Result<RetrieveShipmentDto>.NotFound(Errors.ShipmentNotFound("Shipment not found."));
             }
 

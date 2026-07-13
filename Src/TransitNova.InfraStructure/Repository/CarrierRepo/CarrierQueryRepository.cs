@@ -55,8 +55,9 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
                 var term = filterCriteria.SearchTerm.Trim().ToLower();
 
                 query = query.Where(c =>
-                    EF.Functions.Like(c.FullName.ToLower(), $"%{term}%") ||
-                    EF.Functions.Like(c.LicenseNumber.ToLower(), $"%{term}%"));
+                    EF.Functions.Like((c.FirstName + " " + c.LastName).ToLower(), $"%{term}%") ||
+                    EF.Functions.Like(c.LicenseNumber.ToLower(), $"%{term}%") ||
+                    EF.Functions.Like(c.Code.ToLower(), $"%{term}%"));
             }
 
             if (filterCriteria.AvailableFrom.HasValue)
@@ -198,4 +199,5 @@ namespace TransitNova.InfraStructure.Repository.CarrierRepo
             .FirstOrDefaultAsync(ct);
     }
 }
+
 

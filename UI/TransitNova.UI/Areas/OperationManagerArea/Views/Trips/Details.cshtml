@@ -1,7 +1,8 @@
 @using TransitNova.Domain.Enums.Trip
-@model object?
+@model UiTripDetailsDto?
 @{
     ViewData["Title"] = "Trip Details";
+    var trip = Model ?? new UiTripDetailsDto();
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Dispatch board",
@@ -11,10 +12,9 @@
         SecondaryController = "Trips",
         SecondaryAction = "Index"
     };
-    var shipments = AdminDisplay.Value(Model, "Shipments");
-    var tripType = AdminDisplay.Text(Model, "TripType");
-    var tripStatus = AdminDisplay.Text(Model, "Status");
-    var totalShipments = AdminDisplay.Text(Model, "TotalShipments");
+    var tripType = AdminDisplay.Format(trip.TripType);
+    var tripStatus = AdminDisplay.Format(trip.Status);
+    var totalShipments = AdminDisplay.Format(trip.TotalShipments);
     var tripTypeKpi = new OpsKpiTileViewModel("Trip type", tripType, "Movement lane", "TR", "info");
     var statusKpi = new OpsKpiTileViewModel("Status", tripStatus, "Current state", "ST", "warning");
     var shipmentCountKpi = new OpsKpiTileViewModel("Shipments", totalShipments, "Manifest count", "SH", "success");
@@ -22,42 +22,39 @@
     {
         Title = "Trip detail",
         Subtitle = "Handled trip projection from the API.",
-        Source = Model,
+        PrimaryText = trip.Id == Guid.Empty ? string.Empty : trip.Id.ToString(),
         Controller = "Trips",
-        RouteIdName = "tripId",
-        IdPropertyPath = "Id",
-        Fields = new List<OpsTableColumnViewModel>
-        {
-            new("Trip", "Id", "id"),
-            new("Carrier", "CarrierName"),
-            new("Carrier phone", "CarrierPhoneNumber"),
-            new("Warehouse", "WarehouseName"),
-            new("Address", "WarehouseAddress"),
-            new("Planned", "PlannedDate"),
-            new("Started", "StartTime"),
-            new("Ended", "EndTime"),
-            new("Shipments", "TotalShipments"),
-            new("Created by", "CreatedBy")
-        }
+        RouteValues = new Dictionary<string, object?> { ["tripId"] = trip.Id },
+        Fields =
+        [
+            AdminDisplay.OpsCell("Trip", trip.Id, "id"),
+            AdminDisplay.OpsCell("Carrier", trip.CarrierName),
+            AdminDisplay.OpsCell("Carrier phone", trip.CarrierPhoneNumber),
+            AdminDisplay.OpsCell("Warehouse", trip.WarehouseName),
+            AdminDisplay.OpsCell("Address", trip.WarehouseAddress),
+            AdminDisplay.OpsCell("Planned", trip.PlannedDate),
+            AdminDisplay.OpsCell("Started", trip.StartTime),
+            AdminDisplay.OpsCell("Ended", trip.EndTime),
+            AdminDisplay.OpsCell("Shipments", trip.TotalShipments),
+            AdminDisplay.OpsCell("Created by", trip.CreatedBy)
+        ]
     };
     var shipmentTable = new OpsTableViewModel
     {
         Title = "Trip shipment manifest",
         Subtitle = "Shipments currently moving on this handled trip.",
-        Source = shipments,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id",
         ShowDetails = true,
-        Columns = new List<OpsTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Status", "CurrentStatus", "badge"),
-            new("Receiver", "Receiver.FullName|Receiver.Email"),
-            new("Pickup", "PickupAddress"),
-            new("Delivery", "DeliveryAddress"),
-            new("Cost", "ShippingCost")
-        },
+        Headers = ["Tracking", "Status", "Receiver", "Pickup", "Delivery", "Cost"],
+        Rows = trip.Shipments.Select(shipment => AdminDisplay.OpsRow(
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.OpsCell("Tracking", shipment.TrackingNumber, "id"),
+            AdminDisplay.OpsCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.OpsCell("Receiver", shipment.Receiver.FullName),
+            AdminDisplay.OpsCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.OpsCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.OpsCell("Cost", shipment.ShippingCost, "currency"))).ToList(),
         EmptyTitle = "No shipments on this trip",
         EmptyDescription = "The shipment manifest will show here when the trip carries shipments."
     };
@@ -78,14 +75,7 @@
             <select id="TripType" class="ops-select" disabled aria-label="Trip type">
                 @foreach (var option in Enum.GetValues<TripType>())
                 {
-                    if (string.Equals(option.ToString(), tripType, StringComparison.OrdinalIgnoreCase))
-                    {
-                        <option value="@option" selected>@option</option>
-                    }
-                    else
-                    {
-                        <option value="@option">@option</option>
-                    }
+                    <option value="@option" selected="@(option == trip.TripType ? "selected" : null)">@option</option>
                 }
             </select>
         </div>
@@ -94,14 +84,7 @@
             <select id="TripStatus" class="ops-select" disabled aria-label="Trip status">
                 @foreach (var option in Enum.GetValues<TripStatus>())
                 {
-                    if (string.Equals(option.ToString(), tripStatus, StringComparison.OrdinalIgnoreCase))
-                    {
-                        <option value="@option" selected>@option</option>
-                    }
-                    else
-                    {
-                        <option value="@option">@option</option>
-                    }
+                    <option value="@option" selected="@(option == trip.Status ? "selected" : null)">@option</option>
                 }
             </select>
         </div>

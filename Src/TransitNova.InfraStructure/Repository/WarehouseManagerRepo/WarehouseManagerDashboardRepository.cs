@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.WarehouseManager;
 using TransitNova.BusinessLayer.Interfaces.Repositories.WarehouseManagerRepository;
 using TransitNova.Domain.Enums.Shipment;
@@ -53,6 +54,15 @@ namespace TransitNova.InfraStructure.Repository.WarehouseManagerRepo
                 {
                     ManagerId = profile.Id,
                     ManagerName = profile.FullName,
+                    Email = profile.Email,
+                    PhoneNumber = profile.PhoneNumber,
+                    CityId = profile.CityId,
+                    Address = new AddressDto
+                    {
+                        MainAddress = profile.Address.MainAddress,
+                        SecondaryAddress = profile.Address.SecondaryAddress,
+                        Street = profile.Address.Street
+                    },
                     WarehouseId = profile.Warehouse != null ? profile.Warehouse.Id : Guid.Empty,
                     WarehouseName = profile.Warehouse != null ? profile.Warehouse.Name : string.Empty,
                 })

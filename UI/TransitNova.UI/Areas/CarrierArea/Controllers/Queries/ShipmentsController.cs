@@ -5,6 +5,7 @@ using TransitNova.UI.Infrastructure.Mvc.Common;
 using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Carrier.Shipments.Segregation;
+using TransitNovaUI.BusinessLayer.DTOs.Carrier;
 namespace TransitNova.UI.Areas.CarrierArea.Controllers.Queries;
 
 [Authorize(Roles = Role.Carrier)]
@@ -18,12 +19,12 @@ public sealed class ShipmentsController(
     : AppControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Index(CarrierShipmentFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(UiCarrierShipmentFilterDto filter, CancellationToken cancellationToken)
     {
         if (ResolvedCarrierId is not Guid carrierId)
             return Challenge();
 
-        var response = await apiInvoker.ExecuteAsync((token, ct) => carrierShipmentsQuery.GetCarrierShipmentsAsync(carrierId, filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => carrierShipmentsQuery.GetCarrierShipmentsAsync(carrierId, filter, token!, ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
@@ -115,4 +116,3 @@ public sealed class ShipmentsController(
         return RedirectToAction(nameof(Index));
     }
 }
-

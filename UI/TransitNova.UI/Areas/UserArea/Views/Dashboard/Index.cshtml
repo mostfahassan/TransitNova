@@ -1,11 +1,11 @@
 @model UserDashboardPageViewModel
 @{
     ViewData["Title"] = "Dashboard";
-    var dashboard = Model.Dashboard;
-    var rows = AdminDisplay.Rows(AdminDisplay.Value(dashboard, "ShipmentSummary|RecentShipments|Shipments"));
+    var dashboard = Model.Dashboard ?? new UiProfileDashboardDto();
+    var rows = dashboard.ShipmentSummary.ToList();
     var invoices = Model.RecentInvoices.OrderByDescending(invoice => invoice.PaidAt ?? DateTime.MinValue).ToArray();
     var bundles = Model.AvailableBundles.OrderBy(bundle => bundle.BundlePrice).ToArray();
-    string Metric(string path) => AdminDisplay.Text(dashboard, path) == "-" ? "0" : AdminDisplay.Text(dashboard, path);
+    string Metric(object? value) => AdminDisplay.Format(value) == "-" ? "0" : AdminDisplay.Format(value);
 }
 
 <section class="customer-fade-up grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
@@ -38,17 +38,17 @@
 <section class="customer-stagger mt-8 grid gap-4 md:grid-cols-4">
     <div class="customer-card-flat p-6" style="--item-index:0">
         <div class="text-sm font-bold text-[#666666]">In Transit</div>
-        <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">@Metric("ActiveShipments")</div>
+        <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">@Metric(dashboard.ActiveShipments)</div>
         <p class="mt-2 text-sm leading-6 text-[#787774]">Moving through pickup, warehouse, or final-mile delivery.</p>
     </div>
     <div class="customer-card-flat p-6" style="--item-index:1">
         <div class="text-sm font-bold text-[#666666]">Delivered</div>
-        <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">@Metric("DeliveredShipments")</div>
+        <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">@Metric(dashboard.DeliveredShipments)</div>
         <p class="mt-2 text-sm leading-6 text-[#787774]">Completed deliveries across your account.</p>
     </div>
     <div class="customer-card-flat p-6" style="--item-index:2">
         <div class="text-sm font-bold text-[#666666]">Open Issues</div>
-        <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">@Metric("IssueShipments")</div>
+        <div class="mt-3 text-4xl font-black tracking-[-0.04em] text-[#111111]">@Metric(dashboard.IssueShipments)</div>
         <p class="mt-2 text-sm leading-6 text-[#787774]">Shipments currently flagged for support.</p>
     </div>
     <a asp-area="UserArea" asp-controller="PaymentInvoices" asp-action="Index" class="customer-card-flat customer-lift p-6" style="--item-index:3">
@@ -106,9 +106,17 @@
                             <dt class="font-bold text-[#666666]">Max weight</dt>
                             <dd class="text-right font-black text-[#111111]">@FormatMoney(bundle.MaxWeightPerShipment) kg</dd>
                         </div>
-                        <div class="flex justify-between gap-4">
+                        <div class="flex justify-between gap-4 border-b border-[#EFEFED] pb-3">
                             <dt class="font-bold text-[#666666]">Max distance</dt>
                             <dd class="text-right font-black text-[#111111]">@FormatMoney(bundle.MaxDistancePerShipment) km</dd>
+                        </div>
+                        <div class="flex justify-between gap-4 border-b border-[#EFEFED] pb-3">
+                            <dt class="font-bold text-[#666666]">Discount</dt>
+                            <dd class="text-right font-black text-[#111111]">@FormatMoney(bundle.DiscountPercentage)%</dd>
+                        </div>
+                        <div class="flex justify-between gap-4">
+                            <dt class="font-bold text-[#666666]">Minimum shipment</dt>
+                            <dd class="text-right font-black text-[#111111]">@FormatMoney(bundle.MinimumShipmentValueForDiscount)</dd>
                         </div>
                     </dl>
 
@@ -196,14 +204,14 @@
                 @for (var index = 0; index < rows.Count; index++)
                 {
                     var row = rows[index];
-                    var tracking = AdminDisplay.Text(row, "TrackingNumber|Code", "id");
-                    var status = AdminDisplay.Text(row, "Status|CurrentStatus");
+                    var tracking = AdminDisplay.Format(row.TrackingNumber, kind: "id");
+                    var status = row.CurrentStatus.ToString();
                     <tr style="--row-index:@index">
                         <td><span class="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#111111]">@tracking</span></td>
-                        <td>@AdminDisplay.Text(row, "Product|ShipmentType|PackageSpecification")</td>
-                        <td>@AdminDisplay.Text(row, "Route|DeliveryAddress|ReceiverCity")</td>
+                        <td>@row.ShipmentType</td>
+                        <td>@row.ReceiverCity</td>
                         <td><span class="@BadgeClass(status)">@status</span></td>
-                        <td>@AdminDisplay.Text(row, "Updated|UpdatedAt|CreatedAt")</td>
+                        <td>@AdminDisplay.Format(row.CreatedAt)</td>
                         <td class="text-right"><a asp-area="UserArea" asp-controller="Shipments" asp-action="TrackResult" asp-route-trackingNumber="@tracking" class="customer-button-secondary !px-3 !py-2">Track</a></td>
                     </tr>
                 }
@@ -234,6 +242,12 @@ private static string BadgeClass(string value)
         return "customer-badge customer-badge-neutral";
     }
 }
+
+
+
+
+
+
 
 
 

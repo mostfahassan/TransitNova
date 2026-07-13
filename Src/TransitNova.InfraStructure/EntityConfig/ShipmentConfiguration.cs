@@ -19,8 +19,6 @@ namespace TransitNova.InfraStructure.EntityConfig
 
             shipment.Property(s => s.ShipmentCost)
                     .HasPrecision(18, 2);
-          
-            shipment.HasQueryFilter(SH => !SH.IsDeleted);
 
             shipment.OwnsOne(x => x.PackageSpecification, nav =>
              {
@@ -32,6 +30,20 @@ namespace TransitNova.InfraStructure.EntityConfig
 
             shipment.OwnsAddress(s => s.DeliveryAddress, "DeliveryAddress");
             shipment.OwnsAddress(s => s.PickupAddress, "PickupAddress");
+
+            shipment.Property(s => s.Currency)
+           .HasConversion<string>();
+
+            shipment.Property(s => s.CurrentStatus)
+                   .HasConversion<string>();
+
+            shipment.Property(s => s.ShipmentType)
+                   .HasConversion<string>();
+
+            shipment.Property(s => s.Mode)
+                   .HasConversion<string>()
+                   .HasColumnName("TransportationMode");
+
 
             shipment.HasIndex(s => s.TrackingNumber).IsUnique();
             shipment.HasIndex(s => s.CurrentStatus);

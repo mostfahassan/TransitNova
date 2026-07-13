@@ -1,6 +1,8 @@
-@model object?
+@model UiPagedResult<UiCarrierSummaryDetailsDto>?
 @{
     ViewData["Title"] = "Carrier Management";
+    var result = Model ?? new UiPagedResult<UiCarrierSummaryDetailsDto> { PageSize = 20 };
+    var items = result.Data.ToList();
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Fleet status",
@@ -17,23 +19,21 @@
     {
         Title = "Carrier availability",
         Subtitle = "Live carrier list for pickup and delivery assignment decisions.",
-        Source = Model,
         Controller = "Carriers",
-        RouteIdName = "carrierId",
-        IdPropertyPath = "Id|CarrierId",
         PrimaryRowLabel = "Shipments",
         PrimaryRowAction = "Shipments",
-        PrimaryRowRouteIdName = "carrierId",
-        PrimaryRowIdPropertyPath = "Id|CarrierId",
-        Columns = new List<OpsTableColumnViewModel>
-        {
-            new("Carrier", "FullName|Name|CarrierName"),
-            new("Vehicle Type", "Vehicle.VehicleType|VehicleType"),
-            new("Current Status", "Status|CarrierStatus", "badge"),
-            new("Current Load", "CurrentLoad|AssignedShipmentsCount"),
-            new("City", "ServedCities|City|Address"),
-            new("Rating", "AverageRating|Rating")
-        }
+        Headers = ["Carrier", "Vehicle Type", "Current Status", "Current Load", "City", "Rating"],
+        Rows = items.Select(carrier => AdminDisplay.OpsRow(
+            "carrierId",
+            carrier.Id,
+            "carrierId",
+            carrier.Id,
+            AdminDisplay.OpsCell("Carrier", carrier.FullName),
+            AdminDisplay.OpsCell("Vehicle Type", "-"),
+            AdminDisplay.OpsCell("Current Status", carrier.Status, "badge"),
+            AdminDisplay.OpsCell("Current Load", carrier.AssignedShipmentsCount),
+            AdminDisplay.OpsCell("City", string.Join(", ", carrier.ServedCities)),
+            AdminDisplay.OpsCell("Rating", carrier.Rating))).ToList()
     };
 }
 

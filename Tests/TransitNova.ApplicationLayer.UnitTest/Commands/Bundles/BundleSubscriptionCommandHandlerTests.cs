@@ -10,7 +10,6 @@ using TransitNova.BusinessLayer.Interfaces.Repositories.GenericRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.UserRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.BundleService;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
-using TransitNova.Domain.DomainExceptions;
 using TransitNova.Domain.Entities.MainEntities;
 using TransitNova.Domain.Enums.Bundle;
 using TransitNova.Domain.Enums.Payment;

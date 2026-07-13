@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using TransitNova.BusinessLayer.Common.CommonData;
 using System.Linq.Expressions;
+using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.Common.ResultPattern;
 using TransitNova.BusinessLayer.DTOs.Carrier;
 using TransitNova.BusinessLayer.DTOs.Shipment;
@@ -141,17 +141,37 @@ namespace TransitNova.InfraStructure.Repository.TripRepository
                         FullName = sh.Receiver.FullName,
                         Email = sh.Receiver.Email,
                         PhoneNumber = sh.Receiver.PhoneNumber,
-                        Address = new AddressDto { MainAddress = sh.Receiver.Address.MainAddress, SecondaryAddress = sh.Receiver.Address.SecondaryAddress, Street = sh.Receiver.Address.Street }
+                        Address = new AddressDto
+                        {
+                            MainAddress = sh.Receiver.Address.MainAddress,
+                            SecondaryAddress = sh.Receiver.Address.SecondaryAddress,
+                            Street = sh.Receiver.Address.Street
+                        }
                     },
                     Sender = new UserSummaryDto
                     {
                         FullName = sh.Sender.FullName,
                         Email = sh.Sender.Email,
                         PhoneNumber = sh.Sender.PhoneNumber,
-                        Address = new AddressDto { MainAddress = sh.Sender.Address.MainAddress, SecondaryAddress = sh.Sender.Address.SecondaryAddress, Street = sh.Sender.Address.Street }
+                        Address = new AddressDto
+                        {
+                            MainAddress = sh.Sender.Address.MainAddress,
+                            SecondaryAddress = sh.Sender.Address.SecondaryAddress,
+                            Street = sh.Sender.Address.Street
+                        }
                     },
-                    DeliveryAddress = new AddressDto { MainAddress = sh.DeliveryAddress.MainAddress, SecondaryAddress = sh.DeliveryAddress.SecondaryAddress, Street = sh.DeliveryAddress.Street },
-                    PickupAddress = new AddressDto { MainAddress = sh.PickupAddress.MainAddress, SecondaryAddress = sh.PickupAddress.SecondaryAddress, Street = sh.PickupAddress.Street },
+                    DeliveryAddress = new AddressDto
+                    {
+                        MainAddress = sh.DeliveryAddress.MainAddress,
+                        SecondaryAddress = sh.DeliveryAddress.SecondaryAddress,
+                        Street = sh.DeliveryAddress.Street
+                    },
+                    PickupAddress = new AddressDto
+                    {
+                        MainAddress = sh.PickupAddress.MainAddress,
+                        SecondaryAddress = sh.PickupAddress.SecondaryAddress,
+                        Street = sh.PickupAddress.Street
+                    },
                     PackageSpecification = new PackageSpecificationDto
                     {
                         Weight = sh.PackageSpecification.Weight,
@@ -192,17 +212,37 @@ namespace TransitNova.InfraStructure.Repository.TripRepository
                         FullName = sh.Receiver.FullName,
                         Email = sh.Receiver.Email,
                         PhoneNumber = sh.Receiver.PhoneNumber,
-                        Address = new AddressDto { MainAddress = sh.Receiver.Address.MainAddress, SecondaryAddress = sh.Receiver.Address.SecondaryAddress, Street = sh.Receiver.Address.Street }
+                        Address = new AddressDto
+                        {
+                            MainAddress = sh.Receiver.Address.MainAddress,
+                            SecondaryAddress = sh.Receiver.Address.SecondaryAddress,
+                            Street = sh.Receiver.Address.Street
+                        }
                     },
                     Sender = new UserSummaryDto
                     {
                         FullName = sh.Sender.FullName,
                         Email = sh.Sender.Email,
                         PhoneNumber = sh.Sender.PhoneNumber,
-                        Address = new AddressDto { MainAddress = sh.Sender.Address.MainAddress, SecondaryAddress = sh.Sender.Address.SecondaryAddress, Street = sh.Sender.Address.Street }
+                        Address = new AddressDto
+                        {
+                            MainAddress = sh.Sender.Address.MainAddress,
+                            SecondaryAddress = sh.Sender.Address.SecondaryAddress,
+                            Street = sh.Sender.Address.Street
+                        }
                     },
-                    DeliveryAddress = new AddressDto { MainAddress = sh.DeliveryAddress.MainAddress, SecondaryAddress = sh.DeliveryAddress.SecondaryAddress, Street = sh.DeliveryAddress.Street },
-                    PickupAddress = new AddressDto { MainAddress = sh.PickupAddress.MainAddress, SecondaryAddress = sh.PickupAddress.SecondaryAddress, Street = sh.PickupAddress.Street },
+                    DeliveryAddress = new AddressDto
+                    {
+                        MainAddress = sh.DeliveryAddress.MainAddress,
+                        SecondaryAddress = sh.DeliveryAddress.SecondaryAddress,
+                        Street = sh.DeliveryAddress.Street
+                    },
+                    PickupAddress = new AddressDto
+                    {
+                        MainAddress = sh.PickupAddress.MainAddress,
+                        SecondaryAddress = sh.PickupAddress.SecondaryAddress,
+                        Street = sh.PickupAddress.Street
+                    },
                     PackageSpecification = new PackageSpecificationDto
                     {
                         Weight = sh.PackageSpecification.Weight,

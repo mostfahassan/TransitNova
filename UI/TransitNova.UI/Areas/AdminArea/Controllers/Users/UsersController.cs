@@ -5,6 +5,7 @@ using TransitNova.UI.Infrastructure.Mvc.Common;
 using TransitNova.UI.Infrastructure.Mvc.Interface;
 using TransitNova.UI.ViewModels;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.Users.Segregation;
+using TransitNovaUI.BusinessLayer.DTOs.UserProfile;
 
 namespace TransitNova.UI.Areas.AdminArea.Controllers.Users;
 
@@ -17,9 +18,9 @@ public sealed class UsersController(
     : AppControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Index(UserFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(UiUserFiltrationDto filter, CancellationToken cancellationToken)
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => adminUserQuery.FilterUsersAsync(filter.ToDto(), token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminUserQuery.FilterUsersAsync(filter, token!, ct), cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }

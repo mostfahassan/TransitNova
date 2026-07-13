@@ -1,62 +1,54 @@
-@model object?
+@model UiTripDetailsDto?
 @{
     ViewData["Title"] = "Trip Details";
-    var shipments = AdminDisplay.Value(Model, "Shipments");
-    var totalShipments = AdminDisplay.Text(Model, "TotalShipments");
-    var tripStatus = AdminDisplay.Text(Model, "Status", "badge");
-    var tripType = AdminDisplay.Text(Model, "TripType");
+    var trip = Model ?? new UiTripDetailsDto();
     var detail = new WarehouseDetailViewModel
     {
         Title = "Trip manifest",
         Subtitle = "Carrier movement, warehouse lane, and shipment manifest attached to this trip.",
-        Source = Model,
+        PrimaryLabel = trip.Id == Guid.Empty ? string.Empty : trip.Id.ToString(),
         Controller = "Trips",
-        Fields = new List<WarehouseTableColumnViewModel>
-        {
-            new("Trip", "Id", "id"),
-            new("Type", "TripType"),
-            new("Status", "Status", "badge"),
-            new("Carrier", "CarrierName"),
-            new("Carrier phone", "CarrierPhoneNumber"),
-            new("Warehouse", "WarehouseName"),
-            new("Address", "WarehouseAddress"),
-            new("Planned", "PlannedDate"),
-            new("Started", "StartTime"),
-            new("Ended", "EndTime"),
-            new("Shipments", "TotalShipments"),
-            new("Created by", "CreatedBy")
-        }
+        Fields =
+        [
+            AdminDisplay.WarehouseCell("Trip", trip.Id, "id"),
+            AdminDisplay.WarehouseCell("Type", trip.TripType),
+            AdminDisplay.WarehouseCell("Status", trip.Status, "badge"),
+            AdminDisplay.WarehouseCell("Carrier", trip.CarrierName),
+            AdminDisplay.WarehouseCell("Carrier phone", trip.CarrierPhoneNumber),
+            AdminDisplay.WarehouseCell("Warehouse", trip.WarehouseName),
+            AdminDisplay.WarehouseCell("Address", trip.WarehouseAddress),
+            AdminDisplay.WarehouseCell("Planned", trip.PlannedDate),
+            AdminDisplay.WarehouseCell("Started", trip.StartTime),
+            AdminDisplay.WarehouseCell("Ended", trip.EndTime),
+            AdminDisplay.WarehouseCell("Shipments", trip.TotalShipments),
+            AdminDisplay.WarehouseCell("Created by", trip.CreatedBy)
+        ]
     };
     var shipmentTable = new WarehouseTableViewModel
     {
         Title = "Trip shipment manifest",
         Subtitle = "Every shipment physically moving with this carrier trip.",
-        Source = shipments,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id",
-        Columns = new List<WarehouseTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Status", "CurrentStatus", "badge"),
-            new("Receiver", "Receiver.FullName|Receiver.Email"),
-            new("Pickup", "PickupAddress"),
-            new("Delivery", "DeliveryAddress"),
-            new("Cost", "ShippingCost", "currency")
-        },
+        Headers = ["Tracking", "Status", "Receiver", "Pickup", "Delivery", "Cost"],
+        Rows = trip.Shipments.Select(shipment => AdminDisplay.WarehouseRow("shipmentId", shipment.Id,
+            AdminDisplay.WarehouseCell("Tracking", shipment.TrackingNumber, "id"),
+            AdminDisplay.WarehouseCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.WarehouseCell("Receiver", shipment.Receiver.FullName),
+            AdminDisplay.WarehouseCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.WarehouseCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.WarehouseCell("Cost", shipment.ShippingCost, "currency"))).ToList(),
         EmptyTitle = "No shipments on this trip",
         EmptyDescription = "The manifest will show here when a trip carries shipments."
     };
+    var kpiTiles = new List<WarehouseKpiTileViewModel>
+    {
+        new("Trip type", AdminDisplay.Format(trip.TripType), "Movement lane", "info"),
+        new("Status", AdminDisplay.Format(trip.Status, kind: "badge"), "Current state", "warning"),
+        new("Shipments", AdminDisplay.Format(trip.TotalShipments), "Manifest count", "success")
+    };
 }
-
 <section class="mb-6 grid gap-4 md:grid-cols-3">
-    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Trip type", tripType, "Movement lane", "info")" />
-    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Status", tripStatus, "Current state", "warning")" />
-    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Shipments", totalShipments, "Manifest count", "success")" />
+@foreach (var tile in kpiTiles) { <partial name="_WarehouseKpiTile" model="tile" /> }
 </section>
-
 <partial name="_WarehouseDetail" model="detail" />
-
-<section class="mt-6">
-    <partial name="_WarehouseTable" model="shipmentTable" />
-</section>
+<section class="mt-6"><partial name="_WarehouseTable" model="shipmentTable" /></section>

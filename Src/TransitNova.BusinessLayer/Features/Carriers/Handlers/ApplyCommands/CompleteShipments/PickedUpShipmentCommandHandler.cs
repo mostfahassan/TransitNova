@@ -21,7 +21,7 @@ namespace TransitNova.BusinessLayer.Features.Carriers.Handlers.ApplyCommands.Com
 
             await unitOfWork.SaveChangesAsync(ct);
 
-            logger.LogInformation("Shipment {ShipmentId} picked up successfully by Carrier {CarrierId} At {Time}", request.ShipmentId, request.CarrierId, DateTime.UtcNow);
+            logger.LogInformation("Shipment {ReferecneId} picked up successfully by Carrier {CarrierId} At {Time}", request.ShipmentId, request.CarrierId, DateTime.UtcNow);
             CacheInvalidationContext.Set(
                 request,
                 CacheKeys.Carriers.ShipmentDetails(request.CarrierId, request.ShipmentId),

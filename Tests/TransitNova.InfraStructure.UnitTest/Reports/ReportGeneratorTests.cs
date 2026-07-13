@@ -9,6 +9,7 @@ using TransitNova.BusinessLayer.DTOs.Payment;
 using TransitNova.BusinessLayer.DTOs.Reports;
 using TransitNova.BusinessLayer.DTOs.Shipment;
 using TransitNova.BusinessLayer.DTOs.UserProfile;
+using TransitNova.BusinessLayer.Interfaces.Repositories.PaymentInvoiceRepository;
 using TransitNova.BusinessLayer.Interfaces.Repositories.ShipmentRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.AdminDashboard;
 using TransitNova.Domain.Entities.MainEntities;
@@ -66,6 +67,82 @@ public sealed class ReportGeneratorTests
         pdfDocumentFactory.DashboardArgument.Should().BeSameAs(dashboard);
         adminDashboard.Verify(x => x.BuildAsync(CancellationToken.None), Times.Once);
         fileStorage.Verify(x => x.SaveFileAsync(It.IsAny<byte[]>(), "Dashboards", $"Dashboard-{reportId:N}.pdf", CancellationToken.None), Times.Once);
+    }
+
+    [Fact]
+    public async Task BundleReportGenerator_Should_BuildBundleInvoicePdf_And_SaveItAsync()
+    {
+        var paymentId = Guid.NewGuid();
+        var invoice = new BundlePaymentInvoiceDto
+        {
+            InvoiceId = "INV-BUNDLE-1001",
+            PaymentId = paymentId,
+            BundleId = Guid.NewGuid(),
+            BundleName = "Pro Logistics",
+            FullName = "Mostafa Ahmed",
+            BundlePrice = 499.99m,
+            Commission = 25m,
+            TotalAmount = 524.99m,
+            PaymentMethod = "Card",
+            Status = "Paid",
+            SubscribedAt = DateTime.UtcNow,
+            EndDate = DateTime.UtcNow.AddMonths(1)
+        };
+
+        var paymentRepository = new Mock<IPaymentRepositoryQuery>();
+        paymentRepository.Setup(x => x.GetBundleInvoiceByPaymentIdAsync(paymentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(invoice);
+
+        var pdfDocumentFactory = new TestPdfDocumentFactory
+        {
+            BundleInvoiceDocument = new StubDocument("bundle-invoice-report")
+        };
+
+        byte[]? savedBytes = null;
+        string? savedFolder = null;
+        string? savedFileName = null;
+
+        var fileStorage = new Mock<IFileStorageService>();
+        fileStorage.Setup(x => x.SaveFileAsync(It.IsAny<byte[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Callback<byte[], string, string, CancellationToken>((contentBytes, folder, fileName, _) =>
+            {
+                savedBytes = contentBytes;
+                savedFolder = folder;
+                savedFileName = fileName;
+            })
+            .ReturnsAsync("reports/bundle-invoice.pdf");
+
+        var generator = new BundleReportGenerator(paymentRepository.Object, fileStorage.Object, pdfDocumentFactory);
+        var payloadJson = ReportPayloadSerializer.Serialize(new BundleReportContract { PaymentId = paymentId });
+
+        var result = await generator.GenerateReportAsync(payloadJson, CancellationToken.None, Guid.NewGuid());
+
+        result.Should().Be("reports/bundle-invoice.pdf");
+        savedBytes.Should().NotBeNull();
+        savedBytes.Should().NotBeEmpty();
+        savedFolder.Should().Be("Invoices");
+        savedFileName.Should().Be("Bundle-Invoice-INV-BUNDLE-1001.pdf");
+        pdfDocumentFactory.BundleInvoiceArgument.Should().BeSameAs(invoice);
+        paymentRepository.Verify(x => x.GetBundleInvoiceByPaymentIdAsync(paymentId, CancellationToken.None), Times.Once);
+        fileStorage.Verify(x => x.SaveFileAsync(It.IsAny<byte[]>(), "Invoices", "Bundle-Invoice-INV-BUNDLE-1001.pdf", CancellationToken.None), Times.Once);
+    }
+
+    [Fact]
+    public async Task BundleReportGenerator_Should_Throw_When_Invoice_Does_Not_Exist()
+    {
+        var paymentId = Guid.NewGuid();
+        var paymentRepository = new Mock<IPaymentRepositoryQuery>();
+        paymentRepository.Setup(x => x.GetBundleInvoiceByPaymentIdAsync(paymentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((BundlePaymentInvoiceDto?)null);
+
+        var fileStorage = new Mock<IFileStorageService>(MockBehavior.Strict);
+        var generator = new BundleReportGenerator(paymentRepository.Object, fileStorage.Object, new TestPdfDocumentFactory());
+        var payloadJson = ReportPayloadSerializer.Serialize(new BundleReportContract { PaymentId = paymentId });
+
+        var action = () => generator.GenerateReportAsync(payloadJson, CancellationToken.None, Guid.NewGuid());
+
+        await action.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Bundle invoice not found.");
     }
 
     [Fact]
@@ -129,7 +206,7 @@ public sealed class ReportGeneratorTests
         var action = () => generator.GenerateReportAsync(payloadJson, CancellationToken.None, Guid.NewGuid());
 
         await action.Should().ThrowAsync<ArgumentException>()
-            .WithMessage("ShipmentId parameter is required.");
+            .WithMessage("ReferecneId parameter is required.");
     }
 
     [Fact]
@@ -155,9 +232,11 @@ public sealed class ReportGeneratorTests
         public IDocument InvoiceDocument { get; init; } = new StubDocument("invoice-report");
         public IDocument ShipmentDocument { get; init; } = new StubDocument("shipment-report");
         public IDocument DashboardDocument { get; init; } = new StubDocument("dashboard-report");
+        public IDocument BundleInvoiceDocument { get; init; } = new StubDocument("bundle-invoice-report");
         public ShipmentPaymentInvoiceDto? InvoiceArgument { get; private set; }
         public RetrieveShipmentDto? ShipmentArgument { get; private set; }
         public AdminDashboardDto? DashboardArgument { get; private set; }
+        public BundlePaymentInvoiceDto? BundleInvoiceArgument { get; private set; }
 
         public IDocument CreateInvoice(ShipmentPaymentInvoiceDto invoice)
         {
@@ -176,6 +255,12 @@ public sealed class ReportGeneratorTests
             DashboardArgument = dashboard;
             return DashboardDocument;
         }
+
+        public IDocument CreateBundleInvoice(BundlePaymentInvoiceDto bundlePaymentInvoice)
+        {
+            BundleInvoiceArgument = bundlePaymentInvoice;
+            return BundleInvoiceDocument;
+        }
     }
 
     private sealed class StubDocument(string title) : IDocument
@@ -192,3 +277,5 @@ public sealed class ReportGeneratorTests
         }
     }
 }
+
+

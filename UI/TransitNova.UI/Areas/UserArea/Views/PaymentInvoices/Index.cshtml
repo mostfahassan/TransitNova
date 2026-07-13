@@ -1,7 +1,7 @@
-@model UserPaymentInvoicesIndexViewModel
+@model IReadOnlyCollection<UiInvoiceDto>
 @{
     ViewData["Title"] = "Payment Invoices";
-    var invoices = Model.Invoices.OrderByDescending(invoice => invoice.PaidAt ?? DateTime.MinValue).ToArray();
+    var invoices = (Model ?? Array.Empty<UiInvoiceDto>()).OrderByDescending(invoice => invoice.PaidAt ?? DateTime.MinValue).ToArray();
     var paidCount = invoices.Count(invoice => invoice.Status.ToString().Contains("Success", StringComparison.OrdinalIgnoreCase));
     var totalAmount = invoices.Sum(invoice => invoice.TotalAmount);
 }
@@ -106,3 +106,4 @@
         return "customer-badge customer-badge-neutral";
     }
 }
+

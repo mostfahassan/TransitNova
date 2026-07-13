@@ -14,6 +14,7 @@ public sealed class UiCarrierProfileDto
     public string PhoneNumber { get; set; } = string.Empty;
     public UiAddressDto Address { get; set; } = new();
     public UserType UserType { get; set; }
+    public int CityId { get; set; }
     public string CityName { get; set; } = string.Empty;
     public string GovernmentName { get; set; } = string.Empty;
     public string CountryName { get; set; } = string.Empty;
@@ -36,6 +37,7 @@ public sealed class UiCarrierProfileDto
             PhoneNumber = source.PhoneNumber,
             Address = UiAddressDto.ToUiDto(source.Address),
             UserType = source.UserType,
+            CityId = source.CityId,
             CityName = source.CityName,
             GovernmentName = source.GovernmentName,
             CountryName = source.CountryName,

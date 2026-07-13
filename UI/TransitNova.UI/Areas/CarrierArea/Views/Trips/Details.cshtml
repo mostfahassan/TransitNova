@@ -30,10 +30,12 @@
             </div>
             <aside class="border-t border-[#E7E5E0] bg-[#FBFBFA] p-6 lg:border-l lg:border-t-0">
                 <dl class="space-y-3 text-sm">
-                    <div class="flex justify-between"><dt class="font-bold text-[#66615a]">Shipments</dt><dd class="font-black text-[#111111]">@shipments.Count</dd></div>
+                    <div class="flex justify-between"><dt class="font-bold text-[#66615a]">Trip ID</dt><dd class="break-all text-right font-black text-[#111111]">@trip.Id</dd></div>
+                    <div class="flex justify-between"><dt class="font-bold text-[#66615a]">Shipments</dt><dd class="font-black text-[#111111]">@(trip.ShipmentCount == 0 ? shipments.Count : trip.ShipmentCount)</dd></div>
                     <div class="flex justify-between"><dt class="font-bold text-[#66615a]">Completed</dt><dd class="font-black text-[#111111]">@CompletedCount(trip)</dd></div>
-                    <div class="flex justify-between"><dt class="font-bold text-[#66615a]">Started</dt><dd class="font-black text-[#111111]">@(trip.StartTime?.ToString("MMM dd, HH:mm") ?? "-")</dd></div>
-                    <div class="flex justify-between"><dt class="font-bold text-[#66615a]">Ended</dt><dd class="font-black text-[#111111]">@(trip.EndTime?.ToString("MMM dd, HH:mm") ?? "-")</dd></div>
+                    <div class="flex justify-between"><dt class="font-bold text-[#66615a]">Planned</dt><dd class="font-black text-[#111111]">@trip.PlannedDate.ToString("MMM dd, yyyy HH:mm")</dd></div>
+                    <div class="flex justify-between"><dt class="font-bold text-[#66615a]">Started</dt><dd class="font-black text-[#111111]">@(trip.StartTime?.ToString("MMM dd, yyyy HH:mm") ?? "-")</dd></div>
+                    <div class="flex justify-between"><dt class="font-bold text-[#66615a]">Ended</dt><dd class="font-black text-[#111111]">@(trip.EndTime?.ToString("MMM dd, yyyy HH:mm") ?? "-")</dd></div>
                 </dl>
             </aside>
         </div>
@@ -43,14 +45,17 @@
         <div class="border-b border-[#E7E5E0] p-5"><h3 class="text-xl font-black text-[#111111]">Trip shipments</h3><p class="mt-1 text-sm text-[#66615a]">Actions are available only when the shipment status allows them.</p></div>
         <div class="overflow-x-auto">
             <table class="carrier-table">
-                <thead><tr><th>Tracking</th><th>Receiver</th><th>Route</th><th>Status</th><th class="text-right">Action</th></tr></thead>
+                <thead><tr><th>Tracking</th><th>Receiver</th><th>Sender</th><th>Route</th><th>Mode</th><th>Cost</th><th>Status</th><th class="text-right">Action</th></tr></thead>
                 <tbody>
                 @foreach (var item in shipments.Select((value, index) => new { value, index }))
                 {
                     <tr style="--row-index:@item.index">
                         <td><span class="font-mono text-xs font-black text-[#111111]">@item.value.TrackingNumber</span></td>
                         <td>@item.value.Receiver.FullName<br /><span class="text-xs text-[#737373]">@item.value.Receiver.PhoneNumber</span></td>
+                        <td>@(string.IsNullOrWhiteSpace(item.value.Sender?.FullName) ? "-" : item.value.Sender.FullName)<br /><span class="text-xs text-[#737373]">@(string.IsNullOrWhiteSpace(item.value.Sender?.PhoneNumber) ? "-" : item.value.Sender.PhoneNumber)</span></td>
                         <td>@item.value.PickupAddress -> @item.value.DeliveryAddress</td>
+                        <td>@item.value.TransportationMode</td>
+                        <td>@item.value.ShippingCost.ToString("N2") @item.value.Currency</td>
                         <td><span class="carrier-badge @BadgeClass(item.value.CurrentStatus.ToString())">@item.value.CurrentStatus</span></td>
                         <td class="text-right">
                             @if (trip.TripType == TripType.Pickup && item.value.CurrentStatus == ShipmentStatuses.OutForPickup)

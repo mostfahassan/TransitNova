@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TransitNova.Domain.Entities.MainEntities;
+using static TransitNova.Domain.Contracts.Caching.CacheKeys;
 
 namespace TransitNova.InfraStructure.EntityConfig
 {
@@ -36,6 +37,17 @@ namespace TransitNova.InfraStructure.EntityConfig
                 .IsRequired();
             carrier.Property(c => c.RowVersion)
                 .IsRowVersion();
+
+
+            carrier.Property(c => c.UserType)
+                .HasConversion<string>()
+                .IsRequired();
+
+            carrier.Property(c => c.Status)
+                .HasConversion<string>()
+                .IsRequired();
+
+
 
             carrier.HasIndex(c => c.Code).IsUnique();
             carrier.HasIndex(c => c.AppUserId).IsUnique();

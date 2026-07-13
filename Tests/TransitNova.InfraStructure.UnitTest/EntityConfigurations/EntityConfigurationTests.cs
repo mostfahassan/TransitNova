@@ -128,6 +128,42 @@ public sealed class EntityConfigurationTests
         FindIndex(entity, nameof(Bundle.BundlePrice), nameof(Bundle.CurrentState)).Should().NotBeNull();
     }
 
+
+    [Fact]
+    public async Task PaymentInvoiceConfiguration_StatusPaymentMethodAndBenefitIndexes_Should_MatchPersistenceContractAsync()
+    {
+        await using var fixture = await SqliteAppDbContextFixture.CreateAsync();
+        var entity = Entity<PaymentInvoice>(fixture);
+
+        entity.FindProperty(nameof(PaymentInvoice.Status))!.GetProviderClrType().Should().Be(typeof(string));
+        entity.FindProperty(nameof(PaymentInvoice.PaymentMethod))!.GetProviderClrType().Should().Be(typeof(string));
+        entity.FindProperty(nameof(PaymentInvoice.BundleName))!.GetMaxLength().Should().Be(150);
+        FindIndex(entity, nameof(PaymentInvoice.PaymentId)).Should().NotBeNull();
+        FindIndex(entity, nameof(PaymentInvoice.CustomerId), nameof(PaymentInvoice.BundleId), nameof(PaymentInvoice.SubscriptionBenefitApplied), nameof(PaymentInvoice.CreatedAt))
+            .Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task NotificationConfiguration_UserUnreadAndCreatedIndexes_Should_SupportNotificationCenterQueriesAsync()
+    {
+        await using var fixture = await SqliteAppDbContextFixture.CreateAsync();
+        var entity = Entity<Notification>(fixture);
+
+        FindIndex(entity, nameof(Notification.UserId)).Should().NotBeNull();
+        FindIndex(entity, nameof(Notification.IsRead)).Should().NotBeNull();
+        FindIndex(entity, nameof(Notification.CreatedOnUtc)).Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task OutboxMessageConfiguration_ProcessedAndOccurredIndexes_Should_SupportBatchPollingAsync()
+    {
+        await using var fixture = await SqliteAppDbContextFixture.CreateAsync();
+        var entity = Entity<TransitNova.InfraStructure.OutBox.OutboxMessage>(fixture);
+
+        FindIndex(entity, nameof(TransitNova.InfraStructure.OutBox.OutboxMessage.ProcessedOn)).Should().NotBeNull();
+        FindIndex(entity, nameof(TransitNova.InfraStructure.OutBox.OutboxMessage.OccuredAt)).Should().NotBeNull();
+    }
+
     private static IEntityType Entity<TEntity>(SqliteAppDbContextFixture fixture) =>
         fixture.Context.Model.FindEntityType(typeof(TEntity))
         ?? throw new InvalidOperationException($"{typeof(TEntity).Name} is missing from the EF model.");

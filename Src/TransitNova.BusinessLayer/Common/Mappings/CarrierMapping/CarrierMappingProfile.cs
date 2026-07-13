@@ -14,6 +14,8 @@ namespace TransitNova.BusinessLayer.Common.Mappings.CarrierMapping
 
             CreateMap<Carrier, CarrierProfileDto>()
                 .IncludeBase<BaseInfo<Guid>, CommonRetrieveData>()
+                .ForMember(dest => dest.CityId,
+                    opt => opt.MapFrom(src => src.CityId))
                 .ForMember(dest => dest.Experience,
                     opt => opt.MapFrom(src => src.YearsOfExperience))
                 .ForMember(dest => dest.Rating,

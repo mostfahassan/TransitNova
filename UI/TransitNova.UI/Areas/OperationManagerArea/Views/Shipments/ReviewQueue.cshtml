@@ -1,6 +1,8 @@
-@model object?
+@model UiPagedResult<UiRetrieveShipmentDto>?
 @{
     ViewData["Title"] = "Review Queue";
+    var result = Model ?? new UiPagedResult<UiRetrieveShipmentDto> { PageSize = 20 };
+    var items = result.Data.ToList();
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Exceptions",
@@ -18,24 +20,22 @@
     {
         Title = "Pending operational decisions",
         Subtitle = "Rows here need fast action from the operations manager.",
-        Source = Model,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id",
         DetailsAction = "Review",
         PrimaryRowLabel = "Reject",
         PrimaryRowAction = "Reject",
-        PrimaryRowRouteIdName = "shipmentId",
-        PrimaryRowIdPropertyPath = "Id",
-        Columns = new List<OpsTableColumnViewModel>
-        {
-            new("Shipment", "TrackingNumber", "id"),
-            new("Pickup", "PickupAddress|SenderCity"),
-            new("Delivery", "DeliveryAddress|ReceiverCity"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Type", "ShipmentType"),
-            new("Received", "CreatedAt")
-        }
+        Headers = ["Shipment", "Pickup", "Delivery", "Status", "Type", "Received"],
+        Rows = items.Select(shipment => AdminDisplay.OpsRow(
+            "shipmentId",
+            shipment.Id,
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.OpsCell("Shipment", shipment.TrackingNumber, "id"),
+            AdminDisplay.OpsCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.OpsCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.OpsCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.OpsCell("Type", shipment.ShipmentType),
+            AdminDisplay.OpsCell("Received", shipment.CreatedAt))).ToList()
     };
 }
 

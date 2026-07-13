@@ -20,6 +20,12 @@ namespace TransitNova.InfraStructure.Repository.User
                 .Where(u => u.AppUserId == AppUserId)
                 .Select(u => u.Id)
                 .FirstOrDefaultAsync(ct);
+
+        public async Task<Guid?> GetAppUserIdByProfileIdAsync(Guid profileId, CancellationToken ct)
+            => await context.UserProfiles.AsNoTracking()
+                .Where(u => u.Id == profileId || u.AppUserId == profileId)
+                .Select(u => (Guid?)u.AppUserId)
+                .FirstOrDefaultAsync(ct);
            
      
 

@@ -34,7 +34,9 @@ public static class PrefillViewModelFactory
 
     public static GovernmentFormViewModel Government(UiGovernmentDto source) => new()
     {
-        Name = source.Name
+        Name = source.Name,
+        CountryId = source.CountryId,
+        CountryName = source.CountryName
     };
 
     public static RoleFormViewModel Role(UiRoleMembersDto source) => new()
@@ -46,7 +48,12 @@ public static class PrefillViewModelFactory
     {
         Name = source.Name,
         Type = source.Type,
-        Address = source.Address,
+        Address = new AddressViewModel
+        {
+            MainAddress = source.Address.MainAddress,
+            SecondaryAddress = source.Address.SecondaryAddress,
+            Street = source.Address.Street
+        },
         Capacity = source.Capacity,
         CurrentUsage = source.CurrentUsage,
         OperatingHours = source.OperatingHours,
@@ -80,6 +87,7 @@ public static class PrefillViewModelFactory
             LastName = names.LastName,
             PhoneNumber = source.PhoneNumber,
             Email = source.Email,
+            CityId = source.CityId,
             Address = AddressViewModel.FromDto(source.Address)
         };
     }
@@ -93,6 +101,10 @@ public static class PrefillViewModelFactory
             Id = source.Manager.ManagerId,
             FirstName = names.FirstName,
             LastName = names.LastName,
+            PhoneNumber = source.Manager.PhoneNumber,
+            Email = source.Manager.Email,
+            CityId = source.Manager.CityId,
+            Address = AddressViewModel.FromDto(source.Manager.Address),
             WarehouseId = source.Manager.WarehouseId
         };
     }

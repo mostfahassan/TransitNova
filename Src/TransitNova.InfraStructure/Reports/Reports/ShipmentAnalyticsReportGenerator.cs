@@ -17,7 +17,7 @@ namespace TransitNova.InfraStructure.Reports.Reports
             var contract = ReportPayloadSerializer.Deserialize<ShipmentReportContract>(payloadJson);
             if (contract.ShipmentId == Guid.Empty)
             {
-                throw new ArgumentException("ShipmentId parameter is required.");
+                throw new ArgumentException("ReferecneId parameter is required.");
             }
 
             var shipment = await shipments.GetShipmentAsync(entity => entity.Id == contract.ShipmentId, cancellationToken)

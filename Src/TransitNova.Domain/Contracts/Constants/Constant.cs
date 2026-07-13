@@ -9,7 +9,7 @@
         }
         public static class ShipmentReportConstants
         {
-            public const string ShipmentIdPrefix = "ShipmentId";
+            public const string ShipmentIdPrefix = "ReferecneId";
         }
 
         public static class PaymentReferenceConstants

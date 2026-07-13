@@ -394,6 +394,7 @@ data/sqlserver/
 
 # Test Coverage and build artifacts
 build/
+!build/coverage/Test-Coverage.ps1
 bin/
 obj/
 
@@ -404,3 +405,16 @@ obj/
 tailwind.extension.json
 .vs/
 .idea/
+# IDE / Editor Files
+tailwind.extension.json
+.vs/
+.idea/
+.vscode/
+
+# Local Environment & User Settings
+launchSettings.json
+docker-compose.override.yml
+
+# Docker Persistent Data
+container/
+data/

@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -30,7 +30,7 @@ public sealed class ProcessOutboxMessagesJobTests
 
         publisher.Verify(x => x.Publish(
             It.Is<IDomainEvent>(e => e.GetType() == typeof(UserSubscribedToBundleDomainEvent) &&
-                ((UserSubscribedToBundleDomainEvent)e).Id != Guid.Empty &&
+                ((UserSubscribedToBundleDomainEvent)e).UserProfileId != Guid.Empty &&
                 ((UserSubscribedToBundleDomainEvent)e).BundleId != Guid.Empty),
             CancellationToken.None), Times.Once);
         var stored = await fixture.Context.OutboxMessages.AsNoTracking().SingleAsync();
@@ -61,7 +61,7 @@ public sealed class ProcessOutboxMessagesJobTests
         var publisher = new Mock<IPublisher>();
         publisher.Setup(x => x.Publish(It.IsAny<IDomainEvent>(), It.IsAny<CancellationToken>()))
             .Callback<IDomainEvent, CancellationToken>((domainEvent, _) =>
-                published.Add(((UserSubscribedToBundleDomainEvent)domainEvent).Id))
+                published.Add(((UserSubscribedToBundleDomainEvent)domainEvent).UserProfileId))
             .Returns(Task.CompletedTask);
         var now = DateTime.UtcNow;
         var messages = Enumerable.Range(0, 25)
@@ -232,5 +232,5 @@ public sealed class ProcessOutboxMessagesJobTests
     }
 
     private static Guid ReadEventId(OutboxMessage message) =>
-        JsonConvert.DeserializeObject<UserSubscribedToBundleDomainEvent>(message.Content!)!.Id;
+        JsonConvert.DeserializeObject<UserSubscribedToBundleDomainEvent>(message.Content!)!.UserProfileId;
 }

@@ -1239,7 +1239,7 @@
           "User Subscription Controller"
         ],
         "summary": "Subscribe the authenticated user to a bundle",
-        "description": "Allows the authenticated user to subscribe to a bundle. The operation validates bundle availability, subscription eligibility, and applies the selected bundle to the user's account.",
+        "description": "Allows the authenticated user to subscribe to a bundle after selecting a payment method. The operation validates bundle availability, subscription eligibility, and applies the selected bundle to the user's account after payment succeeds.",
         "operationId": "Subscribe To Bundle",
         "parameters": [
           {
@@ -1268,6 +1268,21 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscribeToBundleDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscribeToBundleDto"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -3157,6 +3172,177 @@
         ]
       }
     },
+    "/api/v{version}/users/bundles": {
+      "get": {
+        "tags": [
+          "User Bundle Catalog"
+        ],
+        "summary": "Get bundle catalog for authenticated users",
+        "description": "Returns the bundle catalog available for authenticated users to review before checkout.",
+        "operationId": "Get User Bundles",
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v{version}/users/bundles/{bundleId}": {
+      "get": {
+        "tags": [
+          "User Bundle Catalog"
+        ],
+        "summary": "Get bundle details for authenticated users",
+        "description": "Returns a single bundle by id for the authenticated user's checkout screen.",
+        "operationId": "Get User Bundle",
+        "parameters": [
+          {
+            "name": "bundleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/api/v{version}/operation-managers/trips/{carrierId}/start-pickup": {
       "patch": {
         "tags": [
@@ -4291,6 +4477,140 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/ShipmentReportContract"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/api/v{version}/reports/bundles": {
+      "post": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Request a new bundle report",
+        "description": "Allows an authorized user to request a new bundle report. This endpoint is idempotent and should be called with X-Idempotency-Key.",
+        "operationId": "Request Bundle Report",
+        "parameters": [
+          {
+            "name": "X-Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BundleReportContract"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/BundleReportContract"
               }
             }
           },
@@ -11603,6 +11923,77 @@
         ]
       }
     },
+    "/api/v{version}/admin/subscriptions/subscribers": {
+      "get": {
+        "tags": [
+          "Admin Bundle Subscriptions"
+        ],
+        "summary": "Get all bundle subscribers",
+        "description": "Returns all bundle subscriptions for the admin subscriptions index.",
+        "operationId": "Get Subscribers",
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/api/v{version}/admin/subscriptions/{subscriptionId}": {
       "get": {
         "tags": [
@@ -11709,7 +12100,7 @@
           "Admin Bundle Subscriptions"
         ],
         "summary": "Get bundle subscribers",
-        "description": "Returns all active users subscribed to a specific bundle.",
+        "description": "Returns all bundle subscriptions for a specific bundle.",
         "operationId": "Get Bundle Subscribers",
         "parameters": [
           {
@@ -16514,6 +16905,23 @@
           }
         }
       },
+      "AddressDto": {
+        "type": "object",
+        "properties": {
+          "mainAddress": {
+            "type": "string"
+          },
+          "secondaryAddress": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "street": {
+            "type": "string"
+          }
+        }
+      },
       "AssignCarrierDto": {
         "required": [
           "carrierId"
@@ -16521,6 +16929,15 @@
         "type": "object",
         "properties": {
           "carrierId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "BundleReportContract": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
             "type": "string",
             "format": "uuid"
           }
@@ -16687,7 +17104,7 @@
             "type": "string"
           },
           "address": {
-            "type": "string"
+            "$ref": "#/components/schemas/AddressDto"
           },
           "cityId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -16737,10 +17154,10 @@
             "$ref": "#/components/schemas/enShipmentType"
           },
           "deliveryAddress": {
-            "type": "string"
+            "$ref": "#/components/schemas/AddressDto"
           },
           "pickupAddress": {
-            "type": "string"
+            "$ref": "#/components/schemas/AddressDto"
           },
           "paymentId": {
             "type": "string",
@@ -16795,7 +17212,7 @@
             "$ref": "#/components/schemas/WarehouseType"
           },
           "address": {
-            "type": "string"
+            "$ref": "#/components/schemas/AddressDto"
           },
           "capacity": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
@@ -17042,7 +17459,7 @@
             "type": "string"
           },
           "address": {
-            "type": "string"
+            "$ref": "#/components/schemas/AddressDto"
           },
           "userType": {
             "$ref": "#/components/schemas/UserType"
@@ -17102,6 +17519,14 @@
       },
       "ShipmentStatuses": {
         "type": "integer"
+      },
+      "SubscribeToBundleDto": {
+        "type": "object",
+        "properties": {
+          "paymentMethod": {
+            "$ref": "#/components/schemas/PaymentMethod"
+          }
+        }
       },
       "TransportationMode": {
         "type": "integer"
@@ -17227,9 +17652,13 @@
             "format": "int32"
           },
           "address": {
-            "type": [
-              "null",
-              "string"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
             ]
           }
         }
@@ -17296,15 +17725,23 @@
             "format": "uuid"
           },
           "deliveryAddress": {
-            "type": [
-              "null",
-              "string"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
             ]
           },
           "pickupAddress": {
-            "type": [
-              "null",
-              "string"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
             ]
           },
           "packageSpecification": {
@@ -17349,7 +17786,14 @@
             "$ref": "#/components/schemas/WarehouseType"
           },
           "address": {
-            "type": "string"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
           },
           "capacity": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
@@ -17440,9 +17884,13 @@
             "format": "int32"
           },
           "address": {
-            "type": [
-              "null",
-              "string"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
             ]
           }
         }
@@ -17502,6 +17950,9 @@
     },
     {
       "name": "User Payment Invoices"
+    },
+    {
+      "name": "User Bundle Catalog"
     },
     {
       "name": "Operation Manager Trips"

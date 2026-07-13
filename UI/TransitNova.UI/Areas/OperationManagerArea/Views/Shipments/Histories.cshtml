@@ -1,7 +1,8 @@
-@model object?
+@model IEnumerable<UiRetrieveShipmentStatusDto>?
 @{
     ViewData["Title"] = "Shipment History";
     var shipmentId = Convert.ToString(ViewContext.RouteData.Values["shipmentId"]) ?? string.Empty;
+    var items = (Model ?? Enumerable.Empty<UiRetrieveShipmentStatusDto>()).ToList();
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Audit trail",
@@ -19,16 +20,19 @@
     {
         Title = "Status timeline",
         Subtitle = "Every operational transition should be visible here.",
-        Source = Model,
         Controller = "Shipments",
         ShowDetails = false,
-        Columns = new List<OpsTableColumnViewModel>
+        Headers = ["Status", "Carrier", "Created", "Note"],
+        Rows = items.Select(status => new OpsTableRowViewModel
         {
-            new("Status", "Status|StatusType", "badge"),
-            new("Carrier", "Carrier|CarrierName|CarrierId"),
-            new("Created", "CreatedAt|ChangedAt"),
-            new("Note", "Note|Description")
-        }
+            Cells =
+            [
+                AdminDisplay.OpsCell("Status", status.StatusType, "badge"),
+                AdminDisplay.OpsCell("Carrier", status.Carrier?.FullName),
+                AdminDisplay.OpsCell("Created", status.ChangedAt),
+                AdminDisplay.OpsCell("Note", string.Empty)
+            ]
+        }).ToList()
     };
 }
 

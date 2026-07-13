@@ -1,6 +1,7 @@
-@model object?
+@model UiTripDetailsDto?
 @{
     ViewData["Title"] = "Trip Details";
+    var trip = Model ?? new UiTripDetailsDto();
     var header = new AdminPageHeaderViewModel
     {
         Eyebrow = "Trip oversight",
@@ -10,10 +11,9 @@
         SecondaryController = "Trips",
         SecondaryAction = "Index"
     };
-    var shipments = AdminDisplay.Value(Model, "Shipments");
-    var tripType = AdminDisplay.Text(Model, "TripType");
-    var tripStatus = AdminDisplay.Text(Model, "Status", "badge");
-    var totalShipments = AdminDisplay.Text(Model, "TotalShipments");
+    var tripType = AdminDisplay.Format(trip.TripType);
+    var tripStatus = AdminDisplay.Format(trip.Status, kind: "badge");
+    var totalShipments = AdminDisplay.Format(trip.TotalShipments);
     var tripTypeKpi = new AdminKpiTileViewModel("Trip type", tripType, "Movement lane", "TR");
     var statusKpi = new AdminKpiTileViewModel("Status", tripStatus, "Current state", "ST");
     var shipmentCountKpi = new AdminKpiTileViewModel("Shipments", totalShipments, "Manifest count", "SH");
@@ -21,49 +21,44 @@
     {
         Title = "Trip record",
         Subtitle = "Administrative trip projection returned by the API.",
-        Source = Model,
+        PrimaryLabel = trip.Id == Guid.Empty ? string.Empty : trip.Id.ToString(),
         Controller = "Trips",
-        RouteIdName = "tripId",
-        IdPropertyPath = "Id",
+        RouteValues = new Dictionary<string, object?> { ["tripId"] = trip.Id },
         EditAction = null,
         DeleteAction = null,
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Trip", "Id", "id"),
-            new("Type", "TripType"),
-            new("Status", "Status", "badge"),
-            new("Carrier", "CarrierName"),
-            new("Carrier phone", "CarrierPhoneNumber"),
-            new("Warehouse", "WarehouseName"),
-            new("Address", "WarehouseAddress"),
-            new("Planned", "PlannedDate"),
-            new("Started", "StartTime"),
-            new("Ended", "EndTime"),
-            new("Shipments", "TotalShipments"),
-            new("Created by", "CreatedBy"),
-            new("Created", "CreatedAt")
-        }
+        Fields =
+        [
+            AdminDisplay.AdminCell("Trip", trip.Id, "id"),
+            AdminDisplay.AdminCell("Type", trip.TripType),
+            AdminDisplay.AdminCell("Status", trip.Status, "badge"),
+            AdminDisplay.AdminCell("Carrier", trip.CarrierName),
+            AdminDisplay.AdminCell("Carrier phone", trip.CarrierPhoneNumber),
+            AdminDisplay.AdminCell("Warehouse", trip.WarehouseName),
+            AdminDisplay.AdminCell("Address", trip.WarehouseAddress),
+            AdminDisplay.AdminCell("Planned", trip.PlannedDate),
+            AdminDisplay.AdminCell("Started", trip.StartTime),
+            AdminDisplay.AdminCell("Ended", trip.EndTime),
+            AdminDisplay.AdminCell("Shipments", trip.TotalShipments),
+            AdminDisplay.AdminCell("Created by", trip.CreatedBy),
+            AdminDisplay.AdminCell("Created", trip.CreatedAt)
+        ]
     };
     var shipmentTable = new AdminTableViewModel
     {
         Title = "Trip shipment manifest",
         Subtitle = "Shipments currently attached to this trip.",
-        Source = shipments,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id",
         ShowDetails = true,
-        ShowEdit = false,
-        ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Status", "CurrentStatus", "badge"),
-            new("Receiver", "Receiver.FullName|Receiver.Email"),
-            new("Pickup", "PickupAddress"),
-            new("Delivery", "DeliveryAddress"),
-            new("Cost", "ShippingCost")
-        },
+        Headers = ["Tracking", "Status", "Receiver", "Pickup", "Delivery", "Cost"],
+        Rows = trip.Shipments.Select(shipment => AdminDisplay.AdminRow(
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.AdminCell("Tracking", shipment.TrackingNumber, "id"),
+            AdminDisplay.AdminCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.AdminCell("Receiver", shipment.Receiver.FullName),
+            AdminDisplay.AdminCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.AdminCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.AdminCell("Cost", shipment.ShippingCost, "currency"))).ToList(),
         EmptyTitle = "No shipments on this trip",
         EmptyDescription = "The manifest will appear here when shipments are attached to the trip."
     };

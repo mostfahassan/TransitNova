@@ -1,6 +1,11 @@
-@model object?
+@using TransitNova.Domain.Enums.Trip
+@model UiPagedResult<UiTripDetailsDto>?
 @{
     ViewData["Title"] = "Trips";
+    var result = Model ?? new UiPagedResult<UiTripDetailsDto> { PageSize = 20 };
+    var items = result.Data.ToList();
+    var selectedTripType = Context.Request.Query["TripType"].ToString();
+    var selectedStatus = Context.Request.Query["Status"].ToString();
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Dispatch board",
@@ -17,23 +22,21 @@
     {
         Title = "Trip list",
         Subtitle = "Trips scoped to your handled carriers.",
-        Source = Model,
         Controller = "Trips",
-        RouteIdName = "tripId",
-        IdPropertyPath = "Id",
         ShowDetails = true,
-        Columns = new List<OpsTableColumnViewModel>
-        {
-            new("Trip", "Id", "id"),
-            new("Type", "TripType"),
-            new("Status", "Status", "badge"),
-            new("Carrier", "CarrierName"),
-            new("Warehouse", "WarehouseName"),
-            new("Shipments", "TotalShipments"),
-            new("Planned", "PlannedDate"),
-            new("Started", "StartTime"),
-            new("Ended", "EndTime")
-        },
+        Headers = ["Trip", "Type", "Status", "Carrier", "Warehouse", "Shipments", "Planned", "Started", "Ended"],
+        Rows = items.Select(trip => AdminDisplay.OpsRow(
+            "tripId",
+            trip.Id,
+            AdminDisplay.OpsCell("Trip", trip.Id, "id"),
+            AdminDisplay.OpsCell("Type", trip.TripType),
+            AdminDisplay.OpsCell("Status", trip.Status, "badge"),
+            AdminDisplay.OpsCell("Carrier", trip.CarrierName),
+            AdminDisplay.OpsCell("Warehouse", trip.WarehouseName),
+            AdminDisplay.OpsCell("Shipments", trip.TotalShipments),
+            AdminDisplay.OpsCell("Planned", trip.PlannedDate),
+            AdminDisplay.OpsCell("Started", trip.StartTime),
+            AdminDisplay.OpsCell("Ended", trip.EndTime))).ToList(),
         EmptyTitle = "No trips found",
         EmptyDescription = "Trips for handled carriers will appear here when they match your filters."
     };
@@ -42,18 +45,28 @@
 <partial name="_OpsPageHeader" model="header" />
 
 <section class="ops-card mb-6 p-5">
-    <form method="get" class="grid gap-4 lg:grid-cols-[repeat(6,minmax(0,1fr))_auto] lg:items-end">
-        <div>
-            <label class="ops-label" for="Id">Trip Id</label>
-            <input id="Id" name="Id" value="@Context.Request.Query["Id"]" class="ops-input" placeholder="Trip Guid" autocomplete="off" />
-        </div>
+    <form method="get" class="grid gap-4 lg:grid-cols-[repeat(5,minmax(0,1fr))_auto] lg:items-end">
         <div>
             <label class="ops-label" for="TripType">Trip type</label>
-            <input id="TripType" name="TripType" value="@Context.Request.Query["TripType"]" class="ops-input" placeholder="Pickup / Delivery" autocomplete="off" />
+            <select id="TripType" name="TripType" class="ops-select">
+                <option value="">Any type</option>
+                @foreach (var option in Enum.GetValues<TripType>())
+                {
+                    var value = option.ToString();
+                    <option value="@value" selected="@(string.Equals(selectedTripType, value, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">@value</option>
+                }
+            </select>
         </div>
         <div>
             <label class="ops-label" for="Status">Status</label>
-            <input id="Status" name="Status" value="@Context.Request.Query["Status"]" class="ops-input" placeholder="Planned / Started" autocomplete="off" />
+            <select id="Status" name="Status" class="ops-select">
+                <option value="">Any status</option>
+                @foreach (var option in Enum.GetValues<TripStatus>())
+                {
+                    var value = option.ToString();
+                    <option value="@value" selected="@(string.Equals(selectedStatus, value, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">@value</option>
+                }
+            </select>
         </div>
         <div>
             <label class="ops-label" for="CarrierId">Carrier Id</label>

@@ -1,8 +1,8 @@
 @model OpsDispatchPageViewModel
 @{
     ViewData["Title"] = "Dispatch Command Center";
-    var carriers = AdminDisplay.Rows(Model?.Carriers);
-    var shipments = AdminDisplay.Rows(Model?.Shipments);
+    var carriers = (Model?.Carriers?.Data ?? Enumerable.Empty<UiCarrierSummaryDetailsDto>()).ToList();
+    var shipments = (Model?.Shipments?.Data ?? Enumerable.Empty<UiRetrieveShipmentDto>()).ToList();
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Dispatch",
@@ -34,27 +34,25 @@
             @for (var index = 0; index < shipments.Count; index++)
             {
                 var shipment = shipments[index];
-                var shipmentId = AdminDisplay.RouteValue(shipment, "Id|ShipmentId");
-                var status = AdminDisplay.Text(shipment, "CurrentStatus|Status");
+                var shipmentId = shipment.Id;
+                var status = shipment.CurrentStatus.ToString();
                 var isDelivery = status.Contains("Warehouse", StringComparison.OrdinalIgnoreCase);
                 var assignmentAction = isDelivery ? "AssignDelivery" : "AssignPickup";
-                var assignmentCity = isDelivery
-                    ? AdminDisplay.Text(shipment, "DeliveryCity|ReceiverCity|DeliveryAddress")
-                    : AdminDisplay.Text(shipment, "PickupCity|SenderCity|PickupAddress");
-                var pickupCity = AdminDisplay.Text(shipment, "PickupCity|SenderCity|PickupAddress");
-                var deliveryCity = AdminDisplay.Text(shipment, "DeliveryCity|ReceiverCity|DeliveryAddress");
+                var pickupCity = AdminDisplay.Format(shipment.PickupAddress);
+                var deliveryCity = AdminDisplay.Format(shipment.DeliveryAddress);
+                var assignmentCity = isDelivery ? deliveryCity : pickupCity;
                 var statusClass = isDelivery ? "ops-badge ops-badge-info" : "ops-badge ops-badge-success";
                 <article class="ops-dispatch-card" style="--item-index:@index" data-dispatch-shipment="@shipmentId">
                     <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
-                                <span class="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#111111]">@AdminDisplay.Text(shipment, "TrackingNumber", "id")</span>
+                                <span class="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#111111]">@AdminDisplay.Format(shipment.TrackingNumber, kind: "id")</span>
                                 <span class="@statusClass">@status</span>
                             </div>
                             <p class="mt-3 text-sm font-semibold text-[#2F3437]">@pickupCity to @deliveryCity</p>
-                            <p class="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#787774]">Created @AdminDisplay.Text(shipment, "CreatedAt")</p>
+                            <p class="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#787774]">Created @AdminDisplay.Format(shipment.CreatedAt)</p>
                         </div>
-                        @if (!string.IsNullOrWhiteSpace(Convert.ToString(shipmentId)))
+                        @if (shipmentId != Guid.Empty)
                         {
                             <a asp-area="OperationManagerArea" asp-controller="Carriers" asp-action="@assignmentAction" asp-route-shipmentId="@shipmentId" asp-route-city="@assignmentCity" class="ops-button-secondary shrink-0">Assign</a>
                         }
@@ -78,11 +76,11 @@
             @for (var index = 0; index < carriers.Count; index++)
             {
                 var carrier = carriers[index];
-                var carrierId = AdminDisplay.RouteValue(carrier, "Id|CarrierId");
-                var carrierName = AdminDisplay.Text(carrier, "FullName|Name|CarrierName");
-                var carrierVehicle = AdminDisplay.Text(carrier, "Vehicle.VehicleType|VehicleType");
-                var carrierCity = AdminDisplay.Text(carrier, "ServedCities|City|Address");
-                var carrierStatus = AdminDisplay.Text(carrier, "Status|CarrierStatus");
+                var carrierId = carrier.Id;
+                var carrierName = carrier.FullName;
+                var carrierVehicle = "-";
+                var carrierCity = string.Join(", ", carrier.ServedCities);
+                var carrierStatus = carrier.Status.ToString();
                 var carrierStatusClass = BadgeClass(carrierStatus);
                 <article class="ops-carrier-chip" style="--item-index:@index" data-dispatch-carrier="@carrierId">
                     <div class="flex items-start justify-between gap-3">
@@ -93,8 +91,8 @@
                         <span class="@carrierStatusClass">@carrierStatus</span>
                     </div>
                     <div class="mt-4 grid grid-cols-2 gap-2 text-xs font-bold text-[#2F3437]">
-                        <span class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-2">Load @AdminDisplay.Text(carrier, "CurrentLoad|AssignedShipmentsCount")</span>
-                        <span class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-2">Rating @AdminDisplay.Text(carrier, "AverageRating|Rating")</span>
+                        <span class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-2">Load @carrier.AssignedShipmentsCount</span>
+                        <span class="rounded-lg border border-[#EAEAEA] bg-[#FBFBFA] px-3 py-2">Rating @carrier.Rating</span>
                     </div>
                 </article>
             }

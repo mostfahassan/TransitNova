@@ -1,18 +1,16 @@
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TransitNova.Domain.Entities.MainEntities;
 namespace TransitNova.InfraStructure.EntityConfig
 {
-    internal class PaymmentInvoiceConfiguration : IEntityTypeConfiguration<PaymentInvoice>
+    internal class PaymentInvoiceConfiguration : IEntityTypeConfiguration<PaymentInvoice>
     {
         public void Configure(EntityTypeBuilder<PaymentInvoice> invoice)
         {
-       
             invoice.HasKey(x => x.Id).IsClustered();
 
             invoice.Property(x => x.Status)
-                   .HasConversion<string>() 
+                   .HasConversion<string>()
                    .HasMaxLength(50);
 
             invoice.Property(x => x.PaymentMethod)
@@ -20,10 +18,12 @@ namespace TransitNova.InfraStructure.EntityConfig
                    .HasMaxLength(50);
 
             invoice.Property(x => x.Notes)
-                   .HasMaxLength(1000); 
+                   .HasMaxLength(1000);
 
-          
-            invoice.Property(x => x.ShippingCost)
+            invoice.Property(x => x.BundleName)
+                   .HasMaxLength(150);
+
+            invoice.Property(x => x.Cost)
                    .HasColumnType("decimal(18, 2)");
 
             invoice.Property(x => x.Commission)
@@ -32,10 +32,22 @@ namespace TransitNova.InfraStructure.EntityConfig
             invoice.Property(x => x.Amount)
                    .HasColumnType("decimal(18, 2)");
 
-    
+            invoice.Property(x => x.OriginalShippingCost)
+                   .HasColumnType("decimal(18, 2)");
+
+            invoice.Property(x => x.DiscountPercentage)
+                   .HasColumnType("decimal(5, 2)");
+
+            invoice.Property(x => x.DiscountAmount)
+                   .HasColumnType("decimal(18, 2)");
+
+            invoice.Property(x => x.FinalShippingCost)
+                   .HasColumnType("decimal(18, 2)");
+
+
             invoice.HasIndex(x => x.PaymentId);
 
-            invoice.HasIndex(x => x.ShipmentId);
+            invoice.HasIndex(x => x.ReferecneId);
 
             invoice.HasIndex(x => x.CustomerId);
 
@@ -43,8 +55,13 @@ namespace TransitNova.InfraStructure.EntityConfig
 
             invoice.HasIndex(x => x.PaidAt);
 
+            invoice.HasIndex(x => x.BundleId);
+
+            invoice.HasIndex(x => x.BundleSubscriptionId);
+
             invoice.HasIndex(x => new { x.CustomerId, x.Status });
-            invoice.HasIndex(x => new { x.ShipmentId, x.Status });
+            invoice.HasIndex(x => new { x.ReferecneId, x.Status });
+            invoice.HasIndex(x => new { x.CustomerId, x.BundleId, x.SubscriptionBenefitApplied, x.CreatedAt });
 
             invoice.HasOne(x => x.UserProfile)
                    .WithMany(x => x.PaymentInvoices)
@@ -53,5 +70,3 @@ namespace TransitNova.InfraStructure.EntityConfig
         }
     }
 }
-
-

@@ -1,6 +1,8 @@
-@model object?
+@model UiPagedResult<UiTripDetailsDto>?
 @{
     ViewData["Title"] = "Warehouse Trips";
+    var result = Model ?? new UiPagedResult<UiTripDetailsDto> { PageSize = 20 };
+    var items = result.Data.ToList();
     var header = new WarehousePageHeaderViewModel
     {
         Eyebrow = "Trip control",
@@ -17,21 +19,22 @@
     {
         Title = "Warehouse trips",
         Subtitle = "Trips filtered by the current warehouse context.",
-        Source = Model,
         Controller = "Trips",
-        RouteIdName = "tripId",
-        IdPropertyPath = "Id",
-        Columns = new List<WarehouseTableColumnViewModel>
-        {
-            new("Trip", "Id", "id"),
-            new("Type", "TripType"),
-            new("Status", "Status", "badge"),
-            new("Carrier", "CarrierName|Carrier.FullName"),
-            new("Shipments", "TotalShipments"),
-            new("Planned", "PlannedDate"),
-            new("Started", "StartTime"),
-            new("Ended", "EndTime")
-        },
+        Headers = ["Trip", "Type", "Status", "Carrier", "Shipments", "Planned", "Started", "Ended"],
+        Rows = items.Select(trip => AdminDisplay.WarehouseRow(
+            "tripId",
+            trip.Id,
+            AdminDisplay.WarehouseCell("Trip", trip.Id, "id"),
+            AdminDisplay.WarehouseCell("Type", trip.TripType),
+            AdminDisplay.WarehouseCell("Status", trip.Status, "badge"),
+            AdminDisplay.WarehouseCell("Carrier", trip.CarrierName),
+            AdminDisplay.WarehouseCell("Shipments", trip.TotalShipments),
+            AdminDisplay.WarehouseCell("Planned", trip.PlannedDate),
+            AdminDisplay.WarehouseCell("Started", trip.StartTime),
+            AdminDisplay.WarehouseCell("Ended", trip.EndTime))).ToList(),
+        TotalCount = result.TotalCount,
+        PageNumber = result.PageNumber,
+        TotalPages = result.PageSize <= 0 ? 1 : result.TotalPages,
         EmptyTitle = "No trips found",
         EmptyDescription = "Pickup and delivery trips for this warehouse will appear here."
     };

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using TransitNova.BusinessLayer.Interfaces.Repositories.NotificationRepository;
 using TransitNova.BusinessLayer.Interfaces.Services.UnitOfWork;
 using TransitNova.Domain.Contracts.DomainEvents.Events.CarrierEvents;
@@ -10,7 +10,7 @@ namespace TransitNova.BusinessLayer.Common.Events.CarrierEventsHandler
     {
         public async Task Handle(CarrierTripStartedDomainEvent notification, CancellationToken cancellationToken)
         {
-            var notificationCreated = Notification.Create(notification.Id, "Trip Started", "Your assigned trip has started.");
+            var notificationCreated = Notification.Create(notification.AppUserId, "Trip Started", "Your assigned trip has started.");
             await notificationRepo.AddNotificationAsync(notificationCreated, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }

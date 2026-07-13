@@ -11,6 +11,9 @@ namespace TransitNova.Domain.Entities.MainEntities
         public Guid AppUserId { get; private set; }
         public IReadOnlyCollection<Shipment> HandledShipments => _handledShipments;
         public IReadOnlyCollection<Carrier> HandledCarriers => _handledCarriers;
+        private OperationManagerProfile()
+        {
+        }
         private OperationManagerProfile(Guid appUserId, string firstName, string lastName, string email, string phoneNumber, Address address, int cityId)
         {
             Id = Guid.CreateVersion7();

@@ -24,10 +24,18 @@
     const bundlePriceField = document.querySelector('[data-bundle-invoice-price]');
     const amountField = document.querySelector('[data-bundle-invoice-amount]');
     const notesField = document.querySelector('[data-bundle-invoice-notes]');
+    const reportForm = document.querySelector('[data-bundle-report-form]');
+    const reportPaymentIdInput = document.querySelector('[data-bundle-report-payment-id]');
+    const reportButton = document.querySelector('[data-bundle-report-button]');
+    const reportSpinner = document.querySelector('[data-bundle-report-spinner]');
+    const reportText = document.querySelector('[data-bundle-report-text]');
+    const reportFeedback = document.querySelector('[data-bundle-report-feedback]');
     const originalButtonText = submitText?.textContent?.trim() || 'Pay and subscribe';
+    const originalReportText = reportText?.textContent?.trim() || 'Print Invoice Report';
     const originalBodyOverflow = document.body.style.overflow;
 
     let isSubmitting = false;
+    let isRequestingReport = false;
     let paymentOverlayOpen = false;
     let invoiceModalOpen = false;
     let lastFocusedElement = null;
@@ -70,6 +78,21 @@
         if (alertMessage) alertMessage.textContent = '';
     }
 
+    function setReportFeedback(message, isSuccess) {
+        if (!reportFeedback) return;
+        if (!message) {
+            reportFeedback.classList.add('hidden');
+            reportFeedback.textContent = '';
+            reportFeedback.classList.remove('text-[#14532D]', 'text-[#9F2F2D]');
+            return;
+        }
+
+        reportFeedback.classList.remove('hidden');
+        reportFeedback.textContent = message;
+        reportFeedback.classList.toggle('text-[#14532D]', !!isSuccess);
+        reportFeedback.classList.toggle('text-[#9F2F2D]', !isSuccess);
+    }
+
     function syncBodyScrollLock() {
         document.body.style.overflow = paymentOverlayOpen || invoiceModalOpen ? 'hidden' : originalBodyOverflow;
     }
@@ -103,6 +126,15 @@
         if (submitText) submitText.textContent = isBusy ? 'Processing payment...' : originalButtonText;
     }
 
+    function setReportSubmittingState(isBusy) {
+        if (!reportButton) return;
+        reportButton.disabled = isBusy || !reportPaymentIdInput?.value;
+        reportButton.classList.toggle('opacity-80', isBusy);
+        reportButton.classList.toggle('cursor-wait', isBusy);
+        reportSpinner?.classList.toggle('hidden', !isBusy);
+        if (reportText) reportText.textContent = isBusy ? 'Requesting report...' : originalReportText;
+    }
+
     function fillInvoice(invoice) {
         const status = pick(invoice, 'status', 'Status') || 'Paid';
         const currency = pick(invoice, 'currency', 'Currency') || 'EGP';
@@ -118,6 +150,9 @@
         if (bundlePriceField) bundlePriceField.textContent = formatMoney(pick(invoice, 'bundlePrice', 'BundlePrice'), currency);
         if (amountField) amountField.textContent = formatMoney(pick(invoice, 'totalAmount', 'TotalAmount'), currency);
         if (notesField) notesField.textContent = pick(invoice, 'notes', 'Notes') || 'No additional notes.';
+        if (reportPaymentIdInput) reportPaymentIdInput.value = pick(invoice, 'paymentId', 'PaymentId') || '';
+        setReportFeedback('', true);
+        setReportSubmittingState(false);
     }
 
     invoiceCloseButtons.forEach((button) => {
@@ -138,10 +173,12 @@
 
         isSubmitting = true;
         hideFailure();
+        setReportFeedback('', true);
         setSubmittingState(true);
         togglePaymentOverlay(true);
 
         try {
+            const formData = new FormData(form);
             const response = await fetch(form.action, {
                 method: 'POST',
                 body: formData,
@@ -168,5 +205,38 @@
             isSubmitting = false;
         }
     });
-})();
 
+    reportForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (isRequestingReport || !reportPaymentIdInput?.value) return;
+
+        isRequestingReport = true;
+        setReportSubmittingState(true);
+        setReportFeedback('', true);
+
+        try {
+            const response = await fetch(reportForm.action, {
+                method: 'POST',
+                body: new FormData(reportForm),
+                credentials: 'same-origin',
+                headers: {
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const payload = await response.json().catch(() => null);
+            if (!response.ok || !payload?.isSuccess) {
+                setReportFeedback(payload?.message || 'The bundle invoice report request could not be completed.', false);
+                return;
+            }
+
+            setReportFeedback(payload.message || 'Bundle invoice report requested successfully.', true);
+        } catch {
+            setReportFeedback('The report service is temporarily unavailable. Try again after the API is running.', false);
+        } finally {
+            setReportSubmittingState(false);
+            isRequestingReport = false;
+        }
+    });
+})();

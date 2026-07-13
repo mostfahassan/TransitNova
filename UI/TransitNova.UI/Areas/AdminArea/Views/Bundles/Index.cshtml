@@ -1,6 +1,7 @@
-@model object?
+@model IEnumerable<UiRetrieveBundleDto>?
 @{
     ViewData["Title"] = "Bundles";
+    var items = (Model ?? Enumerable.Empty<UiRetrieveBundleDto>()).ToList();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Bundles",
@@ -13,21 +14,22 @@
     {
         Title = "Bundle catalog",
         Subtitle = "Operational products available to users and subscriptions.",
-        Source = Model,
         Controller = "Bundles",
-        RouteIdName = "bundleId",
-        IdPropertyPath = "Id|BundleId",
         ShowDetails = true,
         ShowEdit = true,
         ShowDelete = true,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Name", "BundleName"),
-            new("Price", "BundlePrice", "currency"),
-            new("Weight", "TotalWeight"),
-            new("Distance", "TotalDistance"),
-            new("Shipments", "TotalShipments")
-        }
+        Headers = ["Name", "Price", "Weight", "Distance", "Shipments"],
+        Rows = items.Select(bundle => AdminDisplay.AdminRow(
+            "bundleId",
+            bundle.Id,
+            AdminDisplay.AdminCell("Name", bundle.BundleName),
+            AdminDisplay.AdminCell("Price", bundle.BundlePrice, "currency"),
+            AdminDisplay.AdminCell("Weight", bundle.MaxWeightPerShipment),
+            AdminDisplay.AdminCell("Distance", bundle.MaxDistancePerShipment),
+            AdminDisplay.AdminCell("Shipments", bundle.MaxShipmentsPerMonth))).ToList(),
+        TotalCount = items.Count,
+        PageNumber = 1,
+        TotalPages = 1
     };
 }
 

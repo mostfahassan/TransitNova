@@ -24,7 +24,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             var shipment = await shipmentQuery.GetEntityAsync(request.ShipmentId, cancellationToken);
             if (shipment is null)
             {
-                logger.LogWarning("Shipment with Id {ShipmentId} not found for update", request.ShipmentId);
+                logger.LogWarning("Shipment with Id {ReferecneId} not found for update", request.ShipmentId);
                 return BaseResult.NotFound(Errors.ShipmentNotFound($"Shipment with Id {request.ShipmentId} not found"));
             }
 
@@ -35,7 +35,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             //====== Log Success and Return Result ======
-            logger.LogInformation("Shipment {ShipmentId} updated successfully. New Cost: {Cost}", request.ShipmentId, shipment.ShipmentCost);
+            logger.LogInformation("Shipment {ReferecneId} updated successfully. New Cost: {Cost}", request.ShipmentId, shipment.ShipmentCost);
             CacheInvalidationContext.Set(
                 request,
                 CacheKeys.Users.Dashboard(request.AppUserId),

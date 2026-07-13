@@ -1,4 +1,5 @@
 using TransitNova.BusinessLayer.Common.CommonData;
+using TransitNova.Domain.Entities.Common;
 
 namespace TransitNovaUI.BusinessLayer.Common.CommonData;
 
@@ -23,6 +24,9 @@ public sealed class UiAddressDto
             SecondaryAddress = source.SecondaryAddress,
             Street = source.Street
         };
+
+    public Address ToDomain()
+        => ToDto(this).ToDomain();
 
     public override string ToString()
         => string.Join(", ", new[] { MainAddress, SecondaryAddress, Street }

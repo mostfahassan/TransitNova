@@ -1,9 +1,9 @@
-@model object?
+@model UiRoleMembersDto?
 @{
     ViewData["Title"] = "Role Members";
-    var roleName = AdminDisplay.Text(Model, "RoleName|Name");
-    var roleId = AdminDisplay.Text(Model, "RoleId|Id", "id");
-    var users = AdminDisplay.Rows(AdminDisplay.Value(Model, "Users"));
+    var members = Model ?? new UiRoleMembersDto();
+    var users = members.Users.ToList();
+    var roleId = AdminDisplay.Format(members.RoleId, "Role", "id");
     var header = new AdminPageHeaderViewModel
     {
         Title = "Role members",
@@ -21,7 +21,7 @@
     <div class="flex flex-col gap-3 border-b border-[#EAEAEA] p-6 lg:flex-row lg:items-center lg:justify-between">
         <div>
             <div class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#787774]">Role / @roleId</div>
-            <h3 class="mt-2 text-2xl font-extrabold tracking-tight text-[#111111]">@roleName</h3>
+            <h3 class="mt-2 text-2xl font-extrabold tracking-tight text-[#111111]">@members.RoleName</h3>
         </div>
         <button type="submit" class="admin-button">Save membership</button>
     </div>
@@ -40,18 +40,15 @@
             @for (var index = 0; index < users.Count; index++)
             {
                 var user = users[index];
-                var userId = AdminDisplay.Value(user, "UserId|Id");
-                var isInRoleValue = AdminDisplay.Value(user, "IsInRole");
-                var isInRole = isInRoleValue is bool value && value;
                 <label class="flex cursor-pointer items-center justify-between gap-4 bg-white p-5 transition-colors hover:bg-black/[0.025]" style="--row-index:@index">
                     <span class="min-w-0">
-                        <span class="block truncate text-sm font-bold text-[#111111]">@AdminDisplay.Text(user, "FullName|UserName|Email")</span>
-                        <span class="mt-1 block truncate text-xs text-[#787774]">@AdminDisplay.Text(user, "Email|UserId|Id")</span>
+                        <span class="block truncate text-sm font-bold text-[#111111]">@user.FullName</span>
+                        <span class="mt-1 block truncate text-xs text-[#787774]">@user.Email</span>
                     </span>
                     <span class="flex items-center gap-3">
-                        <input type="hidden" name="Users[@index].UserId" value="@userId" />
+                        <input type="hidden" name="Users[@index].UserId" value="@user.UserId" />
                         <input type="hidden" name="Users[@index].IsInRole" value="false" />
-                        <input type="checkbox" name="Users[@index].IsInRole" value="true" checked="@isInRole" class="h-5 w-5 rounded border-[#EAEAEA] text-[#111111] focus:ring-[#111111]/10" />
+                        <input type="checkbox" name="Users[@index].IsInRole" value="true" checked="@user.IsInRole" class="h-5 w-5 rounded border-[#EAEAEA] text-[#111111] focus:ring-[#111111]/10" />
                         <span class="text-xs font-bold uppercase tracking-[0.14em] text-[#787774]">Member</span>
                     </span>
                 </label>

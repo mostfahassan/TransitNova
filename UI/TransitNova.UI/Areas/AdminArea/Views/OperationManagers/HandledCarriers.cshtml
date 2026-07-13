@@ -1,6 +1,7 @@
-@model object?
+@model UiPagedResult<UiCarrierSummaryDetailsDto>?
 @{
     ViewData["Title"] = "Handled carriers";
+    var page = Model ?? UiPagedResult<UiCarrierSummaryDetailsDto>.From([], 0, 1, 10);
     var header = new AdminPageHeaderViewModel
     {
         Title = "Handled carriers",
@@ -13,22 +14,23 @@
     {
         Title = "Handled carrier ledger",
         Subtitle = "Paginated carrier assignments returned by the backend.",
-        Source = Model,
         Controller = "OperationManagers",
-        RouteIdName = "carrierId",
-        IdPropertyPath = "Id|CarrierId",
         ShowDetails = false,
         ShowEdit = false,
         ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Carrier", "FullName|Name"),
-            new("Code", "Code", "id"),
-            new("Status", "Status", "badge"),
-            new("Rating", "Rating"),
-            new("Assigned", "AssignedShipmentsCount"),
-            new("Trips", "ActiveTripsCount")
-        }
+        Headers = ["Carrier", "Code", "Status", "Rating", "Assigned", "Trips"],
+        Rows = page.Data.Select(carrier => AdminDisplay.AdminRow(
+            "carrierId",
+            carrier.Id,
+            AdminDisplay.AdminCell("Carrier", carrier.FullName),
+            AdminDisplay.AdminCell("Code", carrier.Code, "id"),
+            AdminDisplay.AdminCell("Status", carrier.Status, "badge"),
+            AdminDisplay.AdminCell("Rating", carrier.Rating),
+            AdminDisplay.AdminCell("Assigned", carrier.AssignedShipmentsCount),
+            AdminDisplay.AdminCell("Trips", carrier.ActiveTripsCount))).ToList(),
+        TotalCount = page.TotalCount,
+        PageNumber = page.PageNumber,
+        TotalPages = page.TotalPages
     };
 }
 

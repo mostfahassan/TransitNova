@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -50,8 +50,6 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.CarrierQueries
         [EndpointDescription("Returns specific carriers available to the authenticated operation manager using the provided filter criteria.")]
         public async Task<IActionResult> CarrierAsync(Guid carrierId, CancellationToken ct)
         {
-            if (!await IsCarrierOwnerAsync(carrierId))
-                return Forbid();
 
             var result = await mediator.Send(new GetCarrierProfileQuery(carrierId), ct);
             return result.ToActionResult();
@@ -71,8 +69,6 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.CarrierQueries
         [EndpointDescription("Returns the shipments assigned to the authenticated carrier using the provided filter criteria.")]
         public async Task<IActionResult> ShipmentsAsync(Guid carrierId, [FromQuery] CarrierShipmentFilterDto filter, CancellationToken ct)
         {
-            if (!await IsCarrierOwnerAsync(carrierId))
-                return Forbid();
 
             var result = await mediator.Send(new GetCarrierShipmentsQuery(carrierId, filter), ct);
             return result.ToActionResult();
@@ -93,19 +89,9 @@ namespace TransitNova.Api.Controllers.OperationManager.Query.CarrierQueries
         [EndpointDescription("Returns the detailed information for a shipment that belongs to the authenticated carrier.")]
         public async Task<IActionResult> ShipmentAsync(Guid shipmentId, Guid carrierId, CancellationToken ct)
         {
-            if (!await IsCarrierOwnerAsync(carrierId))
-                return Forbid();
 
             var result = await mediator.Send(new GetCarrierShipmentDetailsQuery(carrierId, shipmentId), ct);
             return result.ToActionResult();
-        }
-
-        private async Task<bool> IsCarrierOwnerAsync(Guid carrierId)
-        {
-            var authorizationService = HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
-            var authorizationResult = await authorizationService.AuthorizeAsync(User, carrierId, CarrierPermissions.IsCarrierOwner);
-            return authorizationResult.Succeeded;
-
         }
     }
 }

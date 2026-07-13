@@ -124,10 +124,13 @@
   },
   {
     "Name": "TransitNova.BusinessLayer.DTOs.Carrier.UpdateCarrierDto",
-    "Json": "{\u0022id\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022firstName\u0022:\u0022sample\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022cityId\u0022:7,\u0022address\u0022:\u0022sample\u0022}",
+    "Json": "{\u0022id\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022firstName\u0022:\u0022sample\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022cityId\u0022:7,\u0022address\u0022:{\u0022mainAddress\u0022:\u0022sample\u0022,\u0022secondaryAddress\u0022:\u0022sample\u0022,\u0022street\u0022:\u0022sample\u0022}}",
     "Signatures": [
       "$: object",
-      "$.address: string",
+      "$.address: object",
+      "$.address.mainAddress: string",
+      "$.address.secondaryAddress: string",
+      "$.address.street: string",
       "$.cityId: integer",
       "$.email: string",
       "$.firstName: string",
@@ -209,6 +212,14 @@
     ]
   },
   {
+    "Name": "TransitNova.BusinessLayer.DTOs.Reports.BundleReportContract",
+    "Json": "{\u0022paymentId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022}",
+    "Signatures": [
+      "$: object",
+      "$.paymentId: string(guid)"
+    ]
+  },
+  {
     "Name": "TransitNova.BusinessLayer.DTOs.Reports.DashboardReportContract",
     "Json": "{}",
     "Signatures": [
@@ -252,11 +263,14 @@
   },
   {
     "Name": "TransitNova.BusinessLayer.DTOs.Shipment.CreateShipmentDto",
-    "Json": "{\u0022receiver\u0022:{\u0022firstName\u0022:\u0022sample\u0022,\u0022senderId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022address\u0022:\u0022sample\u0022,\u0022cityId\u0022:7},\u0022packageSpecification\u0022:{\u0022weight\u0022:123.45,\u0022width\u0022:123.45,\u0022height\u0022:123.45,\u0022length\u0022:123.45},\u0022currency\u0022:\u0022EGP\u0022,\u0022pickUpDate\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022transportationMode\u0022:\u0022Air\u0022,\u0022shipmentDeliveryType\u0022:\u0022Standard\u0022,\u0022deliveryAddress\u0022:\u0022sample\u0022,\u0022pickupAddress\u0022:\u0022sample\u0022,\u0022paymentId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022paymentMethod\u0022:\u0022CreditCard\u0022}",
+    "Json": "{\u0022receiver\u0022:{\u0022firstName\u0022:\u0022sample\u0022,\u0022senderId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022address\u0022:{\u0022mainAddress\u0022:\u0022sample\u0022,\u0022secondaryAddress\u0022:\u0022sample\u0022,\u0022street\u0022:\u0022sample\u0022},\u0022cityId\u0022:7},\u0022packageSpecification\u0022:{\u0022weight\u0022:123.45,\u0022width\u0022:123.45,\u0022height\u0022:123.45,\u0022length\u0022:123.45},\u0022currency\u0022:\u0022EGP\u0022,\u0022pickUpDate\u0022:\u00222026-07-09T10:30:00Z\u0022,\u0022transportationMode\u0022:\u0022Air\u0022,\u0022shipmentDeliveryType\u0022:\u0022Standard\u0022,\u0022deliveryAddress\u0022:{\u0022mainAddress\u0022:\u0022sample\u0022,\u0022secondaryAddress\u0022:\u0022sample\u0022,\u0022street\u0022:\u0022sample\u0022},\u0022pickupAddress\u0022:{\u0022mainAddress\u0022:\u0022sample\u0022,\u0022secondaryAddress\u0022:\u0022sample\u0022,\u0022street\u0022:\u0022sample\u0022},\u0022paymentId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022paymentMethod\u0022:\u0022CreditCard\u0022}",
     "Signatures": [
       "$: object",
       "$.currency: string",
-      "$.deliveryAddress: string",
+      "$.deliveryAddress: object",
+      "$.deliveryAddress.mainAddress: string",
+      "$.deliveryAddress.secondaryAddress: string",
+      "$.deliveryAddress.street: string",
       "$.packageSpecification: object",
       "$.packageSpecification.height: number(decimal)",
       "$.packageSpecification.length: number(decimal)",
@@ -265,9 +279,15 @@
       "$.paymentId: string(guid)",
       "$.paymentMethod: string",
       "$.pickUpDate: string(date-time)",
-      "$.pickupAddress: string",
+      "$.pickupAddress: object",
+      "$.pickupAddress.mainAddress: string",
+      "$.pickupAddress.secondaryAddress: string",
+      "$.pickupAddress.street: string",
       "$.receiver: object",
-      "$.receiver.address: string",
+      "$.receiver.address: object",
+      "$.receiver.address.mainAddress: string",
+      "$.receiver.address.secondaryAddress: string",
+      "$.receiver.address.street: string",
       "$.receiver.cityId: integer",
       "$.receiver.email: string",
       "$.receiver.firstName: string",
@@ -327,16 +347,22 @@
   },
   {
     "Name": "TransitNova.BusinessLayer.DTOs.Shipment.UpdateShipmentDto",
-    "Json": "{\u0022receiverId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022deliveryAddress\u0022:\u0022sample\u0022,\u0022pickupAddress\u0022:\u0022sample\u0022,\u0022packageSpecification\u0022:{\u0022weight\u0022:123.45,\u0022width\u0022:123.45,\u0022height\u0022:123.45,\u0022length\u0022:123.45},\u0022shipmentType\u0022:\u0022Standard\u0022,\u0022transportationMode\u0022:\u0022Air\u0022}",
+    "Json": "{\u0022receiverId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022deliveryAddress\u0022:{\u0022mainAddress\u0022:\u0022sample\u0022,\u0022secondaryAddress\u0022:\u0022sample\u0022,\u0022street\u0022:\u0022sample\u0022},\u0022pickupAddress\u0022:{\u0022mainAddress\u0022:\u0022sample\u0022,\u0022secondaryAddress\u0022:\u0022sample\u0022,\u0022street\u0022:\u0022sample\u0022},\u0022packageSpecification\u0022:{\u0022weight\u0022:123.45,\u0022width\u0022:123.45,\u0022height\u0022:123.45,\u0022length\u0022:123.45},\u0022shipmentType\u0022:\u0022Standard\u0022,\u0022transportationMode\u0022:\u0022Air\u0022}",
     "Signatures": [
       "$: object",
-      "$.deliveryAddress: string",
+      "$.deliveryAddress: object",
+      "$.deliveryAddress.mainAddress: string",
+      "$.deliveryAddress.secondaryAddress: string",
+      "$.deliveryAddress.street: string",
       "$.packageSpecification: object",
       "$.packageSpecification.height: number(decimal)",
       "$.packageSpecification.length: number(decimal)",
       "$.packageSpecification.weight: number(decimal)",
       "$.packageSpecification.width: number(decimal)",
-      "$.pickupAddress: string",
+      "$.pickupAddress: object",
+      "$.pickupAddress.mainAddress: string",
+      "$.pickupAddress.secondaryAddress: string",
+      "$.pickupAddress.street: string",
       "$.receiverId: string(guid)",
       "$.shipmentType: string",
       "$.transportationMode: string"
@@ -383,10 +409,13 @@
   },
   {
     "Name": "TransitNova.BusinessLayer.DTOs.UserProfile.Auth.RegisterDto",
-    "Json": "{\u0022userName\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022password\u0022:\u0022sample\u0022,\u0022confirmPassword\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022firstName\u0022:\u0022sample\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022address\u0022:\u0022sample\u0022,\u0022userType\u0022:\u0022Admin\u0022,\u0022cityId\u0022:7}",
+    "Json": "{\u0022userName\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022password\u0022:\u0022sample\u0022,\u0022confirmPassword\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022firstName\u0022:\u0022sample\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022address\u0022:{\u0022mainAddress\u0022:\u0022sample\u0022,\u0022secondaryAddress\u0022:\u0022sample\u0022,\u0022street\u0022:\u0022sample\u0022},\u0022userType\u0022:\u0022Admin\u0022,\u0022cityId\u0022:7}",
     "Signatures": [
       "$: object",
-      "$.address: string",
+      "$.address: object",
+      "$.address.mainAddress: string",
+      "$.address.secondaryAddress: string",
+      "$.address.street: string",
       "$.cityId: integer",
       "$.confirmPassword: string",
       "$.email: string",
@@ -400,10 +429,13 @@
   },
   {
     "Name": "TransitNova.BusinessLayer.DTOs.UserProfile.UpdateWarehouseManagerProfile",
-    "Json": "{\u0022warehouseId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022id\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022firstName\u0022:\u0022sample\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022cityId\u0022:7,\u0022address\u0022:\u0022sample\u0022}",
+    "Json": "{\u0022warehouseId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022id\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022firstName\u0022:\u0022sample\u0022,\u0022lastName\u0022:\u0022sample\u0022,\u0022phoneNumber\u0022:\u0022sample\u0022,\u0022email\u0022:\u0022sample\u0022,\u0022cityId\u0022:7,\u0022address\u0022:{\u0022mainAddress\u0022:\u0022sample\u0022,\u0022secondaryAddress\u0022:\u0022sample\u0022,\u0022street\u0022:\u0022sample\u0022}}",
     "Signatures": [
       "$: object",
-      "$.address: string",
+      "$.address: object",
+      "$.address.mainAddress: string",
+      "$.address.secondaryAddress: string",
+      "$.address.street: string",
       "$.cityId: integer",
       "$.email: string",
       "$.firstName: string",
@@ -444,10 +476,13 @@
   },
   {
     "Name": "TransitNova.BusinessLayer.DTOs.Warehouse.CreateWarehouseDto",
-    "Json": "{\u0022name\u0022:\u0022sample\u0022,\u0022type\u0022:\u0022MainWarehouse\u0022,\u0022address\u0022:\u0022sample\u0022,\u0022capacity\u0022:123.45,\u0022currentUsage\u0022:123.45,\u0022operatingHours\u0022:7,\u0022zoneIds\u0022:[\u002233333333-3333-3333-3333-333333333333\u0022],\u0022managerId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022}",
+    "Json": "{\u0022name\u0022:\u0022sample\u0022,\u0022type\u0022:\u0022MainWarehouse\u0022,\u0022address\u0022:{\u0022mainAddress\u0022:\u0022sample\u0022,\u0022secondaryAddress\u0022:\u0022sample\u0022,\u0022street\u0022:\u0022sample\u0022},\u0022capacity\u0022:123.45,\u0022currentUsage\u0022:123.45,\u0022operatingHours\u0022:7,\u0022zoneIds\u0022:[\u002233333333-3333-3333-3333-333333333333\u0022],\u0022managerId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022}",
     "Signatures": [
       "$: object",
-      "$.address: string",
+      "$.address: object",
+      "$.address.mainAddress: string",
+      "$.address.secondaryAddress: string",
+      "$.address.street: string",
       "$.capacity: number(decimal)",
       "$.currentUsage: number(decimal)",
       "$.managerId: string(guid)",
@@ -460,10 +495,13 @@
   },
   {
     "Name": "TransitNova.BusinessLayer.DTOs.Warehouse.UpdateWarehouseDto",
-    "Json": "{\u0022name\u0022:\u0022sample\u0022,\u0022type\u0022:\u0022MainWarehouse\u0022,\u0022address\u0022:\u0022sample\u0022,\u0022capacity\u0022:123.45,\u0022currentUsage\u0022:123.45,\u0022operatingHours\u0022:7,\u0022managerId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022zoneIds\u0022:[\u002233333333-3333-3333-3333-333333333333\u0022]}",
+    "Json": "{\u0022name\u0022:\u0022sample\u0022,\u0022type\u0022:\u0022MainWarehouse\u0022,\u0022address\u0022:{\u0022mainAddress\u0022:\u0022sample\u0022,\u0022secondaryAddress\u0022:\u0022sample\u0022,\u0022street\u0022:\u0022sample\u0022},\u0022capacity\u0022:123.45,\u0022currentUsage\u0022:123.45,\u0022operatingHours\u0022:7,\u0022managerId\u0022:\u002233333333-3333-3333-3333-333333333333\u0022,\u0022zoneIds\u0022:[\u002233333333-3333-3333-3333-333333333333\u0022]}",
     "Signatures": [
       "$: object",
-      "$.address: string",
+      "$.address: object",
+      "$.address.mainAddress: string",
+      "$.address.secondaryAddress: string",
+      "$.address.street: string",
       "$.capacity: number(decimal)",
       "$.currentUsage: number(decimal)",
       "$.managerId: string(guid)",

@@ -17,7 +17,13 @@ public sealed record AdminSidebarItemViewModel(string Label, string Controller, 
 
 public sealed record AdminKpiTileViewModel(string Label, string Value, string Meta, string Icon, string Tone = "neutral");
 
-public sealed record AdminTableColumnViewModel(string Header, string PropertyPath, string Kind = "text");
+public sealed record AdminDisplayCellViewModel(string Header, string Text, string Kind = "text");
+
+public sealed class AdminTableRowViewModel
+{
+    public IReadOnlyCollection<AdminDisplayCellViewModel> Cells { get; init; } = [];
+    public IDictionary<string, object?> RouteValues { get; init; } = new Dictionary<string, object?>();
+}
 
 public sealed record AdminRowActionViewModel(string Label, string Action, string Style = "secondary");
 
@@ -25,15 +31,16 @@ public sealed class AdminTableViewModel
 {
     public string Title { get; set; } = string.Empty;
     public string Subtitle { get; set; } = string.Empty;
-    public object? Source { get; set; }
-    public IReadOnlyCollection<AdminTableColumnViewModel> Columns { get; set; } = [];
+    public IReadOnlyCollection<string> Headers { get; set; } = [];
+    public IReadOnlyList<AdminTableRowViewModel> Rows { get; set; } = [];
+    public int TotalCount { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int TotalPages { get; set; } = 1;
     public IReadOnlyCollection<AdminRowActionViewModel> RowActions { get; set; } = [];
     public string Controller { get; set; } = string.Empty;
     public string DetailsAction { get; set; } = "Details";
     public string EditAction { get; set; } = "Edit";
     public string DeleteAction { get; set; } = "Delete";
-    public string RouteIdName { get; set; } = "id";
-    public string IdPropertyPath { get; set; } = "Id";
     public bool ShowDetails { get; set; } = true;
     public bool ShowEdit { get; set; }
     public bool ShowDelete { get; set; }
@@ -45,12 +52,12 @@ public sealed class AdminDetailViewModel
 {
     public string Title { get; set; } = string.Empty;
     public string Subtitle { get; set; } = string.Empty;
-    public object? Source { get; set; }
-    public IReadOnlyCollection<AdminTableColumnViewModel> Fields { get; set; } = [];
+    public string PrimaryLabel { get; set; } = string.Empty;
+    public IReadOnlyCollection<AdminDisplayCellViewModel> Fields { get; set; } = [];
+    public IReadOnlyCollection<AdminDisplayCellViewModel> AdditionalFields { get; set; } = [];
+    public IDictionary<string, object?> RouteValues { get; set; } = new Dictionary<string, object?>();
     public string Controller { get; set; } = string.Empty;
     public string IndexAction { get; set; } = "Index";
     public string? EditAction { get; set; }
     public string? DeleteAction { get; set; }
-    public string RouteIdName { get; set; } = "id";
-    public string IdPropertyPath { get; set; } = "Id";
 }

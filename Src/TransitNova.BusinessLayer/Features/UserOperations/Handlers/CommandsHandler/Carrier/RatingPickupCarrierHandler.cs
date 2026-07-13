@@ -28,7 +28,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             if (!canRate)
             {
                 logger.LogWarning(
-                    "User {UserId} attempted to rate pickup carrier {CarrierId} for shipment {ShipmentId} but validation failed",
+                    "User {UserId} attempted to rate pickup carrier {CarrierId} for shipment {ReferecneId} but validation failed",
                     request.AppUserId,
                     request.Dto.CarrierId,
                     request.ShipmentId);
@@ -42,7 +42,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             if (carrier == null)
             {
                 logger.LogWarning(
-                    "Pickup carrier {CarrierId} was not found while user {UserId} attempted to submit a rating for shipment {ShipmentId}",
+                    "Pickup carrier {CarrierId} was not found while user {UserId} attempted to submit a rating for shipment {ReferecneId}",
                     request.Dto.CarrierId,
                     request.AppUserId,
                     request.ShipmentId);
@@ -67,7 +67,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
 
            
             logger.LogInformation(
-                "User {UserId} rated pickup carrier {CarrierId} with rating {Rating} for shipment {ShipmentId}",
+                "User {UserId} rated pickup carrier {CarrierId} with rating {Rating} for shipment {ReferecneId}",
                 request.AppUserId,
                 request.Dto.CarrierId,
                 request.Dto.Rating,

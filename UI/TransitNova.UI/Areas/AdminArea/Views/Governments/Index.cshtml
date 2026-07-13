@@ -1,6 +1,7 @@
-@model object?
+@model IEnumerable<UiGovernmentDto>?
 @{
     ViewData["Title"] = "Governments";
+    var items = (Model ?? Enumerable.Empty<UiGovernmentDto>()).ToList();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Governments",
@@ -13,19 +14,20 @@
     {
         Title = "Government registry",
         Subtitle = "Administrative regions available for city mapping.",
-        Source = Model,
         Controller = "Governments",
-        RouteIdName = "governmentId",
-        IdPropertyPath = "Id|GovernmentId",
         ShowDetails = true,
         ShowEdit = true,
         ShowDelete = true,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Government", "Name"),
-            new("Country", "CountryName"),
-            new("Country ID", "CountryId", "id")
-        }
+        Headers = ["Government", "Country", "Country ID"],
+        Rows = items.Select(government => AdminDisplay.AdminRow(
+            "governmentId",
+            government.Id,
+            AdminDisplay.AdminCell("Government", government.Name),
+            AdminDisplay.AdminCell("Country", government.CountryName),
+            AdminDisplay.AdminCell("Country ID", government.CountryId, "id"))).ToList(),
+        TotalCount = items.Count,
+        PageNumber = 1,
+        TotalPages = 1
     };
 }
 

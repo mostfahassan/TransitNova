@@ -1,6 +1,7 @@
-@model object?
+@model UiCarrierShipmentListDto?
 @{
     ViewData["Title"] = "Carrier Shipments";
+    var shipments = (Model?.Shipments ?? UiPagedResult<UiRetrieveShipmentDto>.From([], 0, 1, 12)).Data.ToList();
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Carrier workload",
@@ -14,19 +15,17 @@
     {
         Title = "Carrier shipment ledger",
         Subtitle = "Shipment workload owned by the selected carrier.",
-        Source = Model,
         Controller = "Shipments",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id|ShipmentId",
-        Columns = new List<OpsTableColumnViewModel>
-        {
-            new("Shipment", "TrackingNumber", "id"),
-            new("Pickup", "PickupAddress|SenderCity"),
-            new("Delivery", "DeliveryAddress|ReceiverCity"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Type", "ShipmentType"),
-            new("Created", "CreatedAt")
-        }
+        Headers = ["Shipment", "Pickup", "Delivery", "Status", "Type", "Created"],
+        Rows = shipments.Select(shipment => AdminDisplay.OpsRow(
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.OpsCell("Shipment", shipment.TrackingNumber, "id"),
+            AdminDisplay.OpsCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.OpsCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.OpsCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.OpsCell("Type", shipment.ShipmentType),
+            AdminDisplay.OpsCell("Created", shipment.CreatedAt))).ToList()
     };
 }
 

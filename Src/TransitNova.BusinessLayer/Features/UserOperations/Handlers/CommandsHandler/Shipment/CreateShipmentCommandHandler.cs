@@ -50,7 +50,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             await systemLogCommands.LogAsync(log, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            logger.LogInformation("Shipment created successfully. TrackingNumber: {TrackingNumber}, " + "ShipmentId: {ShipmentId}, Cost: {Cost}", trackingNumber,
+            logger.LogInformation("Shipment created successfully. TrackingNumber: {TrackingNumber}, " + "ReferecneId: {ReferecneId}, Cost: {Cost}", trackingNumber,
                                           createdShipment.Data.ReferenceId, createdShipment.Data.Amount);
             CacheInvalidationContext.Set(
                 request,
@@ -78,12 +78,20 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
                 Status = createdShipment.Data.Status,
                 PaidAt = createdShipment.Data.PaidAt,
                 Currency = request.Dto.Currency,
-                Notes = createdShipment.Data.Notes
+                Notes = createdShipment.Data.Notes,
+                OriginalShippingCost = createdShipment.Data.OriginalShippingCost,
+                DiscountAmount = createdShipment.Data.DiscountAmount,
+                DiscountPercentage = createdShipment.Data.DiscountPercentage,
+                FinalShippingCost = createdShipment.Data.FinalShippingCost,
+                BundleName = createdShipment.Data.BundleName,
+                SubscriptionBenefitApplied = createdShipment.Data.SubscriptionBenefitApplied,
+                SubscriptionBenefitMessage = createdShipment.Data.SubscriptionBenefitMessage
             };
             return Result<ShipmentPaymentInvoiceDto>.Created(paymentInvoiceDto);
         }
     }
 }
+
 
 
 

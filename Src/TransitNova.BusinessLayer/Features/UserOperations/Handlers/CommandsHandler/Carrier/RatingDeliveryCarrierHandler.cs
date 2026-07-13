@@ -26,7 +26,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             var canRate = await shipmentRepo.CanRateDeliveryCarrierAsync(request.ShipmentId, request.Dto.CarrierId, request.AppUserId, cancellationToken);
             if (!canRate)
             {
-                logger.LogWarning("User {UserId} attempted to rate delivery carrier {CarrierId} for shipment {ShipmentId} but validation failed",
+                logger.LogWarning("User {UserId} attempted to rate delivery carrier {CarrierId} for shipment {ReferecneId} but validation failed",
                       request.AppUserId,
                       request.Dto.CarrierId,
                       request.ShipmentId);
@@ -39,7 +39,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             var carrier = await carrierQuery.GetCarrierAsync(c => c.Id == request.Dto.CarrierId, cancellationToken);
             if (carrier == null)
             {
-                logger.LogWarning("Delivery carrier {CarrierId} was not found while user {UserId} attempted to submit a rating for shipment {ShipmentId}",
+                logger.LogWarning("Delivery carrier {CarrierId} was not found while user {UserId} attempted to submit a rating for shipment {ReferecneId}",
                        request.Dto.CarrierId,
                        request.AppUserId,
                        request.ShipmentId);
@@ -57,7 +57,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
  
-            logger.LogInformation("User {UserId} rated delivery carrier {CarrierId} with rating {Rating} for shipment {ShipmentId}", request.AppUserId,
+            logger.LogInformation("User {UserId} rated delivery carrier {CarrierId} with rating {Rating} for shipment {ReferecneId}", request.AppUserId,
                   request.Dto.CarrierId,
                   request.Dto.Rating,
                   request.ShipmentId);

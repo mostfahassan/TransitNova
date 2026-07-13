@@ -22,6 +22,10 @@ namespace TransitNova.InfraStructure.EntityConfig
 
             reportRequest.Property(r => r.ErrorMessage)
                 .HasMaxLength(4000);
+
+            reportRequest.Property(r => r.ReportStatus)
+                .HasConversion<string>()
+                .HasMaxLength(50);
         }
     }
 }

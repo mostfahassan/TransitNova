@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using TransitNova.BusinessLayer.DTOs.AppUser;
@@ -40,10 +40,6 @@ namespace TransitNova.InfraStructure.Common.IdentityService
             var user = mapper.Map<AppUserDto>(appUser);
             return (true, user, string.Empty);
         }
-        public async Task SignOutAsync(CancellationToken ct)
-        {
-            logger.LogDebug("Signing out current user session");
-            await signInManager.SignOutAsync();
-        }
     }
 }
+

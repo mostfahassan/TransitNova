@@ -20,7 +20,11 @@ namespace TransitNova.InfraStructure.EntityConfig
                 .HasForeignKey(u => u.CityId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-          
+            user.Property(user => user.UserType)
+                  .HasConversion<string>()
+                  .IsRequired()
+                  .HasMaxLength("User".Length);
+
             user.HasOne<AppUser>()
                     .WithOne()
                     .HasForeignKey<UserProfile>(x => x.AppUserId)

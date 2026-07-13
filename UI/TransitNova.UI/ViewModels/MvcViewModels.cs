@@ -256,184 +256,6 @@ public sealed class UpdateShipmentViewModel
         TransportationMode);
 }
 
-public sealed class ShipmentFilterViewModel
-{
-    public ShipmentStatuses[]? Status { get; set; }
-    public TransportationMode? Mode { get; set; }
-    public DateTime? From { get; set; }
-    public DateTime? To { get; set; }
-    public Guid? SenderId { get; set; }
-    public string? SearchTerm { get; set; }
-    public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 20;
-
-    public UiShipmentFilterDto ToDto() => new()
-    {
-        Status = Status,
-        Mode = Mode,
-        From = From,
-        To = To,
-        SenderId = SenderId,
-        SearchTerm = SearchTerm,
-        PageNumber = PageNumber,
-        PageSize = PageSize
-    };
-}
-
-public sealed class CityFilterViewModel
-{
-    public int? GovernmentId { get; set; }
-    public string? SearchTerm { get; set; }
-    public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 20;
-    public bool SortDescending { get; set; }
-
-    public UiCityFilterDto ToDto() => new()
-    {
-        GovernmentId = GovernmentId,
-        SearchTerm = SearchTerm,
-        PageNumber = PageNumber,
-        PageSize = PageSize,
-        SortDescending = SortDescending
-    };
-}
-
-public sealed class UserFilterViewModel
-{
-    public string? SearchTerm { get; set; }
-    public string? Email { get; set; }
-    public string? UserName { get; set; }
-    public string? PhoneNumber { get; set; }
-    public bool? IsActive { get; set; }
-    public DateTime? CreatedFrom { get; set; }
-    public DateTime? CreatedTo { get; set; }
-    public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 20;
-
-    public UiUserFiltrationDto ToDto() => new()
-    {
-        SearchTerm = SearchTerm,
-        Email = Email,
-        UserName = UserName,
-        PhoneNumber = PhoneNumber,
-        IsActive = IsActive,
-        CreatedFrom = CreatedFrom,
-        CreatedTo = CreatedTo,
-        PageNumber = PageNumber,
-        PageSize = PageSize
-    };
-}
-
-public sealed class WarehouseManagerFilterViewModel
-{
-    public string? FullName { get; set; }
-    public string? Email { get; set; }
-    public Guid? WarehouseId { get; set; }
-    public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 20;
-
-    public UiWarehouseManagerFilterDto ToDto() => new()
-    {
-        FullName = FullName,
-        Email = Email,
-        WarehouseId = WarehouseId,
-        PageNumber = PageNumber,
-        PageSize = PageSize
-    };
-}
-public sealed class CarrierFilterViewModel
-{
-    public CarrierStatus? Status { get; set; }
-    public decimal? MinRating { get; set; }
-    public decimal? MaxRating { get; set; }
-    public int? MinYearsOfExperience { get; set; }
-    public int? MaxYearsOfExperience { get; set; }
-    public string? City { get; set; }
-    public int? CityId { get; set; }
-    public string? SearchTerm { get; set; }
-    public DateTime? AvailableFrom { get; set; }
-    public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 20;
-    public CarrierSortBy? SortBy { get; set; }
-    public bool SortDescending { get; set; }
-    public decimal? VehicleCapacityWeight { get; set; }
-    public VehicleType? VehicleType { get; set; }
-    public List<string>? ServedZones { get; set; }
-
-    public UiFilterCarrierDto ToDto() => new()
-    {
-        Status = Status,
-        MinRating = MinRating,
-        MaxRating = MaxRating,
-        MinYearsOfExperience = MinYearsOfExperience,
-        MaxYearsOfExperience = MaxYearsOfExperience,
-        City = City,
-        CityId = CityId,
-        SearchTerm = SearchTerm,
-        AvailableFrom = AvailableFrom,
-        PageNumber = PageNumber,
-        PageSize = PageSize,
-        SortBy = SortBy,
-        SortDescending = SortDescending,
-        VehicleCapacityWeight = VehicleCapacityWeight,
-        VehicleType = VehicleType,
-        ServedZones = ServedZones
-    };
-}
-
-public sealed class TripFilterViewModel
-{
-    public Guid? Id { get; set; }
-    public TripType? TripType { get; set; }
-    public TripStatus[]? Status { get; set; }
-    public DateTime? CreatedAt { get; set; }
-    public DateTime? From { get; set; }
-    public DateTime? To { get; set; }
-    public string? CreatedBy { get; set; }
-    public Guid? CarrierId { get; set; }
-    public Guid? WarehouseId { get; set; }
-    public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 20;
-
-    public UiFilterTripsDto ToDto() => new()
-    {
-        Id = Id,
-        TripType = TripType,
-        Status = Status,
-        CreatedAt = CreatedAt,
-        From = From,
-        To = To,
-        CreatedBy = CreatedBy,
-        CarrierId = CarrierId,
-        WarehouseId = WarehouseId,
-        PageNumber = PageNumber,
-        PageSize = PageSize
-    };
-}
-
-
-
-public sealed class CarrierShipmentFilterViewModel
-{
-    public ShipmentStatuses? Status { get; set; }
-    public TransportationMode? Mode { get; set; }
-    public string? SearchTerm { get; set; }
-    public string? SortBy { get; set; }
-    public bool SortDescending { get; set; }
-    public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 12;
-
-    public UiCarrierShipmentFilterDto ToDto() => new()
-    {
-        Status = Status,
-        Mode = Mode,
-        SearchTerm = SearchTerm,
-        SortBy = SortBy,
-        SortDescending = SortDescending,
-        PageNumber = PageNumber,
-        PageSize = PageSize
-    };
-}
 public sealed class RateCalculatorViewModel
 {
     public PackageSpecificationViewModel PackageSpecification { get; set; } = new();
@@ -549,6 +371,7 @@ public sealed class GovernmentFormViewModel
 
     [Range(1, int.MaxValue)]
     public int CountryId { get; set; }
+    public string? CountryName { get; set; }
 
     public UiCreateGovernmentDto ToCreateDto() => new() { Name = Name, CountryId = CountryId };
 
@@ -563,7 +386,7 @@ public sealed class WarehouseFormViewModel
     public WarehouseType Type { get; set; }
 
     [Required]
-    public Address Address { get; set; } = null!;
+    public AddressViewModel Address { get; set; } = new();
 
     [Range(0.01, double.MaxValue)]
     public decimal Capacity { get; set; }
@@ -578,7 +401,7 @@ public sealed class WarehouseFormViewModel
     {
         Name = Name,
         Type = Type,
-        WarehouseAddress = Address,
+        WarehouseAddress = Address.ToDto(),
         Capacity = Capacity,
         CurrentUsage = CurrentUsage,
         OperatingHours = OperatingHours ?? 0,
@@ -589,7 +412,7 @@ public sealed class WarehouseFormViewModel
     {
         Name = Name,
         Type = Type,
-        WarehouseAddress = Address,
+        WarehouseAddress = Address.ToDto(),
         Capacity = Capacity,
         CurrentUsage = CurrentUsage,
         OperatingHours = OperatingHours,
@@ -746,4 +569,3 @@ public sealed class CarrierStatusFormViewModel
 
     public UiChangeCarrierStatusDto ToDto() => new(Status);
 }
-

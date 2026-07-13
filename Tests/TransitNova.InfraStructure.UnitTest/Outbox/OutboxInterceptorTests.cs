@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TransitNova.Domain.Contracts.DomainEvents.Events.BundleEvents;
@@ -32,7 +32,7 @@ public sealed class OutboxInterceptorTests
 
         var deserialized = JsonConvert.DeserializeObject<UserSubscribedToBundleDomainEvent>(message.Content!);
         deserialized.Should().NotBeNull();
-        deserialized!.Id.Should().Be(userId);
+        deserialized!.UserProfileId.Should().Be(userId);
         deserialized.BundleId.Should().Be(bundle.Id);
     }
 
@@ -114,6 +114,7 @@ public sealed class OutboxInterceptorTests
             1, 20, 200m, 1_000m, 0m, 0m);
         typeof(Bundle).GetProperty(nameof(Bundle.Id))!.SetValue(bundle, Guid.NewGuid());
         userId = Guid.NewGuid();
+       
         bundle.Subscribe(userId);
         return bundle;
     }

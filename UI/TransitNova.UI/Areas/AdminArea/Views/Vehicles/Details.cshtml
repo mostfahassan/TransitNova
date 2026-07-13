@@ -1,6 +1,7 @@
-@model object?
+@model UiVehicleDto?
 @{
     ViewData["Title"] = "Vehicle details";
+    var vehicle = Model ?? new UiVehicleDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Vehicle details",
@@ -13,24 +14,23 @@
     {
         Title = "Vehicle record",
         Subtitle = "Fleet metadata used by carrier assignment and delivery planning.",
-        Source = Model,
+        PrimaryLabel = vehicle.PlateNumber,
         Controller = "Vehicles",
-        RouteIdName = "vehicleId",
-        IdPropertyPath = "Id|VehicleId",
         EditAction = null,
         DeleteAction = "Delete",
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Plate", "PlateNumber", "id"),
-            new("Type", "VehicleType", "badge"),
-            new("Carrier", "CarrierName"),
-            new("Carrier code", "CarrierCode", "id"),
-            new("Carrier status", "CarrierStatus", "badge"),
-            new("Capacity weight", "CapacityWeight"),
-            new("Capacity volume", "CapacityVolume"),
-            new("Refrigerated", "IsRefrigerated", "badge"),
-            new("Active", "IsActive", "badge")
-        }
+        RouteValues = new Dictionary<string, object?> { ["vehicleId"] = vehicle.Id },
+        Fields =
+        [
+            AdminDisplay.AdminCell("Plate", vehicle.PlateNumber, "id"),
+            AdminDisplay.AdminCell("Type", vehicle.VehicleType, "badge"),
+            AdminDisplay.AdminCell("Carrier", vehicle.CarrierName),
+            AdminDisplay.AdminCell("Carrier code", vehicle.CarrierCode, "id"),
+            AdminDisplay.AdminCell("Carrier status", vehicle.CarrierStatus, "badge"),
+            AdminDisplay.AdminCell("Capacity weight", vehicle.CapacityWeight),
+            AdminDisplay.AdminCell("Capacity volume", vehicle.CapacityVolume),
+            AdminDisplay.AdminCell("Refrigerated", vehicle.IsRefrigerated, "badge"),
+            AdminDisplay.AdminCell("Active", vehicle.IsActive, "badge")
+        ]
     };
 }
 

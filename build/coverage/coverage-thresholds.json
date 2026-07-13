@@ -1,28 +1,63 @@
 {
+  "measuredOnUtc": "2026-07-13",
+  "measurement": "Release build with XPlat Code Coverage merged across all six non-browser test suites, ReportGenerator 5.5.10, and the generated/configuration exclusions declared in .github/workflows/ci.yml.",
+  "overall": {
+    "lineThreshold": 80,
+    "branchThreshold": 58,
+    "latestLineCoverage": 82.31,
+    "latestBranchCoverage": 58.45,
+    "targetLineCoverage": 85,
+    "targetBranchCoverage": 80
+  },
   "layers": [
     {
       "name": "Domain",
-      "threshold": 70,
+      "lineThreshold": 80,
+      "branchThreshold": 70,
+      "latestLineCoverage": 88.04,
+      "latestBranchCoverage": 70.92,
+      "targetLineCoverage": 90,
+      "targetBranchCoverage": 80,
       "report": "artifacts/coverage/domain/Cobertura.xml"
     },
     {
       "name": "Application",
-      "threshold": 60,
+      "lineThreshold": 80,
+      "branchThreshold": 58,
+      "latestLineCoverage": 81.24,
+      "latestBranchCoverage": 58.98,
+      "targetLineCoverage": 85,
+      "targetBranchCoverage": 80,
       "report": "artifacts/coverage/application/Cobertura.xml"
     },
     {
       "name": "Infrastructure",
-      "threshold": 55,
+      "lineThreshold": 80,
+      "branchThreshold": 50,
+      "latestLineCoverage": 80.14,
+      "latestBranchCoverage": 51.33,
+      "targetLineCoverage": 85,
+      "targetBranchCoverage": 80,
       "report": "artifacts/coverage/infrastructure/Cobertura.xml"
     },
     {
       "name": "API",
-      "threshold": 35,
+      "lineThreshold": 80,
+      "branchThreshold": 53,
+      "latestLineCoverage": 85.62,
+      "latestBranchCoverage": 55.1,
+      "targetLineCoverage": 90,
+      "targetBranchCoverage": 80,
       "report": "artifacts/coverage/api/Cobertura.xml"
     },
     {
       "name": "Payment",
-      "threshold": 65,
+      "lineThreshold": 80,
+      "branchThreshold": 65,
+      "latestLineCoverage": 87.4,
+      "latestBranchCoverage": 66.27,
+      "targetLineCoverage": 90,
+      "targetBranchCoverage": 80,
       "report": "artifacts/coverage/payment/Cobertura.xml"
     }
   ]

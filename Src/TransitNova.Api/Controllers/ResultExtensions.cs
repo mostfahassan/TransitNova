@@ -11,6 +11,7 @@ namespace TransitNova.Api.Controllers
             {
                 return result.Status switch
                 {
+                    ResultStatus.NoContent => new NoContentResult(),
                     ResultStatus.Created => new ObjectResult(BuildSuccess(result))
                     {
                         StatusCode = StatusCodes.Status201Created
@@ -29,6 +30,10 @@ namespace TransitNova.Api.Controllers
                 },
                 ResultStatus.Conflict => new ConflictObjectResult(BuildError(result)),
                 ResultStatus.ValidationError => new UnprocessableEntityObjectResult(BuildValidation(result)),
+                ResultStatus.UnExpected => new ObjectResult(BuildError(result))
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                },
                 _ => new BadRequestObjectResult(BuildError(result))
             };
         }
@@ -43,10 +48,7 @@ namespace TransitNova.Api.Controllers
                     {
                         StatusCode = StatusCodes.Status201Created
                     },
-                    ResultStatus.NoContent => new ObjectResult(BuildSuccess(result, result.Data))
-                    {
-                        StatusCode = StatusCodes.Status204NoContent
-                    },
+                    ResultStatus.NoContent => new NoContentResult(),
                    _ => new OkObjectResult(BuildSuccess(result, result.Data))
                 };
             }

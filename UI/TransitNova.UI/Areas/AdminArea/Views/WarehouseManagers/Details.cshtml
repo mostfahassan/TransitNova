@@ -1,6 +1,7 @@
-@model object?
+@model UiWarehouseManagerDetailsDto?
 @{
     ViewData["Title"] = "Warehouse manager details";
+    var manager = Model ?? new UiWarehouseManagerDetailsDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Warehouse manager details",
@@ -13,24 +14,23 @@
     {
         Title = "Warehouse manager record",
         Subtitle = "Manager details returned by the warehouse management API.",
-        Source = Model,
+        PrimaryLabel = manager.FullName,
         Controller = "WarehouseManagers",
-        RouteIdName = "id",
-        IdPropertyPath = "Id|UserId|WarehouseManagerId",
         EditAction = null,
         DeleteAction = null,
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Manager", "FullName|Name"),
-            new("Email", "Email"),
-            new("Phone", "PhoneNumber"),
-            new("Warehouse", "WarehouseName|WarehouseId"),
-            new("City", "CityName"),
-            new("Government", "GovernmentName"),
-            new("Country", "CountryName"),
-            new("Address", "Address"),
-            new("Active", "IsActive", "badge")
-        }
+        RouteValues = new Dictionary<string, object?> { ["id"] = manager.Id },
+        Fields =
+        [
+            AdminDisplay.AdminCell("Manager", manager.FullName),
+            AdminDisplay.AdminCell("Email", manager.Email),
+            AdminDisplay.AdminCell("Phone", manager.PhoneNumber),
+            AdminDisplay.AdminCell("Warehouse", manager.WarehouseName ?? AdminDisplay.Format(manager.WarehouseId, "Warehouse", "id")),
+            AdminDisplay.AdminCell("City", "-"),
+            AdminDisplay.AdminCell("Government", "-"),
+            AdminDisplay.AdminCell("Country", "-"),
+            AdminDisplay.AdminCell("Address", "-"),
+            AdminDisplay.AdminCell("Active", "-", "badge")
+        ]
     };
 }
 

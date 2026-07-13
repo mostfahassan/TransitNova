@@ -14,13 +14,16 @@ namespace TransitNova.InfraStructure.EntityConfig
             trip.Property(t => t.RowVersion)
                 .IsRowVersion();
 
+            trip.Property(t => t.Status)
+                .HasConversion<string>()
+                .IsRequired()
+                .HasMaxLength(10);
 
-            trip.HasIndex(t => t.CarrierId);
-            trip.HasIndex(t => t.CreatedAt);
-            trip.HasIndex(t => t.UpdatedAt);
-            trip.HasIndex(t => new { t.Status, t.CreatedAt });
-            trip.HasIndex(t => new { t.CarrierId, t.Status });
-            trip.HasIndex(t => new { t.WarehouseId, t.Status });
+            trip.Property(t => t.TripType)
+                .HasConversion<string>()
+                .IsRequired()
+                .HasMaxLength(10);
+
 
             trip.HasOne(t => t.Carrier)
                 .WithMany(c => c.Trips)

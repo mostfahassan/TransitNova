@@ -117,6 +117,13 @@ public static class ApiRoutes
         public const string SignOutUrl = $"{Prefix}/auth/signout";
     }
 
+    public static class Reports
+    {
+        public const string RequestBundleReportUrl = $"{Prefix}/reports/bundles";
+        public const string RequestDashboardReportUrl = $"{Prefix}/reports/dashboards";
+        public const string DownloadReportUrl = $"{Prefix}/reports/{{reportId}}/download";
+    }
+
     public static class Bundles
     {
         public const string CreateBundleUrl = $"{Prefix}/admin/bundles";
@@ -256,6 +263,7 @@ public static class ApiRoutes
 
     public static class Subscriptions
     {
+        public const string GetSubscribersUrl = $"{Prefix}/admin/subscriptions/subscribers";
         public const string GetBundleSubscribersUrl = $"{Prefix}/admin/subscriptions/bundles/{{bundleId}}/subscribers";
         public const string GetSubscriptionByIdUrl = $"{Prefix}/admin/subscriptions/{{subscriptionId}}";
     }

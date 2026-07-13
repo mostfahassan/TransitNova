@@ -8,60 +8,152 @@ on:
       - 'codex/**'
   pull_request:
 
+permissions:
+  contents: read
+
+env:
+  SQL_PASSWORD: ${{ secrets.TRANSITNOVA_CI_SQL_PASSWORD }}
+  JWT_KEY: ${{ secrets.TRANSITNOVA_CI_JWT_KEY }}
+  PaymentSettings__PublicKey: ${{ secrets.TRANSITNOVA_CI_PAYMENT_KEY }}
+  PaymentSettings__PrivateKey: ${{ secrets.TRANSITNOVA_CI_PAYMENT_KEY }}
+  ConnectionStrings__ApiDefaultConnection: Server=sqlserver;Database=TransitNovaCi;User Id=sa;Password=${{ secrets.TRANSITNOVA_CI_SQL_PASSWORD }};TrustServerCertificate=True;Encrypt=False
+  ConnectionStrings__PaymentDefaultConnection: Server=sqlserver;Database=TransitNovaPaymentCi;User Id=sa;Password=${{ secrets.TRANSITNOVA_CI_SQL_PASSWORD }};TrustServerCertificate=True;Encrypt=False
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-test-coverage:
     runs-on: windows-latest
-
+    timeout-minutes: 40
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        with:
+          persist-credentials: false
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-
       - name: Restore
         run: dotnet restore TransitNova.slnx
-
       - name: Build
-        run: dotnet build TransitNova.slnx --configuration Release --no-restore
-
+        run: dotnet build TransitNova.slnx --configuration Release --no-restore -m:1
+      - name: Validate Docker Compose
+        shell: pwsh
+        run: docker compose -f docker-compose.yml config --quiet
       - name: Install ReportGenerator
         shell: pwsh
         run: |
-          dotnet tool install --global dotnet-reportgenerator-globaltool
+          dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.5.10
           "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-
       - name: Test With Coverage
         shell: pwsh
         run: |
           $projects = @(
-            @{ Name = 'domain'; Project = 'Tests/TransitNova.Domain.Tests/TransitNova.Domain.Tests.csproj'; Target = 'artifacts/coverage/domain'; AssemblyFilter = '+TransitNova.Domain' },
-            @{ Name = 'application'; Project = 'Tests/TransitNova.ApplicationLayer.UnitTest/TransitNova.ApplicationLayer.Tests.csproj'; Target = 'artifacts/coverage/application'; AssemblyFilter = '+TransitNova.BusinessLayer' },
-            @{ Name = 'infrastructure'; Project = 'Tests/TransitNova.InfraStructure.UnitTest/TransitNova.InfraStructure.Tests.csproj'; Target = 'artifacts/coverage/infrastructure'; AssemblyFilter = '+TransitNova.InfraStructure' },
-            @{ Name = 'api'; Project = 'Tests/TransitNova.Api.IntegrationTests/TransitNova.Api.IntegrationTests.csproj'; Target = 'artifacts/coverage/api'; AssemblyFilter = '+TransitNova.Api' },
-            @{ Name = 'payment'; Project = 'Tests/TransitNova.Payment.Tests/TransitNova.Payment.Tests.csproj'; Target = 'artifacts/coverage/payment'; AssemblyFilter = '+TransitNovaPayment.*' }
+            @{ Name = 'domain'; Project = 'Tests/TransitNova.Domain.Tests/TransitNova.Domain.Tests.csproj' },
+            @{ Name = 'application'; Project = 'Tests/TransitNova.ApplicationLayer.UnitTest/TransitNova.ApplicationLayer.Tests.csproj' },
+            @{ Name = 'infrastructure'; Project = 'Tests/TransitNova.InfraStructure.UnitTest/TransitNova.InfraStructure.Tests.csproj' },
+            @{ Name = 'api'; Project = 'Tests/TransitNova.Api.IntegrationTests/TransitNova.Api.IntegrationTests.csproj' },
+            @{ Name = 'payment'; Project = 'Tests/TransitNova.Payment.Tests/TransitNova.Payment.Tests.csproj' },
+            @{ Name = 'mapping'; Project = 'Tests/TransitNova.MappingTests/TransitNova.MappingTests.csproj' }
           )
-
           foreach ($project in $projects) {
             dotnet test $project.Project --configuration Release --no-build --logger "trx;LogFileName=$($project.Name).trx" --results-directory "artifacts/test-results/$($project.Name)" --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
-
-            reportgenerator "-reports:artifacts/test-results/$($project.Name)/**/coverage.cobertura.xml" "-targetdir:$($project.Target)" "-reporttypes:HtmlInline;Cobertura;TextSummary" "-assemblyfilters:$($project.AssemblyFilter)"
+            if ($LASTEXITCODE -ne 0) { throw "Tests failed for $($project.Name)." }
           }
 
+          $reports = 'artifacts/test-results/**/coverage.cobertura.xml'
+          $generatedFiles = '-**/Migrations/**;-**/obj/**;-**/*.Designer.cs;-**/*ModelSnapshot.cs'
+          $coverageGroups = @(
+            @{ Name = 'domain'; AssemblyFilter = '+TransitNova.Domain'; FileFilter = $generatedFiles },
+            @{ Name = 'application'; AssemblyFilter = '+TransitNova.BusinessLayer'; FileFilter = $generatedFiles },
+            @{ Name = 'infrastructure'; AssemblyFilter = '+TransitNova.InfraStructure'; FileFilter = "$generatedFiles;-**/ServiceRegistration/**;-**/Context/Seeder/**;-**/Context/AppDbContextFactory.cs" },
+            @{ Name = 'api'; AssemblyFilter = '+TransitNova.Api'; FileFilter = $generatedFiles },
+            @{ Name = 'payment'; AssemblyFilter = '+TransitNovaPayment.*'; FileFilter = "$generatedFiles;-**/Dependencies.cs;-**/DatabaseSyncronyzation.cs;-**/Program.cs" }
+          )
+          foreach ($group in $coverageGroups) {
+            reportgenerator "-reports:$reports" "-targetdir:artifacts/coverage/$($group.Name)" "-reporttypes:HtmlInline;Cobertura;TextSummary" "-assemblyfilters:$($group.AssemblyFilter)" "-filefilters:$($group.FileFilter)"
+            if ($LASTEXITCODE -ne 0) { throw "Coverage report generation failed for $($group.Name)." }
+          }
       - name: Enforce Coverage Thresholds
         shell: pwsh
         run: ./build/coverage/Test-Coverage.ps1
-
       - name: Upload Coverage Artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
           path: artifacts/coverage
-
+          if-no-files-found: warn
       - name: Upload Test Results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: artifacts/test-results
+          if-no-files-found: warn
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build E2E Tests
+        run: dotnet build Tests/TransitNova.E2E.Tests/TransitNova.E2E.Tests.csproj --configuration Release
+      - name: Install Chromium
+        shell: pwsh
+        run: ./Tests/TransitNova.E2E.Tests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
+      - name: Start TransitNova Stack
+        env:
+          SeedDemoData: 'true'
+          RateLimiting__CommandPermitLimit: '500'
+          RateLimiting__DefaultPermitLimit: '500'
+          PaymentExecution__DelayMilliseconds: '0'
+          PaymentExecution__ForcedSuccess: 'true'
+        run: docker compose up --build -d
+      - name: Wait For Services
+        shell: pwsh
+        run: |
+          $targets = @('http://localhost:5200/health', 'http://localhost:5300/health', 'http://localhost:5169')
+          foreach ($target in $targets) {
+            $ready = $false
+            for ($attempt = 1; $attempt -le 60; $attempt++) {
+              try {
+                $response = Invoke-WebRequest -Uri $target -UseBasicParsing -TimeoutSec 5
+                if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 400) { $ready = $true; break }
+              } catch { Start-Sleep -Seconds 5 }
+            }
+            if (-not $ready) { throw "Service did not become ready: $target" }
+          }
+      - name: Run Full-Stack E2E
+        env:
+          TRANSITNOVA_E2E_BASE_URL: http://localhost:5169
+          TRANSITNOVA_E2E_API_BASE_URL: http://localhost:5200
+          TRANSITNOVA_E2E_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: dotnet test Tests/TransitNova.E2E.Tests/TransitNova.E2E.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=e2e.trx" --results-directory artifacts/test-results/e2e
+      - name: Capture Compose Logs
+        if: always()
+        run: |
+          mkdir -p artifacts
+          docker compose logs --no-color > artifacts/compose-e2e.log
+      - name: Upload E2E Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: |
+            artifacts/test-results/e2e
+            artifacts/compose-e2e.log
+          if-no-files-found: warn
+      - name: Stop TransitNova Stack
+        if: always()
+        run: docker compose down -v

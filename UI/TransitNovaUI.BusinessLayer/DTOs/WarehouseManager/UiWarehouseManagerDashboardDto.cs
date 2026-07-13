@@ -1,3 +1,4 @@
+using TransitNovaUI.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.WarehouseManager;
 using TransitNova.Domain.Enums.Shipment;
 using TransitNova.Domain.Enums.Trip;
@@ -25,6 +26,10 @@ public sealed class UiWarehouseManagerSummaryDto
 {
     public Guid ManagerId { get; set; }
     public string ManagerName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
+    public int CityId { get; set; }
+    public UiAddressDto Address { get; set; } = new();
     public Guid WarehouseId { get; set; }
     public string WarehouseName { get; set; } = string.Empty;
 
@@ -33,6 +38,10 @@ public sealed class UiWarehouseManagerSummaryDto
         {
             ManagerId = source.ManagerId,
             ManagerName = source.ManagerName,
+            Email = source.Email,
+            PhoneNumber = source.PhoneNumber,
+            CityId = source.CityId,
+            Address = UiAddressDto.ToUiDto(source.Address),
             WarehouseId = source.WarehouseId,
             WarehouseName = source.WarehouseName
         };

@@ -8,6 +8,9 @@ namespace TransitNova.Domain.Entities.MainEntities
     {  
         public Guid AppUserId { get; private set; }
         public Warehouse? Warehouse { get; private set; }
+        private WarehouseManagerProfile()
+        {
+        }
         private WarehouseManagerProfile(Guid appUserId, string firstName, string lastName, string email, string phoneNumber, Address address, int cityId)
         {
             Id = Guid.CreateVersion7();

@@ -1,6 +1,8 @@
-@model object?
+@model UiPagedResult<UiCarrierSummaryDetailsDto>?
 @{
     ViewData["Title"] = "Warehouse Carriers";
+    var result = Model ?? new UiPagedResult<UiCarrierSummaryDetailsDto> { PageSize = 20 };
+    var items = result.Data.ToList();
     var header = new WarehousePageHeaderViewModel
     {
         Eyebrow = "Carrier roster",
@@ -17,21 +19,22 @@
     {
         Title = "Carrier roster",
         Subtitle = "Compact carrier board optimized for warehouse dispatch decisions.",
-        Source = Model,
         Controller = "Carriers",
-        RouteIdName = "carrierId",
-        IdPropertyPath = "Id",
-        Columns = new List<WarehouseTableColumnViewModel>
-        {
-            new("Carrier", "FullName"),
-            new("Status", "Status", "badge"),
-            new("Code", "Code", "id"),
-            new("Phone", "PhoneNumber"),
-            new("Rating", "Rating"),
-            new("Active trips", "ActiveTripsCount"),
-            new("Assigned", "AssignedShipmentsCount"),
-            new("Served cities", "ServedCities")
-        },
+        Headers = ["Carrier", "Status", "Code", "Phone", "Rating", "Active trips", "Assigned", "Served cities"],
+        Rows = items.Select(carrier => AdminDisplay.WarehouseRow(
+            "carrierId",
+            carrier.Id,
+            AdminDisplay.WarehouseCell("Carrier", carrier.FullName),
+            AdminDisplay.WarehouseCell("Status", carrier.Status, "badge"),
+            AdminDisplay.WarehouseCell("Code", carrier.Code, "id"),
+            AdminDisplay.WarehouseCell("Phone", carrier.PhoneNumber),
+            AdminDisplay.WarehouseCell("Rating", carrier.Rating),
+            AdminDisplay.WarehouseCell("Active trips", carrier.ActiveTripsCount),
+            AdminDisplay.WarehouseCell("Assigned", carrier.AssignedShipmentsCount),
+            AdminDisplay.WarehouseCell("Served cities", string.Join(", ", carrier.ServedCities)))).ToList(),
+        TotalCount = result.TotalCount,
+        PageNumber = result.PageNumber,
+        TotalPages = result.PageSize <= 0 ? 1 : result.TotalPages,
         EmptyTitle = "No carriers assigned",
         EmptyDescription = "Warehouse carriers matching the current filters will appear here."
     };

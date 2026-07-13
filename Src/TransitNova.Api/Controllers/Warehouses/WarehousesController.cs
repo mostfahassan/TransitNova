@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using TransitNova.BusinessLayer.Features.Warehouses.Queries;
 using TransitNova.Domain.Contracts.Roles;
-
 namespace TransitNova.Api.Controllers.Warehouses;
 
 [Authorize(Roles = Role.AllUsers)]

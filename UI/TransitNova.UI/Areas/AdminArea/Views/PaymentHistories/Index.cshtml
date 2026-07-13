@@ -1,6 +1,10 @@
-@model object?
+@model UiPagedResult<UiPaymentHistoryDetailsDto>?
 @{
     ViewData["Title"] = "Payment History";
+    var result = Model ?? new UiPagedResult<UiPaymentHistoryDetailsDto> { PageSize = 20, PageNumber = 1 };
+    var items = result.Data.ToList();
+    var pageNumber = result.PageNumber <= 0 ? 1 : result.PageNumber;
+    var totalPages = result.PageSize <= 0 ? 1 : result.TotalPages;
     var header = new AdminPageHeaderViewModel
     {
         Eyebrow = "Payment audit",
@@ -12,27 +16,31 @@
     {
         Title = "Payment history ledger",
         Subtitle = "History rows returned from the payment service integration.",
-        Source = Model,
         Controller = "PaymentHistories",
         ShowDetails = false,
         ShowEdit = false,
         ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
+        Headers = ["Payment", "Method", "Old status", "New status", "Changed", "Created", "Created by"],
+        Rows = items.Select(history => new AdminTableRowViewModel
         {
-            new("Payment", "PaymentId", "id"),
-            new("Method", "PaymentMethod", "badge"),
-            new("Old status", "OldStatus", "badge"),
-            new("New status", "NewStatus", "badge"),
-            new("Changed", "ChangedAt"),
-            new("Created", "CreatedAt"),
-            new("Created by", "CreatedBy")
-        },
+            Cells =
+            [
+                AdminDisplay.AdminCell("Payment", history.PaymentId, "id"),
+                AdminDisplay.AdminCell("Method", history.PaymentMethod, "badge"),
+                AdminDisplay.AdminCell("Old status", history.OldStatus, "badge"),
+                AdminDisplay.AdminCell("New status", history.NewStatus, "badge"),
+                AdminDisplay.AdminCell("Changed", history.ChangedAt),
+                AdminDisplay.AdminCell("Created", history.CreatedAt),
+                AdminDisplay.AdminCell("Created by", history.CreatedBy)
+            ]
+        }).ToList(),
+        TotalCount = result.TotalCount,
+        PageNumber = pageNumber,
+        TotalPages = totalPages,
         EmptyTitle = "No payment history found",
         EmptyDescription = "When matching history records are returned from the payment service they will appear here."
     };
 
-    var pageNumber = AdminDisplay.PageNumber(Model);
-    var totalPages = AdminDisplay.TotalPages(Model);
     var pager = new AdminPagerViewModel
     {
         PageNumber = pageNumber,

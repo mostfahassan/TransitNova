@@ -15,6 +15,14 @@ public sealed class SubscriptionsController(
     IAdminSubscriptionQuery adminSubscriptionQuery)
     : AppControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
+    {
+        var response = await apiInvoker.ExecuteAsync((token, ct) => adminSubscriptionQuery.GetSubscribersAsync(token!, ct), cancellationToken: cancellationToken);
+
+        return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
+    }
+
     [HttpGet("{subscriptionId:guid}")]
     public async Task<IActionResult> Details(Guid subscriptionId, CancellationToken cancellationToken)
     {
@@ -23,10 +31,12 @@ public sealed class SubscriptionsController(
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
 
-    [HttpGet("{bundleId:guid}")]
-    public async Task<IActionResult> BundleSubscribers(Guid bundleId, CancellationToken cancellationToken)
+    [HttpGet]
+    public async Task<IActionResult> BundleSubscribers(CancellationToken cancellationToken)
     {
-        var response = await apiInvoker.ExecuteAsync((token, ct) => adminSubscriptionQuery.GetBundleSubscribersAsync(bundleId, token!, ct), cancellationToken: cancellationToken);
+        var response = await apiInvoker.ExecuteAsync(
+            (token, ct) => adminSubscriptionQuery.GetSubscribersAsync(token!, ct),
+            cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }

@@ -78,7 +78,7 @@ namespace TransitNova.Domain.Entities.MainEntities
         {
             var carrier = new Carrier(appUserId, firstName, lastName, email, phone, address, cityId);
 
-            carrier.RaiseDomainEvent(new CarrierCreatedDomainEvent(carrier.Id,carrier.FullName, phone, carrier.Code));
+            carrier.RaiseDomainEvent(new CarrierCreatedDomainEvent(carrier.AppUserId,carrier.FullName, phone, carrier.Code));
 
             return carrier;
         }
@@ -145,7 +145,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             HasAdditionalInfo = true;
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = userId.ToString();
-            RaiseDomainEvent(new CarrierAdditionalInfoAddedDomainEvent(Id, LicenseNumber, MaxDailyShipments));
+            RaiseDomainEvent(new CarrierAdditionalInfoAddedDomainEvent(AppUserId, LicenseNumber, MaxDailyShipments));
         }
 
         public void UpdateProfile(Guid userId, string? firstName, string? lastName, string? phoneNumber, Address? address)
@@ -158,20 +158,20 @@ namespace TransitNova.Domain.Entities.MainEntities
             UpdatedAt = DateTime.UtcNow;
             UpdatedBy = userId.ToString();
 
-            RaiseDomainEvent(new CarrierProfileUpdatedDomainEvent(Id));
+            RaiseDomainEvent(new CarrierProfileUpdatedDomainEvent(AppUserId));
         }
 
         public void AssignToPickup(Guid operationManagerId)
         {
             Assign(operationManagerId);
             UpdateCarrierStatus(CarrierStatus.AssignedToPickUpShipment, operationManagerId);
-            RaiseDomainEvent(new CarrierAssignedToPickupDomainEvent(Id, AssignedShipmentsCount, CarrierStatus.AssignedToPickUpShipment));
+            RaiseDomainEvent(new CarrierAssignedToPickupDomainEvent(AppUserId, AssignedShipmentsCount, CarrierStatus.AssignedToPickUpShipment));
         }
         public void AssignToDeliver(Guid operationManagerId)
         {
             Assign(operationManagerId);
             UpdateCarrierStatus(CarrierStatus.AssignedToDeliveryShipment, operationManagerId);
-            RaiseDomainEvent(new CarrierAssignedToDeliveryDomainEvent(Id, AssignedShipmentsCount, CarrierStatus.AssignedToDeliveryShipment));
+            RaiseDomainEvent(new CarrierAssignedToDeliveryDomainEvent(AppUserId, AssignedShipmentsCount, CarrierStatus.AssignedToDeliveryShipment));
         }
 
         public void AssignToTrip(Guid operationManagerId, Guid tripId)
@@ -183,7 +183,7 @@ namespace TransitNova.Domain.Entities.MainEntities
             HandledAt = DateTime.UtcNow;
            
             UpdateCarrierStatus(CarrierStatus.OnTrip, operationManagerId);
-            RaiseDomainEvent(new CarrierTripStartedDomainEvent(Id, CarrierStatus.OnTrip));
+            RaiseDomainEvent(new CarrierTripStartedDomainEvent(AppUserId, CarrierStatus.OnTrip));
         }
 
         public void CompleteShipment()
@@ -197,7 +197,7 @@ namespace TransitNova.Domain.Entities.MainEntities
                     ? CarrierStatus.OnTrip
                     : CarrierStatus.Available);
 
-            RaiseDomainEvent(new CarrierShipmentCompletedDomainEvent(Id, AssignedShipmentsCount, RemainingShipmentsCount, CompletedShipmentsCount));
+            RaiseDomainEvent(new CarrierShipmentCompletedDomainEvent(AppUserId, AssignedShipmentsCount, RemainingShipmentsCount, CompletedShipmentsCount));
 
         }
 
@@ -207,7 +207,7 @@ namespace TransitNova.Domain.Entities.MainEntities
 
             AverageRating = ((AverageRating * TotalRatings) + rating) / (TotalRatings + 1);
             TotalRatings++;
-            RaiseDomainEvent(new CarrierRatedDomainEvent(Id, rating, AverageRating, TotalRatings));
+            RaiseDomainEvent(new CarrierRatedDomainEvent(AppUserId, rating, AverageRating, TotalRatings));
         }
 
 

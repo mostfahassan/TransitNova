@@ -1,6 +1,7 @@
-@model object?
+@model UiRetrieveShipmentDto?
 @{
     ViewData["Title"] = "Carrier shipment details";
+    var shipment = Model ?? new UiRetrieveShipmentDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Carrier shipment details",
@@ -13,26 +14,25 @@
     {
         Title = "Shipment record",
         Subtitle = "Shipment details returned inside the carrier administration surface.",
-        Source = Model,
+        PrimaryLabel = shipment.TrackingNumber,
         Controller = "Carriers",
-        RouteIdName = "shipmentId",
-        IdPropertyPath = "Id|ShipmentId",
         EditAction = null,
         DeleteAction = null,
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Tracking", "TrackingNumber", "id"),
-            new("Pickup", "PickupAddress"),
-            new("Delivery", "DeliveryAddress"),
-            new("Status", "CurrentStatus|Status", "badge"),
-            new("Mode", "TransportationMode", "badge"),
-            new("Type", "ShipmentType", "badge"),
-            new("Cost", "ShippingCost", "currency"),
-            new("Estimated delivery", "EstimatedDeliveryDate"),
-            new("Created", "CreatedAt"),
-            new("Receiver", "Receiver.FullName|Receiver.Email"),
-            new("Sender", "Sender.FullName|Sender.Email")
-        }
+        RouteValues = new Dictionary<string, object?> { ["shipmentId"] = shipment.Id },
+        Fields =
+        [
+            AdminDisplay.AdminCell("Tracking", shipment.TrackingNumber, "id"),
+            AdminDisplay.AdminCell("Pickup", shipment.PickupAddress),
+            AdminDisplay.AdminCell("Delivery", shipment.DeliveryAddress),
+            AdminDisplay.AdminCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.AdminCell("Mode", shipment.TransportationMode, "badge"),
+            AdminDisplay.AdminCell("Type", shipment.ShipmentType, "badge"),
+            AdminDisplay.AdminCell("Cost", shipment.ShippingCost, "currency"),
+            AdminDisplay.AdminCell("Estimated delivery", shipment.EstimatedDeliveryDate),
+            AdminDisplay.AdminCell("Created", shipment.CreatedAt),
+            AdminDisplay.AdminCell("Receiver", shipment.Receiver.FullName),
+            AdminDisplay.AdminCell("Sender", shipment.Sender?.FullName)
+        ]
     };
 }
 

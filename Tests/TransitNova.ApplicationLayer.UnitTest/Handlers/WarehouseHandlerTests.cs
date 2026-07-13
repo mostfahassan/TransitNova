@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+using FluentAssertions;
+using TransitNova.BusinessLayer.Common.CommonData;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TransitNova.BusinessLayer.DTOs.Warehouse;
@@ -238,7 +239,7 @@ public sealed class WarehouseHandlerTests
         Capacity = 1000,
         CurrentUsage = 100,
         OperatingHours = 12,
-        Address =Address.Create("Cairo", null, "Main Street"),
+        Address = AddressDto.FromDomain(Address.Create("Cairo", null, "Main Street")),
         ZoneIds = zoneIds
     };
 
@@ -249,7 +250,7 @@ public sealed class WarehouseHandlerTests
         Capacity = 2000,
         CurrentUsage = 200,
         OperatingHours = 16,
-        Address = Address.Create("Giza", null, "Main Street"),
+        Address = AddressDto.FromDomain(Address.Create("Giza", null, "Main Street")),
         ZoneIds = zoneIds
     };
 
@@ -290,3 +291,5 @@ public sealed class WarehouseHandlerTests
         }
     }
 }
+
+

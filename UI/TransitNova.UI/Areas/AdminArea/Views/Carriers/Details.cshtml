@@ -1,6 +1,7 @@
-@model object?
+@model UiCarrierProfileDto?
 @{
     ViewData["Title"] = "Carrier details";
+    var carrier = Model ?? new UiCarrierProfileDto();
     var header = new AdminPageHeaderViewModel
     {
         Title = "Carrier details",
@@ -13,23 +14,22 @@
     {
         Title = "Carrier record",
         Subtitle = "Carrier profile and summary details from the API.",
-        Source = Model,
+        PrimaryLabel = carrier.FullName,
         Controller = "Carriers",
-        RouteIdName = "carrierId",
-        IdPropertyPath = "Id|CarrierId",
         EditAction = null,
         DeleteAction = "Delete",
-        Fields = new List<AdminTableColumnViewModel>
-        {
-            new("Carrier", "FullName|Name"),
-            new("Code", "Code", "id"),
-            new("Phone", "PhoneNumber"),
-            new("Status", "Status", "badge"),
-            new("Rating", "Rating"),
-            new("Served cities", "ServedCities"),
-            new("Assigned shipments", "AssignedShipmentsCount"),
-            new("Active trips", "ActiveTripsCount")
-        }
+        RouteValues = new Dictionary<string, object?> { ["carrierId"] = carrier.Id },
+        Fields =
+        [
+            AdminDisplay.AdminCell("Carrier", carrier.FullName),
+            AdminDisplay.AdminCell("Code", carrier.Code, "id"),
+            AdminDisplay.AdminCell("Phone", carrier.PhoneNumber),
+            AdminDisplay.AdminCell("Status", carrier.Status, "badge"),
+            AdminDisplay.AdminCell("Rating", carrier.Rating),
+            AdminDisplay.AdminCell("Served cities", carrier.CityName),
+            AdminDisplay.AdminCell("Assigned shipments", "-"),
+            AdminDisplay.AdminCell("Active trips", "-")
+        ]
     };
 }
 

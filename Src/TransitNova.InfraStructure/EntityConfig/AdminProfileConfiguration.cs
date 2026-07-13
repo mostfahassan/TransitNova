@@ -16,6 +16,11 @@ public sealed class AdminProfileConfiguration : IEntityTypeConfiguration<AdminPr
             .HasForeignKey(profile => profile.CityId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        admin.Property(admin => admin.UserType)
+            .HasConversion<string>()
+            .IsRequired()
+            .HasMaxLength(6);
+
         admin.HasIndex(profile => profile.AppUserId).IsUnique();
         admin.HasIndex(profile => profile.CityId);
         admin.HasIndex(profile => profile.Email);

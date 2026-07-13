@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TransitNova.Domain.Contracts.Roles;
 using TransitNova.UI.Infrastructure.Mvc.Common;
 using TransitNova.UI.Infrastructure.Mvc.Interface;
-using TransitNova.UI.ViewModels;
+using TransitNovaUI.BusinessLayer.DTOs.Payment;
 using TransitNovaUI.BusinessLayer.ApiInterfaceServices.Admin.PaymentHistories.Segregation;
 
 namespace TransitNova.UI.Areas.AdminArea.Controllers.PaymentHistories;
@@ -17,12 +17,13 @@ public sealed class PaymentHistoriesController(
     : AppControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] PaymentHistoryFilterViewModel filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index([FromQuery] UiPaymentHistoryFilterDto filter, CancellationToken cancellationToken)
     {
         var response = await apiInvoker.ExecuteAsync(
-            (token, ct) => adminPaymentHistoriesQuery.GetAdminPaymentHistoriesAsync(filter.ToDto(), token!, ct),
+            (token, ct) => adminPaymentHistoriesQuery.GetAdminPaymentHistoriesAsync(filter, token!, ct),
             cancellationToken: cancellationToken);
 
         return response.IsSuccess ? View(response.Data) : HandleGetFailure(response);
     }
 }
+

@@ -1,6 +1,8 @@
-@model object?
+@model UiPagedResult<UiTripDetailsDto>?
 @{
     ViewData["Title"] = "Trips";
+    var result = Model ?? new UiPagedResult<UiTripDetailsDto> { PageSize = 20 };
+    var items = result.Data.ToList();
     var header = new AdminPageHeaderViewModel
     {
         Eyebrow = "Trip oversight",
@@ -14,25 +16,24 @@
     {
         Title = "Trip directory",
         Subtitle = "Trips returned from the admin filtering endpoint.",
-        Source = Model,
         Controller = "Trips",
-        RouteIdName = "tripId",
-        IdPropertyPath = "Id",
         ShowDetails = true,
-        ShowEdit = false,
-        ShowDelete = false,
-        Columns = new List<AdminTableColumnViewModel>
-        {
-            new("Trip", "Id", "id"),
-            new("Type", "TripType"),
-            new("Status", "Status", "badge"),
-            new("Carrier", "CarrierName"),
-            new("Warehouse", "WarehouseName"),
-            new("Shipments", "TotalShipments"),
-            new("Planned", "PlannedDate"),
-            new("Started", "StartTime"),
-            new("Ended", "EndTime")
-        },
+        Headers = ["Trip", "Type", "Status", "Carrier", "Warehouse", "Shipments", "Planned", "Started", "Ended"],
+        Rows = items.Select(trip => AdminDisplay.AdminRow(
+            "tripId",
+            trip.Id,
+            AdminDisplay.AdminCell("Trip", trip.Id, "id"),
+            AdminDisplay.AdminCell("Type", trip.TripType),
+            AdminDisplay.AdminCell("Status", trip.Status, "badge"),
+            AdminDisplay.AdminCell("Carrier", trip.CarrierName),
+            AdminDisplay.AdminCell("Warehouse", trip.WarehouseName),
+            AdminDisplay.AdminCell("Shipments", trip.TotalShipments),
+            AdminDisplay.AdminCell("Planned", trip.PlannedDate),
+            AdminDisplay.AdminCell("Started", trip.StartTime),
+            AdminDisplay.AdminCell("Ended", trip.EndTime))).ToList(),
+        TotalCount = result.TotalCount,
+        PageNumber = result.PageNumber,
+        TotalPages = result.PageSize <= 0 ? 1 : result.TotalPages,
         EmptyTitle = "No trips found",
         EmptyDescription = "Trips matching the current filter will appear here."
     };

@@ -18,6 +18,13 @@ public sealed class UiInvoiceDto
     public DateTime? PaidAt { get; set; }
     public Currency Currency { get; set; }
     public string? Notes { get; set; }
+    public decimal OriginalShippingCost { get; set; }
+    public decimal DiscountAmount { get; set; }
+    public decimal DiscountPercentage { get; set; }
+    public decimal FinalShippingCost { get; set; }
+    public string? BundleName { get; set; }
+    public bool SubscriptionBenefitApplied { get; set; }
+    public string SubscriptionBenefitMessage { get; set; } = string.Empty;
 }
 
 public sealed class UiBundleInvoiceDto

@@ -18,12 +18,12 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
     {
         public async Task<BaseResult> Handle(IssueShipmentCommand request, CancellationToken cancellationToken)
         {
-            logger.LogDebug("Attempting issue for ShipmentId: {ShipmentId}", request.ShipmentId);
+            logger.LogDebug("Attempting issue for ReferecneId: {ReferecneId}", request.ShipmentId);
             //====== Issue Shipment ======
             var issued = await shipmentRepo.GetShipmentForCommandsAsync(request.ShipmentId, cancellationToken);
             if (issued is null)
             {
-                logger.LogWarning("Issue executed but no changes saved for {ShipmentId}", request.ShipmentId);
+                logger.LogWarning("Issue executed but no changes saved for {ReferecneId}", request.ShipmentId);
                 
                 return BaseResult.Failure(Errors.FailedOperation($"Issue Failed For Shipment With Id =>  {request.ShipmentId} not found"));
             }
@@ -33,7 +33,7 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.CommandsHan
             await unitOfWork.SaveChangesAsync(cancellationToken);
            
             //====== Handle Failure to Issue ======
-            logger.LogInformation("Shipment {ShipmentId} issued successfully", request.ShipmentId);
+            logger.LogInformation("Shipment {ReferecneId} issued successfully", request.ShipmentId);
             CacheInvalidationContext.Set(
                 request,
                 CacheKeys.Users.Dashboard(request.AppUserId),

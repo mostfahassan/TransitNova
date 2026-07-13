@@ -12,7 +12,10 @@
                 <div class="grid h-20 w-20 place-items-center rounded-[14px] bg-[#111111] text-xl font-black text-white">CR</div>
                 <h2 class="mt-6 text-3xl font-black tracking-[-0.03em] text-[#111111]">@Display(profile.FullName, "Carrier")</h2>
                 <p class="mt-2 text-sm font-semibold text-[#66615a]">@Display(profile.Email, "No email")</p>
-                <div class="mt-5 carrier-badge @BadgeClass(profile.Status.ToString())">@profile.Status</div>
+                <div class="mt-5 flex flex-wrap gap-3">
+                    <div class="carrier-badge @BadgeClass(profile.Status.ToString())">@profile.Status</div>
+                    <div class="carrier-badge carrier-badge-neutral">@profile.UserType</div>
+                </div>
                 <div class="mt-6 flex gap-3"><a asp-action="Edit" class="carrier-button">Edit profile</a><a asp-action="AdditionalInfo" class="carrier-button-secondary">Additional info</a></div>
             </aside>
             <div class="p-6 md:p-8">
@@ -22,10 +25,13 @@
                     @Info("City", profile.CityName)
                     @Info("Government", profile.GovernmentName)
                     @Info("Country", profile.CountryName)
+                    @Info("Carrier code", profile.Code)
                     @Info("License", profile.LicenseNumber)
                     @Info("Rating", profile.Rating.ToString("N1"))
                     @Info("Experience", $"{profile.Experience} years")
                     @Info("Cost per kg", profile.DefaultCostPerKg.ToString("N2"))
+                    @Info("Contract start", profile.ContractStartDate == default ? "-" : profile.ContractStartDate.ToString("MMM dd, yyyy"))
+                    @Info("Contract end", profile.ContractEndDate == default ? "-" : profile.ContractEndDate.ToString("MMM dd, yyyy"))
                 </div>
             </div>
         </div>
@@ -42,10 +48,12 @@
         }
         else
         {
-            <div class="mt-5 grid gap-4 md:grid-cols-4">
+            <div class="mt-5 grid gap-4 md:grid-cols-3 xl:grid-cols-6">
                 @Info("Plate", vehicle.PlateNumber)
                 @Info("Type", vehicle.VehicleType.ToString())
                 @Info("Weight", $"{vehicle.CapacityWeight:N2} kg")
+                @Info("Volume", $"{vehicle.CapacityVolume:N2}")
+                @Info("Refrigerated", vehicle.IsRefrigerated ? "Yes" : "No")
                 @Info("Active", vehicle.IsActive ? "Yes" : "No")
             </div>
         }

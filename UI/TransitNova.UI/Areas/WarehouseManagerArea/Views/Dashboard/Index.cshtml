@@ -1,21 +1,18 @@
-@model object?
+@model UiWarehouseManagerDashboardDto?
 @{
     ViewData["Title"] = "Warehouse Dashboard";
-    var manager = AdminDisplay.Value(Model, "Manager");
-    var kpis = AdminDisplay.Value(Model, "Kpis");
-    var recentShipments = AdminDisplay.Value(Model, "RecentShipments");
-    var recentTrips = AdminDisplay.Value(Model, "RecentTrips");
-    var totalShipments = AdminDisplay.Text(kpis, "TotalShipments");
-    var deliveredShipments = AdminDisplay.Text(kpis, "DeliveredShipments");
-    var activeTrips = AdminDisplay.Text(kpis, "ActiveTrips");
-    var activeCarriers = AdminDisplay.Text(kpis, "ActiveCarriers");
-    var totalShipmentsNumber = AdminDisplay.Value(kpis, "TotalShipments") is int ts ? ts : 0;
-    var deliveredNumber = AdminDisplay.Value(kpis, "DeliveredShipments") is int ds ? ds : 0;
-    var deliveryProgress = totalShipmentsNumber == 0 ? 0 : Math.Round((decimal)deliveredNumber / totalShipmentsNumber * 100, 0);
+    var dashboard = Model ?? new UiWarehouseManagerDashboardDto();
+    var manager = dashboard.Manager;
+    var kpis = dashboard.Kpis;
+    var totalShipments = AdminDisplay.Format(kpis.TotalShipments);
+    var deliveredShipments = AdminDisplay.Format(kpis.DeliveredShipments);
+    var activeTrips = AdminDisplay.Format(kpis.ActiveTrips);
+    var activeCarriers = AdminDisplay.Format(kpis.ActiveCarriers);
+    var deliveryProgress = kpis.TotalShipments == 0 ? 0 : Math.Round((decimal)kpis.DeliveredShipments / kpis.TotalShipments * 100, 0);
     var header = new WarehousePageHeaderViewModel
     {
         Eyebrow = "Warehouse command",
-        Title = $"{AdminDisplay.Text(manager, "WarehouseName", "text")} operating board",
+        Title = $"{AdminDisplay.Format(manager.WarehouseName)} operating board",
         Description = "Monitor shipments, active trips, and carrier capacity from one scanner-friendly operations surface.",
         PrimaryLabel = "Open inventory",
         PrimaryController = "Shipments",
@@ -23,6 +20,44 @@
         SecondaryLabel = "Carrier roster",
         SecondaryController = "Carriers",
         SecondaryAction = "Index"
+    };
+    var kpiTiles = new List<WarehouseKpiTileViewModel>
+    {
+        new("Total shipments", totalShipments, "All lanes", "info", deliveryProgress),
+        new("Delivered", deliveredShipments, "Closed", "success"),
+        new("Active trips", activeTrips, "Moving", "warning"),
+        new("Active carriers", activeCarriers, "Available", "neutral")
+    };
+    var recentShipmentsTable = new WarehouseTableViewModel
+    {
+        Title = "Recent shipments",
+        Subtitle = "Latest warehouse-visible shipments from the API.",
+        Controller = "Shipments",
+        Headers = ["Tracking", "Status", "Created"],
+        Rows = dashboard.RecentShipments.Select(shipment => AdminDisplay.WarehouseRow(
+            "shipmentId",
+            shipment.Id,
+            AdminDisplay.WarehouseCell("Tracking", shipment.TrackingNumber),
+            AdminDisplay.WarehouseCell("Status", shipment.CurrentStatus, "badge"),
+            AdminDisplay.WarehouseCell("Created", shipment.CreatedAt))).ToList(),
+        EmptyTitle = "No recent shipments",
+        EmptyDescription = "Warehouse shipments will appear here after the backend returns activity."
+    };
+    var recentTripsTable = new WarehouseTableViewModel
+    {
+        Title = "Recent trips",
+        Subtitle = "Pickup and delivery trips attached to this warehouse.",
+        Controller = "Trips",
+        Headers = ["Trip", "Type", "Status", "Planned"],
+        Rows = dashboard.RecentTrips.Select(trip => AdminDisplay.WarehouseRow(
+            "tripId",
+            trip.Id,
+            AdminDisplay.WarehouseCell("Trip", trip.Id, "id"),
+            AdminDisplay.WarehouseCell("Type", trip.TripType),
+            AdminDisplay.WarehouseCell("Status", trip.Status, "badge"),
+            AdminDisplay.WarehouseCell("Planned", trip.PlannedDate))).ToList(),
+        EmptyTitle = "No recent trips",
+        EmptyDescription = "Trips will appear here when carriers are assigned to warehouse movement."
     };
 }
 
@@ -52,13 +87,13 @@
 </section>
 
 <section class="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Total shipments", totalShipments, "All lanes", "info", deliveryProgress)" />
-    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Delivered", deliveredShipments, "Closed", "success")" />
-    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Active trips", activeTrips, "Moving", "warning")" />
-    <partial name="_WarehouseKpiTile" model="new WarehouseKpiTileViewModel("Active carriers", activeCarriers, "Available", "neutral")" />
+    @foreach (var tile in kpiTiles)
+    {
+        <partial name="_WarehouseKpiTile" model="tile" />
+    }
 </section>
 
 <section class="grid gap-6 xl:grid-cols-2">
-    <partial name="_WarehouseTable" model="new WarehouseTableViewModel { Title = "Recent shipments", Subtitle = "Latest warehouse-visible shipments from the API.", Source = recentShipments, Controller = "Shipments", RouteIdName = "shipmentId", IdPropertyPath = "Id", Columns = new List<WarehouseTableColumnViewModel> { new("Tracking", "TrackingNumber"), new("Status", "CurrentStatus", "badge"), new("Created", "CreatedAt") }, EmptyTitle = "No recent shipments", EmptyDescription = "Warehouse shipments will appear here after the backend returns activity." }" />
-    <partial name="_WarehouseTable" model="new WarehouseTableViewModel { Title = "Recent trips", Subtitle = "Pickup and delivery trips attached to this warehouse.", Source = recentTrips, Controller = "Trips", RouteIdName = "tripId", IdPropertyPath = "Id", Columns = new List<WarehouseTableColumnViewModel> { new("Trip", "Id", "id"), new("Type", "TripType"), new("Status", "Status", "badge"), new("Planned", "PlannedDate") }, EmptyTitle = "No recent trips", EmptyDescription = "Trips will appear here when carriers are assigned to warehouse movement." }" />
+    <partial name="_WarehouseTable" model="recentShipmentsTable" />
+    <partial name="_WarehouseTable" model="recentTripsTable" />
 </section>

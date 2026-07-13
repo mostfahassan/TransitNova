@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using TransitNova.BusinessLayer.Common.CommonData;
 using TransitNova.BusinessLayer.DTOs.UserProfile.Auth;
 using TransitNova.BusinessLayer.DTOs.Vehicle;
@@ -37,7 +37,7 @@ public sealed class DtoValidatorCoverageTests
         switch (invalidField)
         {
             case "name": dto.Name = string.Empty; break;
-            case "address": dto.Address = Address.Create(string.Empty, null, string.Empty); break;
+            case "address": dto.Address = null!; break;
             case "capacity": dto.Capacity = 0; break;
             case "usage": dto.CurrentUsage = dto.Capacity + 1; break;
             case "hours": dto.OperatingHours = 0; break;
@@ -60,7 +60,7 @@ public sealed class DtoValidatorCoverageTests
         {
             Name = "Warehouse",
             Type = WarehouseType.MainWarehouse,
-            Address =Address.Create("Cairo", null, "Warehouse Street"),
+            Address = AddressDto.FromDomain(Address.Create("Cairo", null, "Warehouse Street")),
             Capacity = 100,
             CurrentUsage = 20,
             OperatingHours = null,
@@ -79,7 +79,7 @@ public sealed class DtoValidatorCoverageTests
         {
             Name = "Warehouse",
             Type = WarehouseType.MainWarehouse,
-            Address = Address.Create("Cairo", null, "Warehouse Street"),
+            Address = AddressDto.FromDomain(Address.Create("Cairo", null, "Warehouse Street")),
             Capacity = 100,
             CurrentUsage = 20,
             OperatingHours = 0,
@@ -210,7 +210,7 @@ public sealed class DtoValidatorCoverageTests
     {
         Name = "Main Warehouse",
         Type = WarehouseType.MainWarehouse,
-        Address = Address.Create("Cairo", null, "Warehouse Street"),
+        Address = AddressDto.FromDomain(Address.Create("Cairo", null, "Warehouse Street")),
         Capacity = 100,
         CurrentUsage = 20,
         OperatingHours = 12,
@@ -240,3 +240,5 @@ public sealed class DtoValidatorCoverageTests
         CityId = 1
     };
 }
+
+

@@ -13,17 +13,17 @@ namespace TransitNova.BusinessLayer.Features.UserOperations.Handlers.QueriesHand
     {
         public async Task<Result<RetrieveShipmentDto>> Handle(GetUserShipmentQuery request, CancellationToken ct)
         {
-            logger.LogInformation("Retrieving shipment {ShipmentId} for User {UserId}", request.ShipmentId, request.AppUserId);
+            logger.LogInformation("Retrieving shipment {ReferecneId} for User {UserId}", request.ShipmentId, request.AppUserId);
 
             var shipment = await userQueryRepository.GetUserShipmentDetailsAsync(request.AppUserId, request.ShipmentId, ct);
             if (shipment is null)
             {
-                logger.LogWarning("Shipment {ShipmentId} was not found for User {UserId}", request.ShipmentId, request.AppUserId);
+                logger.LogWarning("Shipment {ReferecneId} was not found for User {UserId}", request.ShipmentId, request.AppUserId);
                 var notFoundResult = Result<RetrieveShipmentDto>.NotFound(Errors.ShipmentNotFound("Shipment not found."));
                 return notFoundResult;
             }
 
-            logger.LogInformation("Shipment {ShipmentId} retrieved successfully for User {UserId}", request.ShipmentId, request.AppUserId);
+            logger.LogInformation("Shipment {ReferecneId} retrieved successfully for User {UserId}", request.ShipmentId, request.AppUserId);
             var result = Result<RetrieveShipmentDto>.Success(shipment);
             return result;
         }

@@ -1,6 +1,8 @@
-@model object?
+@model UiPagedResult<UiRetrieveShipmentDto>?
 @{
     ViewData["Title"] = "Shipments";
+    var result = Model ?? new UiPagedResult<UiRetrieveShipmentDto> { PageSize = 20 };
+    var rows = result.Data.ToList();
     var header = new OpsPageHeaderViewModel
     {
         Eyebrow = "Live tracking",
@@ -13,7 +15,6 @@
         SecondaryController = "Carriers",
         SecondaryAction = "Dispatch"
     };
-    var rows = AdminDisplay.Rows(Model);
 }
 
 <partial name="_OpsPageHeader" model="header" />
@@ -79,18 +80,18 @@
                 @for (var index = 0; index < rows.Count; index++)
                 {
                     var row = rows[index];
-                    var shipmentId = AdminDisplay.RouteValue(row, "Id|ShipmentId");
-                    var status = AdminDisplay.Text(row, "CurrentStatus|Status");
+                    var shipmentId = row.Id;
+                    var status = row.CurrentStatus.ToString();
                     var statusClass = BadgeClass(status);
-                    var pickupCity = AdminDisplay.Text(row, "SenderCity|PickupCity|PickupAddress");
-                    var deliveryCity = AdminDisplay.Text(row, "ReceiverCity|DeliveryCity|DeliveryAddress");
+                    var pickupCity = AdminDisplay.Format(row.PickupAddress);
+                    var deliveryCity = AdminDisplay.Format(row.DeliveryAddress);
                     <tr style="--row-index:@index">
-                        <td><span class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-[#111111]">@AdminDisplay.Text(row, "TrackingNumber", "id")</span></td>
+                        <td><span class="font-mono text-xs font-bold uppercase tracking-[0.08em] text-[#111111]">@AdminDisplay.Format(row.TrackingNumber, kind: "id")</span></td>
                         <td>@pickupCity</td>
                         <td>@deliveryCity</td>
                         <td><span class="@statusClass">@status</span></td>
-                        <td>@AdminDisplay.Text(row, "ShipmentType|TransportationMode")</td>
-                        <td>@AdminDisplay.Text(row, "CreatedAt")</td>
+                        <td>@row.ShipmentType</td>
+                        <td>@AdminDisplay.Format(row.CreatedAt)</td>
                         <td class="whitespace-nowrap text-right">
                             <div class="inline-flex items-center gap-2">
                                 @if (IsPending(status))

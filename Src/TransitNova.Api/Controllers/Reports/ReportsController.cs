@@ -55,7 +55,28 @@ namespace TransitNova.Api.Controllers.Reports
             var response = await mediator.Send(new GenerateShipmentReportCommand(requestId, contract, User.GetUserId()), cancellationToken);
             return response.ToActionResult();
         }
+        [EnableRateLimiting("CommandsLimiter")]
+        [HttpPost("bundles")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Consumes("application/json")]
+        [EndpointName("Request Bundle Report")]
+        [EndpointSummary("Request a new bundle report")]
+        [EndpointDescription("Allows an authorized user to request a new bundle report. This endpoint is idempotent and should be called with X-Idempotency-Key.")]
+        public async Task<IActionResult> RequestBundleReportAsync([IdempotencyKey] Guid requestId, [FromBody] BundleReportContract contract, CancellationToken cancellationToken)
+        {
+            var response = await mediator.Send(new GenerateBundleReportCommand(requestId, contract, User.GetUserId()), cancellationToken);
+            return response.ToActionResult();
+        }
 
+
+
+        [Authorize(Roles = Role.Admin)]
         [EnableRateLimiting("CommandsLimiter")]
         [HttpPost("dashboards")]
         [MapToApiVersion("1.0")]
